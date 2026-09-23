@@ -1,0 +1,32 @@
+{
+  "name": "maxbot-g1-technical-probe",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Технический probe G1 для проверки интеграции MAX",
+  "engines": { "node": ">=22.23.2 <23" },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "test:unit": "node --test --test-timeout=10000 dist/tests/config.test.js dist/tests/contracts.test.js",
+    "test:integration": "node --test --test-timeout=20000 dist/tests/integration.test.js",
+    "test": "npm run test:unit && npm run test:integration",
+    "prepare:local": "node scripts/prepare-local.mjs",
+    "start": "node --env-file=.env.local dist/src/index.js",
+    "smoke": "node --env-file=.env.local dist/scripts/local-smoke.js",
+    "live:inspect": "node --env-file=.env.live dist/scripts/live-admin.js inspect",
+    "live:subscribe": "node --env-file=.env.live dist/scripts/live-admin.js subscribe",
+    "manifest": "node scripts/source-manifest.mjs"
+  },
+  "dependencies": {
+    "better-sqlite3": "13.0.3",
+    "fastify": "5.12.5",
+    "lossless-json": "4.3.1",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "9.6.0",
+    "@types/node": "22.20.4",
+    "typescript": "7.0.2"
+  }
+}

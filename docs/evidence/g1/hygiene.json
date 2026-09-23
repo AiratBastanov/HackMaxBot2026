@@ -1,0 +1,33 @@
+{
+  "gitIgnored": 22,
+  "gitPreserved": 9,
+  "exactLocalSecretScanFiles": 85,
+  "dockerContextFiles": [
+    ".npmrc",
+    "Dockerfile",
+    "package-lock.json",
+    "package.json",
+    "scripts/check.mjs",
+    "scripts/dependency-inventory.mjs",
+    "scripts/live-admin.ts",
+    "scripts/local-smoke.ts",
+    "scripts/prepare-local.mjs",
+    "scripts/runtime-info.ts",
+    "scripts/source-manifest.mjs",
+    "src/app.ts",
+    "src/config.ts",
+    "src/contracts.ts",
+    "src/index.ts",
+    "src/max.ts",
+    "src/probe.ts",
+    "src/storage.ts",
+    "src/worker.ts",
+    "tests/config.test.ts",
+    "tests/contracts.test.ts",
+    "tests/fixtures.ts",
+    "tests/integration.test.ts",
+    "tsconfig.json"
+  ],
+  "sourceManifestSha256": "281850c0be6cdd8dc9c4e1f88fbc7f702483798ecfd191d95277f590553d160a",
+  "failures": []
+}

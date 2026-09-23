@@ -1,0 +1,107 @@
+ Image maxbot-g1:local Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 676B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile:
+#2 transferring dockerfile: 1.42kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:22.23.2-bookworm@sha256:dd5847a04b0deee391fa145f1f4c6d214196668b6bcc7988ebed67249f226844
+#3 DONE 0.1s
+
+#4 [internal] load metadata for docker.io/library/node:22.23.2-bookworm-slim@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9
+#4 DONE 0.1s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 739B done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 DONE 0.0s
+
+#7 [runtime 1/8] FROM docker.io/library/node:22.23.2-bookworm-slim@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9
+#7 resolve docker.io/library/node:22.23.2-bookworm-slim@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9 0.1s done
+#7 DONE 0.1s
+
+#8 [build  1/10] FROM docker.io/library/node:22.23.2-bookworm@sha256:dd5847a04b0deee391fa145f1f4c6d214196668b6bcc7988ebed67249f226844
+#8 resolve docker.io/library/node:22.23.2-bookworm@sha256:dd5847a04b0deee391fa145f1f4c6d214196668b6bcc7988ebed67249f226844 0.1s done
+#8 DONE 0.1s
+
+#6 [internal] load build context
+#6 transferring context: 937B done
+#6 DONE 0.0s
+
+#9 [runtime 3/8] RUN mkdir -p /app/runtime && chown node:node /app/runtime
+#9 CACHED
+
+#10 [build  4/10] RUN npm ci --no-audit --no-fund
+#10 CACHED
+
+#11 [build  9/10] RUN npm run typecheck && npm run build && npm test
+#11 CACHED
+
+#12 [build  2/10] WORKDIR /app
+#12 CACHED
+
+#13 [runtime 7/8] COPY --from=build /app/dist/scripts ./dist/scripts
+#13 CACHED
+
+#14 [build  6/10] COPY src ./src
+#14 CACHED
+
+#15 [runtime 2/8] WORKDIR /app
+#15 CACHED
+
+#16 [build  7/10] COPY tests ./tests
+#16 CACHED
+
+#17 [build  8/10] COPY scripts ./scripts
+#17 CACHED
+
+#18 [runtime 5/8] COPY --from=build /app/package.json ./package.json
+#18 CACHED
+
+#19 [build  5/10] COPY tsconfig.json ./
+#19 CACHED
+
+#20 [runtime 4/8] COPY --from=build /app/node_modules ./node_modules
+#20 CACHED
+
+#21 [build 10/10] RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
+#21 CACHED
+
+#22 [build  3/10] COPY package.json package-lock.json .npmrc ./
+#22 CACHED
+
+#23 [runtime 6/8] COPY --from=build /app/dist/src ./dist/src
+#23 CACHED
+
+#24 [runtime 8/8] COPY --from=build /app/dist/tests/fixtures.js ./dist/tests/fixtures.js
+#24 CACHED
+
+#25 exporting to image
+#25 exporting layers done
+#25 exporting manifest sha256:176d982f824696d326933eaf9d9ddecfca505f9256df93963fe983ba775df17b 0.0s done
+#25 exporting config sha256:645e7b7a104681454691ff61df77bb700ce73378c11bd30d6ef0113fc417baca 0.0s done
+#25 exporting attestation manifest sha256:fae6b6068be5392281b0d15203e8d01c29b8a8266f0ba9921d4b2f2fe5567e72
+#25 exporting attestation manifest sha256:fae6b6068be5392281b0d15203e8d01c29b8a8266f0ba9921d4b2f2fe5567e72 0.0s done
+#25 exporting manifest list sha256:0b516655771b8751ff75d1567b8498c316f69a435a5153d3d82c833ad7c6decb 0.0s done
+#25 naming to docker.io/library/maxbot-g1:local done
+#25 unpacking to docker.io/library/maxbot-g1:local 0.0s done
+#25 DONE 0.3s
+
+#26 resolving provenance for metadata file
+#26 DONE 0.0s
+ Image maxbot-g1:local Built 
+ Network maxbot-g1-local_default Creating 
+ Network maxbot-g1-local_default Creating 
+ Network maxbot-g1-local_default Created 
+ Network maxbot-g1-local_default Created 
+ Container maxbot-g1-local-app-1 Creating 
+ Container maxbot-g1-local-app-1 Created 
+ Container maxbot-g1-local-app-1 Starting 
+ Container maxbot-g1-local-app-1 Started 
+ Container maxbot-g1-local-app-1 Waiting 
+ Container maxbot-g1-local-app-1 Healthy 

@@ -1,0 +1,15 @@
+{
+  "sourceFilesVerified": 40,
+  "sourceManifestSha256": "281850c0be6cdd8dc9c4e1f88fbc7f702483798ecfd191d95277f590553d160a",
+  "recordedCommands": 39,
+  "requiredSuccessfulChecks": 14,
+  "hostTestsPassed": 50,
+  "dockerTestsPassed": [
+    29,
+    21
+  ],
+  "localLinksChecked": 46,
+  "exactLocalSecretScanFiles": 87,
+  "elapsedSeconds": 0.024,
+  "failures": []
+}

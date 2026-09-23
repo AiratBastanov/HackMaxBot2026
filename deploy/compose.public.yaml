@@ -1,0 +1,44 @@
+# Только на уже согласованном host. Не запускается локальным smoke.
+name: maxbot-g1-public
+services:
+  app:
+    image: maxbot-g1:reviewed
+    build:
+      context: ..
+      target: runtime
+      args:
+        SOURCE_VERSION: ${SOURCE_VERSION:?Укажите hash рассмотренного source manifest}
+    env_file: ../.env.live
+    environment:
+      APP_MODE: live
+      HOST: 0.0.0.0
+      PORT: "3000"
+      DATABASE_PATH: /app/runtime/probe.sqlite
+    volumes:
+      - probe-data:/app/runtime
+      - ../secrets:/run/secrets:ro
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    init: true
+    stop_grace_period: 20s
+    restart: unless-stopped
+  caddy:
+    image: caddy:2.11.4-alpine@sha256:de23def33b17fb5d1290b0f6c2add1d70780e52341896c00a4c8a2a2fe9d355e
+    environment:
+      PUBLIC_HOST: ${PUBLIC_HOST:?Укажите согласованный домен}
+      ACME_EMAIL: ${ACME_EMAIL:?Укажите согласованный контакт оператора}
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  probe-data:
+  caddy-data:
+  caddy-config:

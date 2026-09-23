@@ -1,0 +1,84 @@
+import type { Config } from './config.js';
+import type { AcceptedEvent } from './contracts.js';
+import { MaxError, type MaxOperation, type MaxTransport } from './max.js';
+import { Storage } from './storage.js';
+import { canSend, processProbe } from './probe.js';
+
+export class Worker {
+  private timer?: NodeJS.Timeout;
+  private current?: Promise<void>;
+  private stopping = false;
+  private lastCleanup = 0;
+  constructor(readonly store: Storage, private readonly config: Config, private readonly max: MaxTransport,
+    private readonly clock: () => number = Date.now, private readonly report: (value: object) => void = () => {}) {}
+
+  start() {
+    this.stopping = false;
+    const run = () => {
+      if (this.stopping) return;
+      this.current = this.tick().catch(() => this.report({ operation: 'worker', errorClass: 'STORAGE_OR_PROCESSING' }))
+        .finally(() => { if (!this.stopping) this.timer = setTimeout(run, 1100); });
+    };
+    run();
+  }
+  async stop() { this.stopping = true; clearTimeout(this.timer); await this.current; }
+  async tick(): Promise<void> {
+    // Один process/tick; транзакции только синхронные. Сеть идёт после commit.
+    for (const row of this.store.pendingInbox(20)) {
+      try {
+        this.store.db.transaction(() => {
+          const now = this.clock();
+          const result = processProbe(this.store, this.config, JSON.parse(row.payload) as AcceptedEvent, now);
+          this.store.finishInbox(row.id, result, now);
+        }).immediate();
+      } catch {
+        const attempts = row.attempts + 1;
+        this.store.db.prepare("UPDATE inbox SET attempts=?,status=?,result=?,finished_at=? WHERE id=?")
+          .run(attempts, attempts >= 3 ? 'FAILED' : 'PENDING', 'PROCESSING_FAILURE', attempts >= 3 ? this.clock() : null, row.id);
+      }
+    }
+    const now = this.clock();
+    this.store.db.prepare("UPDATE outbox SET status='STALE',result='EXPIRED',finished_at=? WHERE status='PENDING' AND expires_at<=?").run(now, now);
+    const row = this.store.pendingOutbox(now);
+    if (row) {
+      const probe = row.probe_id ? this.store.probe(row.probe_id) : undefined;
+      if (row.probe_id && (!probe || probe.expires_at <= now || probe.state === 'SUPERSEDED')) {
+        this.store.finishOutbox(row.id, 'STALE', 'PROBE_EXPIRED_OR_REPLACED', now);
+      } else if (this.store.getMeta('auth_blocked') === 'true') {
+        this.store.finishOutbox(row.id, 'FAILED_AUTH', 'AUTH_BLOCKED', now);
+      } else if (!canSend(this.store.contact(row.actor))) {
+        this.store.finishOutbox(row.id, 'SUPPRESSED_CONTACT', 'CONTACT_UNAVAILABLE', now);
+      } else {
+        const operation = JSON.parse(row.payload) as MaxOperation;
+        this.store.db.prepare("UPDATE outbox SET status='SENDING',attempts=attempts+1 WHERE id=?").run(row.id);
+        try {
+          const result = await this.max.execute(operation);
+          this.store.db.transaction(() => {
+            const finished = this.clock();
+            this.store.finishOutbox(row.id, result.simulated ? 'SIMULATED' : 'ACKNOWLEDGED', result.simulated ? 'LOCAL_ONLY' : 'MAX_ACCEPTED', finished, 200, result.mid);
+            if (row.purpose === 'question' && result.mid && probe && finished < probe.expires_at) {
+              this.store.db.prepare("UPDATE probes SET question_mid=?,state='WAITING_REPLY' WHERE id=? AND state='QUESTION_PENDING'").run(result.mid, probe.id);
+            }
+          }).immediate();
+          this.report({ operation: operation.method, result: result.simulated ? 'SIMULATED' : 'MAX_ACCEPTED', attempts: row.attempts + 1 });
+        } catch (error) {
+          // Ошибка фиксации после ответа MAX тоже не допускает повторной отправки.
+          const e = error instanceof MaxError ? error : new MaxError('TRANSPORT_AMBIGUOUS');
+          const finished = this.clock();
+          const nextAt = finished + Math.max(e.retryAfterMs ?? 0, 2000 * 2 ** row.attempts);
+          this.store.db.transaction(() => {
+            if (e.kind === 'AUTH') this.store.setMeta('auth_blocked', 'true');
+            if (e.kind === 'RATE_LIMIT' && row.attempts + 1 < 3 && nextAt < row.expires_at) {
+              this.store.db.prepare("UPDATE outbox SET status='PENDING',result='RATE_LIMIT',http_status=429,next_at=? WHERE id=?").run(nextAt, row.id);
+            } else {
+              const ambiguous = ['MALFORMED', 'SERVER', 'TIMEOUT_AMBIGUOUS', 'TRANSPORT_AMBIGUOUS'].includes(e.kind);
+              this.store.finishOutbox(row.id, ambiguous ? 'UNKNOWN_RESULT' : `FAILED_${e.kind}`, e.kind, finished, e.status);
+            }
+          }).immediate();
+          this.report({ operation: operation.method, errorClass: e.kind, status: e.status, attempts: row.attempts + 1 });
+        }
+      }
+    }
+    if (now - this.lastCleanup >= 60000) { this.store.cleanup(now); this.lastCleanup = now; }
+  }
+}

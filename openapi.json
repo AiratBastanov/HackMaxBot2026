@@ -1,0 +1,551 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "G1: технический probe MAX",
+    "version": "0.1.0",
+    "description": "Реализованы только webhook и health. Не является API встреч или полным комплектом сдачи. HTTP 200 webhook не подтверждает обработку probe, приём запроса MAX или наблюдение человеком."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:3000",
+      "description": "Изолированный локальный режим. Live origin согласуется отдельно."
+    }
+  ],
+  "paths": {
+    "/healthz": {
+      "get": {
+        "operationId": "health",
+        "summary": "Доступность процесса и чтения SQLite",
+        "description": "Не проверяет MAX, подписку, свободное место или реальную доставку.",
+        "responses": {
+          "200": {
+            "description": "Процесс и SQLite доступны",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "const": "ok"
+                    },
+                    "mode": {
+                      "enum": [
+                        "local",
+                        "live"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "mode"
+                  ]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "SQLite недоступна",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "const": "unavailable"
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhooks/max": {
+      "post": {
+        "operationId": "acceptMaxUpdate",
+        "summary": "Надёжно принять поддерживаемое событие технического теста",
+        "description": "Максимум 65536 байт, только application/json и один Update. Секрет проверяется до разбора тела. Live actor должен находиться в согласованном списке тестировщиков. Прочие валидные базовые Update и посторонние акторы безопасно игнорируются. До трёх попыток внутренней обработки; при переполнении inbox 503. Не используется Long Polling envelope.",
+        "security": [
+          {
+            "maxWebhookSecret": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Update"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "accepted после SQLite commit; duplicate после проверки сохранённого ключа; ignored без сохранения тела",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "accepted",
+                        "duplicate",
+                        "ignored"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалидный JSON или структура Update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Секрет отсутствует или не совпадает",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Тело больше 65536 байт",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Неподдерживаемый Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Не удалось сохранить / inbox заполнен. MAX может повторить доставку",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "maxWebhookSecret": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Max-Bot-Api-Secret",
+        "description": "32–256 символов A–Z, a–z, 0–9, _ и -. Генерируется локально; живое значение не публикуется."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "enum": [
+              "invalid_request",
+              "invalid_update",
+              "unauthorized",
+              "payload_too_large",
+              "unsupported_media_type",
+              "persistence_unavailable",
+              "temporarily_unavailable"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "Int64": {
+        "type": "integer",
+        "format": "int64",
+        "description": "JSON integer; сервер сохраняет исходную десятичную лексему до преобразования. Не передавать через округляющий Number."
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "$ref": "#/components/schemas/Int64"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "is_bot": {
+            "type": "boolean"
+          },
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "user_id",
+          "first_name",
+          "is_bot"
+        ]
+      },
+      "Recipient": {
+        "type": "object",
+        "properties": {
+          "chat_type": {
+            "enum": [
+              "dialog",
+              "chat",
+              "channel"
+            ]
+          },
+          "chat_id": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Int64"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Int64"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "chat_type"
+        ]
+      },
+      "MessageBody": {
+        "type": "object",
+        "properties": {
+          "mid": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "seq": {
+            "$ref": "#/components/schemas/Int64"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "mid",
+          "seq"
+        ]
+      },
+      "LinkedMessage": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "reply",
+              "forward"
+            ]
+          },
+          "message": {
+            "$ref": "#/components/schemas/MessageBody"
+          },
+          "chat_id": {
+            "$ref": "#/components/schemas/Int64"
+          }
+        },
+        "required": [
+          "type",
+          "message"
+        ]
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "sender": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/User"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "recipient": {
+            "$ref": "#/components/schemas/Recipient"
+          },
+          "timestamp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "body": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MessageBody"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "link": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LinkedMessage"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "recipient",
+          "timestamp",
+          "body"
+        ]
+      },
+      "Callback": {
+        "type": "object",
+        "properties": {
+          "callback_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "timestamp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "payload": {
+            "type": "string",
+            "maxLength": 4096
+          }
+        },
+        "required": [
+          "callback_id",
+          "timestamp",
+          "user"
+        ]
+      },
+      "Update": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/LifecycleUpdate"
+          },
+          {
+            "$ref": "#/components/schemas/MessageCreatedUpdate"
+          },
+          {
+            "$ref": "#/components/schemas/MessageCallbackUpdate"
+          },
+          {
+            "$ref": "#/components/schemas/IgnoredUpdate"
+          }
+        ]
+      },
+      "LifecycleUpdate": {
+        "type": "object",
+        "properties": {
+          "update_type": {
+            "enum": [
+              "bot_started",
+              "bot_stopped",
+              "dialog_removed",
+              "dialog_cleared",
+              "dialog_muted",
+              "dialog_unmuted"
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "chat_id": {
+            "$ref": "#/components/schemas/Int64"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "payload": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 512
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "muted_until": {
+            "$ref": "#/components/schemas/Int64"
+          }
+        },
+        "required": [
+          "update_type",
+          "timestamp",
+          "chat_id",
+          "user"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "update_type": {
+                  "const": "dialog_muted"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "muted_until"
+              ]
+            }
+          }
+        ]
+      },
+      "MessageCreatedUpdate": {
+        "type": "object",
+        "properties": {
+          "update_type": {
+            "const": "message_created"
+          },
+          "timestamp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "message": {
+            "$ref": "#/components/schemas/Message"
+          }
+        },
+        "required": [
+          "update_type",
+          "timestamp",
+          "message"
+        ]
+      },
+      "MessageCallbackUpdate": {
+        "type": "object",
+        "properties": {
+          "update_type": {
+            "const": "message_callback"
+          },
+          "timestamp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "callback": {
+            "$ref": "#/components/schemas/Callback"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Message"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "update_type",
+          "timestamp",
+          "callback"
+        ]
+      },
+      "IgnoredUpdate": {
+        "type": "object",
+        "properties": {
+          "update_type": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,63}$",
+            "not": {
+              "enum": [
+                "bot_started",
+                "bot_stopped",
+                "dialog_removed",
+                "dialog_cleared",
+                "dialog_muted",
+                "dialog_unmuted",
+                "message_created",
+                "message_callback"
+              ]
+            }
+          },
+          "timestamp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "update_type",
+          "timestamp"
+        ]
+      }
+    }
+  },
+  "externalDocs": {
+    "url": "https://dev.max.ru/docs-api/objects/Update",
+    "description": "Текущий первичный контракт MAX. Вложенные поля также сверены с официальной api-schema."
+  }
+}

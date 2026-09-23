@@ -1,0 +1,70 @@
+# Local organizer material and prompting-guide copies (not a public baseline).
+/Досугиразвлечения.pdf
+/текст.docx
+Codex Prompting Guide.txt
+Model guidance _ OpenAI API.txt
+Rethinking skills and prompts for GPT-6 Astra _ OpenAI Developers.txt
+
+# Local secrets; examples must contain placeholders only.
+.env
+.env.*
+!.env.example
+!.env.*.example
+/secrets/
+/credentials/
+*.private.key
+*.p12
+*.pfx
+*.pem
+
+# Runtime storage, SQLite sidecars, and backups.
+/runtime/
+/data/runtime/
+/backups/
+*.db
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+*.db-journal
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journal
+*.sqlite3-wal
+*.sqlite3-shm
+*.sqlite3-journal
+*.db.bak
+*.sqlite.bak
+*.bak
+*.backup
+*.tmp
+!tests/fixtures/public/**/*.db
+!tests/fixtures/public/**/*.sqlite
+!tests/fixtures/public/**/*.sqlite3
+
+# Private evidence belongs in these explicit locations.
+/private/
+/docs/private/
+/evidence/private/
+/interviews/
+/raw-max-events/
+/screenshots/private/
+*.max-event.raw.json
+
+# Temporary extraction and generated outputs; keep source/docs trackable.
+/.tmp/
+/.review/
+/tmp/
+/tmp-pdf/
+/pdf-extraction/
+**/node_modules/
+/dist/
+/build/
+/coverage/
+/.tools/
+/.cache/
+*.tsbuildinfo
+**/__pycache__/
+*.log
+!docs/evidence/g1/*.log
+Thumbs.db

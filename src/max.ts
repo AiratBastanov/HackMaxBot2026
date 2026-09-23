@@ -1,0 +1,91 @@
+import { randomUUID } from 'node:crypto';
+import { parseJson, simpleResultSchema, subscriptionsSchema, userSchema, validateMessage } from './contracts.js';
+import type { Config } from './config.js';
+
+export type FailureKind = 'SEMANTIC' | 'MALFORMED' | 'AUTH' | 'PERMISSION' | 'RATE_LIMIT' | 'SERVER' | 'HTTP' | 'TIMEOUT_AMBIGUOUS' | 'TRANSPORT_AMBIGUOUS';
+export class MaxError extends Error {
+  constructor(public readonly kind: FailureKind, public readonly status?: number, public readonly retryAfterMs?: number) { super(kind); }
+}
+export type MessageRequest = { text: string; notify?: boolean; attachments?: { type: 'inline_keyboard'; payload: { buttons: { type: 'callback'; text: string; payload: string }[][] } }[] };
+export type MaxOperation = { method: 'messages'; recipient: string; body: MessageRequest } | { method: 'answers'; callbackId: string; body: { notification: string } };
+export type MaxResult = { simulated: boolean; mid?: string };
+export interface MaxTransport { execute(operation: MaxOperation): Promise<MaxResult> }
+
+function retryAfter(value: string | null): number | undefined {
+  if (!value) return undefined;
+  const n = Number(value);
+  const delay = Number.isFinite(n) && n >= 0 ? n * 1000 : Date.parse(value) - Date.now();
+  return Number.isFinite(delay) ? Math.max(0, delay) : undefined;
+}
+
+export class LiveMax implements MaxTransport {
+  constructor(private readonly config: Config, private readonly fetcher: typeof fetch = fetch) {
+    if (config.mode !== 'live' || !config.token) throw new Error('LiveMax требует live-конфигурацию');
+  }
+  private async request(method: string, path: string, body?: unknown): Promise<unknown> {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.config.requestTimeoutMs);
+    try {
+      const response = await this.fetcher(`${this.config.apiBaseUrl}${path}`, {
+        method, redirect: 'error', signal: controller.signal,
+        headers: { Authorization: this.config.token!, 'Content-Type': 'application/json' },
+        ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+      });
+      if (response.status !== 200) {
+        await response.body?.cancel();
+        const kind: FailureKind = response.status === 401 ? 'AUTH' : response.status === 403 ? 'PERMISSION' : response.status === 429 ? 'RATE_LIMIT' : response.status >= 500 ? 'SERVER' : 'HTTP';
+        throw new MaxError(kind, response.status, retryAfter(response.headers.get('retry-after')));
+      }
+      // Deadline охватывает и чтение тела. Ограничение защищает от бесконечного/большого ответа.
+      const reader = response.body?.getReader();
+      if (!reader) throw new MaxError('MALFORMED', 200);
+      const chunks: Uint8Array[] = [];
+      let size = 0;
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        size += value.byteLength;
+        if (size > 262144) { await reader.cancel(); throw new MaxError('MALFORMED', 200); }
+        chunks.push(value);
+      }
+      try { return parseJson(Buffer.concat(chunks).toString('utf8')); }
+      catch { throw new MaxError('MALFORMED', 200); }
+    } catch (error) {
+      if (error instanceof MaxError) throw error;
+      throw new MaxError(controller.signal.aborted ? 'TIMEOUT_AMBIGUOUS' : 'TRANSPORT_AMBIGUOUS');
+    } finally { clearTimeout(timer); }
+  }
+  private validate<T>(fn: () => T): T {
+    try { return fn(); } catch (e) { if (e instanceof MaxError) throw e; throw new MaxError('MALFORMED', 200); }
+  }
+  async execute(op: MaxOperation): Promise<MaxResult> {
+    if (op.method === 'messages') {
+      const raw = await this.request('POST', `/messages?user_id=${encodeURIComponent(op.recipient)}`, op.body);
+      const message = this.validate(() => validateMessage(raw, op.recipient));
+      return { simulated: false, mid: message.body!.mid };
+    }
+    const raw = await this.request('POST', `/answers?callback_id=${encodeURIComponent(op.callbackId)}`, op.body);
+    this.validate(() => { if (!simpleResultSchema.parse(raw).success) throw new MaxError('SEMANTIC', 200); });
+    return { simulated: false };
+  }
+  async me() {
+    const raw = await this.request('GET', '/me');
+    return this.validate(() => { const bot = userSchema.parse(raw); if (!bot.is_bot || bot.user_id !== this.config.botId) throw new MaxError('AUTH', 200); return bot; });
+  }
+  async subscriptions() {
+    const raw = await this.request('GET', '/subscriptions');
+    return this.validate(() => subscriptionsSchema.parse(raw).subscriptions);
+  }
+  async subscribe(url: string, types: string[]) {
+    const raw = await this.request('POST', '/subscriptions', { url, update_types: types, secret: this.config.webhookSecret });
+    this.validate(() => { if (!simpleResultSchema.parse(raw).success) throw new MaxError('SEMANTIC', 200); });
+  }
+}
+
+// Нет fetch, токена или URL. Это маркированная симуляция, а не резервный live-транспорт.
+export class LocalMax implements MaxTransport {
+  async execute(op: MaxOperation): Promise<MaxResult> {
+    return { simulated: true, ...(op.method === 'messages' ? { mid: `synthetic-${randomUUID()}` } : {}) };
+  }
+}
+export function createTransport(config: Config): MaxTransport { return config.mode === 'local' ? new LocalMax() : new LiveMax(config); }

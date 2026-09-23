@@ -1,0 +1,10 @@
+{
+  "os": "Windows_NT",
+  "release": "10.0.26100",
+  "arch": "x64",
+  "cpu": "AMD Ryzen 7 5700X3D 8-Core Processor           ",
+  "logicalCpu": 16,
+  "ramGiB": 32,
+  "node": "v22.23.2",
+  "sqlite": "3.53.4"
+}

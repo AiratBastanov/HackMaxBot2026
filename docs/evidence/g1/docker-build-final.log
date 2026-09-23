@@ -1,0 +1,440 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.42kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:22.23.2-bookworm-slim@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/node:22.23.2-bookworm@sha256:dd5847a04b0deee391fa145f1f4c6d214196668b6bcc7988ebed67249f226844
+#3 DONE 0.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 739B done
+#4 DONE 0.0s
+
+#5 [build  1/10] FROM docker.io/library/node:22.23.2-bookworm@sha256:dd5847a04b0deee391fa145f1f4c6d214196668b6bcc7988ebed67249f226844
+#5 resolve docker.io/library/node:22.23.2-bookworm@sha256:dd5847a04b0deee391fa145f1f4c6d214196668b6bcc7988ebed67249f226844 0.0s done
+#5 DONE 0.1s
+
+#6 [runtime 1/8] FROM docker.io/library/node:22.23.2-bookworm-slim@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9
+#6 resolve docker.io/library/node:22.23.2-bookworm-slim@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9 0.0s done
+#6 DONE 0.1s
+
+#7 [runtime 2/8] WORKDIR /app
+#7 CACHED
+
+#8 [build  2/10] WORKDIR /app
+#8 CACHED
+
+#9 [internal] load build context
+#9 transferring context: 937B done
+#9 DONE 0.0s
+
+#10 [build  3/10] COPY package.json package-lock.json .npmrc ./
+#10 DONE 0.1s
+
+#11 [runtime 3/8] RUN mkdir -p /app/runtime && chown node:node /app/runtime
+#11 DONE 0.3s
+
+#12 [build  4/10] RUN npm ci --no-audit --no-fund
+#12 12.43 
+#12 12.43 added 58 packages in 12s
+#12 12.43 npm notice
+#12 12.43 npm notice New major version of npm available! 10.9.8 -> 12.0.2
+#12 12.43 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+#12 12.43 npm notice To update run: npm install -g npm@12.0.2
+#12 12.43 npm notice
+#12 DONE 12.7s
+
+#13 [build  5/10] COPY tsconfig.json ./
+#13 DONE 0.2s
+
+#14 [build  6/10] COPY src ./src
+#14 DONE 0.1s
+
+#15 [build  7/10] COPY tests ./tests
+#15 DONE 0.1s
+
+#16 [build  8/10] COPY scripts ./scripts
+#16 DONE 0.1s
+
+#17 [build  9/10] RUN npm run typecheck && npm run build && npm test
+#17 0.406 
+#17 0.406 > maxbot-g1-technical-probe@0.1.0 typecheck
+#17 0.406 > tsc --noEmit
+#17 0.406 
+#17 0.829 
+#17 0.829 > maxbot-g1-technical-probe@0.1.0 build
+#17 0.829 > tsc
+#17 0.829 
+#17 1.247 
+#17 1.247 > maxbot-g1-technical-probe@0.1.0 test
+#17 1.247 > npm run test:unit && npm run test:integration
+#17 1.247 
+#17 1.347 
+#17 1.347 > maxbot-g1-technical-probe@0.1.0 test:unit
+#17 1.347 > node --test --test-timeout=10000 dist/tests/config.test.js dist/tests/contracts.test.js
+#17 1.347 
+#17 1.394 TAP version 13
+#17 1.498 # Subtest: Локальная конфигурация работает без live credentials и хранит ID строкой
+#17 1.499 ok 1 - Локальная конфигурация работает без live credentials и хранит ID строкой
+#17 1.499   ---
+#17 1.499   duration_ms: 3.725964
+#17 1.499   type: 'test'
+#17 1.499   ...
+#17 1.500 # Subtest: режим обязателен
+#17 1.500 ok 2 - режим обязателен
+#17 1.501   ---
+#17 1.501   duration_ms: 0.840249
+#17 1.501   type: 'test'
+#17 1.501   ...
+#17 1.501 # Subtest: secret обязателен
+#17 1.501 ok 3 - secret обязателен
+#17 1.501   ---
+#17 1.501   duration_ms: 0.301514
+#17 1.501   type: 'test'
+#17 1.501   ...
+#17 1.502 # Subtest: ID не округляется/не приводится из exponent
+#17 1.502 ok 4 - ID не округляется/не приводится из exponent
+#17 1.502   ---
+#17 1.502   duration_ms: 0.275885
+#17 1.502   type: 'test'
+#17 1.502   ...
+#17 1.503 # Subtest: ID вне int64
+#17 1.503 ok 5 - ID вне int64
+#17 1.504   ---
+#17 1.504   duration_ms: 0.387543
+#17 1.504   type: 'test'
+#17 1.504   ...
+#17 1.504 # Subtest: порт ограничен
+#17 1.504 ok 6 - порт ограничен
+#17 1.504   ---
+#17 1.504   duration_ms: 0.466889
+#17 1.504   type: 'test'
+#17 1.504   ...
+#17 1.506 # Subtest: TTL ограничен
+#17 1.506 ok 7 - TTL ограничен
+#17 1.506   ---
+#17 1.506   duration_ms: 0.296685
+#17 1.506   type: 'test'
+#17 1.506   ...
+#17 1.506 # Subtest: старый домен запрещён
+#17 1.506 ok 8 - старый домен запрещён
+#17 1.506   ---
+#17 1.506   duration_ms: 0.394832
+#17 1.506   type: 'test'
+#17 1.506   ...
+#17 1.507 # Subtest: live токен запрещён в local
+#17 1.507 ok 9 - live токен запрещён в local
+#17 1.507   ---
+#17 1.507   duration_ms: 0.442257
+#17 1.507   type: 'test'
+#17 1.507   ...
+#17 1.507 # Subtest: live не подменяется mock
+#17 1.508 ok 10 - live не подменяется mock
+#17 1.508   ---
+#17 1.508   duration_ms: 0.504461
+#17 1.508   type: 'test'
+#17 1.508   ...
+#17 1.508 # Subtest: Live требует полную конфигурацию и подтверждение области теста
+#17 1.508 ok 11 - Live требует полную конфигурацию и подтверждение области теста
+#17 1.509   ---
+#17 1.509   duration_ms: 1.041303
+#17 1.509   type: 'test'
+#17 1.509   ...
+#17 1.509 # Subtest: Ошибка конфигурации не раскрывает секрет
+#17 1.509 ok 12 - Ошибка конфигурации не раскрывает секрет
+#17 1.510   ---
+#17 1.510   duration_ms: 0.549897
+#17 1.510   type: 'test'
+#17 1.510   ...
+#17 1.557 # Subtest: Парсер сохраняет верхнюю и нижнюю границы int64; строки/fraction/exponent отвергаются
+#17 1.558 ok 13 - Парсер сохраняет верхнюю и нижнюю границы int64; строки/fraction/exponent отвергаются
+#17 1.558   ---
+#17 1.558   duration_ms: 2.732678
+#17 1.558   type: 'test'
+#17 1.558   ...
+#17 1.558 # Subtest: Повреждённый JSON, конфликтующие ключи, prototype и чрезмерная вложенность отвергаются
+#17 1.558 ok 14 - Повреждённый JSON, конфликтующие ключи, prototype и чрезмерная вложенность отвергаются
+#17 1.558   ---
+#17 1.558   duration_ms: 0.736162
+#17 1.558   type: 'test'
+#17 1.558   ...
+#17 1.559 # Subtest: Webhook не принимает Long Polling envelope
+#17 1.559 ok 15 - Webhook не принимает Long Polling envelope
+#17 1.560   ---
+#17 1.560   duration_ms: 0.912697
+#17 1.560   type: 'test'
+#17 1.560   ...
+#17 1.560 # Subtest: Все шесть lifecycle подтипов распознаются с документированными user/chat_id
+#17 1.560 ok 16 - Все шесть lifecycle подтипов распознаются с документированными user/chat_id
+#17 1.560   ---
+#17 1.560   duration_ms: 4.125525
+#17 1.560   type: 'test'
+#17 1.560   ...
+#17 1.561 # Subtest: Точная связь reply через link.message.mid, forward не считается ответом
+#17 1.561 ok 17 - Точная связь reply через link.message.mid, forward не считается ответом
+#17 1.561   ---
+#17 1.561   duration_ms: 2.415479
+#17 1.561   type: 'test'
+#17 1.561   ...
+#17 1.562 # Subtest: answers требует boolean success:true
+#17 1.562 ok 18 - answers требует boolean success:true
+#17 1.562   ---
+#17 1.562   duration_ms: 5.545678
+#17 1.562   type: 'test'
+#17 1.562   ...
+#17 1.562 # Subtest: messages проверяет Message/body/mid/seq и точного получателя
+#17 1.562 ok 19 - messages проверяет Message/body/mid/seq и точного получателя
+#17 1.563   ---
+#17 1.563   duration_ms: 3.166599
+#17 1.563   type: 'test'
+#17 1.563   ...
+#17 1.563 # Subtest: HTTP 401 сохраняет отдельный класс AUTH
+#17 1.563 ok 20 - HTTP 401 сохраняет отдельный класс AUTH
+#17 1.563   ---
+#17 1.563   duration_ms: 0.868884
+#17 1.563   type: 'test'
+#17 1.563   ...
+#17 1.564 # Subtest: HTTP 403 сохраняет отдельный класс PERMISSION
+#17 1.564 ok 21 - HTTP 403 сохраняет отдельный класс PERMISSION
+#17 1.564   ---
+#17 1.564   duration_ms: 0.430008
+#17 1.564   type: 'test'
+#17 1.564   ...
+#17 1.566 # Subtest: HTTP 429 сохраняет отдельный класс RATE_LIMIT
+#17 1.566 ok 22 - HTTP 429 сохраняет отдельный класс RATE_LIMIT
+#17 1.566   ---
+#17 1.566   duration_ms: 0.493089
+#17 1.566   type: 'test'
+#17 1.566   ...
+#17 1.566 # Subtest: HTTP 503 сохраняет отдельный класс SERVER
+#17 1.567 ok 23 - HTTP 503 сохраняет отдельный класс SERVER
+#17 1.567   ---
+#17 1.567   duration_ms: 0.270626
+#17 1.567   type: 'test'
+#17 1.567   ...
+#17 1.568 # Subtest: HTTP 400 сохраняет отдельный класс HTTP
+#17 1.568 ok 24 - HTTP 400 сохраняет отдельный класс HTTP
+#17 1.568   ---
+#17 1.568   duration_ms: 0.22564
+#17 1.568   type: 'test'
+#17 1.568   ...
+#17 1.568 # Subtest: subscriptions и me имеют собственные схемы и проверку идентичности
+#17 1.569 ok 25 - subscriptions и me имеют собственные схемы и проверку идентичности
+#17 1.569   ---
+#17 1.569   duration_ms: 1.574337
+#17 1.569   type: 'test'
+#17 1.569   ...
+#17 1.569 # Subtest: Авторизация только в header, int64 в query не округляется, redirects запрещены
+#17 1.569 ok 26 - Авторизация только в header, int64 в query не округляется, redirects запрещены
+#17 1.569   ---
+#17 1.569   duration_ms: 0.764816
+#17 1.569   type: 'test'
+#17 1.569   ...
+#17 1.652 # Subtest: Deadline охватывает реальный HTTP и зависшее тело; timeout остаётся неоднозначным
+#17 1.652 ok 27 - Deadline охватывает реальный HTTP и зависшее тело; timeout остаётся неоднозначным
+#17 1.652   ---
+#17 1.652   duration_ms: 108.051646
+#17 1.652   type: 'test'
+#17 1.652   ...
+#17 1.653 # Subtest: Разрыв транспорта отличается от semantic/HTTP и не раскрывает исходную ошибку
+#17 1.653 ok 28 - Разрыв транспорта отличается от semantic/HTTP и не раскрывает исходную ошибку
+#17 1.653   ---
+#17 1.653   duration_ms: 0.29977
+#17 1.653   type: 'test'
+#17 1.653   ...
+#17 1.654 # Subtest: LocalMax физически не использует fetch
+#17 1.654 ok 29 - LocalMax физически не использует fetch
+#17 1.654   ---
+#17 1.654   duration_ms: 0.166977
+#17 1.654   type: 'test'
+#17 1.654   ...
+#17 1.669 1..29
+#17 1.669 # tests 29
+#17 1.669 # suites 0
+#17 1.669 # pass 29
+#17 1.669 # fail 0
+#17 1.669 # cancelled 0
+#17 1.669 # skipped 0
+#17 1.669 # todo 0
+#17 1.669 # duration_ms 287.922982
+#17 1.782 
+#17 1.782 > maxbot-g1-technical-probe@0.1.0 test:integration
+#17 1.782 > node --test --test-timeout=20000 dist/tests/integration.test.js
+#17 1.782 
+#17 1.830 TAP version 13
+#17 2.158 # Subtest: 200 выдаётся после commit SQLite; приём не запускает сеть и обработку
+#17 2.159 ok 1 - 200 выдаётся после commit SQLite; приём не запускает сеть и обработку
+#17 2.159   ---
+#17 2.159   duration_ms: 145.410106
+#17 2.159   type: 'test'
+#17 2.159   ...
+#17 2.216 # Subtest: Повтор доставки не создаёт вторую команду/outbox, даже после restart
+#17 2.216 ok 2 - Повтор доставки не создаёт вторую команду/outbox, даже после restart
+#17 2.216   ---
+#17 2.216   duration_ms: 62.720868
+#17 2.216   type: 'test'
+#17 2.216   ...
+#17 2.317 # Subtest: Полный синтетический probe: кнопка, отдельный вопрос, reply, restart
+#17 2.318 ok 3 - Полный синтетический probe: кнопка, отдельный вопрос, reply, restart
+#17 2.319   ---
+#17 2.319   duration_ms: 99.642936
+#17 2.319   type: 'test'
+#17 2.319   ...
+#17 2.401 # Subtest: HTTP boundary сохраняет int64 до JSON number, проверяет health и SQLite
+#17 2.402 ok 4 - HTTP boundary сохраняет int64 до JSON number, проверяет health и SQLite
+#17 2.402   ---
+#17 2.402   duration_ms: 83.160364
+#17 2.402   type: 'test'
+#17 2.402   ...
+#17 2.439 # Subtest: Неверный секрет, JSON, структура, envelope и размер отклоняются
+#17 2.440 ok 5 - Неверный секрет, JSON, структура, envelope и размер отклоняются
+#17 2.440   ---
+#17 2.440   duration_ms: 38.599396
+#17 2.440   type: 'test'
+#17 2.440   ...
+#17 2.467 # Subtest: Корректный нерелевантный тип и посторонний тестировщик безопасно игнорируются
+#17 2.469 ok 6 - Корректный нерелевантный тип и посторонний тестировщик безопасно игнорируются
+#17 2.469   ---
+#17 2.469   duration_ms: 28.50629
+#17 2.469   type: 'test'
+#17 2.469   ...
+#17 2.505 # Subtest: Реальный отказ SQLite (query_only) даёт 503, затем повтор можно принять
+#17 2.506 ok 7 - Реальный отказ SQLite (query_only) даёт 503, затем повтор можно принять
+#17 2.506   ---
+#17 2.506   duration_ms: 33.147766
+#17 2.506   type: 'test'
+#17 2.506   ...
+#17 3.541 # Subtest: Блокировка записи другой SQLite connection даёт ограниченный 503
+#17 3.542 ok 8 - Блокировка записи другой SQLite connection даёт ограниченный 503
+#17 3.542   ---
+#17 3.542   duration_ms: 1040.124866
+#17 3.542   type: 'test'
+#17 3.542   ...
+#17 3.620 # Subtest: Чужой actor не исполняет команду и не изменяет чужой probe
+#17 3.622 ok 9 - Чужой actor не исполняет команду и не изменяет чужой probe
+#17 3.622   ---
+#17 3.622   duration_ms: 78.25584
+#17 3.622   type: 'test'
+#17 3.622   ...
+#17 3.708 # Subtest: Новый callback со старой кнопки отвергается; одинаковый callback дедуплицируется
+#17 3.708 ok 10 - Новый callback со старой кнопки отвергается; одинаковый callback дедуплицируется
+#17 3.708   ---
+#17 3.708   duration_ms: 88.798113
+#17 3.708   type: 'test'
+#17 3.708   ...
+#17 3.767 # Subtest: Равенство expiry запрещает команду; старый ack не продлевает срок
+#17 3.767 ok 11 - Равенство expiry запрещает команду; старый ack не продлевает срок
+#17 3.767   ---
+#17 3.767   duration_ms: 58.481712
+#17 3.767   type: 'test'
+#17 3.767   ...
+#17 3.871 # Subtest: Текст без нужного reply и ответ на другой вопрос не завершают probe
+#17 3.871 ok 12 - Текст без нужного reply и ответ на другой вопрос не завершают probe
+#17 3.871   ---
+#17 3.871   duration_ms: 104.436198
+#17 3.871   type: 'test'
+#17 3.871   ...
+#17 3.939 # Subtest: Повторный вход заменяет старый probe; произвольный deep-link payload не создаёт продукт
+#17 3.939 ok 13 - Повторный вход заменяет старый probe; произвольный deep-link payload не создаёт продукт
+#17 3.939   ---
+#17 3.939   duration_ms: 67.702403
+#17 3.939   type: 'test'
+#17 3.939   ...
+#17 4.021 # Subtest: Lifecycle: поздний stop не отменяет новый start; равные конфликтные timestamps запрещают исходящие
+#17 4.022 ok 14 - Lifecycle: поздний stop не отменяет новый start; равные конфликтные timestamps запрещают исходящие
+#17 4.022   ---
+#17 4.022   duration_ms: 84.924999
+#17 4.022   type: 'test'
+#17 4.022   ...
+#17 4.083 # Subtest: Остановка до отправки подавляет outbox; start не оживляет прежнюю отправку
+#17 4.084 ok 15 - Остановка до отправки подавляет outbox; start не оживляет прежнюю отправку
+#17 4.084   ---
+#17 4.084   duration_ms: 60.093996
+#17 4.084   type: 'test'
+#17 4.084   ...
+#17 4.150 # Subtest: Сеть не выполняется внутри транзакции; 200/success:false не отменяет результат команды
+#17 4.150 ok 16 - Сеть не выполняется внутри транзакции; 200/success:false не отменяет результат команды
+#17 4.150   ---
+#17 4.150   duration_ms: 66.038395
+#17 4.150   type: 'test'
+#17 4.150   ...
+#17 4.221 # Subtest: 401 сохраняет остановку отправок через restart
+#17 4.222 ok 17 - 401 сохраняет остановку отправок через restart
+#17 4.222   ---
+#17 4.222   duration_ms: 70.795141
+#17 4.222   type: 'test'
+#17 4.222   ...
+#17 4.284 # Subtest: 429 повторяется максимум три раза с задержкой; другие ошибки не маскируются
+#17 4.285 ok 18 - 429 повторяется максимум три раза с задержкой; другие ошибки не маскируются
+#17 4.285   ---
+#17 4.285   duration_ms: 61.438757
+#17 4.285   type: 'test'
+#17 4.285   ...
+#17 4.341 # Subtest: Неоднозначный timeout не повторяется и не создаёт question_mid
+#17 4.342 ok 19 - Неоднозначный timeout не повторяется и не создаёт question_mid
+#17 4.342   ---
+#17 4.342   duration_ms: 58.612606
+#17 4.342   type: 'test'
+#17 4.342   ...
+#17 4.401 # Subtest: Crash с SENDING сохраняет UNKNOWN_RESULT вместо повторной отправки
+#17 4.401 ok 20 - Crash с SENDING сохраняет UNKNOWN_RESULT вместо повторной отправки
+#17 4.402   ---
+#17 4.402   duration_ms: 59.469207
+#17 4.402   type: 'test'
+#17 4.402   ...
+#17 4.410 # Subtest: Локальную SQLite нельзя подключить как live или как другого бота
+#17 4.410 ok 21 - Локальную SQLite нельзя подключить как live или как другого бота
+#17 4.410   ---
+#17 4.410   duration_ms: 29.404451
+#17 4.410   type: 'test'
+#17 4.410   ...
+#17 4.431 1..21
+#17 4.431 # tests 21
+#17 4.431 # suites 0
+#17 4.431 # pass 21
+#17 4.431 # fail 0
+#17 4.431 # cancelled 0
+#17 4.431 # skipped 0
+#17 4.432 # todo 0
+#17 4.432 # duration_ms 2612.238573
+#17 DONE 4.5s
+
+#18 [build 10/10] RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
+#18 0.765 
+#18 0.765 up to date in 394ms
+#18 DONE 0.8s
+
+#19 [runtime 4/8] COPY --from=build /app/node_modules ./node_modules
+#19 DONE 0.8s
+
+#20 [runtime 5/8] COPY --from=build /app/package.json ./package.json
+#20 DONE 0.1s
+
+#21 [runtime 6/8] COPY --from=build /app/dist/src ./dist/src
+#21 DONE 0.1s
+
+#22 [runtime 7/8] COPY --from=build /app/dist/scripts ./dist/scripts
+#22 DONE 0.1s
+
+#23 [runtime 8/8] COPY --from=build /app/dist/tests/fixtures.js ./dist/tests/fixtures.js
+#23 DONE 0.1s
+
+#24 exporting to image
+#24 exporting layers
+#24 exporting layers 1.7s done
+#24 exporting manifest sha256:be16d02a759bd1fe1dd5db4ac9ef7e50cf92564f0ed787f4bea58ff8f06ec01c 0.0s done
+#24 exporting config sha256:5dbf28897691d5a3118eb6d8ab1b80a6c7d331383243af93eb46d6246024ba40 0.0s done
+#24 exporting attestation manifest sha256:45c855ca6278cfc62610c51dd1676ad6224fa9c0f3492cc2558c5717165fe06e 0.0s done
+#24 exporting manifest list sha256:bbfbcbcefece30f7c24b0c674b274b3539f7ee262dd449fded3335f4e2c29f2e
+#24 exporting manifest list sha256:bbfbcbcefece30f7c24b0c674b274b3539f7ee262dd449fded3335f4e2c29f2e 0.0s done
+#24 naming to docker.io/library/maxbot-g1:local done
+#24 unpacking to docker.io/library/maxbot-g1:local
+#24 unpacking to docker.io/library/maxbot-g1:local 1.1s done
+#24 DONE 3.0s
+WARNING: current commit information was not captured by the build: failed to read current commit information with git rev-parse --is-inside-work-tree
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/7lp8o1dwb4e0ha6qe6o2m9gee

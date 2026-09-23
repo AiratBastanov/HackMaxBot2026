@@ -1,0 +1,9 @@
+# Сторонние компоненты G1
+
+Прямые зафиксированные зависимости: Fastify 5.12.5, better-sqlite3 13.0.3, lossless-json 4.3.1 и zod 4.6.5 — MIT. TypeScript 7.0.2 — Apache-2.0; @types/node 22.20.4 и @types/better-sqlite3 9.6.0 — MIT. Источники лицензий — package.json/LICENSE опубликованных пакетов; integrity полного графа находится в package-lock.json. [Инвентаризация](docs/evidence/g1/dependencies.json) содержит каждую locked-версию, включая optional platform packages.
+
+Node.js 22.23.2 распространяется с [собственным LICENSE и notices зависимостей](https://github.com/nodejs/node/blob/v22.23.2/LICENSE). SQLite — [public domain](https://www.sqlite.org/copyright.html). Caddy 2.11.4 — [Apache-2.0](https://github.com/caddyserver/caddy/blob/v2.11.4/LICENSE); бинарный официальный образ подготовлен только для будущего public окружения.
+
+Dockerfile использует неизменённую основу официальных Node Debian bookworm images с зафиксированными digest; исходные системные notices `/usr/share/doc` остаются в runtime. Public Caddy image — Alpine, с сохранёнными upstream notices. Лицензии пакетов node_modules не удаляются при копировании в финальный образ. Builder содержит dev/compiler tools, runtime — только production graph и приложение. Это инвентаризация технического G1, не утверждение о готовности всего будущего пакета сдачи.
+
+Свободно распространяемые компоненты не заменены закрытыми SDK. MAX подключён собственным небольшим адаптером к публично документированному API; SDK/код из внешних примеров не копировался. Синтетические фикстуры написаны для этого проекта. Лицензия самого пользовательского проекта автоматически не назначалась; публикация checkpoint не назначает её. Краткие нормализованные заметки pivot и ограничения источников — в [исследовании данных](docs/pivot/02_DATA_FEASIBILITY.md); тексты статей, изображения и API payload поставщиков не входят в публикацию.

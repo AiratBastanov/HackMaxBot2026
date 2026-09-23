@@ -1,0 +1,184 @@
+TAP version 13
+# Subtest: Локальная конфигурация работает без live credentials и хранит ID строкой
+ok 1 - Локальная конфигурация работает без live credentials и хранит ID строкой
+  ---
+  duration_ms: 3.8494
+  type: 'test'
+  ...
+# Subtest: режим обязателен
+ok 2 - режим обязателен
+  ---
+  duration_ms: 1.0037
+  type: 'test'
+  ...
+# Subtest: secret обязателен
+ok 3 - secret обязателен
+  ---
+  duration_ms: 0.4673
+  type: 'test'
+  ...
+# Subtest: ID не округляется/не приводится из exponent
+ok 4 - ID не округляется/не приводится из exponent
+  ---
+  duration_ms: 0.4964
+  type: 'test'
+  ...
+# Subtest: ID вне int64
+ok 5 - ID вне int64
+  ---
+  duration_ms: 0.3085
+  type: 'test'
+  ...
+# Subtest: порт ограничен
+ok 6 - порт ограничен
+  ---
+  duration_ms: 0.4967
+  type: 'test'
+  ...
+# Subtest: TTL ограничен
+ok 7 - TTL ограничен
+  ---
+  duration_ms: 0.2542
+  type: 'test'
+  ...
+# Subtest: старый домен запрещён
+ok 8 - старый домен запрещён
+  ---
+  duration_ms: 0.4478
+  type: 'test'
+  ...
+# Subtest: live токен запрещён в local
+ok 9 - live токен запрещён в local
+  ---
+  duration_ms: 0.4534
+  type: 'test'
+  ...
+# Subtest: live не подменяется mock
+ok 10 - live не подменяется mock
+  ---
+  duration_ms: 0.4529
+  type: 'test'
+  ...
+# Subtest: Live требует полную конфигурацию и подтверждение области теста
+ok 11 - Live требует полную конфигурацию и подтверждение области теста
+  ---
+  duration_ms: 0.9816
+  type: 'test'
+  ...
+# Subtest: Ошибка конфигурации не раскрывает секрет
+ok 12 - Ошибка конфигурации не раскрывает секрет
+  ---
+  duration_ms: 0.4045
+  type: 'test'
+  ...
+# Subtest: Парсер сохраняет верхнюю и нижнюю границы int64; строки/fraction/exponent отвергаются
+ok 13 - Парсер сохраняет верхнюю и нижнюю границы int64; строки/fraction/exponent отвергаются
+  ---
+  duration_ms: 3.4414
+  type: 'test'
+  ...
+# Subtest: Повреждённый JSON, конфликтующие ключи, prototype и чрезмерная вложенность отвергаются
+ok 14 - Повреждённый JSON, конфликтующие ключи, prototype и чрезмерная вложенность отвергаются
+  ---
+  duration_ms: 0.9294
+  type: 'test'
+  ...
+# Subtest: Webhook не принимает Long Polling envelope
+ok 15 - Webhook не принимает Long Polling envelope
+  ---
+  duration_ms: 0.9748
+  type: 'test'
+  ...
+# Subtest: Все шесть lifecycle подтипов распознаются с документированными user/chat_id
+ok 16 - Все шесть lifecycle подтипов распознаются с документированными user/chat_id
+  ---
+  duration_ms: 4.9767
+  type: 'test'
+  ...
+# Subtest: Точная связь reply через link.message.mid, forward не считается ответом
+ok 17 - Точная связь reply через link.message.mid, forward не считается ответом
+  ---
+  duration_ms: 2.7765
+  type: 'test'
+  ...
+# Subtest: answers требует boolean success:true
+ok 18 - answers требует boolean success:true
+  ---
+  duration_ms: 5.5826
+  type: 'test'
+  ...
+# Subtest: messages проверяет Message/body/mid/seq и точного получателя
+ok 19 - messages проверяет Message/body/mid/seq и точного получателя
+  ---
+  duration_ms: 3.2497
+  type: 'test'
+  ...
+# Subtest: HTTP 401 сохраняет отдельный класс AUTH
+ok 20 - HTTP 401 сохраняет отдельный класс AUTH
+  ---
+  duration_ms: 0.9624
+  type: 'test'
+  ...
+# Subtest: HTTP 403 сохраняет отдельный класс PERMISSION
+ok 21 - HTTP 403 сохраняет отдельный класс PERMISSION
+  ---
+  duration_ms: 0.4624
+  type: 'test'
+  ...
+# Subtest: HTTP 429 сохраняет отдельный класс RATE_LIMIT
+ok 22 - HTTP 429 сохраняет отдельный класс RATE_LIMIT
+  ---
+  duration_ms: 0.4847
+  type: 'test'
+  ...
+# Subtest: HTTP 503 сохраняет отдельный класс SERVER
+ok 23 - HTTP 503 сохраняет отдельный класс SERVER
+  ---
+  duration_ms: 0.2689
+  type: 'test'
+  ...
+# Subtest: HTTP 400 сохраняет отдельный класс HTTP
+ok 24 - HTTP 400 сохраняет отдельный класс HTTP
+  ---
+  duration_ms: 0.1979
+  type: 'test'
+  ...
+# Subtest: subscriptions и me имеют собственные схемы и проверку идентичности
+ok 25 - subscriptions и me имеют собственные схемы и проверку идентичности
+  ---
+  duration_ms: 1.5528
+  type: 'test'
+  ...
+# Subtest: Авторизация только в header, int64 в query не округляется, redirects запрещены
+ok 26 - Авторизация только в header, int64 в query не округляется, redirects запрещены
+  ---
+  duration_ms: 0.7443
+  type: 'test'
+  ...
+# Subtest: Deadline охватывает реальный HTTP и зависшее тело; timeout остаётся неоднозначным
+ok 27 - Deadline охватывает реальный HTTP и зависшее тело; timeout остаётся неоднозначным
+  ---
+  duration_ms: 120.9901
+  type: 'test'
+  ...
+# Subtest: Разрыв транспорта отличается от semantic/HTTP и не раскрывает исходную ошибку
+ok 28 - Разрыв транспорта отличается от semantic/HTTP и не раскрывает исходную ошибку
+  ---
+  duration_ms: 0.3322
+  type: 'test'
+  ...
+# Subtest: LocalMax физически не использует fetch
+ok 29 - LocalMax физически не использует fetch
+  ---
+  duration_ms: 0.197
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 371.9231

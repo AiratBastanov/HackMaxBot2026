@@ -1,0 +1,29 @@
+name: maxbot-g1-local
+services:
+  app:
+    image: maxbot-g1:local
+    build:
+      context: .
+      target: runtime
+      args:
+        SOURCE_VERSION: ${SOURCE_VERSION:-local-unreviewed}
+    env_file: .env.local
+    environment:
+      APP_MODE: local
+      HOST: 0.0.0.0
+      PORT: "3000"
+      DATABASE_PATH: /app/runtime/probe.sqlite
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - probe-data:/app/runtime
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    init: true
+    stop_grace_period: 20s
+    restart: unless-stopped
+volumes:
+  probe-data:

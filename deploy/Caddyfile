@@ -1,0 +1,14 @@
+{
+    email {$ACME_EMAIL}
+    admin off
+}
+
+{$PUBLIC_HOST} {
+    @allowed path /healthz /webhooks/max
+    handle @allowed {
+        reverse_proxy app:3000
+    }
+    handle {
+        respond "Не найдено" 404
+    }
+}

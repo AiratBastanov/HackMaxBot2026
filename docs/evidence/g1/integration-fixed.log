@@ -1,0 +1,136 @@
+TAP version 13
+# Subtest: 200 выдаётся после commit SQLite; приём не запускает сеть и обработку
+ok 1 - 200 выдаётся после commit SQLite; приём не запускает сеть и обработку
+  ---
+  duration_ms: 158.2806
+  type: 'test'
+  ...
+# Subtest: Повтор доставки не создаёт вторую команду/outbox, даже после restart
+ok 2 - Повтор доставки не создаёт вторую команду/outbox, даже после restart
+  ---
+  duration_ms: 43.4426
+  type: 'test'
+  ...
+# Subtest: Полный синтетический probe: кнопка, отдельный вопрос, reply, restart
+ok 3 - Полный синтетический probe: кнопка, отдельный вопрос, reply, restart
+  ---
+  duration_ms: 65.131
+  type: 'test'
+  ...
+# Subtest: HTTP boundary сохраняет int64 до JSON number, проверяет health и SQLite
+ok 4 - HTTP boundary сохраняет int64 до JSON number, проверяет health и SQLite
+  ---
+  duration_ms: 83.7242
+  type: 'test'
+  ...
+# Subtest: Неверный секрет, JSON, структура, envelope и размер отклоняются
+ok 5 - Неверный секрет, JSON, структура, envelope и размер отклоняются
+  ---
+  duration_ms: 28.4016
+  type: 'test'
+  ...
+# Subtest: Корректный нерелевантный тип и посторонний тестировщик безопасно игнорируются
+ok 6 - Корректный нерелевантный тип и посторонний тестировщик безопасно игнорируются
+  ---
+  duration_ms: 23.1363
+  type: 'test'
+  ...
+# Subtest: Реальный отказ SQLite (query_only) даёт 503, затем повтор можно принять
+ok 7 - Реальный отказ SQLite (query_only) даёт 503, затем повтор можно принять
+  ---
+  duration_ms: 24.1551
+  type: 'test'
+  ...
+# Subtest: Блокировка записи другой SQLite connection даёт ограниченный 503
+ok 8 - Блокировка записи другой SQLite connection даёт ограниченный 503
+  ---
+  duration_ms: 1199.4107
+  type: 'test'
+  ...
+# Subtest: Чужой actor не исполняет команду и не изменяет чужой probe
+ok 9 - Чужой actor не исполняет команду и не изменяет чужой probe
+  ---
+  duration_ms: 53.8807
+  type: 'test'
+  ...
+# Subtest: Новый callback со старой кнопки отвергается; одинаковый callback дедуплицируется
+ok 10 - Новый callback со старой кнопки отвергается; одинаковый callback дедуплицируется
+  ---
+  duration_ms: 52.6683
+  type: 'test'
+  ...
+# Subtest: Равенство expiry запрещает команду; старый ack не продлевает срок
+ok 11 - Равенство expiry запрещает команду; старый ack не продлевает срок
+  ---
+  duration_ms: 37.5526
+  type: 'test'
+  ...
+# Subtest: Текст без нужного reply и ответ на другой вопрос не завершают probe
+ok 12 - Текст без нужного reply и ответ на другой вопрос не завершают probe
+  ---
+  duration_ms: 60.0709
+  type: 'test'
+  ...
+# Subtest: Повторный вход заменяет старый probe; произвольный deep-link payload не создаёт продукт
+ok 13 - Повторный вход заменяет старый probe; произвольный deep-link payload не создаёт продукт
+  ---
+  duration_ms: 45.427
+  type: 'test'
+  ...
+# Subtest: Lifecycle: поздний stop не отменяет новый start; равные конфликтные timestamps запрещают исходящие
+ok 14 - Lifecycle: поздний stop не отменяет новый start; равные конфликтные timestamps запрещают исходящие
+  ---
+  duration_ms: 54.516
+  type: 'test'
+  ...
+# Subtest: Остановка до отправки подавляет outbox; start не оживляет прежнюю отправку
+ok 15 - Остановка до отправки подавляет outbox; start не оживляет прежнюю отправку
+  ---
+  duration_ms: 39.349
+  type: 'test'
+  ...
+# Subtest: Сеть не выполняется внутри транзакции; 200/success:false не отменяет результат команды
+ok 16 - Сеть не выполняется внутри транзакции; 200/success:false не отменяет результат команды
+  ---
+  duration_ms: 43.0688
+  type: 'test'
+  ...
+# Subtest: 401 сохраняет остановку отправок через restart
+ok 17 - 401 сохраняет остановку отправок через restart
+  ---
+  duration_ms: 60.7389
+  type: 'test'
+  ...
+# Subtest: 429 повторяется максимум три раза с задержкой; другие ошибки не маскируются
+ok 18 - 429 повторяется максимум три раза с задержкой; другие ошибки не маскируются
+  ---
+  duration_ms: 42.5853
+  type: 'test'
+  ...
+# Subtest: Неоднозначный timeout не повторяется и не создаёт question_mid
+ok 19 - Неоднозначный timeout не повторяется и не создаёт question_mid
+  ---
+  duration_ms: 45.6037
+  type: 'test'
+  ...
+# Subtest: Crash с SENDING сохраняет UNKNOWN_RESULT вместо повторной отправки
+ok 20 - Crash с SENDING сохраняет UNKNOWN_RESULT вместо повторной отправки
+  ---
+  duration_ms: 54.3433
+  type: 'test'
+  ...
+# Subtest: Локальную SQLite нельзя подключить как live или как другого бота
+ok 21 - Локальную SQLite нельзя подключить как live или как другого бота
+  ---
+  duration_ms: 26.564
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2541.7018

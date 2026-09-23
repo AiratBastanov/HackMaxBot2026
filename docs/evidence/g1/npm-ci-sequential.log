@@ -1,0 +1,52 @@
+npm warn cleanup Failed to remove some directories [
+npm warn cleanup   [
+npm warn cleanup     '\\\\?\\C:\\Users\\BastaPC\\Desktop\\MaxBotHack\\node_modules\\@fastify\\ajv-compiler',
+npm warn cleanup     [Error: EBUSY: resource busy or locked, rmdir 'C:\Users\BastaPC\Desktop\MaxBotHack\node_modules\@fastify\ajv-compiler\test'] {
+npm warn cleanup       errno: -4082,
+npm warn cleanup       code: 'EBUSY',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: 'C:\\Users\\BastaPC\\Desktop\\MaxBotHack\\node_modules\\@fastify\\ajv-compiler\\test'
+npm warn cleanup     }
+npm warn cleanup   ],
+npm warn cleanup   [
+npm warn cleanup     '\\\\?\\C:\\Users\\BastaPC\\Desktop\\MaxBotHack\\node_modules\\@fastify',
+npm warn cleanup     [Error: EBUSY: resource busy or locked, rmdir 'C:\Users\BastaPC\Desktop\MaxBotHack\node_modules\@fastify\ajv-compiler\test'] {
+npm warn cleanup       errno: -4082,
+npm warn cleanup       code: 'EBUSY',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: 'C:\\Users\\BastaPC\\Desktop\\MaxBotHack\\node_modules\\@fastify\\ajv-compiler\\test'
+npm warn cleanup     }
+npm warn cleanup   ],
+npm warn cleanup   [
+npm warn cleanup     '\\\\?\\C:\\Users\\BastaPC\\Desktop\\MaxBotHack\\node_modules\\fast-json-stringify',
+npm warn cleanup     [Error: EBUSY: resource busy or locked, rmdir 'C:\Users\BastaPC\Desktop\MaxBotHack\node_modules\fast-json-stringify'] {
+npm warn cleanup       errno: -4082,
+npm warn cleanup       code: 'EBUSY',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: 'C:\\Users\\BastaPC\\Desktop\\MaxBotHack\\node_modules\\fast-json-stringify'
+npm warn cleanup     }
+npm warn cleanup   ]
+npm warn cleanup ]
+npm error code 1
+npm error path C:\Users\BastaPC\Desktop\MaxBotHack\node_modules\better-sqlite3
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c node-gyp rebuild
+npm error gyp info it worked if it ends with ok
+npm error gyp info using node-gyp@11.2.0
+npm error gyp info using node@22.20.0 | win32 | x64
+npm error gyp info find Python using Python version 3.12.10 found at "C:\Users\BastaPC\AppData\Local\Programs\Python\Python312\python.exe"
+npm error gyp WARN install got an error, rolling back install
+npm error gyp ERR! configure error 
+npm error gyp ERR! stack Error: EPERM: operation not permitted, mkdir 'C:\Users\BastaPC\AppData\Local\node-gyp'
+npm error gyp ERR! stack at async Object.mkdir (node:internal/fs/promises:860:10)
+npm error gyp ERR! stack at async go (D:\nodejs\node_modules\npm\node_modules\node-gyp\lib\install.js:161:23)
+npm error gyp ERR! stack at async install (D:\nodejs\node_modules\npm\node_modules\node-gyp\lib\install.js:63:18)
+npm error gyp ERR! stack at async getNodeDir (D:\nodejs\node_modules\npm\node_modules\node-gyp\lib\configure.js:79:7)
+npm error gyp ERR! stack at async run (D:\nodejs\node_modules\npm\node_modules\node-gyp\bin\node-gyp.js:81:18)
+npm error gyp ERR! System Windows_NT 10.0.26100
+npm error gyp ERR! command "D:\\nodejs\\node.exe" "D:\\nodejs\\node_modules\\npm\\node_modules\\node-gyp\\bin\\node-gyp.js" "rebuild"
+npm error gyp ERR! cwd C:\Users\BastaPC\Desktop\MaxBotHack\node_modules\better-sqlite3
+npm error gyp ERR! node -v v22.20.0
+npm error gyp ERR! node-gyp -v v11.2.0
+npm error gyp ERR! not ok
+npm error A complete log of this run can be found in: C:\Users\BastaPC\Desktop\MaxBotHack\.tmp\npm-cache\_logs\2026-09-22T09_49_32_912Z-debug-0.log

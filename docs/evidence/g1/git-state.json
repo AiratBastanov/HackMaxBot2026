@@ -1,0 +1,95 @@
+{
+  "root": {
+    "command": [
+      "git",
+      "rev-parse",
+      "--show-toplevel"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 47,
+    "output": "C:/Users/BastaPC/Desktop/MaxBotHack",
+    "error": ""
+  },
+  "origin": {
+    "command": [
+      "git",
+      "remote",
+      "get-url",
+      "origin"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 34,
+    "output": "https://github.com/AiratBastanov/HackMaxBot2026.git",
+    "error": ""
+  },
+  "branch": {
+    "command": [
+      "git",
+      "symbolic-ref",
+      "--short",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 41,
+    "output": "master",
+    "error": ""
+  },
+  "head": {
+    "command": [
+      "git",
+      "rev-parse",
+      "--verify",
+      "HEAD"
+    ],
+    "exitCode": 128,
+    "elapsedMs": 33,
+    "output": "",
+    "error": "fatal: Needed a single revision"
+  },
+  "upstream": {
+    "command": [
+      "git",
+      "rev-parse",
+      "--abbrev-ref",
+      "--symbolic-full-name",
+      "@{u}"
+    ],
+    "exitCode": 128,
+    "elapsedMs": 34,
+    "output": "",
+    "error": "fatal: no such branch: 'master'"
+  },
+  "refs": {
+    "command": [
+      "git",
+      "show-ref"
+    ],
+    "exitCode": 1,
+    "elapsedMs": 40,
+    "output": "",
+    "error": ""
+  },
+  "index": {
+    "command": [
+      "git",
+      "ls-files",
+      "--stage"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 34,
+    "output": "",
+    "error": ""
+  },
+  "status": {
+    "command": [
+      "git",
+      "status",
+      "--porcelain=v1"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 35,
+    "output": "?? .dockerignore\n?? .env.example\n?? .gitignore\n?? .node-version\n?? .npmrc\n?? AGENTS.md\n?? Dockerfile\n?? README.md\n?? THIRD_PARTY_NOTICES.md\n?? compose.yaml\n?? deploy/\n?? docs/\n?? openapi.json\n?? package-lock.json\n?? package.json\n?? scripts/\n?? src/\n?? tests/\n?? tsconfig.json",
+    "error": ""
+  },
+  "aheadBehind": "NOT_APPLICABLE"
+}

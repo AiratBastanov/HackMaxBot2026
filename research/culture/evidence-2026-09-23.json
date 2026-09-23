@@ -1,0 +1,556 @@
+{
+  "reviewed_at": "2026-09-23T19:38:45.317509+00:00",
+  "dataset": "7705851331-events",
+  "publisher": "Министерство культуры Российской Федерации",
+  "attribution": [
+    "https://opendata.mkrf.ru/opendata/7705851331-events",
+    "https://opendata.mkrf.ru/item/license"
+  ],
+  "scope": "SANITIZED_RESEARCH_EVIDENCE_NOT_PRODUCTION_INTEGRATION",
+  "budgets": {
+    "sample_request_limit": 12,
+    "sample_body_byte_limit": 8388608,
+    "sample_requests_actual": 5,
+    "sample_body_bytes_actual": 4317095,
+    "direct_documentation_operations": 18,
+    "per_request_seconds_limit": 45,
+    "per_host_concurrency": 1
+  },
+  "http_observations": [
+    {
+      "name": "c01-passport-curl",
+      "purpose": "documentation",
+      "url": "https://opendata.mkrf.ru/opendata/7705851331-events",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:09:39Z",
+      "exit_code": 0,
+      "http_code": 200,
+      "content_type": "text/html; charset=utf-8",
+      "time_total": 0.816582,
+      "ssl_verify_result": 0,
+      "sha256": "e0d3d48283127e9195b2d5f11bc116ee76cef2a6e7969cae960bf21e4c11f199"
+    },
+    {
+      "name": "c02-developer",
+      "purpose": "documentation",
+      "url": "https://opendata.mkrf.ru/item/dev",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:11:43.629683+00:00",
+      "exit_code": 0,
+      "http_code": 200,
+      "content_type": "text/html; charset=utf-8",
+      "size_download": 14361,
+      "time_total": 0.31448,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:11:30 GMT",
+        "content-type": "text/html; charset=utf-8",
+        "content-length": "14361",
+        "etag": "W/\"3819-EwLRsViIhJVHLnaxoe2Ga0yJZQk\""
+      },
+      "sha256": "a1539e6a6311c78409ddc0d1e3d631abcc8289bb94a36be298c1b32f7bf566cb",
+      "errormsg": null
+    },
+    {
+      "name": "c03-terms-opendata",
+      "purpose": "documentation",
+      "url": "https://data.gov.ru/information-usage",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:11:43.974756+00:00",
+      "exit_code": 0,
+      "http_code": 200,
+      "content_type": "text/html; charset=utf-8",
+      "size_download": 671,
+      "time_total": 0.333824,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:11:44 GMT",
+        "content-type": "text/html; charset=utf-8",
+        "accept-ranges": "bytes"
+      },
+      "sha256": "5ee211e897824c6907c0dde906c0a6f06b3124b9101e0036becf4b4abb61f742",
+      "errormsg": null
+    },
+    {
+      "name": "c04-portal-terms-curl",
+      "purpose": "documentation",
+      "url": "https://www.culture.ru/terms-of-use/",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:11:44.319061+00:00",
+      "exit_code": 0,
+      "http_code": 200,
+      "content_type": "text/html; charset=utf-8",
+      "size_download": 53664,
+      "time_total": 0.26171,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:11:44 GMT",
+        "content-type": "text/html; charset=utf-8",
+        "content-length": "53664",
+        "last-modified": "Thu, 25 Apr 2019 11:28:22 GMT",
+        "etag": "\"5cc199d6-d1a0\"",
+        "accept-ranges": "bytes"
+      },
+      "sha256": "f04d93dd6d4219375e4f5430701c2f329377714b715578a093d46ce70f0844fc",
+      "errormsg": null
+    },
+    {
+      "name": "c05-partner-terms-curl",
+      "purpose": "documentation",
+      "url": "https://pro.culture.ru/documentation/terms_for_partners.pdf",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:11:44.593468+00:00",
+      "exit_code": 0,
+      "http_code": 403,
+      "content_type": "text/plain; charset=utf-8",
+      "size_download": 63,
+      "time_total": 0.2594,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:11:45 GMT",
+        "content-type": "text/plain; charset=utf-8"
+      },
+      "sha256": "f1928432417ddcd06cabd17ae2b3274fb711ccf2377475cb83a2a04e2b18705d",
+      "errormsg": null
+    },
+    {
+      "name": "c06-pro-docs",
+      "purpose": "documentation",
+      "url": "https://pro.culture.ru/new/api/documentation",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:11:44.867343+00:00",
+      "exit_code": 0,
+      "http_code": 200,
+      "content_type": "text/html; charset=UTF-8",
+      "size_download": 15354,
+      "time_total": 0.132311,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:11:45 GMT",
+        "content-type": "text/html; charset=UTF-8",
+        "content-length": "15354",
+        "accept-ranges": "bytes",
+        "last-modified": "Fri, 28 Aug 2026 13:10:25 GMT",
+        "etag": "W/\"3bfa-1a0487e31e8\""
+      },
+      "sha256": "737a422a97c8fa2caea2e648a6dd8c5d6477345d847a0c7163ad4e35c7c7e5d4",
+      "errormsg": null
+    },
+    {
+      "name": "c07-api-spec",
+      "purpose": "documentation",
+      "url": "https://opendata.mkrf.ru/item/api",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:12:30.335801+00:00",
+      "exit_code": 0,
+      "http_code": 200,
+      "content_type": "text/html; charset=utf-8",
+      "size_download": 17310,
+      "time_total": 0.351877,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:12:17 GMT",
+        "content-type": "text/html; charset=utf-8",
+        "content-length": "17310",
+        "etag": "W/\"439e-Zm46ro6exL/FOHcp0TmtCQdXT5M\""
+      },
+      "sha256": "f6dbaa873346b667a31a8d19b5a7c5d1e39cb4f067764a29e1f129b67c08df53",
+      "errormsg": null
+    },
+    {
+      "name": "c08-about-open",
+      "purpose": "documentation",
+      "url": "https://opendata.mkrf.ru/item/about",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:12:30.703505+00:00",
+      "exit_code": 0,
+      "http_code": 200,
+      "content_type": "text/html; charset=utf-8",
+      "size_download": 24389,
+      "time_total": 0.258842,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:12:17 GMT",
+        "content-type": "text/html; charset=utf-8",
+        "content-length": "24389",
+        "etag": "W/\"5f45-W8PQh+w7+P4cn+8gHHuJWtFJIQo\""
+      },
+      "sha256": "f83e8445bd1317243ae082e3270f08ab23a010a2720ac6691e9e7eccd7964085",
+      "errormsg": null
+    },
+    {
+      "name": "c09-pro-export-doc",
+      "purpose": "documentation",
+      "url": "https://pro.culture.ru/new/api/documentation/export",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:12:30.977021+00:00",
+      "exit_code": 0,
+      "http_code": 200,
+      "content_type": "text/html; charset=UTF-8",
+      "size_download": 15354,
+      "time_total": 0.16717,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:12:31 GMT",
+        "content-type": "text/html; charset=UTF-8",
+        "content-length": "15354",
+        "accept-ranges": "bytes",
+        "last-modified": "Fri, 28 Aug 2026 13:10:25 GMT",
+        "etag": "W/\"3bfa-1a0487e31e8\""
+      },
+      "sha256": "737a422a97c8fa2caea2e648a6dd8c5d6477345d847a0c7163ad4e35c7c7e5d4",
+      "errormsg": null
+    },
+    {
+      "name": "c10-dataset-license",
+      "purpose": "documentation",
+      "url": "https://opendata.mkrf.ru/item/license",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:13:26.044918+00:00",
+      "exit_code": 0,
+      "http_code": 200,
+      "content_type": "text/html; charset=utf-8",
+      "size_download": 16345,
+      "time_total": 0.331513,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:13:13 GMT",
+        "content-type": "text/html; charset=utf-8",
+        "content-length": "16345",
+        "etag": "W/\"3fd9-ihZiSwYb8CU32OlxpMng+9GV6cE\""
+      },
+      "sha256": "2a1485c038ed97158a0fdb9941a17353711a05ffe3e973aff7cb5e660eb32661",
+      "errormsg": null
+    },
+    {
+      "name": "c11-api-doc-renderer",
+      "purpose": "documentation",
+      "url": "https://opendata.mkrf.ru/js/api_docs_v2-96cabec8d7.js",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:13:26.394969+00:00",
+      "exit_code": 0,
+      "http_code": 200,
+      "content_type": "application/javascript; charset=UTF-8",
+      "size_download": 7800,
+      "time_total": 0.136676,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:13:13 GMT",
+        "content-type": "application/javascript; charset=UTF-8",
+        "content-length": "7800",
+        "last-modified": "Wed, 10 Mar 2021 08:43:12 GMT",
+        "etag": "\"604886a0-1e78\"",
+        "accept-ranges": "bytes"
+      },
+      "sha256": "62dca2ae204b3ad3add5b362927178e51c033d20ba80758c2b2df7b05acd7eed",
+      "errormsg": null
+    },
+    {
+      "name": "c12-public-api-catalog",
+      "purpose": "sample",
+      "url": "https://opendata.mkrf.ru/v2/?o=entityName",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:14:00.830928+00:00",
+      "exit_code": 0,
+      "http_code": 401,
+      "content_type": null,
+      "size_download": 0,
+      "time_total": 0.229807,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:13:48 GMT"
+      },
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "errormsg": null
+    },
+    {
+      "name": "c13-download-controls",
+      "purpose": "documentation",
+      "url": "https://opendata.mkrf.ru/js/face_glob-2d59fdf9cc.js",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:14:36.112190+00:00",
+      "exit_code": 0,
+      "http_code": 200,
+      "content_type": "application/javascript; charset=UTF-8",
+      "size_download": 5380,
+      "time_total": 0.198833,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:14:23 GMT",
+        "content-type": "application/javascript; charset=UTF-8",
+        "content-length": "5380",
+        "last-modified": "Wed, 27 Jan 2021 16:35:52 GMT",
+        "etag": "\"60119668-1504\"",
+        "accept-ranges": "bytes"
+      },
+      "sha256": "79dd31619f6715e9b5c5183a91e44946cf2e3155f7cb5e655f4d0db3366dbd8a",
+      "errormsg": null
+    },
+    {
+      "name": "c14-organizer-curl",
+      "purpose": "documentation",
+      "url": "https://hackathon-max.vk.company/",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:14:36.328819+00:00",
+      "exit_code": 28,
+      "http_code": 0,
+      "content_type": null,
+      "size_download": 0,
+      "time_total": 12.01808,
+      "ssl_verify_result": 0,
+      "headers": {},
+      "errormsg": "Connection timed out after 12017 milliseconds"
+    },
+    {
+      "name": "c15-schema-3",
+      "purpose": "sample",
+      "url": "https://opendata.mkrf.ru/opendata/7705851331-events/structure-3.json",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:15:47.143756+00:00",
+      "exit_code": 0,
+      "http_code": 200,
+      "content_type": "application/json; charset=utf-8",
+      "size_download": 57255,
+      "time_total": 0.312925,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:15:34 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "57255",
+        "etag": "W/\"dfa7-0sF2gaxu90rwa+OTSg0oi3Dj6Qw\""
+      },
+      "sha256": "24e471ab574e9cc3b73c7c096c171d164ae7e2fa0999eb81176adceb117c1513",
+      "errormsg": null
+    },
+    {
+      "name": "c16-version-12-head",
+      "purpose": "sample",
+      "url": "https://opendata.mkrf.ru/opendata/7705851331-events/data-12-structure-2.json.zip",
+      "method": "HEAD",
+      "fetch_time": "2026-09-23T19:15:47.476476+00:00",
+      "exit_code": 63,
+      "http_code": 200,
+      "content_type": "application/zip",
+      "size_download": 0,
+      "time_total": 0.193609,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:15:34 GMT",
+        "content-type": "application/zip",
+        "content-length": "9998102412",
+        "last-modified": "Thu, 07 May 2026 22:57:09 GMT",
+        "etag": "\"69fd18c5-253eeef8c\"",
+        "accept-ranges": "bytes"
+      },
+      "sha256": "02f6c57d5b3f0c7b8128a2920fb82d747ff9c23b20151fb5617302f076d2dfde",
+      "errormsg": "Maximum file size exceeded"
+    },
+    {
+      "name": "c17-version-12-directory",
+      "purpose": "sample",
+      "url": "https://opendata.mkrf.ru/opendata/7705851331-events/data-12-structure-2.json.zip",
+      "method": "GET",
+      "range": "-65536",
+      "fetch_time": "2026-09-23T19:17:57.507284+00:00",
+      "exit_code": 0,
+      "http_code": 206,
+      "content_type": "application/zip",
+      "size_download": 65536,
+      "time_total": 0.430124,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:17:44 GMT",
+        "content-type": "application/zip",
+        "content-length": "65536",
+        "last-modified": "Thu, 07 May 2026 22:57:09 GMT",
+        "etag": "\"69fd18c5-253eeef8c\"",
+        "content-range": "bytes 9998036876-9998102411/9998102412"
+      },
+      "sha256": "b4b023ae85e9dcd98d18169cae49e37443b8e44af2e039da21455ffc3bc85cea",
+      "errormsg": null
+    },
+    {
+      "name": "c18-version-12-last-shard-prefix",
+      "purpose": "sample",
+      "url": "https://opendata.mkrf.ru/opendata/7705851331-events/data-12-structure-2.json.zip",
+      "method": "GET",
+      "range": "9987405233-9991599536",
+      "fetch_time": "2026-09-23T19:20:02.824469+00:00",
+      "exit_code": 0,
+      "http_code": 206,
+      "content_type": "application/zip",
+      "size_download": 4194304,
+      "time_total": 0.671325,
+      "ssl_verify_result": 0,
+      "headers": {
+        "date": "Wed, 23 Sep 2026 19:19:49 GMT",
+        "content-type": "application/zip",
+        "content-length": "4194304",
+        "last-modified": "Thu, 07 May 2026 22:57:09 GMT",
+        "etag": "\"69fd18c5-253eeef8c\"",
+        "content-range": "bytes 9987405233-9991599536/9998102412"
+      },
+      "sha256": "a130e29368ffe0e6e3730c4668af08891300ecb0744310da20b5dee6992b0b7c",
+      "errormsg": null
+    }
+  ],
+  "earlier_transport_boundaries": [
+    {
+      "name": "01-passport",
+      "url": "https://opendata.mkrf.ru/opendata/7705851331-events",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:07:47.369796+00:00",
+      "http_status": 200,
+      "bytes": 0,
+      "boundary": "TimeoutError",
+      "error": "The read operation timed out",
+      "seconds": 15.406
+    },
+    {
+      "name": "02-portal-terms",
+      "url": "https://www.culture.ru/terms-of-use/",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:08:02.870175+00:00",
+      "http_status": 200,
+      "bytes": 0,
+      "boundary": "TimeoutError",
+      "error": "The read operation timed out",
+      "seconds": 15.281
+    },
+    {
+      "name": "03-passport-stream",
+      "url": "https://opendata.mkrf.ru/opendata/7705851331-events",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:08:47.877572+00:00",
+      "http_status": 200,
+      "bytes": 15920,
+      "boundary": "TimeoutError",
+      "error": "The read operation timed out",
+      "seconds": 25.344
+    },
+    {
+      "name": "04-partnership-terms",
+      "url": "https://pro.culture.ru/documentation/terms_for_partners.pdf",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:09:13.311383+00:00",
+      "http_status": 200,
+      "bytes": 163050,
+      "boundary": "TimeoutError",
+      "error": "The read operation timed out",
+      "seconds": 25.625
+    },
+    {
+      "name": "05-organizer-home",
+      "url": "https://hackathon-max.vk.company/",
+      "method": "GET",
+      "fetch_time": "2026-09-23T19:09:39.042544+00:00",
+      "bytes": 0,
+      "boundary": "URLError",
+      "error": "<urlopen error _ssl.c:993: The handshake operation timed out>",
+      "seconds": 25.437
+    }
+  ],
+  "archive_directory": {
+    "archive_bytes": 9998102412,
+    "members": 643,
+    "uncompressed_total_bytes": 62004996206,
+    "smallest_member": {
+      "name": "643.json",
+      "compressed_bytes": 10651437,
+      "uncompressed_bytes": 63325150,
+      "compression": 8,
+      "flags": 8
+    },
+    "region_index_observed": false,
+    "full_member_crc_verified": false
+  },
+  "analysis": {
+    "parsing": {
+      "expanded_bytes": 24933299,
+      "complete_json_objects": 2671,
+      "unparsed_tail_characters": 4182,
+      "complete_deflate": false,
+      "full_member_crc_verified": false
+    },
+    "sample": {
+      "window_start": "2026-09-23T00:00:00+03:00",
+      "window_end_exclusive": "2026-10-23T00:00:00+03:00",
+      "raw_complete_records": 2671,
+      "distinct_events": 2671,
+      "distinct_venues_with_id": 1450,
+      "distinct_published_intervals": 18972,
+      "target_distinct_events": 0,
+      "target_distinct_venues_with_id": 0,
+      "counts": {
+        "city_records": 0,
+        "venue_occurrences_without_id": 117,
+        "published_interval_entries": 19248,
+        "records_overlapping_window_any_city": 0,
+        "target_records": 0,
+        "missing_age": 0,
+        "missing_sale_link": 2504,
+        "missing_explicit_event_url": 2671,
+        "missing_period_start_or_end": 0,
+        "multi_venue_records": 23
+      },
+      "prices": {
+        "FREE_DECLARED": 2256,
+        "RANGE": 227,
+        "FROM_OR_UNSPECIFIED": 94,
+        "EXACT_PUBLISHED": 88,
+        "CONFLICT": 6
+      },
+      "source_statuses": {
+        "accepted": 2671
+      },
+      "source_update_range": [
+        "2015-05-06T09:31:47+00:00",
+        "2024-09-19T10:54:07.978000+00:00"
+      ],
+      "wrapper_modified_range": [
+        "2019-09-08T18:05:58.624000+00:00",
+        "2024-09-19T23:40:21.665000+00:00"
+      ],
+      "event_period_end_range": [
+        "2015-03-31T07:45:00+00:00",
+        "2024-10-16T18:00:00+00:00"
+      ],
+      "sampling": "POSITIONAL_ARCHIVE_DIAGNOSTIC_NOT_CITY_COVERAGE"
+    }
+  },
+  "additional_counts": {
+    "periods_over_24h": 681,
+    "periods_nonpositive": 1,
+    "intervals_over_24h": 0,
+    "intervals_nonpositive": 1,
+    "intervals_missing_end_or_offset": 0,
+    "venue_timezones": {
+      "Asia/Krasnoyarsk": 143,
+      "Asia/Yekaterinburg": 509,
+      "Europe/Moscow": 1791,
+      "Europe/Samara": 168,
+      "Asia/Yakutsk": 32,
+      "Asia/Kamchatka": 23,
+      "Asia/Irkutsk": 9,
+      "Europe/Kaliningrad": 8,
+      "Asia/Magadan": 22,
+      "Asia/Vladivostok": 7
+    },
+    "id_equal_native": 2671
+  },
+  "price_conflicts": 6,
+  "limitations": [
+    "Позиционный префикс одного архивного member, не репрезентативная выборка города",
+    "Актуальные события Казани не получены; это не доказывает их отсутствие во всём источнике",
+    "Тексты отдельных событий, изображения, контакты, заголовки с cookies и credentials не распространяются",
+    "Канонические ссылки актуальных событий и доступность регистрации остаются непроверенными"
+  ],
+  "validation": {
+    "synthetic_tests": 10,
+    "passed": 10,
+    "test_seconds": 0.094,
+    "application_tests_repeated": false,
+    "real_application_smoke": "NOT_APPLICABLE_WITH_REASON",
+    "live_max_mobile_web": "NOT_VERIFIED"
+  }
+}

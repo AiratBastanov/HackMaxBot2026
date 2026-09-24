@@ -1,0 +1,95 @@
+{
+  "scope": "OFFLINE_SYNTHETIC_ONLY",
+  "baseline": "a6ba679c1080f5d42c761951740655d514369ae4",
+  "at": "2026-09-24T14:14:07.202Z",
+  "node": "v22.23.2",
+  "platform": "win32",
+  "results": [
+    {
+      "name": "typecheck",
+      "result": "PASS",
+      "exitCode": 0,
+      "durationMs": 526,
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "build",
+      "result": "PASS",
+      "exitCode": 0,
+      "durationMs": 556,
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "polling",
+      "result": "PASS",
+      "exitCode": 0,
+      "durationMs": 2132,
+      "tests": 21,
+      "passed": 21,
+      "failed": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "unit",
+      "result": "PASS",
+      "exitCode": 0,
+      "durationMs": 458,
+      "tests": 32,
+      "passed": 32,
+      "failed": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "integration",
+      "result": "PASS",
+      "exitCode": 0,
+      "durationMs": 2599,
+      "tests": 25,
+      "passed": 25,
+      "failed": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "flow",
+      "result": "PASS",
+      "exitCode": 0,
+      "durationMs": 6487,
+      "tests": 40,
+      "passed": 40,
+      "failed": 0,
+      "cancelled": 0
+    }
+  ],
+  "uniqueHostTests": 118,
+  "historicalTests": 179,
+  "docker": {
+    "result": "PASS",
+    "image": "maxbot-first-max-session:review",
+    "durationMs": 33144,
+    "exitCode": 0,
+    "cleanSubmissionBenchmark": false,
+    "containerStarted": false,
+    "imageIdentity": "sha256:9c2c2305afb1b0d800f170df1ede83693591d578bbef71ac2e5dcfe1ee5e010d node",
+    "verificationScope": "SHARED_WEBHOOK_RUNTIME_BEFORE_TEST_ONLY_DURATION_OPTION"
+  },
+  "realApplicationSmoke": "REQUIRED",
+  "realClientPass": false,
+  "transcriptSha256": "66949e8aa7b2c581817ab4603ca9215e036c0d62183e06811fce77bd89f40f36",
+  "savedAfterEraseRegression": {
+    "at": "2026-09-24T14:31:59Z",
+    "typecheck": "PASS",
+    "build": "PASS",
+    "pollingTests": 21,
+    "passed": 21,
+    "failed": 0,
+    "durationMs": 2306.077,
+    "runtimeChanged": false,
+    "uniqueCountIncreased": false
+  }
+}

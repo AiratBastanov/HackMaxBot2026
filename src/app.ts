@@ -1,13 +1,15 @@
 import { timingSafeEqual } from 'node:crypto';
 import Fastify from 'fastify';
 import type { Config } from './config.js';
-import { parseJson, parseUpdate } from './contracts.js';
+import { parseJson } from './contracts.js';
+import { admitUpdate } from './admission.js';
 import { createTransport, type MaxTransport } from './max.js';
 import { Storage } from './storage.js';
 import { Worker } from './worker.js';
 import { Catalog } from './culture/catalog.js';
 
 export function createApp(config: Config, options: { store?: Storage; transport?: MaxTransport; clock?: () => number; catalog?: Catalog; report?: (value: object) => void } = {}) {
+  if (config.ingress === 'test-polling' || !config.webhookSecret) throw Error('WEBHOOK_INGRESS_REQUIRED');
   if (config.mode === 'live' && (options.clock||config.flowTestClock)) throw new Error('LIVE_CLOCK_INJECTION_FORBIDDEN');
   const catalog = options.catalog ?? Catalog.load(config);
   if (catalog.mode !== config.flowDataMode) throw new Error('CATALOG_MODE_MISMATCH');
@@ -33,15 +35,15 @@ export function createApp(config: Config, options: { store?: Storage; transport?
   app.post('/webhooks/max', {
     onRequest: async (request, reply) => {
       const received = request.headers['x-max-bot-api-secret'];
-      const expected = Buffer.from(config.webhookSecret);
+      const expected = Buffer.from(config.webhookSecret!);
       const actual = Buffer.from(typeof received === 'string' ? received : '');
       if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) return reply.code(401).send({ error: 'unauthorized' });
     },
   }, async (request, reply) => {
     let parsed;
-    try { parsed = parseUpdate(request.body, config.botId); }
+    try { parsed = admitUpdate(request.body, config); }
     catch { return reply.code(400).send({ error: 'invalid_update' }); }
-    if (parsed.ignored || !config.testers.has(parsed.event.actor)) return { status: 'ignored' };
+    if (parsed.ignored) return { status: 'ignored' };
     try { return { status: store.accept(parsed.event, clock()) }; }
     catch { options.report?.({ operation: 'webhook_accept', errorClass: 'PERSISTENCE' }); return reply.code(503).send({ error: 'persistence_unavailable' }); }
   });

@@ -1,15 +1,29 @@
-import { loadConfig, loadInspectionConfig } from '../src/config.js';
+import { loadConfig } from '../src/config.js';
 import { LiveMax, MaxError, ReadOnlyMax } from '../src/max.js';
 import { Storage } from '../src/storage.js';
 import { subscribeTestEndpoint } from '../src/subscription.js';
+import { replacementAccess } from '../src/polling-config.js';
+import { publicBot, pinInspectedBot } from '../src/inspection.js';
+import { mkdirSync, writeFileSync } from 'node:fs';
 
 async function main() {
   const command = process.argv[2];
   if (!['inspect', 'subscribe', 'clear-auth-block'].includes(command ?? '')) throw new Error('COMMAND_INVALID');
   if(command==='inspect') {
-    const access=loadInspectionConfig(process.env),max=new ReadOnlyMax(access);
-    const bot=await max.me(access.expectedBotId),subscriptions=await max.subscriptions();
-    console.log(JSON.stringify({operation:'live_inspect',botId:bot.user_id,expectedIdentity:access.expectedBotId?'MATCH':'PIN_BEFORE_STARTUP',subscriptions:subscriptions.length,incomingEvents:'NOT_VERIFIED'}));return;
+    if(process.env.MAX_INSPECTION_SCOPE_CONFIRMED!=='true') throw Error('INSPECTION_SCOPE_NOT_CONFIRMED');
+    const access=replacementAccess(process.env),max=new ReadOnlyMax(access);
+    const bot=await max.me(access.expectedBotId);
+    const receipt={operation:'live_inspect',checkedAt:new Date().toISOString(),...publicBot(bot),me:'PASS',subscriptions:'NOT_VERIFIED' as string,subscriptionCount:null as number|null,incomingEvents:'NOT_VERIFIED'};
+    mkdirSync('runtime/max-test',{recursive:true});
+    const persist=()=>writeFileSync('runtime/max-test/inspection.json',JSON.stringify(receipt,null,2));
+    persist();console.log(JSON.stringify({operation:'get_me',...publicBot(bot),result:'PASS'}));
+    pinInspectedBot(bot.user_id);
+    try {
+      const subscriptions=await max.subscriptions();
+      receipt.subscriptionCount=subscriptions.length;receipt.subscriptions=subscriptions.length?'EXISTING_WEBHOOK_PRESERVED':'EMPTY';persist();
+      console.log(JSON.stringify(receipt));
+    } catch(e) {receipt.subscriptions='FAILED';persist();throw e;}
+    return;
   }
   const config = loadConfig(process.env);
   if (config.mode !== 'live') throw new Error('LIVE_REQUIRED');

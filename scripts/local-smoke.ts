@@ -13,7 +13,7 @@ const waitUntil = async <T>(fn: () => T | undefined): Promise<T> => {
   throw new Error('Smoke: время ожидания исчерпано');
 };
 const post = async (value: unknown) => {
-  const r = await fetch(`${origin}/webhooks/max`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-max-bot-api-secret': config.webhookSecret }, body: encode(value), signal: AbortSignal.timeout(5000) });
+  const r = await fetch(`${origin}/webhooks/max`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-max-bot-api-secret': config.webhookSecret! }, body: encode(value), signal: AbortSignal.timeout(5000) });
   assert.equal(r.status, 200); return r.json() as Promise<{ status: string }>;
 };
 type Probe = { id: string; state: string; question_mid: string | null };

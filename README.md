@@ -8,7 +8,27 @@
 
 **Текущее состояние, 24.09.2026:** LOCAL_USER_READINESS = PASS. Группы «Совпадает по известным условиям» и «Варианты, где нужно уточнение» разделены; кандидаты доступны только после opt-in текущего запроса. Известное время кандидата сохраняется при неизвестной цене. Интерес определяет порядок, обязательные дата/время/бюджет не расширяются. Карточки компактно показывают существенные условия, русскую дату и московский часовой пояс; одинаковые предупреждения/наблюдения сгруппированы, полные отличающиеся факты доступны через «Все условия». Закладки сохраняют контекст после restart. [Квитанция 10](docs/pivot/10_USER_READINESS_AND_FIRST_MAX_CHECK.md) и [черновик комплекта сдачи](docs/SUBMISSION_READINESS.md) содержат новые результаты; [09](docs/pivot/09_STAGE4_CORRECTIONS_AND_SMOKE.md) и [08](docs/pivot/08_EXPLORATORY_BOT_RECEIPT.md) сохраняют историю.
 
-**DATA_SUITABILITY = EXPLORATORY_ONLY; PUBLIC_DISPLAY = NOT_CLEARED; mobile/web MAX = NOT_VERIFIED.** Спорная идентичность строгого примера остаётся в карантине: исторический запрос даёт **0 strict / 3 кандидата**, исходная цена/адрес не заменены. Provider-карточки блокируются renderer, worker и транспортом. Технический synthetic deployment разрешён только на конкретном уже одобренном test environment; его live-предпосылки пока отсутствуют. Напоминания, новые данные, проверка спроса и публичный выпуск не выполнялись.
+**DATA_SUITABILITY = EXPLORATORY_ONLY; PUBLIC_DISPLAY = NOT_CLEARED.** Спорная идентичность строгого примера остаётся в карантине: исторический запрос даёт **0 strict / 3 кандидата**, исходная цена/адрес не заменены. Provider-карточки блокируются renderer, worker и транспортом. Технический synthetic deployment разрешён только на конкретном уже одобренном test environment; его live-предпосылки пока отсутствуют. Напоминания, новые данные, проверка спроса и публичный выпуск не выполнялись.
+
+**Первое подключение, 24.09.2026:** BOT_API_INSPECTION=PASS: «Хакатон МАХ 432», ID `426717762`, [@t432_hakaton_max_bot](https://max.ru/t432_hakaton_max_bot), subscriptions=0. Ротация и единственный consumer подтверждены оператором. **MAXBOT_FIRST_MAX_SESSION_PARTIAL**: в web человек подтвердил меню, strict/полные условия и save/open; в mobile — ту же карточку после restart и удаление. Кандидат с неизвестной ценой сохранён в mobile и открыт в web с прежней пометкой; пустой /saved после /delete_data подтверждён точным текстом человека. Кнопка «Удалить мои данные» в пустом списке не означает запрос подтверждения. Полный mobile/web smoke остаётся REQUIRED: оставшиеся проверки указаны в [квитанции 11](docs/pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md). Сеансы ограничены по времени/запросам, БД/cursor сохранены. 179 тестов в 10 остаются историческим результатом; текущие 118 тестов описаны в 11.
+
+## Тест в настоящем MAX без host
+
+После build и `npm.cmd run live:prepare` назначенная ignored конфигурация `.env.inspect`/`.env.polling` использует только `secrets/max_bot_token`, pin бота и synthetic-current snapshot. Новому оператору нужны подтверждения ротации и единственного consumer; неизвестный tester ID определяется одноразовым `pair` с отдельным подтверждением в терминале. Полный порядок — [runbook](docs/EXPLORATORY_MAX_RUNBOOK.md#b2-тестовый-polling-без-host).
+
+```powershell
+# На этой машине проверен официальный CA; только текущее окружение процесса.
+$env:NODE_EXTRA_CA_CERTS = (Resolve-Path secrets/max-official-root.pem).Path
+npm.cmd run live:inspect
+npm.cmd run live:poll -- pair
+npm.cmd run live:poll -- start
+# Для контролируемого restart: Ctrl+C, затем в пределах той же кампании:
+npm.cmd run live:poll -- resume
+```
+
+Начинать /start только после READY_FOR_TESTER_ACTION. По умолчанию сеанс ≤15 минут / 120 polling requests. По отдельной просьбе пользователя добавлен `npm.cmd run live:poll -- start --minutes 30`: явное новое окно до 30 минут с тем же пределом 120 запросов; `resume` его не продлевает. Dedicated test DB/cursor сохраняются; фоновой установки и публичного порта нет. A уже сопряжён, повторный `pair` для него не нужен. Если снимку больше часа: `node dist/scripts/prepare-flow-fixture.js --synthetic-current runtime/max-test/synthetic-next.json`, затем изменить только DATA_SNAPSHOT_PATH в ignored `.env.polling` на новый файл; существующий файл не перезаписывать. `pair` не запускает продуктовый flow и не пишет пользователям. PUBLIC_DISPLAY остаётся NOT_CLEARED. Для воспроизводимых offline проверок: `node scripts/first-max-checks.mjs` — 21 новый + 97 релевантных прежних тестов; это не real-client PASS.
+
+Последний сеанс завершился автоматически 24.09.2026 в 17:44:38 МСК: 81 попытка polling, 80 успешных ответов, 34 обработанных события; exit 0, mutex освобождён, незавершённых отправок нет. Сейчас бот отвечает только после нового явного запуска test runner.
 
 ## Полный локальный путь без ключей
 
@@ -81,7 +101,7 @@ CLI сохраняет исходные ссылки и подпись KudaGo. �
 
 Существующий технический probe G1: TypeScript/Fastify, `POST /webhooks/max`, `GET /healthz`, SQLite inbox/outbox, worker, отдельные local/live транспорты MAX, проверка конфигурации/секретов и Docker. Есть сохранение int64 как строк, дедупликация, actor-bound callback, exact reply к вопросу, сроки и подавление недоступной связи. При неоднозначном результате отправки нет слепого повторения POST.
 
-Probe проходит путь `?start=g1` или `/probe` → кнопка → вопрос → штатный «Ответить» на вопрос с текстом «готово». Устаревшие/чужие команды отвергаются. Исторические тексты probe не являются новым продуктом. Принимаются только `PROBE_TESTER_IDS`; культурный flow доступен локально, в live допускается только явно выбранный технический synthetic тест. Реальные наблюдения MAX пока отсутствуют, напоминаний нет.
+Probe проходит путь `?start=g1` или `/probe` → кнопка → вопрос → штатный «Ответить» на вопрос с текстом «готово». Устаревшие/чужие команды отвергаются. Исторические тексты probe не являются новым продуктом. Принимаются только допущенные тестировщики; культурный flow доступен локально, в live допускается только явно выбранный технический synthetic тест. Первые реальные web-наблюдения — в 11, напоминаний нет.
 
 **MAXBOT_G1_TECHNICAL_PARTIAL.** Исторические локальный HTTP/SQLite, restart и Docker описаны в неизменённой [квитанции G1](docs/05_G1_TECHNICAL_RECEIPT.md). 23.09.2026 повторно прошли typecheck/build и **50/50** существующих unit/contract/integration tests. Это проверка основы на синтетике; новый домен и реальные MAX-клиенты ею не проверены. Готовый outbox не является планировщиком напоминаний: текущий срок задания ограничен 60 секундами.
 
@@ -127,13 +147,13 @@ Unit/contract проверяют конфигурацию, parsing и ответ
 
 ## Конфигурация и реальные внешние предпосылки
 
-Шаблон — [.env.example](.env.example). Обязательны `APP_MODE`, `DATABASE_PATH`, `MAX_WEBHOOK_SECRET` (либо `_FILE`) и `PROBE_TESTER_IDS` (до 20 строковых ID). Значения по умолчанию: HOST=127.0.0.1, PORT=3000, PROBE_TTL_SECONDS=600, MAX_REQUEST_TIMEOUT_MS=5000. `.npmrc` задаёт локальный cache и ограниченные сетевые повторы, не содержит credentials.
+Для обычного webhook entry point шаблон — [.env.example](.env.example). Обязательны `APP_MODE`, `DATABASE_PATH`, `MAX_WEBHOOK_SECRET` (либо `_FILE`) и `PROBE_TESTER_IDS` (до 20 строковых ID). Test-only polling использует отдельный [.env.polling.example](.env.polling.example), без webhook secret/public origin, с закреплённой identity и выделенной БД. Значения webhook по умолчанию: HOST=127.0.0.1, PORT=3000, PROBE_TTL_SECONDS=600, MAX_REQUEST_TIMEOUT_MS=5000. `.npmrc` задаёт локальный cache и ограниченные сетевые повторы, не содержит credentials.
 
-В текущем G1 внешний сервис — только `https://platform-api2.max.ru`, Authorization в заголовке, TLS включён. Live требует `MAX_BOT_TOKEN`/`_FILE`, `MAX_EXPECTED_BOT_ID`, согласованный `PUBLIC_BASE_URL` и `LIVE_SCOPE_CONFIRMED=true` после фактической проверки оснований. Флаг не заменяет организаторское происхождение бота, применимые договорные условия и согласие тестировщиков. Live не переключается незаметно на simulation. Рабочие секреты не передаются в чат или Git.
+Внешний сервис — `https://platform-api2.max.ru`, Authorization в заголовке, TLS включён. Live webhook требует `MAX_BOT_TOKEN`/`_FILE`, `MAX_EXPECTED_BOT_ID`, согласованный `PUBLIC_BASE_URL` и `LIVE_SCOPE_CONFIRMED=true` после фактической проверки оснований. Флаг не заменяет организаторское происхождение бота, применимые договорные условия и согласие тестировщиков. Live не переключается незаметно на simulation. Рабочие секреты не передаются в чат или Git.
 
 [Public Compose](deploy/compose.public.yaml) и Caddy проверяются вместе с `.env.live.example`, snapshot/secret mounts и UID 1000. Live host/endpoint отсутствует. Текущий [runbook этапа 4](docs/EXPLORATORY_MAX_RUNBOOK.md) разделяет A: read-only `/me`/subscriptions без deployment (`.env.inspect.example`), B: конкретный разрешённый test host/регистрацию, C: человеческие mobile/web наблюдения. Startup проверяет закреплённую identity, но не регистрирует подписку. Неоднозначная регистрация требует reconciliation; журнал запрещает слепой повтор. G1 runbook сохраняется как история.
 
-Текущий контракт сервера — [OpenAPI 3.1](openapi.json). Полного пакета сдачи и работающей публичной ссылки на бота нет; `DATA-API.yaml` по неизвестной схеме не выдуман. Требования, ID и веса организатора — [00](docs/00_REQUIREMENTS_AND_EVIDENCE.md), новое предлагаемое покрытие — план pivot.
+Текущий контракт webhook-сервера — [OpenAPI 3.1](openapi.json). Username/ссылка бота проверены через /me; постоянного публичного runtime и полного пакета сдачи нет. [DATA-API.draft.yaml](docs/examples/DATA-API.draft.yaml) остаётся черновиком. Требования, ID и веса организатора — [00](docs/00_REQUIREMENTS_AND_EVIDENCE.md), покрытие — план pivot.
 
 ## Данные, доказательства и история
 
@@ -143,6 +163,6 @@ Inbox содержит нормализованные ID/тип/время и о
 
 Исходные [G0.1](docs/04_G0_1_REVIEW_RECEIPT.md), [G1](docs/05_G1_TECHNICAL_RECEIPT.md), их evidence и `docs/evidence/g1/source.sha256` сохранены без изменения. Manifest относится к прежнему состоянию документов и не переименован в свидетельство текущего дерева. Старые документы 01–03 помечены SUPERSEDED. PDF организатора, DOCX-пример, копии prompting guides, secrets, DB/sidecars, backups, private/raw, `.tools`, зависимости, `dist`, `.tmp` и `.review` исключены из публикации. Пользовательские оригиналы остаются локально. [Notices](THIRD_PARTY_NOTICES.md) не назначают лицензию этому проекту.
 
-**REAL_APPLICATION_SMOKE = REQUIRED; REAL_MAX_MOBILE / REAL_MAX_WEB = NOT_VERIFIED.** Локальная реализация не закрывает реальные наблюдения. [Точный runbook](docs/EXPLORATORY_MAX_RUNBOOK.md) ограничен маркированными синтетическими данными и требует уже согласованных бота, endpoint и тестировщиков.
+**REAL_APPLICATION_SMOKE = REQUIRED; REAL_MAX_WEB = PARTIAL.** Текущие результаты обоих клиентов — в [квитанции 11](docs/pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md). [Точный runbook](docs/EXPLORATORY_MAX_RUNBOOK.md) ограничен маркированными синтетическими данными и согласившимися тестировщиками. Для test polling endpoint не нужен; production webhook проверяется отдельно.
 
 Следующий объём — реальные mobile/web проверки на согласованной инфраструктуре и разрешение условий публичного показа; спрос и устойчивое качество афиши остаются неподтверждёнными. Локальный исследовательский объём утверждён; напоминания и публичный выпуск не начинаются автоматически.

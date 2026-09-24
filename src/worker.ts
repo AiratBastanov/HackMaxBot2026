@@ -54,6 +54,7 @@ export class Worker {
           }
           this.store.finishInbox(row.id, result, now);
         }).immediate();
+        this.report({ operation: 'inbox_processed', result: (this.store.db.prepare('SELECT result FROM inbox WHERE id=?').get(row.id) as {result:string}).result });
       } catch {
         const attempts = row.attempts + 1;
         this.store.db.prepare("UPDATE inbox SET attempts=?,status=?,result=?,finished_at=? WHERE id=?")
@@ -73,6 +74,8 @@ export class Worker {
         this.store.finishOutbox(row.id, 'STALE', 'FLOW_OR_SNAPSHOT_CHANGED', now);
       } else if (row.probe_id && (!probe || probe.expires_at <= now || probe.state === 'SUPERSEDED')) {
         this.store.finishOutbox(row.id, 'STALE', 'PROBE_EXPIRED_OR_REPLACED', now);
+      } else if (this.config.ingress === 'test-polling' && !this.config.testers.has(row.actor)) {
+        this.store.finishOutbox(row.id, 'SUPPRESSED_TESTER', 'NOT_ADMITTED', now);
       } else if (this.store.getMeta('auth_blocked') === 'true') {
         this.store.finishOutbox(row.id, 'FAILED_AUTH', 'AUTH_BLOCKED', now);
       } else if (!canSend(this.store.contact(row.actor))) {
@@ -106,7 +109,7 @@ export class Worker {
             if (e.kind === 'RATE_LIMIT' && row.attempts + 1 < 3 && nextAt < row.expires_at) {
               this.store.db.prepare("UPDATE outbox SET status='PENDING',result='RATE_LIMIT',http_status=429,next_at=? WHERE id=?").run(nextAt, row.id);
             } else {
-              const ambiguous = ['MALFORMED', 'SERVER', 'TIMEOUT_AMBIGUOUS', 'TRANSPORT_AMBIGUOUS'].includes(e.kind);
+              const ambiguous = ['MALFORMED', 'SERVER', 'TIMEOUT_AMBIGUOUS', 'TRANSPORT_AMBIGUOUS', 'CANCELLED'].includes(e.kind);
               this.store.finishOutbox(row.id, ambiguous ? 'UNKNOWN_RESULT' : `FAILED_${e.kind}`, e.kind, finished, e.status);
             }
           }).immediate();

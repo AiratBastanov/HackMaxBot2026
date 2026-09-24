@@ -12,7 +12,7 @@ export type OutboxRow = { id: number; actor: string; probe_id: string | null; pu
 
 export class Storage {
   readonly db: Database.Database;
-  constructor(path: string, config: Pick<Config, 'mode' | 'botId'>, recoverInterrupted = true) {
+  constructor(path: string, config: Pick<Config, 'mode' | 'botId' | 'ingress'>, recoverInterrupted = true) {
     if (path !== ':memory:') mkdirSync(dirname(path), { recursive: true });
     this.db = new Database(path, { timeout: 1000 });
     this.db.pragma('journal_mode = WAL');
@@ -60,7 +60,7 @@ export class Storage {
         CREATE TABLE bookmarks (actor TEXT NOT NULL, identity TEXT NOT NULL, generation TEXT NOT NULL, saved_at INTEGER NOT NULL, data TEXT NOT NULL, PRIMARY KEY(actor,identity));
         PRAGMA user_version = 2;
       `);
-      const identity = `${config.mode}:${config.botId}`;
+      const identity = `${config.ingress === 'test-polling' ? 'test-polling' : config.mode}:${config.botId}`;
       const previous = this.getMeta('identity');
       if (previous && previous !== identity) throw new Error('SQLite принадлежит другому режиму/боту');
       this.setMeta('identity', identity);
@@ -72,6 +72,15 @@ export class Storage {
   health() { this.db.prepare('SELECT 1').get(); }
   getMeta(key: string): string | undefined { return (this.db.prepare('SELECT value FROM meta WHERE key=?').get(key) as { value: string } | undefined)?.value; }
   setMeta(key: string, value: string) { this.db.prepare('INSERT INTO meta(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run(key, value); }
+  pollingMarker(): string | null { return JSON.parse(this.getMeta('poll_marker') ?? 'null') as string | null; }
+  acceptPollBatch(events: AcceptedEvent[], marker: string | null, now: number) {
+    return this.db.transaction(() => {
+      let accepted = 0, duplicate = 0;
+      for (const event of events) this.accept(event, now) === 'accepted' ? accepted++ : duplicate++;
+      this.setMeta('poll_marker', JSON.stringify(marker));
+      return { accepted, duplicate };
+    }).immediate();
+  }
   accept(event: AcceptedEvent, now: number): 'accepted' | 'duplicate' {
     return this.db.transaction(() => {
       if (this.db.prepare('SELECT 1 FROM inbox WHERE delivery_key=?').get(event.key)) return 'duplicate' as const;

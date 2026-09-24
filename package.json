@@ -20,6 +20,9 @@
     "start": "node --env-file=.env.local dist/src/index.js",
     "smoke": "node --env-file=.env.local dist/scripts/local-smoke.js",
     "live:inspect": "node --env-file=.env.inspect dist/scripts/live-admin.js inspect",
+    "live:prepare": "node dist/scripts/prepare-max-test.js",
+    "live:poll": "node --env-file=.env.polling dist/scripts/live-poll.js",
+    "test:polling": "node --test --test-timeout=20000 dist/tests/polling.test.js",
     "recovery": "node dist/scripts/recovery.js",
     "live:subscribe": "node --env-file=.env.live dist/scripts/live-admin.js subscribe",
     "manifest": "node scripts/source-manifest.mjs"

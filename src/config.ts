@@ -23,14 +23,16 @@ const envSchema = z.object({
 });
 
 export type Config = {
+  ingress?: 'webhook' | 'test-polling';
   mode: 'local' | 'live'; host: '127.0.0.1' | '0.0.0.0'; port: number;
-  databasePath: string; webhookSecret: string; apiBaseUrl: string;
+  databasePath: string; webhookSecret?: string; apiBaseUrl: string;
   token?: string; botId: string; publicBaseUrl?: string; testers: ReadonlySet<string>;
   probeTtlMs: number; requestTimeoutMs: number;
   flowDataMode: 'real' | 'synthetic-test'; snapshotPath?: string; flowTestClock?: string;
 };
 
 export function loadConfig(env: NodeJS.ProcessEnv): Config {
+  if (env.APP_INGRESS && env.APP_INGRESS !== 'webhook') throw Error('Конфигурация: для test-polling используйте live:poll');
   const values = { ...env };
   // Secrets могут поступать из отдельного read-only mount, а не из аргументов.
   for (const name of ['MAX_BOT_TOKEN', 'MAX_WEBHOOK_SECRET']) {

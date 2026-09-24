@@ -1,13 +1,18 @@
 import { loadConfig } from './config.js';
 import { createApp } from './app.js';
 import { LiveMax } from './max.js';
+import { acquireConsumerLock } from './consumer-lock.js';
 
 async function main() {
   const config = loadConfig(process.env);
   // Только GET. Runtime не регистрирует webhook; identity проверяется до открытия БД/порта.
   if(config.mode==='live') await new LiveMax(config).me();
-  const runtime = createApp(config, { report: value => console.log(JSON.stringify(value)) });
-  await runtime.app.listen({ port: config.port, host: config.host });
+  const release = config.mode === 'live' ? await acquireConsumerLock(config.botId) : async () => {};
+  let runtime: ReturnType<typeof createApp> | undefined;
+  try {
+    runtime = createApp(config, { report: value => console.log(JSON.stringify(value)) });
+    await runtime.app.listen({ port: config.port, host: config.host });
+  } catch (e) { await runtime?.app.close(); await release(); throw e; }
   runtime.worker.start();
   console.log(JSON.stringify({ operation: 'startup', mode: config.mode, dataMode: config.flowDataMode, port: config.port, message: 'Культурный план: локальный исследовательский прототип' }));
   let closing = false;
@@ -15,7 +20,8 @@ async function main() {
     if (closing) return;
     closing = true;
     const timeout = setTimeout(() => process.exit(1), 15000).unref();
-    await runtime.app.close();
+    await runtime!.app.close();
+    await release();
     clearTimeout(timeout);
   };
   for (const signal of ['SIGTERM', 'SIGINT'] as const) process.on(signal, () => { void close(); });

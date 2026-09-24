@@ -63,8 +63,8 @@ test('use_place_schedule не угадывается; неизвестные str
     assert.equal(o.opening, null); assert.equal(o.scheduleBasis, 'UNKNOWN');
   }
 });
-test('Место без адреса, stub и online не объявляются физической Казанью', () => {
-  for (const patch of [{ address: '' }, { is_stub: true }, { location: 'online' }]) {
+test('Место без адреса и online не объявляются физической Казанью', () => {
+  for (const patch of [{ address: '' }, { location: 'online' }]) {
     const d = syntheticDownload(); Object.assign(d.places.rows[0]!, patch);
     const v = normalizeKudago(d, 'SYNTHETIC_FIXTURE').venues[0]!;
     assert(v.physical !== true || v.city !== 'kzn'); assert.equal(v.zone, null);

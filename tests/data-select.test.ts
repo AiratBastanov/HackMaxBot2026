@@ -4,7 +4,7 @@ import { syntheticSnapshot, syntheticClock, representativeQueries } from '../src
 import { select } from '../src/data/select.js';
 import { type Query, type Snapshot } from '../src/data/contract.js';
 const query = (): Query => representativeQueries(syntheticClock).weekend500!;
-const run = (s: Snapshot = syntheticSnapshot(), q = query(), clock = syntheticClock) => select(s, q, clock, true);
+const run = (s: Snapshot = syntheticSnapshot(), q = query(), clock = syntheticClock) => select(s, q, clock, true, true);
 function only(s: Snapshot, index: number) {
   s.events = [s.events[index]!]; s.stats.normalizedEvents = 1; s.stats.occurrences = s.events[0]!.occurrences.length; return s;
 }

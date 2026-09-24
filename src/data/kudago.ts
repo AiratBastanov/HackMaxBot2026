@@ -28,7 +28,7 @@ export type KudaPlace = z.infer<typeof placeSchema>;
 export const culturalCategories = ['exhibition', 'theater', 'concert', 'cinema', 'education', 'festival', 'tour'];
 export const base = 'https://kudago.com/public-api/v1.4/';
 export const eventFields = 'id,title,site_url,publication_date,dates,place,location,categories,price,is_free';
-const placeFields = 'id,title,address,location,timetable,site_url,foreign_url,is_closed,is_stub,coords';
+export const placeFields = 'id,title,address,location,timetable,site_url,foreign_url,is_closed,is_stub,coords';
 export type PageResult<T> = { rows: T[]; count: number | null; retrieved: number; duplicates: number; pages: number;
   complete: boolean; issues: string[] };
 
@@ -101,7 +101,37 @@ export type KudaDownload = {
   retrievedAt: string; window: { start: string; end: string }; location: { slug: string; name: string; timezone: string } | null;
   categories: { slug: string; name: string }[]; events: PageResult<KudaEvent>; places: PageResult<KudaPlace>;
   issues: string[];
+  observations?: FactObservation[];
 };
+const factObservationSchema = z.discriminatedUnion('entity', [
+  z.object({ entity: z.literal('event'), data: eventSchema, retrievedAt: z.string().datetime({ offset: true }).nullable(),
+    requestUrl: z.string().url().nullable() }),
+  z.object({ entity: z.literal('place'), data: placeSchema, retrievedAt: z.string().datetime({ offset: true }).nullable(),
+    requestUrl: z.string().url().nullable() }),
+]);
+export type FactObservation = z.infer<typeof factObservationSchema>;
+export function observationsOf(download: KudaDownload): FactObservation[] {
+  return download.observations ?? [
+    ...download.events.rows.map(data => ({ entity: 'event' as const, data, retrievedAt: download.retrievedAt, requestUrl: null })),
+    ...download.places.rows.map(data => ({ entity: 'place' as const, data, retrievedAt: null, requestUrl: null })),
+  ];
+}
+export function chronological(observations: FactObservation[]): FactObservation[] {
+  return observations.map((row, index) => ({ row, index })).sort((a, b) =>
+    Date.parse(a.row.retrievedAt ?? '1970-01-01T00:00:00Z') - Date.parse(b.row.retrievedAt ?? '1970-01-01T00:00:00Z')
+    || a.index - b.index).map(item => item.row);
+}
+export function addObservation(download: KudaDownload, input: FactObservation): void {
+  const observation = factObservationSchema.parse(input);
+  download.observations = chronological([...observationsOf(download), observation]);
+  const rows = observation.entity === 'event' ? download.events.rows : download.places.rows;
+  const index = rows.findIndex(row => row.id === observation.data.id);
+  // Только присутствующие поля. Явные null/false/закрытие не скрываются старым значением.
+  const merged = Object.assign({}, ...download.observations
+    .filter(row => row.entity === observation.entity && row.data.id === observation.data.id).map(row => row.data));
+  if (index >= 0) rows[index] = merged as KudaEvent & KudaPlace;
+  else rows.push(merged as KudaEvent & KudaPlace);
+}
 export function validateDownload(value: unknown): KudaDownload {
   const page = <T extends z.ZodType>(row: T) => z.object({ rows: z.array(row), count: z.number().int().nonnegative().nullable(),
     retrieved: z.number().int().nonnegative(), duplicates: z.number().int().nonnegative(), pages: z.number().int().nonnegative(),
@@ -111,7 +141,8 @@ export function validateDownload(value: unknown): KudaDownload {
       .refine(w => Date.parse(w.end) - Date.parse(w.start) === 30 * 86400000),
     location: z.object({ slug: z.literal('kzn'), name: z.literal('Казань'), timezone: z.literal('Europe/Moscow') }).nullable(),
     categories: z.array(z.object({ slug: z.string(), name: z.string() })),
-    events: page(eventSchema), places: page(placeSchema), issues: z.array(z.string()) }).parse(value);
+    events: page(eventSchema), places: page(placeSchema), issues: z.array(z.string()),
+    observations: z.array(factObservationSchema).optional() }).parse(value);
 }
 export function mergeEvent(first: KudaEvent, later: KudaEvent): KudaEvent {
   const { dates: firstDates, ...a } = first, { dates: laterDates, ...b } = later;

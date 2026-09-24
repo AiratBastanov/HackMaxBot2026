@@ -28,10 +28,13 @@ export async function writeSnapshot(path: string, candidate: unknown) {
     try { current = await readSnapshot(path); }
     catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
     await atomicJson(`${path}.attempt.json`, next);
+    const enrichment = current && next.retrievedAt === current.retrievedAt && next.enrichedAt !== null
+      && Date.parse(next.enrichedAt) > Date.parse(current.enrichedAt ?? '1970-01-01T00:00:00Z')
+      && current.events.every(e => next.events.some(n => n.id === e.id));
     const reason = current && current.mode !== next.mode ? 'MODE_MISMATCH'
       : current && Date.parse(next.retrievedAt) < Date.parse(current.retrievedAt) ? 'OLDER_REFRESH'
       : next.outcome === 'FAILED' ? 'FAILED_REFRESH'
-      : current?.outcome === 'COMPLETE' && next.outcome !== 'COMPLETE' ? 'INCOMPLETE_REFRESH'
+      : current?.outcome === 'COMPLETE' && next.outcome !== 'COMPLETE' && !enrichment ? 'INCOMPLETE_REFRESH'
       : current?.events.length && !next.events.length ? 'EMPTY_REFRESH' : null;
     if (reason) return { replaced: false, reason, active: current !== null, attempt: `${path}.attempt.json` };
     await atomicJson(path, next);

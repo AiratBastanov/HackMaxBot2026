@@ -1,0 +1,438 @@
+{
+  "date": "2026-09-24",
+  "verdict": "MAXBOT_KEYLESS_DATA_CORRECTION_PARTIAL",
+  "suitability": "EXPLORATORY_ONLY",
+  "baseline": "bab5a89b28565568d83b24bc1edc877a7f076c1e",
+  "historicalInputSha256": {
+    "snapshot": "d205b1547b7b9b20b9c9f3ce2e4594124cc9bf3b50a311a06879b2b36d962250",
+    "download": "584e96028293a51f99a9fe350abaa36169472a3852a41182787ce452bc99b84e",
+    "ledger": "f37e7d42694e3984ee2b4f1e378c2f300cd8653edfd541d4ab021e21820e879a"
+  },
+  "historical": {
+    "label": "HISTORICAL_REPLAY",
+    "clock": "2026-09-24T07:57:13.820Z",
+    "before": {
+      "weekend500": {
+        "query": {
+          "city": "kzn",
+          "start": "2026-09-26T09:00:00.000Z",
+          "end": "2026-09-26T15:00:00.000Z",
+          "budgetRub": 500,
+          "category": null,
+          "zone": null,
+          "kind": "ANY",
+          "preferences": {
+            "categories": []
+          }
+        },
+        "strictTotal": 0,
+        "strictShown": 0,
+        "uncertainTotal": 60,
+        "candidatesShown": 0,
+        "status": "INCOMPLETE_CATALOG",
+        "excluded": {
+          "VENUE_UNKNOWN": 64,
+          "PRICE_UNKNOWN": 52,
+          "OPENING_UNKNOWN": 46,
+          "TIME_UNKNOWN": 17,
+          "OVER_BUDGET": 3,
+          "OUTSIDE_WINDOW": 2
+        }
+      },
+      "weekdayEvening": {
+        "query": {
+          "city": "kzn",
+          "start": "2026-09-25T15:00:00.000Z",
+          "end": "2026-09-25T19:00:00.000Z",
+          "budgetRub": null,
+          "category": null,
+          "zone": null,
+          "kind": "ANY",
+          "preferences": {
+            "categories": []
+          }
+        },
+        "strictTotal": 0,
+        "strictShown": 0,
+        "uncertainTotal": 62,
+        "candidatesShown": 0,
+        "status": "INCOMPLETE_CATALOG",
+        "excluded": {
+          "VENUE_UNKNOWN": 64,
+          "OPENING_UNKNOWN": 46,
+          "TIME_UNKNOWN": 17,
+          "OUTSIDE_WINDOW": 2
+        }
+      },
+      "free": {
+        "query": {
+          "city": "kzn",
+          "start": "2026-09-26T07:00:00.000Z",
+          "end": "2026-09-26T17:00:00.000Z",
+          "budgetRub": 0,
+          "category": null,
+          "zone": null,
+          "kind": "ANY",
+          "preferences": {
+            "categories": []
+          }
+        },
+        "strictTotal": 0,
+        "strictShown": 0,
+        "uncertainTotal": 55,
+        "candidatesShown": 0,
+        "status": "INCOMPLETE_CATALOG",
+        "excluded": {
+          "VENUE_UNKNOWN": 64,
+          "PRICE_UNKNOWN": 52,
+          "OPENING_UNKNOWN": 46,
+          "TIME_UNKNOWN": 17,
+          "OVER_BUDGET": 8,
+          "OUTSIDE_WINDOW": 2
+        }
+      },
+      "deliberateNoMatch": {
+        "query": {
+          "city": "kzn",
+          "start": "2026-09-26T00:00:00.000Z",
+          "end": "2026-09-26T00:15:00.000Z",
+          "budgetRub": 0,
+          "category": "theater",
+          "zone": null,
+          "kind": "ANY",
+          "preferences": {
+            "categories": []
+          }
+        },
+        "strictTotal": 0,
+        "strictShown": 0,
+        "uncertainTotal": 0,
+        "candidatesShown": 0,
+        "status": "INCOMPLETE_CATALOG",
+        "excluded": {
+          "WRONG_CATEGORY": 63,
+          "VENUE_UNKNOWN": 64,
+          "PRICE_UNKNOWN": 52,
+          "OPENING_UNKNOWN": 46,
+          "TIME_UNKNOWN": 17,
+          "OVER_BUDGET": 8,
+          "OUTSIDE_WINDOW": 2
+        }
+      }
+    },
+    "after": {
+      "weekend500": {
+        "query": {
+          "city": "kzn",
+          "start": "2026-09-26T09:00:00.000Z",
+          "end": "2026-09-26T15:00:00.000Z",
+          "budgetRub": 500,
+          "category": null,
+          "zone": null,
+          "kind": "ANY",
+          "preferences": {
+            "categories": []
+          }
+        },
+        "strictTotal": 0,
+        "strictShown": 0,
+        "uncertainTotal": 56,
+        "candidatesShown": 3,
+        "status": "INCOMPLETE_CATALOG",
+        "excluded": {
+          "VENUE_UNKNOWN": 63,
+          "PRICE_UNKNOWN": 48,
+          "OPENING_UNKNOWN": 46,
+          "TIME_UNKNOWN": 17,
+          "FACTS_STALE": 1,
+          "OVER_BUDGET": 7,
+          "OUTSIDE_WINDOW": 2
+        }
+      },
+      "weekdayEvening": {
+        "query": {
+          "city": "kzn",
+          "start": "2026-09-25T15:00:00.000Z",
+          "end": "2026-09-25T19:00:00.000Z",
+          "budgetRub": null,
+          "category": null,
+          "zone": null,
+          "kind": "ANY",
+          "preferences": {
+            "categories": []
+          }
+        },
+        "strictTotal": 0,
+        "strictShown": 0,
+        "uncertainTotal": 62,
+        "candidatesShown": 3,
+        "status": "INCOMPLETE_CATALOG",
+        "excluded": {
+          "VENUE_UNKNOWN": 63,
+          "OPENING_UNKNOWN": 46,
+          "TIME_UNKNOWN": 17,
+          "FACTS_STALE": 1,
+          "OUTSIDE_WINDOW": 2
+        }
+      },
+      "free": {
+        "query": {
+          "city": "kzn",
+          "start": "2026-09-26T07:00:00.000Z",
+          "end": "2026-09-26T17:00:00.000Z",
+          "budgetRub": 0,
+          "category": null,
+          "zone": null,
+          "kind": "ANY",
+          "preferences": {
+            "categories": []
+          }
+        },
+        "strictTotal": 0,
+        "strictShown": 0,
+        "uncertainTotal": 11,
+        "candidatesShown": 3,
+        "status": "INCOMPLETE_CATALOG",
+        "excluded": {
+          "OVER_BUDGET": 52,
+          "VENUE_UNKNOWN": 63,
+          "OPENING_UNKNOWN": 46,
+          "PRICE_UNKNOWN": 8,
+          "TIME_UNKNOWN": 17,
+          "FACTS_STALE": 1,
+          "OUTSIDE_WINDOW": 2
+        }
+      },
+      "deliberateNoMatch": {
+        "query": {
+          "city": "kzn",
+          "start": "2026-09-26T00:00:00.000Z",
+          "end": "2026-09-26T00:15:00.000Z",
+          "budgetRub": 0,
+          "category": "theater",
+          "zone": null,
+          "kind": "ANY",
+          "preferences": {
+            "categories": []
+          }
+        },
+        "strictTotal": 0,
+        "strictShown": 0,
+        "uncertainTotal": 0,
+        "candidatesShown": 0,
+        "status": "INCOMPLETE_CATALOG",
+        "excluded": {
+          "WRONG_CATEGORY": 63,
+          "OVER_BUDGET": 52,
+          "VENUE_UNKNOWN": 63,
+          "OPENING_UNKNOWN": 46,
+          "PRICE_UNKNOWN": 8,
+          "TIME_UNKNOWN": 17,
+          "FACTS_STALE": 1,
+          "OUTSIDE_WINDOW": 2
+        }
+      }
+    }
+  },
+  "current": {
+    "label": "CURRENT_QUERY_WITH_TARGETED_ENRICHMENT_AND_REUSED_CATALOG",
+    "clock": "2026-09-24T08:58:57.295Z",
+    "window": {
+      "start": "2026-09-23T21:00:00.000Z",
+      "end": "2026-10-23T21:00:00.000Z"
+    },
+    "catalogRetrievedAt": "2026-09-24T07:25:00.985Z",
+    "enrichedAt": "2026-09-24T08:49:33.219Z",
+    "results": {
+      "weekend500": {
+        "query": {
+          "city": "kzn",
+          "start": "2026-09-26T09:00:00.000Z",
+          "end": "2026-09-26T15:00:00.000Z",
+          "budgetRub": 500,
+          "category": null,
+          "zone": null,
+          "kind": "ANY",
+          "preferences": {
+            "categories": []
+          }
+        },
+        "strictTotal": 1,
+        "strictShown": 1,
+        "uncertainTotal": 55,
+        "candidatesShown": 3,
+        "status": "MATCHES_IN_INCOMPLETE_CATALOG",
+        "excluded": {
+          "VENUE_UNKNOWN": 61,
+          "PRICE_UNKNOWN": 48,
+          "OPENING_UNKNOWN": 45,
+          "TIME_UNKNOWN": 17,
+          "FACTS_STALE": 1,
+          "OVER_BUDGET": 7,
+          "OUTSIDE_WINDOW": 2
+        }
+      },
+      "weekdayEvening": {
+        "query": {
+          "city": "kzn",
+          "start": "2026-09-25T15:00:00.000Z",
+          "end": "2026-09-25T19:00:00.000Z",
+          "budgetRub": null,
+          "category": null,
+          "zone": null,
+          "kind": "ANY",
+          "preferences": {
+            "categories": []
+          }
+        },
+        "strictTotal": 0,
+        "strictShown": 0,
+        "uncertainTotal": 61,
+        "candidatesShown": 3,
+        "status": "INCOMPLETE_CATALOG",
+        "excluded": {
+          "VENUE_UNKNOWN": 61,
+          "OPENING_UNKNOWN": 45,
+          "TIME_UNKNOWN": 17,
+          "OUTSIDE_WINDOW": 3,
+          "FACTS_STALE": 1
+        }
+      },
+      "free": {
+        "query": {
+          "city": "kzn",
+          "start": "2026-09-26T07:00:00.000Z",
+          "end": "2026-09-26T17:00:00.000Z",
+          "budgetRub": 0,
+          "category": null,
+          "zone": null,
+          "kind": "ANY",
+          "preferences": {
+            "categories": []
+          }
+        },
+        "strictTotal": 0,
+        "strictShown": 0,
+        "uncertainTotal": 11,
+        "candidatesShown": 3,
+        "status": "INCOMPLETE_CATALOG",
+        "excluded": {
+          "OVER_BUDGET": 52,
+          "VENUE_UNKNOWN": 61,
+          "OPENING_UNKNOWN": 45,
+          "PRICE_UNKNOWN": 8,
+          "TIME_UNKNOWN": 17,
+          "FACTS_STALE": 1,
+          "OUTSIDE_WINDOW": 2
+        }
+      },
+      "deliberateNoMatch": {
+        "query": {
+          "city": "kzn",
+          "start": "2026-09-26T00:00:00.000Z",
+          "end": "2026-09-26T00:15:00.000Z",
+          "budgetRub": 0,
+          "category": "theater",
+          "zone": null,
+          "kind": "ANY",
+          "preferences": {
+            "categories": []
+          }
+        },
+        "strictTotal": 0,
+        "strictShown": 0,
+        "uncertainTotal": 0,
+        "candidatesShown": 0,
+        "status": "INCOMPLETE_CATALOG",
+        "excluded": {
+          "WRONG_CATEGORY": 63,
+          "OVER_BUDGET": 52,
+          "VENUE_UNKNOWN": 61,
+          "OPENING_UNKNOWN": 45,
+          "PRICE_UNKNOWN": 8,
+          "TIME_UNKNOWN": 17,
+          "OUTSIDE_WINDOW": 3,
+          "FACTS_STALE": 1
+        }
+      }
+    },
+    "coverage": {
+      "events": 64,
+      "occurrences": 64,
+      "venueIds": 33,
+      "detailRecords": 2,
+      "expandedAdditionalPlaces": 1,
+      "publishedAddresses": 3,
+      "venuesWithApplicableHours": 1,
+      "occurrencesWithApplicableHours": 1,
+      "catalog": "PARTIAL",
+      "wholeCityCompleteness": "NOT_CLAIMED"
+    }
+  },
+  "campaign": {
+    "startedAt": "2026-09-24T08:48:36.693Z",
+    "finishedAt": "2026-09-24T08:49:51.470Z",
+    "elapsedSeconds": 74.777,
+    "requests": 6,
+    "decodedBytes": 1410,
+    "http200": 2,
+    "timeouts": 4,
+    "retries": 0,
+    "routeStoppedItems": 2,
+    "minStartSpacingMs": 1013,
+    "maxRequestMs": 18044,
+    "limits": {
+      "requests": 12,
+      "decodedBytes": 8388608,
+      "requestMs": 20000,
+      "operationMs": 240000,
+      "spacingMs": 1000,
+      "retries": 1
+    },
+    "oldJournal": {
+      "requests": 19,
+      "decodedBytes": 80502,
+      "preserved": true
+    }
+  },
+  "tests": {
+    "data": {
+      "passed": 82,
+      "failed": 0,
+      "baselineHistorical": 53,
+      "processSeconds": 1.154
+    },
+    "typecheck": {
+      "passed": true,
+      "seconds": 0.464
+    },
+    "build": {
+      "passed": true,
+      "seconds": 0.47
+    },
+    "foundationUnit": {
+      "passed": 29,
+      "failed": 0,
+      "processSeconds": 0.448,
+      "runs": 1
+    },
+    "foundationIntegration": {
+      "passed": 21,
+      "failed": 0,
+      "processSeconds": 2.498,
+      "runs": 1
+    },
+    "ministryResearch": "NOT_RERUN_HISTORICAL_10"
+  },
+  "publicDisplay": "NOT_CLEARED",
+  "fullMaxFlow": "NOT_STARTED",
+  "bookmarks": "NOT_STARTED",
+  "reminders": "NOT_STARTED",
+  "deployment": "NOT_STARTED",
+  "mobileMax": "NOT_VERIFIED",
+  "webMax": "NOT_VERIFIED",
+  "realApplicationSmoke": {
+    "status": "NOT_APPLICABLE_WITH_REASON",
+    "reason": "Локальные исправления данных и подбора; MAX-интерфейс не менялся."
+  }
+}

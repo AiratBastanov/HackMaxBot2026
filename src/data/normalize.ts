@@ -1,10 +1,10 @@
 import { createHash } from 'node:crypto';
-import { type KudaDownload, type KudaEvent, type KudaPlace, culturalCategories, dateSchema, eventSchema, placeSchema } from './kudago.js';
-import { type Snapshot, type Price, type OpeningInterval, type Occurrence, type Venue, safeLink, validateSnapshot } from './contract.js';
+import { type KudaDownload, type KudaEvent, type KudaPlace, type FactObservation, chronological, observationsOf, culturalCategories, dateSchema, eventSchema, placeSchema } from './kudago.js';
+import { type Snapshot, type Price, type OpeningInterval, type Occurrence, type Venue, type Observation, safeLink, validateSnapshot } from './contract.js';
 
 export function normalizePrice(raw: string | null | undefined, free: boolean | null | undefined): Price {
   const value = (raw ?? '').trim().toLowerCase().replace(/\u00a0/g, ' ');
-  const base: Price = { kind: 'UNKNOWN', amount: null, currency: 'RUB', applicability: 'UNRESOLVED', evidence: raw ?? null, conditions: [] };
+  const base: Price = { kind: 'UNKNOWN', amount: null, lowerBound: null, currency: 'RUB', applicability: 'UNRESOLVED', evidence: raw ?? null, conditions: [] };
   const plainlyFree = /^(бесплатно|вход свободный|0 (?:₽|руб\.?|рублей))\.?$/.test(value);
   if (free === false && plainlyFree) return { ...base, kind: 'CONFLICT' };
   if (free === true && (!value || plainlyFree)) return { ...base, kind: 'FREE', amount: 0, applicability: 'SINGLE_ADULT' };
@@ -12,9 +12,12 @@ export function normalizePrice(raw: string | null | undefined, free: boolean | n
   if (/групп|льгот|пенсион|студент|дет[ися]|промо|при |по |регистрац|бесплат|свободн/.test(value))
     return { ...base, kind: 'CONDITIONAL', conditions: [raw ?? 'Неизвестные условия'] };
   if (free === true && /\d/.test(value) && !/бесплат|свободн/.test(value)) return { ...base, kind: 'CONFLICT' };
-  if (/^от\s+\d/.test(value)) return { ...base, kind: 'FROM' };
+  if (/^от\s+\d/.test(value)) {
+    const bound = value.match(/^от\s+(\d+(?: \d{3})*(?:[.,]\d{1,2})?)(?:\s+до\s+\d+(?: \d{3})*(?:[.,]\d{1,2})?)?\s*(?:₽|руб\.?|рублей|рубля)\.?$/);
+    return { ...base, kind: 'FROM', lowerBound: bound ? Number(bound[1]!.replace(/ /g, '').replace(',', '.')) : null };
+  }
   if (/\d\s*[-–—]\s*\d/.test(value)) return { ...base, kind: 'RANGE' };
-  const exact = value.match(/^(?:(?:взрослый билет|для взрослых|вход)\s*[:—-]?\s*)?(\d+(?:[.,]\d{1,2})?)\s*(?:₽|руб\.?|рублей|рубля)\.?$/);
+  const exact = value.match(/^(?:(?:взрослый билет|для взрослых|вход)\s*[:—-]?\s*)?(\d+(?:[.,]\d{1,2})?)\s*(?:₽|руб\.?|рублей|рубля)(?: с человека)?\.?$/);
   if (exact && free !== true) return { ...base, kind: 'EXACT', amount: Number(exact[1]!.replace(',', '.')), applicability: 'SINGLE_ADULT' };
   return base;
 }
@@ -62,11 +65,12 @@ function dateOnly(value: string | null | undefined): string | null {
   return value && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value))
     && new Date(value).toISOString().slice(0, 10) === value ? value : null;
 }
-function venue(row: KudaPlace): Venue {
+function venue(row: KudaPlace, observations: Observation[] = []): Venue {
   const coords = row.coords;
   return { id: `kudago:place:${row.id}`, title: row.title ?? null, city: row.location ?? null, zone: null,
     address: row.address ?? null, sourceUrl: safeLink(row.site_url, 'kudago.com'), websiteUrl: safeLink(row.foreign_url),
-    closed: row.is_closed ?? null, physical: row.is_stub === false && Boolean(row.address?.trim()) ? true : null,
+    closed: row.is_closed ?? null, stub: row.is_stub ?? null, observations,
+    physical: Boolean(row.address?.trim()) && row.location !== 'online' ? true : null,
     coordinates: coords?.lat != null && coords.lon != null && Math.abs(coords.lat) <= 90 && Math.abs(coords.lon) <= 180
       ? { lat: coords.lat, lon: coords.lon } : null,
     timetable: row.timetable ?? null, opening: parseTimetable(row.timetable) };
@@ -84,8 +88,9 @@ function occurrence(event: KudaEvent, raw: unknown, place: Venue | undefined): O
   const validEnd = kind === 'TIMED_SESSION' && !placeholder && delta > 0 && delta <= 86400000 ? end : null;
   if (kind === 'TIMED_SESSION' && !validEnd) issues.push('END_OR_DURATION_UNKNOWN');
   const structured = Boolean(d.schedules?.length);
+  if (structured) issues.push('UNSUPPORTED_STRUCTURED_SCHEDULE', 'WEEKDAY_CONVENTION_UNVERIFIED');
   const opening = kind === 'FLEXIBLE_VISIT' && d.use_place_schedule === true && !structured ? place?.opening ?? null : null;
-  if (kind === 'FLEXIBLE_VISIT' && opening === null) issues.push(structured ? 'UNSUPPORTED_STRUCTURED_SCHEDULE' : 'OPENING_UNKNOWN');
+  if (kind === 'FLEXIBLE_VISIT' && opening === null && !structured) issues.push('OPENING_UNKNOWN');
   const identity = createHash('sha256').update(JSON.stringify(d)).digest('hex').slice(0, 20);
   return { id: `kudago:${event.id}:occ:${identity}`, venueId: place?.id ?? null, kind, timezone: 'Europe/Moscow',
     start: kind === 'TIMED_SESSION' ? start : null, end: validEnd, durationMinutes: null,
@@ -99,7 +104,28 @@ function occurrence(event: KudaEvent, raw: unknown, place: Venue | undefined): O
 }
 export function normalizeKudago(download: KudaDownload, mode: Snapshot['mode'] = 'LIVE_PUBLIC'): Snapshot {
   const events = download.events.rows.map(e => eventSchema.parse(e));
-  const venues = download.places.rows.map(p => venue(placeSchema.parse(p)));
+  const observations = chronological(observationsOf(download));
+  const describe = (rows: FactObservation[]): Observation[] => {
+    let previous: Record<string, unknown> = {};
+    return rows.map(row => {
+      const data = row.data as Record<string, unknown>;
+      const conflicts = Object.keys(data).filter(key => key !== 'id' && previous[key] !== undefined && previous[key] !== null && previous[key] !== ''
+        && JSON.stringify(previous[key]) !== JSON.stringify(data[key]));
+      previous = { ...previous, ...data };
+      return { retrievedAt: row.retrievedAt ?? (mode === 'SYNTHETIC_FIXTURE' ? download.retrievedAt : null),
+        requestUrl: row.requestUrl, fields: Object.keys(data), conflicts };
+    });
+  };
+  const placeObservations = observations.flatMap(row => row.entity === 'place' ? [row]
+    : row.data.place ? [{ ...row, entity: 'place' as const, data: row.data.place }] : []);
+  const placeRows = new Map<number, KudaPlace>();
+  // Расширенная идентичность полезна, но не обещает timetable или полный профиль.
+  for (const event of events) if (event.place) placeRows.set(event.place.id, { ...placeRows.get(event.place.id), ...event.place });
+  for (const p of download.places.rows) placeRows.set(p.id, { ...placeRows.get(p.id), ...placeSchema.parse(p) });
+  // Более новые наблюдения имеют приоритет; отсутствующие поля не стирают кеш.
+  for (const row of placeObservations)
+    placeRows.set(row.data.id, { ...placeRows.get(row.data.id), ...row.data });
+  const venues = [...placeRows.values()].map(p => venue(p, describe(placeObservations.filter(o => o.data.id === p.id))));
   const placeMap = new Map(venues.map(p => [p.id, p]));
   for (const event of events) if (event.place && !placeMap.has(`kudago:place:${event.place.id}`)) {
     const placeholder = venue({ id: event.place.id }); venues.push(placeholder); placeMap.set(placeholder.id, placeholder);
@@ -110,11 +136,11 @@ export function normalizeKudago(download: KudaDownload, mode: Snapshot['mode'] =
   for (const event of events) {
     const sourceUrl = safeLink(event.site_url, 'kudago.com');
     if (!sourceUrl) { omit('UNSAFE_OR_MISSING_SOURCE'); continue; }
+    if (!/\p{L}{2}/u.test(event.title.trim()) || new URL(sourceUrl).pathname === '/') { omit('UNUSABLE_RECORD'); continue; }
     // Не удаляем рекламную маркировку ради рекомендации. API не документирует ad-флаг.
     if (/реклама|erid\s*[:=]/iu.test(`${event.title} ${event.price ?? ''} ${sourceUrl}`)) { omit('AD_MARKER'); continue; }
     if (!event.categories?.some(c => culturalCategories.includes(c))) { omit('CATEGORY_UNKNOWN_OR_OUTSIDE_SCOPE'); continue; }
     const city = typeof event.location === 'string' ? event.location : event.location?.slug ?? null;
-    if (city !== null && city !== 'kzn') { omit('OTHER_CITY'); continue; }
     const place = event.place ? placeMap.get(`kudago:place:${event.place.id}`) : undefined;
     const unique = new Map<string, Occurrence>();
     for (const d of event.dates ?? []) {
@@ -129,15 +155,19 @@ export function normalizeKudago(download: KudaDownload, mode: Snapshot['mode'] =
       categories: event.categories, price: normalizePrice(event.price, event.is_free),
       admission: { registration: 'UNKNOWN', conditions: [], ticketAvailability: 'NOT_VERIFIED' },
       sourceUrl, sourceLabel: mode === 'LIVE_PUBLIC' ? 'Источник: KudaGo' : 'СИНТЕТИЧЕСКИЙ ПРИМЕР (формат KudaGo)', organizerUrl: null, ticketUrl: null,
-      publicationAt: isoSeconds(event.publication_date), providerUpdatedAt: null, retrievedAt: download.retrievedAt,
+      publicationAt: isoSeconds(event.publication_date), providerUpdatedAt: null,
+      retrievedAt: observations.filter(o => o.entity === 'event' && o.data.id === event.id).at(-1)?.retrievedAt ?? download.retrievedAt,
+      observations: describe(observations.filter(o => o.entity === 'event' && o.data.id === event.id)), cancelled: null,
       verification: mode === 'SYNTHETIC_FIXTURE' ? 'SYNTHETIC_FIXTURE' : 'API_FACTS_ONLY',
       advertisingAssessment: mode === 'SYNTHETIC_FIXTURE' ? 'SYNTHETIC' : 'NOT_EXPOSED_BY_API',
       occurrences: [...unique.values()], issues: ['CONDITIONS_NOT_REVERIFIED_BY_ORGANIZER', ...(!place ? ['VENUE_UNKNOWN'] : [])] });
   }
   const complete = download.events.complete && download.places.complete;
-  return validateSnapshot({ version: 1, mode, scope: { city: 'kzn', timezone: 'Europe/Moscow', ...download.window,
+  return validateSnapshot({ version: 2, mode, scope: { city: 'kzn', timezone: 'Europe/Moscow', ...download.window,
     categories: culturalCategories, zone: null }, retrievedAt: download.retrievedAt, freshnessHours: 24,
-    outcome: complete ? 'COMPLETE' : normalized.length ? 'PARTIAL' : 'FAILED', paginationComplete: complete,
+    outcome: complete ? 'COMPLETE' : normalized.length ? 'PARTIAL' : 'FAILED', paginationComplete: download.events.complete,
+    venueCoverageComplete: download.places.complete,
+    enrichedAt: observations.filter(o => o.requestUrl !== null).map(o => o.retrievedAt).filter((t): t is string => t !== null).sort().at(-1) ?? null,
     coverage: 'PROVIDER_CATALOG_ONLY', publicDisplay: 'NOT_CLEARED',
     issues: [...download.issues, ...download.events.issues, ...download.places.issues],
     stats: { providerCount: download.events.count, retrievedRows: download.events.retrieved, uniqueProviderIds: events.length,

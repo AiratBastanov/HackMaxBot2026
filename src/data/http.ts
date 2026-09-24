@@ -1,7 +1,10 @@
 import { setTimeout as delay } from 'node:timers/promises';
 
-export type RequestRecord = { url: string; startedAt: string; status: number | null; bytes: number; outcome: string };
+export type RequestRecord = { url: string; startedAt: string; status: number | null; bytes: number; outcome: string;
+  finishedAt?: string; elapsedMs?: number; retry?: boolean };
 export type NetworkLedger = { requests: RequestRecord[]; decodedBytes: number };
+export type NetworkLimits = { requests: number; bytes: number; timeoutMs: number; spacingMs: number; operationMs: number;
+  deadlineAt?: number; maxRetries?: number };
 export interface JsonClient { get(url: string, retry?: boolean): Promise<unknown> }
 export class DataError extends Error {
   constructor(public readonly code: string) { super(code); }
@@ -28,11 +31,12 @@ export class BoundedClient implements JsonClient {
     readonly ledger: NetworkLedger = { requests: [], decodedBytes: 0 },
     private readonly persist: (ledger: NetworkLedger) => Promise<void> = async () => {},
     private readonly transport: typeof fetch = fetch,
-    private readonly limits = { requests: 24, bytes: 16 * 1024 * 1024, timeoutMs: 20000, spacingMs: 1000, operationMs: 55000 },
+    private readonly limits: NetworkLimits = { requests: 24, bytes: 16 * 1024 * 1024, timeoutMs: 20000, spacingMs: 1000, operationMs: 55000 },
     private readonly now: () => number = Date.now,
     private readonly sleep: (ms: number) => Promise<unknown> = delay,
+    private readonly signal?: AbortSignal,
   ) {
-    this.operationDeadline = this.now() + limits.operationMs;
+    this.operationDeadline = Math.min(this.now() + limits.operationMs, limits.deadlineAt ?? Infinity);
     for (const row of ledger.requests) {
       const host = new URL(row.url).hostname;
       if (Number.isFinite(Date.parse(row.startedAt))) this.lastStarts.set(host, Date.parse(row.startedAt));
@@ -50,21 +54,28 @@ export class BoundedClient implements JsonClient {
     if (failures.length >= 2) throw new DataError('RETRY_LIMIT');
     const deadline = this.operationDeadline;
     for (let attempt = 0; ; attempt++) {
+      if (this.signal?.aborted) throw new DataError('CANCELLED');
       if (this.deniedHosts.has(url.hostname)) throw new DataError('CREDENTIALS_REQUIRED');
       if (this.ledger.requests.length >= this.limits.requests || this.ledger.decodedBytes >= this.limits.bytes)
         throw new DataError('NETWORK_BUDGET');
       const wait = Math.max(0, (this.lastStarts.get(url.hostname) ?? 0) + this.limits.spacingMs - this.now());
-      if (this.now() + wait >= deadline) throw new DataError('OPERATION_DEADLINE');
+      if (this.now() + wait + this.limits.timeoutMs > deadline) throw new DataError('OPERATION_DEADLINE');
       await this.sleep(wait);
+      if (this.signal?.aborted) throw new DataError('CANCELLED');
       const start = this.now();
       this.lastStarts.set(url.hostname, start);
       const row: RequestRecord = { url: url.href, startedAt: new Date(start).toISOString(), status: null, bytes: 0, outcome: 'STARTED' };
+      if (attempt > 0) row.retry = true;
       this.ledger.requests.push(row);
       await this.persist(this.ledger); // Резервируем запрос до обращения к сети.
       const abort = new AbortController();
-      const timer = setTimeout(() => abort.abort(), Math.min(this.limits.timeoutMs, deadline - start));
+      const cancel = () => abort.abort();
+      this.signal?.addEventListener('abort', cancel, { once: true });
+      const timer = setTimeout(() => abort.abort(), Math.max(0, Math.min(this.limits.timeoutMs - (this.now() - start), deadline - this.now())));
       let retryAfter = 0;
       try {
+        if (this.signal?.aborted) throw new DataError('CANCELLED');
+        if (this.now() - start >= this.limits.timeoutMs) throw new DataError('TIMEOUT');
         const response = await this.transport(url, { method: 'GET', redirect: 'error', signal: abort.signal,
           headers: { Accept: 'application/json', 'User-Agent': 'CulturalPlan-Local/1.0' }, credentials: 'omit' });
         row.status = response.status;
@@ -99,13 +110,20 @@ export class BoundedClient implements JsonClient {
         row.outcome = 'OK';
         return parsed;
       } catch (error) {
-        const code = error instanceof DataError ? error.code : abort.signal.aborted ? 'TIMEOUT' : 'NETWORK_FAILURE';
+        const code = error instanceof DataError && error.code === 'BODY_BUDGET' ? error.code
+          : this.signal?.aborted ? 'CANCELLED' : this.now() >= deadline ? 'OPERATION_DEADLINE'
+          : abort.signal.aborted ? 'TIMEOUT' : error instanceof DataError ? error.code : 'NETWORK_FAILURE';
         row.outcome = code;
         // Только явно разрешённый один повтор временного GET; schema/401/403 не повторяются.
         const transient = ['TIMEOUT', 'NETWORK_FAILURE', 'HTTP_429', 'HTTP_502', 'HTTP_503', 'HTTP_504'].includes(code);
-        if (!retry || attempt > 0 || !transient || !Number.isFinite(retryAfter)
+        if (!retry || attempt > 0 || this.ledger.requests.filter(r => r.retry).length >= (this.limits.maxRetries ?? 1)
+          || !transient || !Number.isFinite(retryAfter)
           || this.now() + Math.max(retryAfter, 1000) + this.limits.timeoutMs > deadline) throw new DataError(code);
-      } finally { clearTimeout(timer); await this.persist(this.ledger); }
+      } finally {
+        clearTimeout(timer); this.signal?.removeEventListener('abort', cancel);
+        row.finishedAt = new Date(this.now()).toISOString(); row.elapsedMs = this.now() - start;
+        await this.persist(this.ledger);
+      }
       await this.sleep(Math.max(retryAfter, 1000));
     }
   }

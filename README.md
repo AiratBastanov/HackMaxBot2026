@@ -12,6 +12,8 @@
 
 **Первое подключение, 24.09.2026:** BOT_API_INSPECTION=PASS: «Хакатон МАХ 432», ID `426717762`, [@t432_hakaton_max_bot](https://max.ru/t432_hakaton_max_bot), subscriptions=0. Ротация и единственный consumer подтверждены оператором. **MAXBOT_FIRST_MAX_SESSION_PARTIAL**: в web человек подтвердил меню, strict/полные условия и save/open; в mobile — ту же карточку после restart и удаление. Кандидат с неизвестной ценой сохранён в mobile и открыт в web с прежней пометкой; пустой /saved после /delete_data подтверждён точным текстом человека. Кнопка «Удалить мои данные» в пустом списке не означает запрос подтверждения. Полный mobile/web smoke остаётся REQUIRED: оставшиеся проверки указаны в [квитанции 11](docs/pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md). Сеансы ограничены по времени/запросам, БД/cursor сохранены. 179 тестов в 10 остаются историческим результатом; текущие 118 тестов описаны в 11.
 
+**Дополнение клиентской проверки, 24.09.2026:** [квитанция 12](docs/pivot/12_REAL_CLIENT_SMOKE_COMPLETION.md), **MAXBOT_REAL_CLIENT_SMOKE_PARTIAL**. WEB: подтверждены неверный/верный ввод и старые коды всех трёх форм, порядок/opt-in/исключения, дата/часовой пояс/давность, переход по example-ссылке, полные условия после restart и `/probe → /start`. В обоих клиентах подтверждены маркировка/меню и пустые закладки после явного erasure. CROSS_CLIENT_CONTINUITY=PASS для strict WEB→MOBILE и candidate MOBILE→WEB. Остались перечисленные в 12 подшаги редактирования/старых действий/поколений закладок и отдельные MOBILE-наблюдения; B не участвовал, изоляция NOT_VERIFIED. Код не менялся, исторические 118 тестов повторно не запускались. Production webhook и public deployment остаются NOT_VERIFIED.
+
 ## Тест в настоящем MAX без host
 
 После build и `npm.cmd run live:prepare` назначенная ignored конфигурация `.env.inspect`/`.env.polling` использует только `secrets/max_bot_token`, pin бота и synthetic-current snapshot. Новому оператору нужны подтверждения ротации и единственного consumer; неизвестный tester ID определяется одноразовым `pair` с отдельным подтверждением в терминале. Полный порядок — [runbook](docs/EXPLORATORY_MAX_RUNBOOK.md#b2-тестовый-polling-без-host).
@@ -28,7 +30,7 @@ npm.cmd run live:poll -- resume
 
 Начинать /start только после READY_FOR_TESTER_ACTION. По умолчанию сеанс ≤15 минут / 120 polling requests. По отдельной просьбе пользователя добавлен `npm.cmd run live:poll -- start --minutes 30`: явное новое окно до 30 минут с тем же пределом 120 запросов; `resume` его не продлевает. Dedicated test DB/cursor сохраняются; фоновой установки и публичного порта нет. A уже сопряжён, повторный `pair` для него не нужен. Если снимку больше часа: `node dist/scripts/prepare-flow-fixture.js --synthetic-current runtime/max-test/synthetic-next.json`, затем изменить только DATA_SNAPSHOT_PATH в ignored `.env.polling` на новый файл; существующий файл не перезаписывать. `pair` не запускает продуктовый flow и не пишет пользователям. PUBLIC_DISPLAY остаётся NOT_CLEARED. Для воспроизводимых offline проверок: `node scripts/first-max-checks.mjs` — 21 новый + 97 релевантных прежних тестов; это не real-client PASS.
 
-Последний сеанс завершился автоматически 24.09.2026 в 17:44:38 МСК: 81 попытка polling, 80 успешных ответов, 34 обработанных события; exit 0, mutex освобождён, незавершённых отправок нет. Сейчас бот отвечает только после нового явного запуска test runner.
+Последний сеанс завершился автоматически 24.09.2026 в **18:47:25 МСК**: 93 зарезервированных polling requests, 91 успешный ответ/commit, 55 обработанных событий; exit 0, mutex освобождён, незавершённых отправок нет. Restart сохранял исходный deadline, счётчик, БД/cursor и снимок. Полные итоги — в 12; прежний сеанс 17:44:38 сохранён в 11. Сейчас bot runner остановлен; новое окно требует отдельного явного решения, без автоматического сброса лимитов.
 
 ## Полный локальный путь без ключей
 
@@ -71,6 +73,8 @@ docker compose -f compose.flow-test.yaml stop
 - [Интегрированный диалог, закладки и текущая локальная проверка](docs/pivot/08_EXPLORATORY_BOT_RECEIPT.md).
 - [Этап 4: исправления, recovery и готовность real-client smoke](docs/pivot/09_STAGE4_CORRECTIONS_AND_SMOKE.md).
 - [Представление карточек и текущая готовность к проверке MAX](docs/pivot/10_USER_READINESS_AND_FIRST_MAX_CHECK.md).
+- [Первое authenticated подключение и test polling](docs/pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md).
+- [Дополнение mobile/web: выполненные подшаги и точный остаток](docs/pivot/12_REAL_CLIENT_SMOKE_COMPLETION.md).
 - [Комплект сдачи: DRAFT / NOT_SUBMITTED](docs/SUBMISSION_READINESS.md).
 - [Операторский backup/restore с карантином](docs/RECOVERY_RUNBOOK.md).
 
@@ -163,6 +167,6 @@ Inbox содержит нормализованные ID/тип/время и о
 
 Исходные [G0.1](docs/04_G0_1_REVIEW_RECEIPT.md), [G1](docs/05_G1_TECHNICAL_RECEIPT.md), их evidence и `docs/evidence/g1/source.sha256` сохранены без изменения. Manifest относится к прежнему состоянию документов и не переименован в свидетельство текущего дерева. Старые документы 01–03 помечены SUPERSEDED. PDF организатора, DOCX-пример, копии prompting guides, secrets, DB/sidecars, backups, private/raw, `.tools`, зависимости, `dist`, `.tmp` и `.review` исключены из публикации. Пользовательские оригиналы остаются локально. [Notices](THIRD_PARTY_NOTICES.md) не назначают лицензию этому проекту.
 
-**REAL_APPLICATION_SMOKE = REQUIRED; REAL_MAX_WEB = PARTIAL.** Текущие результаты обоих клиентов — в [квитанции 11](docs/pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md). [Точный runbook](docs/EXPLORATORY_MAX_RUNBOOK.md) ограничен маркированными синтетическими данными и согласившимися тестировщиками. Для test polling endpoint не нужен; production webhook проверяется отдельно.
+**REAL_APPLICATION_SMOKE = REQUIRED; REAL_MAX_MOBILE = PARTIAL; REAL_MAX_WEB = PARTIAL; CROSS_CLIENT_CONTINUITY = PASS в описанном объёме; CROSS_USER_ISOLATION = NOT_VERIFIED.** Текущие результаты — в [квитанции 12](docs/pivot/12_REAL_CLIENT_SMOKE_COMPLETION.md), история — в 11. [Runbook](docs/EXPLORATORY_MAX_RUNBOOK.md) ограничен маркированными синтетическими данными и согласившимися тестировщиками. Для test polling endpoint не нужен; production webhook проверяется отдельно.
 
-Следующий объём — реальные mobile/web проверки на согласованной инфраструктуре и разрешение условий публичного показа; спрос и устойчивое качество афиши остаются неподтверждёнными. Локальный исследовательский объём утверждён; напоминания и публичный выпуск не начинаются автоматически.
+Следующее решение выпуска — допустимый формат данных сдаваемой версии и конкретные одобренные host/domain/operator/период доступности; точные незавершённые клиентские проверки перечислены в 12. Спрос и устойчивое качество афиши остаются неподтверждёнными. Локальный исследовательский объём утверждён; напоминания и публичный выпуск не начинаются автоматически.

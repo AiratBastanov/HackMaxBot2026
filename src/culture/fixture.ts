@@ -12,6 +12,11 @@ export function flowFixture(clock: Date = syntheticClock) {
     e.sourceLabel = 'Источник: синтетический пример';
     for (const o of e.occurrences) o.id = o.id.replace(previous, e.id);
   }
+  // Нормализатор по-прежнему проверяет provider-domain входные fixtures.
+  // В пользовательском техническом сценарии ссылки ведут только на зарезервированный пример.
+  for (const [i, v] of s.venues.entries()) {
+    v.sourceUrl = `https://example.org/synthetic-venue-${i + 1}`; v.websiteUrl = null;
+  }
   s.events[0]!.title = 'СИНТЕТИКА: выставка света';
   s.events[1]!.title = 'СИНТЕТИКА: мастерская цвета';
   s.events[1]!.price = { kind: 'FROM', amount: null, lowerBound: 300, currency: 'RUB', applicability: 'UNRESOLVED', evidence: 'от 300 рублей', conditions: [] };

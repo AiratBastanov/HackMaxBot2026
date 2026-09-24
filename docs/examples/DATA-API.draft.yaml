@@ -1,0 +1,67 @@
+# DRAFT / NOT_SUBMITTED. Девять групп C05, PDF 10.
+# Ключи этого черновика не объявляются официальной схемой организаторов.
+status: DRAFT
+schema_version: null # Не предоставлена; не подменяется версией OpenAPI.
+solution: Культурный план
+team: null # Команда не указана.
+base_https_url: null # Одобренный действующий origin отсутствует.
+openapi: ../../openapi.json
+checks:
+  - name: Доступность процесса и SQLite
+    required: true
+    method: GET
+    path: /healthz
+    parameters:
+      query: []
+      path: []
+      headers: []
+      body: null
+    role: Проверяющий; авторизация не требуется
+    expected_responses:
+      '200':
+        content_type: application/json
+        type: object
+        required: [status, mode]
+        properties:
+          status: {const: ok}
+          mode: {enum: [local, live]}
+      '503':
+        content_type: application/json
+        type: object
+        required: [status]
+        properties:
+          status: {const: unavailable}
+    limitation: Не проверяет доставку MAX или публичную доступность.
+  - name: Приём, повтор, игнорирование и отказ webhook
+    required: true
+    method: POST
+    path: /webhooks/max
+    parameters:
+      query: []
+      path: []
+      headers:
+        - {name: Content-Type, required: true, value: application/json}
+        - name: X-Max-Bot-Api-Secret
+          required: true
+          value: null # Живое значение передаётся только согласованным закрытым способом.
+          schema_ref: ../../openapi.json#/components/securitySchemes/maxWebhookSecret
+      body:
+        required: true
+        schema_ref: ../../openapi.json#/components/schemas/Update
+        max_bytes: 65536
+    role: Сервис MAX с webhook secret; акторы A/B из согласованного allowlist
+    expected_responses:
+      '200':
+        content_type: application/json
+        type: object
+        required: [status]
+        properties:
+          status: {enum: [accepted, duplicate, ignored]}
+      '400': {content_type: application/json, type: object, required: [error], schema_ref: '../../openapi.json#/components/schemas/Error'}
+      '401': {content_type: application/json, type: object, required: [error], schema_ref: '../../openapi.json#/components/schemas/Error'}
+      '413': {content_type: application/json, type: object, required: [error], schema_ref: '../../openapi.json#/components/schemas/Error'}
+      '415': {content_type: application/json, type: object, required: [error], schema_ref: '../../openapi.json#/components/schemas/Error'}
+      '503': {content_type: application/json, type: object, required: [error], schema_ref: '../../openapi.json#/components/schemas/Error'}
+    fixtures: ../../tests/fixtures.ts
+    local_journey: ../../scripts/readiness-walkthrough.ts
+    limitation: HTTP 200 означает durable приём или безопасное игнорирование; не доказывает видимость в MAX.

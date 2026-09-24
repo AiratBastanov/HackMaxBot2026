@@ -30,8 +30,13 @@ async function main() {
       const previous=latest()?.id??0;const v=lifecycle('bot_started',clock(),ACTOR);delete (v as {payload?:string}).payload;await post(v);screen=await wait(previous);
       for (const label of ['Подобрать','Другая дата','Назад','Завтра','Другое время','Назад','12:00–18:00','Другая сумма','Назад','До 500 ₽','Театр','Показать результаты']) await click(label);
       if(!screen.body.text.includes('выставка света')||!screen.body.text.includes('театральная экспозиция')||screen.body.text.indexOf('театральная экспозиция')>screen.body.text.indexOf('выставка света')) throw Error('INTEREST_NOT_PREFERENCE');
-      for(const label of ['Показать варианты для проверки','Подробнее 3']) await click(label);
+      if(!screen.body.text.includes('Совпадает по известным условиям')||screen.body.text.includes('Варианты, где нужно уточнение')) throw Error('STRICT_GROUP');
+      await click('Показать варианты для проверки');
+      if(!screen.body.text.includes('Варианты, где нужно уточнение:\n\n3. СИНТЕТИКА: мастерская цвета')) throw Error('CANDIDATE_GROUP');
+      await click('Подробнее 3');
       if(!screen.body.text.includes('Нужно уточнить')) throw Error('UNCERTAINTY_LOST');
+      if(!/Пересечение с запросом:.*12:00.*18:00/.test(screen.body.text)) throw Error('KNOWN_TIME_LOST');
+      if(screen.body.attachments?.flatMap(a=>a.payload.buttons.flat()).some(b=>b.type==='link'&&new URL(b.url).hostname!=='example.org')) throw Error('SYNTHETIC_LINK');
       for(const label of ['К результатам','Дата','Другая дата','Назад','Завтра','Показать результаты']) await click(label);
       if(screen.body.text.includes('мастерская цвета')) throw Error('OPT_IN_NOT_RESET');
       await click('Подробнее 1');if(!screen.body.text.includes('17:30')||!screen.body.text.includes('200 ₽')||!screen.body.text.includes('Регистрация: обязательна'))throw Error('CONDITIONS_LOST');

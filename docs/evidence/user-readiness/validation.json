@@ -1,0 +1,308 @@
+{
+  "createdAt": "2026-09-24T11:53:56.168Z",
+  "baseHead": "ab38e1855bfddf8678aaa645ac63d043c4502f95",
+  "verdict": "MAXBOT_USER_READINESS_LOCAL_PASS",
+  "statuses": {
+    "LOCAL_USER_READINESS": "PASS",
+    "DOCKER": "PASS",
+    "BACKUP_RESTORE": "PASS_EXISTING_REGRESSIONS",
+    "REAL_MAX_INSPECTION": "NOT_VERIFIED",
+    "REAL_MAX_MOBILE": "NOT_VERIFIED",
+    "REAL_MAX_WEB": "NOT_VERIFIED",
+    "WEBHOOK_INGRESS": "NOT_VERIFIED",
+    "PUBLIC_DEPLOYMENT": "NOT_VERIFIED_NOT_DEPLOYED",
+    "SUBMISSION_PACKAGE": "DRAFT",
+    "REAL_APPLICATION_SMOKE": "REQUIRED",
+    "DATA_SUITABILITY": "EXPLORATORY_ONLY",
+    "PUBLIC_DISPLAY": "NOT_CLEARED"
+  },
+  "historical": {
+    "head": "ab38e1855bfddf8678aaa645ac63d043c4502f95",
+    "uniqueTests": 173,
+    "flow": 34,
+    "data": 82,
+    "unitContract": 32,
+    "integrationRecovery": 25,
+    "stage4EvidenceUnchanged": true
+  },
+  "initialRegression": {
+    "tests": 6,
+    "passed": 1,
+    "failed": 5,
+    "logSha256": "d0ba122b3687f5477b7c2dfadd6abac6b9787bfb9a6b4a0bfb58a9a40f40f71c",
+    "note": "Пять дефектов до исправлений; отрицательная проверка действительно неизвестного времени уже проходила."
+  },
+  "host": {
+    "node": "v22.23.2",
+    "platform": "win32",
+    "results": [
+      {
+        "name": "typecheck",
+        "args": [
+          "node_modules/typescript/bin/tsc",
+          "--noEmit"
+        ],
+        "result": "PASS",
+        "exitCode": 0,
+        "durationMs": 479,
+        "tests": 0,
+        "passed": 0,
+        "failed": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "build",
+        "args": [
+          "node_modules/typescript/bin/tsc"
+        ],
+        "result": "PASS",
+        "exitCode": 0,
+        "durationMs": 497,
+        "tests": 0,
+        "passed": 0,
+        "failed": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "unit",
+        "args": [
+          "--test",
+          "--test-timeout=10000",
+          "dist/tests/config.test.js",
+          "dist/tests/contracts.test.js",
+          "dist/tests/live-admin.test.js"
+        ],
+        "result": "PASS",
+        "exitCode": 0,
+        "durationMs": 428,
+        "tests": 32,
+        "passed": 32,
+        "failed": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "integration",
+        "args": [
+          "--test",
+          "--test-timeout=20000",
+          "dist/tests/integration.test.js",
+          "dist/tests/recovery.test.js"
+        ],
+        "result": "PASS",
+        "exitCode": 0,
+        "durationMs": 2524,
+        "tests": 25,
+        "passed": 25,
+        "failed": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "flow",
+        "args": [
+          "--test",
+          "--test-timeout=20000",
+          "dist/tests/flow-readiness.test.js",
+          "dist/tests/flow-runtime.test.js",
+          "dist/tests/flow-stage4.test.js"
+        ],
+        "result": "PASS",
+        "exitCode": 0,
+        "durationMs": 6278,
+        "tests": 40,
+        "passed": 40,
+        "failed": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "data",
+        "args": [
+          "--test",
+          "--test-timeout=10000",
+          "dist/tests/data-correction.test.js",
+          "dist/tests/data-io.test.js",
+          "dist/tests/data-normalize.test.js",
+          "dist/tests/data-select.test.js"
+        ],
+        "result": "PASS",
+        "exitCode": 0,
+        "durationMs": 1129,
+        "tests": 82,
+        "passed": 82,
+        "failed": 0,
+        "cancelled": 0
+      }
+    ]
+  },
+  "uniqueTests": 179,
+  "journey": {
+    "result": "PASS",
+    "generatedAt": "2026-09-24T11:46:01.760Z",
+    "fixtureClock": "2030-04-05T06:00:00.000Z",
+    "http": true,
+    "sqlite": true,
+    "worker": true,
+    "renderer": true,
+    "simulatedMax": true,
+    "strictOnly": true,
+    "explicitCandidates": true,
+    "knownCandidateTime": true,
+    "backPaths": 3,
+    "summaryEditing": 3,
+    "completeDetails": true,
+    "saveRestartRemoveResave": true,
+    "oldDeleteRejected": true,
+    "sourceUnavailable": true,
+    "erasureRestart": true,
+    "operations": 120,
+    "screens": 62,
+    "realMax": false
+  },
+  "docker": {
+    "project": "maxbot-readiness-1790250410513",
+    "image": "maxbot-readiness-1790250410513:test",
+    "sourceVersion": "2053fcdd856d6768c7a50a93420043d0c052dc674bbee3531581ab4eb59e8df6",
+    "cleanBuild": false,
+    "volumesPreserved": true,
+    "results": [
+      {
+        "name": "docker-build",
+        "result": "PASS",
+        "durationMs": 24143,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-up",
+        "result": "PASS",
+        "durationMs": 6211,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-journey",
+        "result": "PASS",
+        "durationMs": 55944,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-restart",
+        "result": "PASS",
+        "durationMs": 686,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-ready-after-restart",
+        "result": "PASS",
+        "durationMs": 5182,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-after-restart",
+        "result": "PASS",
+        "durationMs": 9622,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-image-inspect",
+        "result": "PASS",
+        "durationMs": 73,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-stop",
+        "result": "PASS",
+        "durationMs": 531,
+        "exitCode": 0
+      }
+    ]
+  },
+  "artifact": {
+    "imageId": "sha256:fa4f81b6008e8ac4bc4f9b7a6d658e26347cf4cc62a8b8afbd21d4bbe04e8340",
+    "user": "node",
+    "sourceVersion": "2053fcdd856d6768c7a50a93420043d0c052dc674bbee3531581ab4eb59e8df6",
+    "realMax": false,
+    "cleanBuild": false
+  },
+  "independentDockerOrFocusedRepeatsAreNotAdditionalTests": true,
+  "live": {
+    "authenticatedCalls": 0,
+    "botCredentials": "MISSING_CONFIRMED_BY_USER",
+    "approvedHost": "NOT_PROVIDED",
+    "consentingClientActions": "NOT_PROVIDED",
+    "pollingHelper": "NOT_IMPLEMENTED_NOT_NEEDED_WITHOUT_TOKEN",
+    "clientVersions": null,
+    "humanEvidence": null
+  },
+  "transcript": {
+    "path": "docs/evidence/user-readiness/synthetic-transcript.md",
+    "sha256": "2f72b67bbbc75b99aeb914d9c41434f7cc5cbee71b5638b5ca091788014cb251",
+    "generatedBy": "scripts/readiness-walkthrough.ts",
+    "handEdited": false
+  },
+  "candidateTrace": {
+    "query": {
+      "city": "kzn",
+      "start": "2030-04-06T09:00:00.000Z",
+      "end": "2030-04-06T15:00:00.000Z",
+      "budgetRub": 500,
+      "category": null,
+      "zone": null,
+      "kind": "ANY",
+      "preferences": {
+        "categories": []
+      }
+    },
+    "strictTotal": 2,
+    "uncertainTotal": 1,
+    "eventId": "synthetic:flow:2",
+    "price": {
+      "kind": "FROM",
+      "amount": null,
+      "lowerBound": 300,
+      "currency": "RUB",
+      "applicability": "UNRESOLVED",
+      "evidence": "от 300 рублей",
+      "conditions": []
+    },
+    "time": {
+      "from": "2030-04-06T09:00:00.000Z",
+      "until": "2030-04-06T15:00:00.000Z",
+      "lastEntry": null,
+      "assessment": {
+        "name": "time",
+        "state": "MATCH",
+        "detail": "Есть пересечение окна с опубликованными часами посещения."
+      }
+    },
+    "predicates": [
+      {
+        "name": "city",
+        "state": "MATCH",
+        "detail": "В поле города события указана Казань."
+      },
+      {
+        "name": "destination",
+        "state": "MATCH",
+        "detail": "Опубликован адрес: Казань, Вымышленная улица, 17 (адрес для теста)."
+      },
+      {
+        "name": "availability",
+        "state": "MATCH",
+        "detail": "В полученных полях нет отметки закрытия или отмены; наличие билетов не проверено."
+      },
+      {
+        "name": "price",
+        "state": "UNKNOWN",
+        "detail": "Нельзя подтвердить применимую цену для одного взрослого."
+      },
+      {
+        "name": "time",
+        "state": "MATCH",
+        "detail": "Есть пересечение окна с опубликованными часами посещения."
+      },
+      {
+        "name": "freshness",
+        "state": "MATCH",
+        "detail": "Применимые факты получены не более 24 часов назад; источник не сообщает дату изменения условий."
+      }
+    ]
+  }
+}

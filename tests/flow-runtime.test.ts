@@ -93,7 +93,7 @@ test('Отложенный экран отбрасывается при ново
   d.advance(1200); await d.runtime.worker.tick(); // callback ACK; экран ещё в outbox
   const next = flowFixture(); next.events[0]!.title += ' изменено'; d.catalog.replace(next); await d.drain();
   assert(d.runtime.store.db.prepare("SELECT 1 FROM outbox WHERE result='FLOW_OR_SNAPSHOT_CHANGED'").get());
-  assert.doesNotMatch(text(d),/Строгие совпадения/);
+  assert.doesNotMatch(text(d),/Совпадает по известным условиям/);
   await d.say('/start'); const p = d.payload('Подобрать'); await d.press(p,ACTOR,'queued',d.now + 1,false);
   await d.post(reply(undefined,d.now + 2,'/start',ACTOR,'new-home')); await d.drain(); assert.match(text(d),/Культурный план/);
 });

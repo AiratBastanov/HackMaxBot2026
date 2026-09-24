@@ -21,8 +21,8 @@ docs/evidence/stage4/validation.json docs/evidence/stage4/synthetic-transcript.m
 def git(*args):
     return subprocess.check_output(['git', *args], cwd=ROOT, timeout=60)
 
-def names():
-    paths = set(EXPLICIT)
+def names(extra=()):
+    paths = set(EXPLICIT) | set(extra)
     for directory in ['src', 'tests', 'scripts']:
         for path in (ROOT / directory).rglob('*'):
             if path.is_file() and path.suffix in {'.ts', '.mjs', '.py'}:
@@ -45,13 +45,20 @@ def audit(items):
 
 def main():
     assert Path.cwd().resolve() == ROOT, 'Запускать из корня проекта'
-    mode = sys.argv[1] if len(sys.argv) == 2 else ''
-    assert mode in {'audit', 'archive'}, 'Формат: audit | archive'
-    selected = names()
+    mode = sys.argv[1] if len(sys.argv) in {2, 3} else ''
+    assert mode in {'audit', 'archive'}, 'Формат: audit | archive [--user-readiness]'
+    assert len(sys.argv) == 2 or sys.argv[2] == '--user-readiness'
+    readiness = len(sys.argv) == 3
+    output = ROOT / ('.review/user-readiness' if readiness else '.review/stage4')
+    output.mkdir(parents=True, exist_ok=True)
+    archive_path = ROOT / '.review/user-readiness-source-review.zip' if readiness else ARCHIVE
+    selected = names(['docs/SUBMISSION_READINESS.md', 'docs/examples/DATA-API.draft.yaml',
+                      'docs/pivot/10_USER_READINESS_AND_FIRST_MAX_CHECK.md',
+                      'docs/evidence/user-readiness/validation.json',
+                      'docs/evidence/user-readiness/synthetic-transcript.md'] if readiness else [])
     if mode == 'audit':
         records = audit({p: (ROOT / p).read_bytes() for p in selected})
-        (ROOT / '.review/stage4').mkdir(parents=True, exist_ok=True)
-        (ROOT / '.review/stage4/review-audit.json').write_text(json.dumps(records, ensure_ascii=False, indent=2), encoding='utf-8')
+        (output / 'review-audit.json').write_text(json.dumps(records, ensure_ascii=False, indent=2), encoding='utf-8')
         print(json.dumps({'result': 'PASS', 'files': len(records), 'secretsOrPrivateFiles': False}))
         return
     assert not git('status', '--porcelain').strip(), 'Архив только после reviewed commit и чистого worktree'
@@ -61,14 +68,14 @@ def main():
     payload = {p: git('show', f'{commit}:{p}') for p in selected}
     records = audit(payload)
     inventory = {'commit': commit, 'payloadFiles': len(records), 'hashAlgorithm': 'SHA-256',
-                 'scope': 'STAGE4_LOCAL_HARDENING; REAL_MAX_NOT_VERIFIED; PUBLIC_DISPLAY_NOT_CLEARED',
+                 'scope': ('USER_READINESS_LOCAL_PASS; SUBMISSION_DRAFT' if readiness else 'STAGE4_LOCAL_HARDENING') + '; REAL_MAX_NOT_VERIFIED; PUBLIC_DISPLAY_NOT_CLEARED',
                  'hashPolicy': 'Inventory covers payload; SHA256SUMS also covers inventory. ZIP hash is external; no recursive self-hash.', 'files': records}
     payload['REVIEW_INVENTORY.json'] = (json.dumps(inventory, ensure_ascii=False, indent=2) + '\n').encode()
     payload['SHA256SUMS.txt'] = ''.join(f'{hashlib.sha256(data).hexdigest()}  {p}\n' for p, data in payload.items()).encode()
-    with zipfile.ZipFile(ARCHIVE, 'x', zipfile.ZIP_DEFLATED) as archive:
+    with zipfile.ZipFile(archive_path, 'x', zipfile.ZIP_DEFLATED) as archive:
         for name, data in payload.items():
             archive.writestr(name, data)
-    with zipfile.ZipFile(ARCHIVE) as archive:
+    with zipfile.ZipFile(archive_path) as archive:
         assert archive.testzip() is None
         assert len(archive.namelist()) == len(set(archive.namelist())) == len(payload)
         assert set(archive.namelist()) == set(payload)
@@ -76,10 +83,10 @@ def main():
             assert archive.read(name) == data, name
         for record in records:
             assert hashlib.sha256(archive.read(record['path'])).hexdigest() == record['sha256']
-    receipt = {'result': 'PASS', 'archive': ARCHIVE.relative_to(ROOT).as_posix(), 'commit': commit,
-               'entries': len(payload), 'payloadFiles': len(records), 'bytes': ARCHIVE.stat().st_size,
-               'sha256': hashlib.sha256(ARCHIVE.read_bytes()).hexdigest(), 'pathsHashesIntegrityVerified': True}
-    (ROOT / '.review/stage4/archive-receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+    receipt = {'result': 'PASS', 'archive': archive_path.relative_to(ROOT).as_posix(), 'commit': commit,
+               'entries': len(payload), 'payloadFiles': len(records), 'bytes': archive_path.stat().st_size,
+               'sha256': hashlib.sha256(archive_path.read_bytes()).hexdigest(), 'pathsHashesIntegrityVerified': True}
+    (output / 'archive-receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
     print(json.dumps(receipt))
 
 if __name__ == '__main__':

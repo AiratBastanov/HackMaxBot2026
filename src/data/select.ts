@@ -25,6 +25,7 @@ export type Predicate = { name: string; state: 'MATCH' | 'MISMATCH' | 'UNKNOWN';
 export type Candidate = { eventId: string; occurrenceId: string | null; title: string;
   source: { label: string; url: string }; predicates: Predicate[]; factsMatched: string[]; usefulFacts: string[];
   reasons: string[]; checkAtSource: string[]; price: NormalizedEvent['price'];
+  time: { from: string | null; until: string | null; lastEntry: string | null; assessment: Predicate };
   eventRetrievedAt: string; eventObservations: Observation[]; venueObservations: Observation[]; warnings: string[] };
 type Assessment = { hard: string[]; unknown: string[]; predicates: Predicate[]; facts: string[]; match?: Recommendation; candidate?: Candidate };
 function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | undefined, q: Query, clock: number): Assessment {
@@ -131,6 +132,7 @@ function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | un
       predicates: a.predicates, factsMatched: a.predicates.filter(p => p.state === 'MATCH').map(p => p.detail), usefulFacts: a.facts,
       reasons: [...new Set(a.unknown)].map(c => reasonText[c]!),
       checkAtSource: a.predicates.filter(p => p.state === 'UNKNOWN').map(p => `Проверить у источника: ${p.detail}`),
+      time: { from, until, lastEntry, assessment: a.predicates.find(p => p.name === 'time')! },
       price: e.price, eventRetrievedAt: e.retrievedAt, eventObservations: e.observations, venueObservations: venue?.observations ?? [],
       warnings: ['Непроверенный вариант; соответствие всем условиям запроса не установлено.', 'Наличие билета и выполнение регистрации пользователем не подтверждены.'] };
     return a;

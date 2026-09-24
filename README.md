@@ -6,7 +6,7 @@
 
 **Коррекция 24.09.2026: MAXBOT_KEYLESS_DATA_CORRECTION_PARTIAL / EXPLORATORY_ONLY.** Контракт v2 сохраняет отдельные наблюдения; до трёх непроверенных вариантов доступны только по `--include-uncertain`. После точечного обогащения строгие результаты четырёх контрольных запросов — **1/0/0/0**, отдельные кандидаты — **3/3/3/0**. Это не подтверждает устойчивую строгую подборку основного сценария. Причины, парное сравнение и решение — в [квитанции коррекции](docs/pivot/07_KEYLESS_DATA_CORRECTION_RECEIPT.md); [06](docs/pivot/06_DATA_MODULE_RECEIPT.md) сохраняет исторический baseline.
 
-**Текущее состояние, этап 4:** исправлены потеря условий карточки, возврат из ручного ввода, семантика интереса и callback ACK стирания. Интерес определяет порядок, обязательные дата/время/бюджет не расширяются. Обзор показывает место, адрес, сеанс/часы, последний вход, применимую цену и регистрацию; «Все условия» открывает полные поля страницами. Закладки сохраняют эти сведения после restart; старые закладки явно отмечают поля, которые раньше не сохранялись. [Квитанция 09](docs/pivot/09_STAGE4_CORRECTIONS_AND_SMOKE.md) содержит текущие результаты; [08](docs/pivot/08_EXPLORATORY_BOT_RECEIPT.md) остаётся историей этапов 2/3.
+**Текущее состояние, 24.09.2026:** LOCAL_USER_READINESS = PASS. Группы «Совпадает по известным условиям» и «Варианты, где нужно уточнение» разделены; кандидаты доступны только после opt-in текущего запроса. Известное время кандидата сохраняется при неизвестной цене. Интерес определяет порядок, обязательные дата/время/бюджет не расширяются. Карточки компактно показывают существенные условия, русскую дату и московский часовой пояс; одинаковые предупреждения/наблюдения сгруппированы, полные отличающиеся факты доступны через «Все условия». Закладки сохраняют контекст после restart. [Квитанция 10](docs/pivot/10_USER_READINESS_AND_FIRST_MAX_CHECK.md) и [черновик комплекта сдачи](docs/SUBMISSION_READINESS.md) содержат новые результаты; [09](docs/pivot/09_STAGE4_CORRECTIONS_AND_SMOKE.md) и [08](docs/pivot/08_EXPLORATORY_BOT_RECEIPT.md) сохраняют историю.
 
 **DATA_SUITABILITY = EXPLORATORY_ONLY; PUBLIC_DISPLAY = NOT_CLEARED; mobile/web MAX = NOT_VERIFIED.** Спорная идентичность строгого примера остаётся в карантине: исторический запрос даёт **0 strict / 3 кандидата**, исходная цена/адрес не заменены. Provider-карточки блокируются renderer, worker и транспортом. Технический synthetic deployment разрешён только на конкретном уже одобренном test environment; его live-предпосылки пока отсутствуют. Напоминания, новые данные, проверка спроса и публичный выпуск не выполнялись.
 
@@ -15,10 +15,10 @@
 ```powershell
 npm.cmd run build
 npm.cmd run test:flow
-node dist/scripts/stage4-walkthrough.js
+node dist/scripts/readiness-walkthrough.js
 ```
 
-`stage4-walkthrough` поднимает настоящий HTTP webhook на свободном loopback-порту, использует SQLite/worker/renderer и симулированный MAX. Новая ignored БД каждого прогона изолирована. Часы 2030 года и события явно synthetic; адреса/ссылки — вымышленные. `.review/stage4/synthetic-journey.txt` содержит Back, интерес, детали, save/restart/remove и erasure/restart. `flow:demo` сохраняет прежний сценарий этапов 2/3; он не обновляет историческую квитанцию.
+`readiness-walkthrough` поднимает настоящий HTTP webhook на свободном loopback-порту, использует SQLite/worker/renderer и симулированный MAX. Новая ignored БД каждого прогона изолирована. Часы 2030 года и события явно synthetic; адреса вымышленные, ссылки example.org обозначены как примеры. `.review/user-readiness/synthetic-transcript.md` содержит обе группы, Back/edit, детали, save/restart/remove/re-save, недоступный источник и стирание. Исторические walkthrough и evidence этапов 2–4 сохранены. Для полного небольшого набора проверок: `node scripts/readiness-checks.mjs` (179 уникальных тестов; отдельный повтор на другой платформе не добавляет тестов).
 
 При наличии старого кеша `npm.cmd run flow:replay` проходит приложение на исходных фактах с историческими часами 24.09.2026. Карточки сохраняются только в `.review/exploratory/private-real-replay.txt`. Это не новая загрузка/проверка источника. Отсутствие кеша — явная ошибка, без synthetic fallback.
 
@@ -33,7 +33,7 @@ docker compose -f compose.flow-test.yaml exec -T app node dist/scripts/flow-cont
 docker compose -f compose.flow-test.yaml stop
 ```
 
-Порт — `127.0.0.1:3008`; том отделён от G1. Первый smoke оставляет strict synthetic закладку с ценой 200 ₽/регистрацией/последним входом 17:30, второй проверяет условия после restart и удаляет её. Существующие тома не удаляются. Для нового одноразового project и offline public Compose preflight: `node scripts/stage4-docker-check.mjs`; ему нужен доступ к уже установленному Docker. Он останавливает только свой контейнер и сохраняет том. Закреплённые inputs не менялись; чистый submission benchmark остаётся этапом 5.
+Порт — `127.0.0.1:3008`; том отделён от G1. Первый smoke оставляет strict synthetic закладку с ценой 200 ₽/регистрацией/последним входом 17:30, второй проверяет условия после restart и удаляет её. Существующие тома не удаляются. Для новой проверки выбирайте одноразовый project: `node scripts/readiness-docker-check.mjs`; ему нужен доступ к уже установленному Docker. Он пересобирает образ, останавливает только свой контейнер и сохраняет том. Текущий rebuild занял 24,143 с; это не clean submission benchmark. Зависимости не менялись; финальный замер остаётся этапом 5. Предыдущий offline public Compose preflight описан в 09; live конфигурация без реквизитов не запускалась.
 
 Для частного реального снимка: `FLOW_DATA_MODE=real`, `DATA_SNAPSHOT_PATH=<локальный snapshot.json>`, `APP_MODE=local`. Снимок валидируется/замораживается на startup; чтение не обновляет timestamps. `FLOW_TEST_CLOCK` допустим только в local synthetic-test; любой live отклоняет внедрённые часы. Нет сети провайдера в webhook/worker.
 
@@ -50,6 +50,8 @@ docker compose -f compose.flow-test.yaml stop
 - [Коррекция отбора, кандидаты и ограниченное обогащение](docs/pivot/07_KEYLESS_DATA_CORRECTION_RECEIPT.md).
 - [Интегрированный диалог, закладки и текущая локальная проверка](docs/pivot/08_EXPLORATORY_BOT_RECEIPT.md).
 - [Этап 4: исправления, recovery и готовность real-client smoke](docs/pivot/09_STAGE4_CORRECTIONS_AND_SMOKE.md).
+- [Представление карточек и текущая готовность к проверке MAX](docs/pivot/10_USER_READINESS_AND_FIRST_MAX_CHECK.md).
+- [Комплект сдачи: DRAFT / NOT_SUBMITTED](docs/SUBMISSION_READINESS.md).
 - [Операторский backup/restore с карантином](docs/RECOVERY_RUNBOOK.md).
 
 Минкультуры/PRO и процесс ключа/экспорта — **DEFERRED_BY_USER**, не предпосылка MVP. Письма не отправляются, портал Culture.ru не скрапится, архивы больше не скачиваются. [Исследование 23.09](docs/pivot/04_CULTURE_SOURCE_REVIEW.md), его 10 synthetic tests и подготовленные сведения двух учреждений сохранены как история; автоматической подстановки этих сведений в живой каталог нет.

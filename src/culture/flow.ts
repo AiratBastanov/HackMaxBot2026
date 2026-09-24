@@ -9,7 +9,7 @@ import type { Button, MaxOperation } from '../max.js';
 import { canSend, observeContact } from '../probe.js';
 import type { Storage } from '../storage.js';
 import { Catalog } from './catalog.js';
-import { type Card, projectCard, fingerprint, compact, cardOverview, cardPages } from './card.js';
+import { type Card, projectCard, fingerprint, compact, cardOverview, cardPages, displayDate, displayInstant } from './card.js';
 export type { Card } from './card.js';
 export { fingerprint } from './card.js';
 
@@ -40,7 +40,7 @@ export function enterProbeRoute(store: Storage, event: AcceptedEvent, now: numbe
     .run(event.actor,(previous?.revision ?? 0)+1,event.timestamp,now,JSON.stringify(state));
 }
 function summary(s: State) {
-  return `Казань · ${s.draft.date} · ${s.draft.from}–${s.draft.until} (Москва)\nВход для одного взрослого: ${s.draft.budget === null ? 'без лимита цены' : `до ${s.draft.budget} ₽`}. Интерес: ${s.draft.category === 'exhibition' ? 'выставки' : s.draft.category === 'theater' ? 'театр' : 'любой'}.`;
+  return `Казань · ${displayDate(s.draft.date)} · ${s.draft.from}–${s.draft.until} (Москва, UTC+3)\nВход для одного взрослого: ${s.draft.budget === null ? 'без лимита цены' : `до ${s.draft.budget} ₽`}. Интерес: ${s.draft.category === 'exhibition' ? 'выставки' : s.draft.category === 'theater' ? 'театр' : 'любой'}.`;
 }
 export function bookmarkLimitation(c: Card, catalog: Catalog, now: number): string | null {
   if (sourceReviews.some(r => r.eventId === c.eventId)) return 'Запись изолирована: противоречие идентичности события. Не используйте её как рекомендацию.';
@@ -182,10 +182,12 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
   } else if (s.stage === 'results') {
     const q = makeQuery(s.draft), result = select(catalog.snapshot, q, new Date(now), config.flowDataMode === 'synthetic-test', s.optIn);
     s.cards = [...result.recommendations, ...result.uncertain].map(r => projectCard(catalog, q, r));
-    text = `${summary(s)}\n\n${result.recommendations.length ? 'Строгие совпадения по данным источника:' : statuses[result.status] ?? 'Строгих совпадений нет.'}`;
+    text = summary(s);
+    if (!result.recommendations.length) text += `\n\n${statuses[result.status] ?? 'Строгих совпадений нет.'}`;
     if (result.catalogIncomplete) text += '\nПокрытие неполное: это не вся афиша города.';
-    if (catalog.snapshot) text += `\nСписок получен: ${catalog.snapshot.retrievedAt}.`;
+    if (catalog.snapshot) text += `\nСписок получен: ${displayInstant(catalog.snapshot.retrievedAt)}.`;
     for (const [i,c] of s.cards.entries()) {
+      if (i === 0 || s.cards[i-1]!.kind !== c.kind) text += `\n\n${c.kind === 'STRICT' ? 'Совпадает по известным условиям' : 'Варианты, где нужно уточнение'}:`;
       text += `\n\n${i + 1}. ${compact(c.title)}\n${label(c)}${c.kind === 'UNCERTAIN' ? `\n${compact(c.unknown[0] ?? 'Уточните условия по источнику.',180)}` : ''}`;
       rows.push([button(`Подробнее ${i + 1}`, 'detail', c.identity)]);
     }

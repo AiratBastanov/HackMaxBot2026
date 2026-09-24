@@ -20,6 +20,10 @@ export class Storage {
     this.db.pragma('foreign_keys = ON');
     const version = this.db.pragma('user_version', { simple: true });
     if (![0, 1, 2].includes(Number(version))) { this.db.close(); throw new Error('Версия SQLite не поддерживается'); }
+    if(Number(version)>0) {
+      const recovery=this.getMeta('recovery_state');
+      if(recovery==='BACKUP'||recovery==='QUARANTINED') {this.db.close();throw new Error('RECOVERY_QUARANTINED');}
+    }
     try { this.db.transaction(() => {
       this.db.exec(`
         CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -71,6 +75,11 @@ export class Storage {
   accept(event: AcceptedEvent, now: number): 'accepted' | 'duplicate' {
     return this.db.transaction(() => {
       if (this.db.prepare('SELECT 1 FROM inbox WHERE delivery_key=?').get(event.key)) return 'duplicate' as const;
+      const cutoff=Number(this.getMeta('recovery_cutoff')??0);
+      if(event.timestamp<=cutoff) {
+        this.db.prepare("INSERT INTO inbox(delivery_key,kind,received_at,status,result,finished_at) VALUES(?,?,?,'PROCESSED','PRE_RECOVERY_EVENT',?)").run(event.key,event.kind,now,now);
+        return 'accepted' as const;
+      }
       const backlog = this.db.prepare("SELECT count(*) n FROM inbox WHERE status='PENDING'").get() as { n: number };
       if (backlog.n >= 1000) throw new Error('INBOX_FULL');
       this.db.prepare('INSERT INTO inbox(delivery_key,kind,payload,received_at) VALUES(?,?,?,?)').run(event.key, event.kind, JSON.stringify(event), now);

@@ -3,34 +3,32 @@ import type { Config } from '../config.js';
 import type { AcceptedEvent } from '../contracts.js';
 import { type Query, safeLink } from '../data/contract.js';
 import { localDate } from '../data/normalize.js';
-import { select, type Candidate, type Recommendation } from '../data/select.js';
+import { select } from '../data/select.js';
 import { sourceReviews } from '../data/reviews.js';
 import type { Button, MaxOperation } from '../max.js';
 import { canSend, observeContact } from '../probe.js';
 import type { Storage } from '../storage.js';
-import { Catalog, digest } from './catalog.js';
+import { Catalog } from './catalog.js';
+import { type Card, projectCard, fingerprint, compact, cardOverview, cardPages } from './card.js';
+export type { Card } from './card.js';
+export { fingerprint } from './card.js';
 
 type Stage = 'home' | 'date' | 'time' | 'budget' | 'interest' | 'summary' | 'results' | 'detail' | 'saved' | 'bookmark' | 'input' | 'delete' | 'erase' | 'about';
 type Draft = { date: string; from: string; until: string; budget: number | null; category: string | null };
-export type Card = { identity: string; eventId: string; occurrenceId: string | null; title: string;
-  source: { label: string; url: string }; kind: 'STRICT' | 'UNCERTAIN'; facts: string[]; unknown: string[];
-  snapshotVersion: string; fingerprint: string; retrievedAt: string; synthetic: boolean; query: Query;
-  occurrence: { kind: string; start: string | null; end: string | null } | null };
 type State = { stage: Stage; draft: Draft; editing: boolean; optIn: boolean; cards: Card[];
   route?: 'probe';
-  selected?: string; page: number; bookmark?: { identity: string; generation: string };
+  selected?: string; page: number; conditionPage?: number; bookmark?: { identity: string; generation: string };
   input?: { field: 'date' | 'time' | 'budget'; token: string }; notice?: string };
 export type StateRow = { actor: string; revision: number; event_ts: number; updated_at: number; data: string };
 type Action = { actor: string; revision: number; purpose: string; data: string; expires_at: number };
 type Bookmark = { identity: string; generation: string; data: string; saved_at: number };
 const TTL = 15 * 60000;
 const label = (c: Card) => c.kind === 'STRICT' ? 'Соответствует указанным данным источника' : 'Нужно уточнить условия';
-const short = (s: string, n = 220) => s.replace(/[\u0000-\u001f]/g, ' ').slice(0, n);
 const datePlus = (now: number, days: number) => localDate(new Date(now + days * 86400000).toISOString());
 export function getState(store: Storage, actor: string) { return store.db.prepare('SELECT * FROM flow_states WHERE actor=?').get(actor) as StateRow | undefined; }
 export function makeQuery(d: Draft): Query {
   return { city: 'kzn', start: new Date(`${d.date}T${d.from}:00+03:00`).toISOString(), end: new Date(`${d.date}T${d.until}:00+03:00`).toISOString(),
-    budgetRub: d.budget, category: d.category, zone: null, kind: 'ANY', preferences: { categories: [] } };
+    budgetRub: d.budget, category: null, zone: null, kind: 'ANY', preferences: { categories: d.category ? [d.category] : [] } };
 }
 function initial(now: number): State {
   return { stage: 'home', draft: { date: datePlus(now, 1), from: '12:00', until: '18:00', budget: 500, category: null }, editing: false, optIn: false, cards: [], page: 0 };
@@ -43,23 +41,6 @@ export function enterProbeRoute(store: Storage, event: AcceptedEvent, now: numbe
 }
 function summary(s: State) {
   return `Казань · ${s.draft.date} · ${s.draft.from}–${s.draft.until} (Москва)\nВход для одного взрослого: ${s.draft.budget === null ? 'без лимита цены' : `до ${s.draft.budget} ₽`}. Интерес: ${s.draft.category === 'exhibition' ? 'выставки' : s.draft.category === 'theater' ? 'театр' : 'любой'}.`;
-}
-export function fingerprint(catalog: Catalog, eventId: string) {
-  const e = catalog.snapshot?.events.find(e => e.id === eventId);
-  return e ? digest({ e, venues: catalog.snapshot!.venues.filter(v => e.occurrences.some(o => o.venueId === v.id)) }) : null;
-}
-function card(catalog: Catalog, q: Query, r: Recommendation | Candidate): Card {
-  const e = catalog.snapshot!.events.find(e => e.id === r.eventId)!;
-  const o = e.occurrences.find(o => o.id === r.occurrenceId);
-  const strict = 'from' in r;
-  const at = (v: string) => new Date(Date.parse(v) + 3 * 3600000).toISOString().slice(0,16).replace('T',' ');
-  const details = strict ? [`${o?.kind === 'TIMED_SESSION' ? 'Сеанс' : 'Пересечение часов посещения с запросом'}: ${at(r.from)} — ${at(r.until)} (Москва).`,
-    ...(e.price.evidence ? [`Цена в источнике: ${e.price.evidence}.`] : []), ...r.reasons] : [...r.usefulFacts, ...r.factsMatched];
-  return { identity: digest([r.eventId, r.occurrenceId]), eventId: r.eventId, occurrenceId: r.occurrenceId, title: short(r.title, 160), source: r.source,
-    kind: strict ? 'STRICT' : 'UNCERTAIN', facts: details.map(v => short(v)),
-    unknown: (strict ? [] : r.checkAtSource).map(v => short(v)), snapshotVersion: catalog.version, fingerprint: fingerprint(catalog, e.id)!,
-    retrievedAt: r.eventRetrievedAt, synthetic: catalog.snapshot!.mode === 'SYNTHETIC_FIXTURE', query: q,
-    occurrence: o ? { kind: o.kind, start: o.start, end: o.end } : null };
 }
 export function bookmarkLimitation(c: Card, catalog: Catalog, now: number): string | null {
   if (sourceReviews.some(r => r.eventId === c.eventId)) return 'Запись изолирована: противоречие идентичности события. Не используйте её как рекомендацию.';
@@ -114,6 +95,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     case 'home': s = initial(now); break;
     case 'pick': s = initial(now); s.stage = 'date'; break;
     case 'edit': s.stage = arg as Stage; s.editing = true; s.optIn = false; s.cards = []; delete s.selected; break;
+    case 'inputBack': s.stage = s.input!.field; delete s.input; break;
     case 'date': s.draft.date = arg; changed('time'); break;
     case 'time': [s.draft.from, s.draft.until] = arg.split('-') as [string, string]; changed('budget'); break;
     case 'budget': s.draft.budget = arg === 'none' ? null : Number(arg); changed('interest'); break;
@@ -139,7 +121,9 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     }
     case 'results': s.stage = 'results'; break;
     case 'uncertain': s.optIn = true; s.stage = 'results'; break;
-    case 'detail': s.selected = arg; s.stage = 'detail'; break;
+    case 'detail': s.selected = arg; s.stage = 'detail'; delete s.conditionPage; break;
+    case 'conditions': s.conditionPage = Number(arg || 0); break;
+    case 'conditionOverview': delete s.conditionPage; break;
     case 'save': {
       const c = s.cards.find(c => c.identity === s.selected);
       if (!c || c.snapshotVersion !== catalog.version || (c.kind === 'UNCERTAIN' && !s.optIn)) { s.stage = 'summary'; s.notice = 'Карточка устарела. Выполните подбор заново.'; break; }
@@ -149,8 +133,8 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
       s.notice = 'Сохранено в «Мои события». Это личная закладка, не покупка и не регистрация.'; break;
     }
     case 'saved': s.stage = 'saved'; s.page = Number(arg || 0); break;
-    case 'bookmark': s.bookmark = JSON.parse(arg); s.stage = 'bookmark'; break;
-    case 'remove': s.stage = 'delete'; break;
+    case 'bookmark': s.bookmark = JSON.parse(arg); s.stage = 'bookmark'; delete s.conditionPage; break;
+    case 'remove': s.stage = 'delete'; delete s.conditionPage; break;
     case 'confirmRemove':
       if (s.bookmark) store.db.prepare('DELETE FROM bookmarks WHERE actor=? AND identity=? AND generation=?').run(event.actor, s.bookmark.identity, s.bookmark.generation);
       s.stage = 'saved'; s.page = 0; s.notice = 'Закладка удалена, если она ещё существовала в этой версии.'; break;
@@ -158,7 +142,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     case 'confirmErase':
       store.db.prepare('DELETE FROM bookmarks WHERE actor=?').run(event.actor);
       store.db.prepare('DELETE FROM flow_actions WHERE actor=?').run(event.actor);
-      store.db.prepare("UPDATE outbox SET payload=NULL,status='STALE',result='PERSONAL_DATA_ERASED' WHERE actor=? AND purpose LIKE 'culture%'").run(event.actor);
+      store.db.prepare("UPDATE outbox SET payload=NULL,status='STALE',result='PERSONAL_DATA_ERASED',finished_at=COALESCE(finished_at,?) WHERE actor=? AND purpose LIKE 'culture%' AND action_key<>?").run(now,event.actor,`${event.key}:answer`);
       store.db.prepare("UPDATE inbox SET payload=NULL WHERE status<>'PENDING' AND json_extract(payload,'$.actor')=?").run(event.actor);
       s = initial(now); s.notice = 'Все закладки и прежние параметры удалены.'; break;
     case 'about': s.stage = 'about'; break;
@@ -188,21 +172,21 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     text = 'Бюджет на вход для одного взрослого? Дорога и дополнительные услуги не включены.';
     rows = [[button('Бесплатно', 'budget', '0'), button('До 500 ₽', 'budget', '500'), button('До 1000 ₽', 'budget', '1000')], [button('Без лимита', 'budget', 'none'), button('Другая сумма', 'custom', 'budget')], home()];
   } else if (s.stage === 'interest') {
-    text = 'Культурный интерес (необязательно):'; rows = [[button('Любой', 'interest'), button('Выставки', 'interest', 'exhibition'), button('Театр', 'interest', 'theater')], home()];
+    text = 'Культурный интерес (необязательно): покажем его раньше; другие категории тоже могут подойти.'; rows = [[button('Любой', 'interest'), button('Выставки', 'interest', 'exhibition'), button('Театр', 'interest', 'theater')], home()];
   } else if (s.stage === 'input') {
     const i = s.input!;
     const formats = { date: `${i.token} ГГГГ-ММ-ДД\nДата: сегодня или ближайшие 30 дней.`, time: `${i.token} ЧЧ:ММ-ЧЧ:ММ\nОдин день, 00:00–23:59; окончание позже начала.`, budget: `${i.token} СУММА\nЦелое число от 0 до 99999 рублей.` };
-    text = `Введите одной строкой, заменив обозначения:\n${formats[i.field]}\nКод связывает ввод с этим экраном.`; rows = [[button('Назад', 'edit', i.field)], home()];
+    text = `Введите одной строкой, заменив обозначения:\n${formats[i.field]}\nКод связывает ввод с этим экраном.`; rows = [[button('Назад', 'inputBack')], home()];
   } else if (s.stage === 'summary') {
     text = `Ваши условия:\n${summary(s)}\nПоказать строгие совпадения?`; rows = [[button('Показать результаты', 'results')], ...editors(), home()];
   } else if (s.stage === 'results') {
     const q = makeQuery(s.draft), result = select(catalog.snapshot, q, new Date(now), config.flowDataMode === 'synthetic-test', s.optIn);
-    s.cards = [...result.recommendations, ...result.uncertain].map(r => card(catalog, q, r));
+    s.cards = [...result.recommendations, ...result.uncertain].map(r => projectCard(catalog, q, r));
     text = `${summary(s)}\n\n${result.recommendations.length ? 'Строгие совпадения по данным источника:' : statuses[result.status] ?? 'Строгих совпадений нет.'}`;
     if (result.catalogIncomplete) text += '\nПокрытие неполное: это не вся афиша города.';
     if (catalog.snapshot) text += `\nСписок получен: ${catalog.snapshot.retrievedAt}.`;
     for (const [i,c] of s.cards.entries()) {
-      text += `\n\n${i + 1}. ${c.title}\n${label(c)}${c.kind === 'UNCERTAIN' ? `\n${c.unknown[0] ?? 'Уточните условия по источнику.'}` : ''}`;
+      text += `\n\n${i + 1}. ${compact(c.title)}\n${label(c)}${c.kind === 'UNCERTAIN' ? `\n${compact(c.unknown[0] ?? 'Уточните условия по источнику.',180)}` : ''}`;
       rows.push([button(`Подробнее ${i + 1}`, 'detail', c.identity)]);
     }
     if (s.optIn && !result.uncertain.length) text += '\nВариантов для проверки по этим условиям нет.';
@@ -216,11 +200,15 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     if (!c || (s.stage === 'detail' && (c.snapshotVersion !== catalog.version || (c.kind === 'UNCERTAIN' && !s.optIn)))) {
       text = 'Карточка устарела. Выполните подбор заново; событие не подменялось.'; rows = [[button('Подобрать', 'pick')], home()];
     } else {
-      text = `${c.title}\n${s.stage === 'detail' ? label(c) : `При сохранении: ${label(c)}`}\n${limitation ? `${limitation}\n` : ''}`;
-      text += `${c.unknown.length ? `Уточните у источника:\n${c.unknown.join('\n')}\n` : ''}${c.facts.slice(0, 5).join('\n')}\n`;
-      text += `Получено: ${c.retrievedAt}.\n${c.source.label}\n${c.occurrence?.kind === 'FLEXIBLE_VISIT' ? 'Дата запроса — намерение посетить, не официальное начало события.\n' : ''}Наличие билета и регистрация не подтверждены. Сохранение — только закладка.`;
+      text = `${compact(c.title)}\n${s.stage === 'detail' ? label(c) : `При сохранении: ${label(c)}`}\n${limitation ? `${limitation}\n` : ''}`;
+      if(s.conditionPage!==undefined) {
+        const pages=cardPages(c), page=Math.max(0,Math.min(s.conditionPage,pages.length-1));
+        text+=`Все условия · ${page+1}/${pages.length}\n${pages[page]}`;
+        rows.push([...(page>0?[button('Ранее условия','conditions',String(page-1))]:[]),...(page+1<pages.length?[button('Далее условия','conditions',String(page+1))]:[])]);
+        rows.push([button('К карточке','conditionOverview')]);
+      } else {text+=cardOverview(c);rows.push([button('Все условия','conditions')]);}
       audience = c.synthetic ? 'SYNTHETIC' : 'PROVIDER'; catalogVersion = catalog.version;
-      if (safeLink(c.source.url) && c.source.url.length <= 2048) rows.push([{ type: 'link', text: c.source.label, url: c.source.url }]);
+      for(const link of [c.source,...(c.visit?.links??[])]) if (safeLink(link.url) && link.url.length <= 2048) rows.push([{ type: 'link', text: compact(link.label,80), url: link.url }]);
       rows.push(s.stage === 'detail' ? [button('Сохранить', 'save'), button('К результатам', 'results')]
         : s.stage === 'delete' ? [button('Да, удалить', 'confirmRemove'), button('Отмена', 'saved')] : [button('Удалить закладку', 'remove')]);
       rows.push(home());
@@ -230,7 +218,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     text = 'Мои события — личные закладки. Сохранение не бронирует места.';
     if (!saved.length) text += '\nЗакладок пока нет.';
     for (const [i,b] of saved.slice(0,5).entries()) {
-      const c: Card = JSON.parse(b.data); text += `\n${s.page * 5 + i + 1}. ${c.title} · ${c.kind === 'UNCERTAIN' ? 'нужно уточнить' : 'совпадение при сохранении'}`;
+      const c: Card = JSON.parse(b.data); text += `\n${s.page * 5 + i + 1}. ${compact(c.title)} · ${c.kind === 'UNCERTAIN' ? 'нужно уточнить' : 'совпадение при сохранении'}`;
       rows.push([button(`Открыть ${i + 1}`, 'bookmark', JSON.stringify({ identity: b.identity, generation: b.generation }))]);
       if (!c.synthetic) audience = 'PROVIDER'; else audience ??= 'SYNTHETIC';
     }
@@ -251,7 +239,8 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
   if (s.notice) text = `${s.notice}\n\n${text}`;
   store.db.prepare('INSERT INTO flow_states(actor,revision,event_ts,updated_at,data) VALUES(?,?,?,?,?) ON CONFLICT(actor) DO UPDATE SET revision=excluded.revision,event_ts=excluded.event_ts,updated_at=excluded.updated_at,data=excluded.data')
     .run(event.actor, revision, event.timestamp, now, JSON.stringify(s));
+  if(text.length>3950) throw new Error('FLOW_SCREEN_LENGTH');
   store.enqueue(`${event.key}:screen`, event.actor, null, 'culture_screen', { method: 'messages', recipient: event.actor, audience,
-    body: { text: text.slice(0, 3950), notify: false, attachments: [{ type: 'inline_keyboard', payload: { buttons: rows } }] } }, now, now + 60000, { revision, catalogVersion });
+    body: { text, notify: false, attachments: [{ type: 'inline_keyboard', payload: { buttons: rows.filter(row=>row.length) } }] } }, now, now + 60000, { revision, catalogVersion });
   return valid ? 'FLOW_ACCEPTED' : 'FLOW_INVALID_INPUT';
 }

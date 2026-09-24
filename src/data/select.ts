@@ -132,7 +132,7 @@ function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | un
       reasons: [...new Set(a.unknown)].map(c => reasonText[c]!),
       checkAtSource: a.predicates.filter(p => p.state === 'UNKNOWN').map(p => `Проверить у источника: ${p.detail}`),
       price: e.price, eventRetrievedAt: e.retrievedAt, eventObservations: e.observations, venueObservations: venue?.observations ?? [],
-      warnings: ['Непроверенный вариант; соответствие всем условиям запроса не установлено.', 'Наличие билета и регистрация не подтверждены.'] };
+      warnings: ['Непроверенный вариант; соответствие всем условиям запроса не установлено.', 'Наличие билета и выполнение регистрации пользователем не подтверждены.'] };
     return a;
   }
   const reasons = [o.kind === 'TIMED_SESSION' ? 'Сеанс целиком в заданном окне по опубликованному времени.'
@@ -145,7 +145,7 @@ function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | un
     eventRetrievedAt: e.retrievedAt, eventObservations: e.observations, venueObservations: venue?.observations ?? [],
     warnings: ['Условия организатором повторно не проверены; получение API сегодня не подтверждает их свежесть.',
       ...(venue?.stub ? ['Редакционная карточка площадки — заглушка; сведения о помещении независимо не проверены.'] : []),
-      'Наличие билета и регистрация не подтверждены.', ...(o.kind === 'FLEXIBLE_VISIT'
+      'Наличие билета и выполнение регистрации пользователем не подтверждены.', ...(o.kind === 'FLEXIBLE_VISIT'
         ? ['Продолжительность осмотра и дорога не рассчитаны.', ...(lastEntry === null ? ['Последний вход не указан.'] : [])] : [])] };
   return a;
 }

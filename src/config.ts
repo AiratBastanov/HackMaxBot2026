@@ -19,6 +19,7 @@ const envSchema = z.object({
   FLOW_DATA_MODE: z.enum(['real', 'synthetic-test']).default('real'),
   DATA_SNAPSHOT_PATH: z.string().min(1).optional(),
   FLOW_TEST_CLOCK: z.string().datetime({offset:true}).optional(),
+  PUBLIC_DISPLAY: z.literal('NOT_CLEARED').default('NOT_CLEARED'),
 });
 
 export type Config = {
@@ -43,6 +44,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
   if (!parsed.success) throw new Error(`Конфигурация: проверьте ${[...new Set(parsed.error.issues.map(i => i.path[0]))].join(', ')}`);
   const v = parsed.data;
   if (v.FLOW_TEST_CLOCK && v.FLOW_DATA_MODE !== 'synthetic-test') throw new Error('Конфигурация: FLOW_TEST_CLOCK требует synthetic-test');
+  if(v.APP_MODE==='live'&&v.FLOW_TEST_CLOCK) throw new Error('Конфигурация: FLOW_TEST_CLOCK запрещён для реальных клиентов');
   const testerIds = v.PROBE_TESTER_IDS.split(',').map(s => s.trim());
   if (testerIds.length > 20 || testerIds.some(s => !id.safeParse(s).success)) throw new Error('Конфигурация: PROBE_TESTER_IDS');
   if (v.APP_MODE === 'local' && (v.MAX_BOT_TOKEN || v.PUBLIC_BASE_URL || v.LIVE_SCOPE_CONFIRMED === 'true')) {
@@ -63,4 +65,15 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     botId: v.MAX_EXPECTED_BOT_ID ?? '777', publicBaseUrl: v.PUBLIC_BASE_URL?.replace(/\/$/, ''),
     testers: new Set(testerIds), probeTtlMs: v.PROBE_TTL_SECONDS * 1000, requestTimeoutMs: v.MAX_REQUEST_TIMEOUT_MS,
     flowDataMode: v.FLOW_DATA_MODE, snapshotPath: v.DATA_SNAPSHOT_PATH, flowTestClock: v.FLOW_TEST_CLOCK };
+}
+
+// Read-only /me и /subscriptions не требуют доступного deployment, webhook secret или testers.
+export function loadInspectionConfig(env:NodeJS.ProcessEnv) {
+  if(env.MAX_INSPECTION_SCOPE_CONFIRMED!=='true') throw Error('INSPECTION_SCOPE_NOT_CONFIRMED');
+  if(env.MAX_BOT_TOKEN&&env.MAX_BOT_TOKEN_FILE) throw Error('INSPECTION_DUPLICATE_TOKEN');
+  let token=env.MAX_BOT_TOKEN;
+  if(env.MAX_BOT_TOKEN_FILE) {try {token=readFileSync(env.MAX_BOT_TOKEN_FILE,'utf8').trim();} catch {throw Error('INSPECTION_TOKEN_FILE');}}
+  if(!token||token.length<16||/\s|PLACEHOLDER/.test(token)) throw Error('INSPECTION_TOKEN_REQUIRED');
+  if(env.MAX_EXPECTED_BOT_ID&&!id.safeParse(env.MAX_EXPECTED_BOT_ID).success) throw Error('INSPECTION_BOT_ID_INVALID');
+  return {token,apiBaseUrl:'https://platform-api2.max.ru',requestTimeoutMs:5000,expectedBotId:env.MAX_EXPECTED_BOT_ID};
 }

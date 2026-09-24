@@ -22,12 +22,20 @@ async function main() {
   try {
     if (process.argv.includes('--verify-restart')) {
       const row=db.prepare('SELECT data FROM bookmarks WHERE actor=?').get(ACTOR) as {data:string}|undefined;
-      if (!row || (JSON.parse(row.data) as Card).kind !== 'UNCERTAIN') throw Error('BOOKMARK_NOT_DURABLE');
+      if (!row || (JSON.parse(row.data) as Card).kind !== 'STRICT') throw Error('BOOKMARK_NOT_DURABLE');
       const previous=latest()?.id??0;const v=lifecycle('bot_started',clock(),ACTOR);delete (v as {payload?:string}).payload;await post(v);screen=await wait(previous);
-      await click('Мои события');await click('Открыть 1');if(!screen.body.text.includes('Нужно уточнить'))throw Error('UNCERTAINTY_LOST');await click('Удалить закладку');await click('Да, удалить');
+      await click('Мои события');await click('Открыть 1');if(!screen.body.text.includes('17:30')||!screen.body.text.includes('Регистрация: обязательна'))throw Error('CONDITIONS_LOST');await click('Удалить закладку');await click('Да, удалить');
+      if(db.prepare('SELECT 1 FROM bookmarks WHERE actor=?').get(ACTOR)) throw Error('REMOVE_FAILED');
     } else {
       const previous=latest()?.id??0;const v=lifecycle('bot_started',clock(),ACTOR);delete (v as {payload?:string}).payload;await post(v);screen=await wait(previous);
-      for (const label of ['Подобрать','Завтра','12:00–18:00','До 500 ₽','Любой','Показать результаты','Показать варианты для проверки','Подробнее 2','Сохранить','Мои события']) await click(label);
+      for (const label of ['Подобрать','Другая дата','Назад','Завтра','Другое время','Назад','12:00–18:00','Другая сумма','Назад','До 500 ₽','Театр','Показать результаты']) await click(label);
+      if(!screen.body.text.includes('выставка света')||!screen.body.text.includes('театральная экспозиция')||screen.body.text.indexOf('театральная экспозиция')>screen.body.text.indexOf('выставка света')) throw Error('INTEREST_NOT_PREFERENCE');
+      for(const label of ['Показать варианты для проверки','Подробнее 3']) await click(label);
+      if(!screen.body.text.includes('Нужно уточнить')) throw Error('UNCERTAINTY_LOST');
+      for(const label of ['К результатам','Дата','Другая дата','Назад','Завтра','Показать результаты']) await click(label);
+      if(screen.body.text.includes('мастерская цвета')) throw Error('OPT_IN_NOT_RESET');
+      await click('Подробнее 1');if(!screen.body.text.includes('17:30')||!screen.body.text.includes('200 ₽')||!screen.body.text.includes('Регистрация: обязательна'))throw Error('CONDITIONS_LOST');
+      for(const label of ['Все условия','К карточке','Сохранить','Мои события']) await click(label);
       if (!db.prepare('SELECT 1 FROM bookmarks WHERE actor=?').get(ACTOR)) throw Error('SAVE_FAILED');
     }
     writeFileSync(`/app/runtime/${process.argv.includes('--verify-restart')?'restart':'walkthrough'}-synthetic.txt`,transcript.join('\n\n'));

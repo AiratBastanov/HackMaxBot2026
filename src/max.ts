@@ -32,17 +32,17 @@ function retryAfter(value: string | null): number | undefined {
   return Number.isFinite(delay) ? Math.max(0, delay) : undefined;
 }
 
-export class LiveMax implements MaxTransport {
-  constructor(private readonly config: Config, private readonly fetcher: typeof fetch = fetch) {
-    if (config.mode !== 'live' || !config.token) throw new Error('LiveMax требует live-конфигурацию');
+export class ReadOnlyMax {
+  constructor(private readonly access:Pick<Config,'token'|'apiBaseUrl'|'requestTimeoutMs'>, private readonly fetcher: typeof fetch = fetch) {
+    if(!access.token) throw Error('MAX_TOKEN_REQUIRED');
   }
-  private async request(method: string, path: string, body?: unknown): Promise<unknown> {
+  protected async request(method: string, path: string, body?: unknown): Promise<unknown> {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), this.config.requestTimeoutMs);
+    const timer = setTimeout(() => controller.abort(), this.access.requestTimeoutMs);
     try {
-      const response = await this.fetcher(`${this.config.apiBaseUrl}${path}`, {
+      const response = await this.fetcher(`${this.access.apiBaseUrl}${path}`, {
         method, redirect: 'error', signal: controller.signal,
-        headers: { Authorization: this.config.token!, 'Content-Type': 'application/json' },
+        headers: { Authorization: this.access.token!, 'Content-Type': 'application/json' },
         ...(body === undefined ? {} : { body: JSON.stringify(body) }),
       });
       if (response.status !== 200) {
@@ -69,9 +69,24 @@ export class LiveMax implements MaxTransport {
       throw new MaxError(controller.signal.aborted ? 'TIMEOUT_AMBIGUOUS' : 'TRANSPORT_AMBIGUOUS');
     } finally { clearTimeout(timer); }
   }
-  private validate<T>(fn: () => T): T {
+  protected validate<T>(fn: () => T): T {
     try { return fn(); } catch (e) { if (e instanceof MaxError) throw e; throw new MaxError('MALFORMED', 200); }
   }
+  async me(expectedBotId?:string) {
+    const raw=await this.request('GET','/me');
+    return this.validate(()=>{const bot=userSchema.parse(raw);if(!bot.is_bot||(expectedBotId&&bot.user_id!==expectedBotId)) throw new MaxError('AUTH',200);return bot;});
+  }
+  async subscriptions() {
+    const raw=await this.request('GET','/subscriptions');
+    return this.validate(()=>subscriptionsSchema.parse(raw).subscriptions);
+  }
+}
+export class LiveMax extends ReadOnlyMax implements MaxTransport {
+  constructor(private readonly config:Config,fetcher:typeof fetch=fetch) {
+    super(config,fetcher);
+    if(config.mode!=='live'||!config.token) throw new Error('LiveMax требует live-конфигурацию');
+  }
+  override async me() {return super.me(this.config.botId);}
   async execute(op: MaxOperation): Promise<MaxResult> {
     validateOperation(op);
     if (op.audience === 'PROVIDER' || (op.audience === 'SYNTHETIC' && this.config.flowDataMode !== 'synthetic-test')) throw new MaxError('PERMISSION');
@@ -83,14 +98,6 @@ export class LiveMax implements MaxTransport {
     const raw = await this.request('POST', `/answers?callback_id=${encodeURIComponent(op.callbackId)}&disable_link_preview=true`, op.body);
     this.validate(() => { if (!simpleResultSchema.parse(raw).success) throw new MaxError('SEMANTIC', 200); });
     return { simulated: false };
-  }
-  async me() {
-    const raw = await this.request('GET', '/me');
-    return this.validate(() => { const bot = userSchema.parse(raw); if (!bot.is_bot || bot.user_id !== this.config.botId) throw new MaxError('AUTH', 200); return bot; });
-  }
-  async subscriptions() {
-    const raw = await this.request('GET', '/subscriptions');
-    return this.validate(() => subscriptionsSchema.parse(raw).subscriptions);
   }
   async subscribe(url: string, types: string[]) {
     const raw = await this.request('POST', '/subscriptions', { url, update_types: types, secret: this.config.webhookSecret });

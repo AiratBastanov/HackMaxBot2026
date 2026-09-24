@@ -1,0 +1,235 @@
+{
+  "createdAt": "2026-09-24T11:02:58.522Z",
+  "baseHead": "09810558ede26e58ecc182a21b97c99d8ab84cc8",
+  "externalReviewArchiveSha256": "bd0bd95570f999856fad58f096146c28f7c87f18e6e7bedd3062d1421c6c04be",
+  "verdict": "MAXBOT_STAGE4_LOCAL_HARDENING_PASS",
+  "historicalCounts": {
+    "flow": 24,
+    "data": 82,
+    "unitContract": 29,
+    "integration": 21
+  },
+  "initialRegression": {
+    "tests": 8,
+    "passed": 1,
+    "failed": 7,
+    "note": "До исправлений; после исправлений те же 8/8 PASS. Два дополнительных flow-теста проверяют legacy bookmark и timed session."
+  },
+  "host": {
+    "node": "v22.23.2",
+    "platform": "win32",
+    "results": [
+      {
+        "name": "typecheck",
+        "result": "PASS",
+        "exitCode": 0,
+        "durationMs": 486,
+        "tests": 0,
+        "passed": 0,
+        "failed": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "build",
+        "result": "PASS",
+        "exitCode": 0,
+        "durationMs": 513,
+        "tests": 0,
+        "passed": 0,
+        "failed": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "unit",
+        "result": "PASS",
+        "exitCode": 0,
+        "durationMs": 450,
+        "tests": 32,
+        "passed": 32,
+        "failed": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "integration",
+        "result": "PASS",
+        "exitCode": 0,
+        "durationMs": 2470,
+        "tests": 25,
+        "passed": 25,
+        "failed": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "flow",
+        "result": "PASS",
+        "exitCode": 0,
+        "durationMs": 6234,
+        "tests": 34,
+        "passed": 34,
+        "failed": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "data",
+        "result": "PASS",
+        "exitCode": 0,
+        "durationMs": 1206,
+        "tests": 82,
+        "passed": 82,
+        "failed": 0,
+        "cancelled": 0
+      }
+    ]
+  },
+  "docker": {
+    "project": "maxbot-stage4-1790247184024",
+    "image": "maxbot-stage4-1790247184024:test",
+    "sourceVersion": "c09c2b53cf2d1cf03e18511b80ee917cff73ab9157227c5d88e42466b311b940",
+    "cleanBuild": false,
+    "results": [
+      {
+        "name": "docker-build",
+        "result": "PASS",
+        "durationMs": 34746,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-up",
+        "result": "PASS",
+        "durationMs": 6209,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-journey",
+        "result": "PASS",
+        "durationMs": 56068,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-restart",
+        "result": "PASS",
+        "durationMs": 758,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-after-restart",
+        "result": "FAIL",
+        "durationMs": 239,
+        "exitCode": 1
+      },
+      {
+        "name": "docker-stop",
+        "result": "PASS",
+        "durationMs": 493,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-resume-ready",
+        "result": "PASS",
+        "durationMs": 6077,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-after-restart",
+        "result": "PASS",
+        "durationMs": 10370,
+        "exitCode": 0
+      },
+      {
+        "name": "compose-preflight",
+        "result": "PASS",
+        "durationMs": 113,
+        "exitCode": 0
+      },
+      {
+        "name": "container-preflight",
+        "result": "PASS",
+        "durationMs": 785,
+        "exitCode": 0
+      },
+      {
+        "name": "image-inspect",
+        "result": "PASS",
+        "durationMs": 89,
+        "exitCode": 0
+      },
+      {
+        "name": "docker-stop",
+        "result": "PASS",
+        "durationMs": 484,
+        "exitCode": 0
+      }
+    ],
+    "imageId": "sha256:67158f3fbcd084ca874917aa083e42708c0ca77119734c9d0f06581f539d2b97",
+    "user": "node",
+    "snapshotMount": true,
+    "secretMount": true,
+    "placeholderInterpolation": true,
+    "appBinding": "0.0.0.0:3000",
+    "providerDisplay": "NOT_CLEARED",
+    "volumesPreserved": true,
+    "realMax": false,
+    "compiledRuntimeFiles": 37,
+    "allRuntimeBytesMatchHostBuild": true,
+    "retryReason": "Первый restart probe стартовал до готовности HTTP. Добавлено ожидание health; повторены только зависимые checks на том же томе. Runtime не менялся."
+  },
+  "recovery": {
+    "result": "PASS",
+    "disposable": true,
+    "liveDatabaseTouched": false,
+    "results": [
+      {
+        "command": "backup",
+        "durationMs": 113,
+        "schema": 2,
+        "identity": "local:777",
+        "createdAt": "2026-09-24T11:01:39.565Z",
+        "integrity": "ok",
+        "state": "BACKUP"
+      },
+      {
+        "command": "restore",
+        "durationMs": 92,
+        "schema": 2,
+        "identity": "local:777",
+        "createdAt": "2026-09-24T11:01:39.565Z",
+        "integrity": "ok",
+        "state": "QUARANTINED"
+      },
+      {
+        "command": "discard",
+        "durationMs": 88,
+        "schema": 2,
+        "identity": "local:777",
+        "createdAt": "2026-09-24T11:01:39.775Z",
+        "integrity": "ok",
+        "state": "RESOLVED_DISCARDED"
+      }
+    ]
+  },
+  "localJourney": {
+    "result": "PASS",
+    "http": true,
+    "sqlite": true,
+    "operations": 64,
+    "backPaths": 3,
+    "interestPreference": true,
+    "essentialConditions": true,
+    "saveRestartRemove": true,
+    "erasureRestart": true,
+    "realMax": false
+  },
+  "live": {
+    "readOnlyBotInspection": "NOT_VERIFIED",
+    "deployment": "NOT_PERFORMED",
+    "subscriptionsChanged": false,
+    "mobile": "NOT_VERIFIED",
+    "web": "NOT_VERIFIED",
+    "clientVersions": null,
+    "humanObservations": [],
+    "reason": "Пользователь подтвердил отсутствие live-предпосылок; передача A/B/C в runbook."
+  },
+  "dataSuitability": "EXPLORATORY_ONLY",
+  "publicDisplay": "NOT_CLEARED",
+  "realApplicationSmoke": "REQUIRED"
+}

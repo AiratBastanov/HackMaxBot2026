@@ -8,7 +8,7 @@ import { Worker } from './worker.js';
 import { Catalog } from './culture/catalog.js';
 
 export function createApp(config: Config, options: { store?: Storage; transport?: MaxTransport; clock?: () => number; catalog?: Catalog; report?: (value: object) => void } = {}) {
-  if (config.mode === 'live' && options.clock && config.flowDataMode !== 'synthetic-test') throw new Error('LIVE_CLOCK_INJECTION_FORBIDDEN');
+  if (config.mode === 'live' && (options.clock||config.flowTestClock)) throw new Error('LIVE_CLOCK_INJECTION_FORBIDDEN');
   const catalog = options.catalog ?? Catalog.load(config);
   if (catalog.mode !== config.flowDataMode) throw new Error('CATALOG_MODE_MISMATCH');
   const started = Date.now();

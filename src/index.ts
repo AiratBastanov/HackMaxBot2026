@@ -1,8 +1,11 @@
 import { loadConfig } from './config.js';
 import { createApp } from './app.js';
+import { LiveMax } from './max.js';
 
 async function main() {
   const config = loadConfig(process.env);
+  // Только GET. Runtime не регистрирует webhook; identity проверяется до открытия БД/порта.
+  if(config.mode==='live') await new LiveMax(config).me();
   const runtime = createApp(config, { report: value => console.log(JSON.stringify(value)) });
   await runtime.app.listen({ port: config.port, host: config.host });
   runtime.worker.start();

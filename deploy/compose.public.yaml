@@ -1,22 +1,44 @@
 # Только на уже согласованном host. Не запускается локальным smoke.
-name: maxbot-g1-public
+name: maxbot-stage4-client-test
 services:
   app:
-    image: maxbot-g1:reviewed
+    image: maxbot-stage4:reviewed
     build:
       context: ..
       target: runtime
       args:
         SOURCE_VERSION: ${SOURCE_VERSION:?Укажите hash рассмотренного source manifest}
-    env_file: ../.env.live
     environment:
       APP_MODE: live
       HOST: 0.0.0.0
       PORT: "3000"
-      DATABASE_PATH: /app/runtime/probe.sqlite
+      DATABASE_PATH: /app/runtime/client-test.sqlite
+      FLOW_DATA_MODE: synthetic-test
+      PUBLIC_DISPLAY: NOT_CLEARED
+      DATA_SNAPSHOT_PATH: /app/fixtures/synthetic-client-test.json
+      MAX_EXPECTED_BOT_ID: ${MAX_EXPECTED_BOT_ID:?Сначала закрепите identity через GET /me}
+      MAX_BOT_TOKEN_FILE: /run/secrets/max_bot_token
+      MAX_WEBHOOK_SECRET_FILE: /run/secrets/max_webhook_secret
+      PUBLIC_BASE_URL: https://${PUBLIC_HOST}
+      PROBE_TESTER_IDS: ${PROBE_TESTER_IDS:?Нужны consenting testers}
+      LIVE_SCOPE_CONFIRMED: ${LIVE_SCOPE_CONFIRMED:?Нужна подтверждённая область доступа}
+      NODE_EXTRA_CA_CERTS: ${NODE_EXTRA_CA_CERTS_CONTAINER:-}
+      LIVE_EXCLUSIVE_CONSUMER_CONFIRMED: ${LIVE_EXCLUSIVE_CONSUMER_CONFIRMED:-false}
+      LIVE_SUBSCRIPTION_JOURNAL_DIR: /app/runtime/subscription-journal
     volumes:
-      - probe-data:/app/runtime
-      - ../secrets:/run/secrets:ro
+      - client-test-data:/app/runtime
+      - type: bind
+        source: ${MAX_SECRETS_DIR:-../secrets}
+        target: /run/secrets
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${LIVE_SNAPSHOT_PATH:?Нужен новый synthetic snapshot на фактическое время}
+        target: /app/fixtures/synthetic-client-test.json
+        read_only: true
+        bind:
+          create_host_path: false
     read_only: true
     tmpfs: [/tmp]
     cap_drop: [ALL]
@@ -39,6 +61,6 @@ services:
         condition: service_healthy
     restart: unless-stopped
 volumes:
-  probe-data:
+  client-test-data:
   caddy-data:
   caddy-config:

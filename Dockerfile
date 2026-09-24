@@ -6,12 +6,13 @@ COPY tsconfig.json ./
 COPY src ./src
 COPY tests ./tests
 COPY scripts ./scripts
-RUN npm run typecheck && npm run build && npm test
+RUN npm run typecheck && npm run build && npm test && npm run test:flow && npm run test:data
+RUN node --input-type=module -e "import {flowFixture} from './dist/src/culture/fixture.js'; import {writeFileSync} from 'node:fs'; writeFileSync('/app/synthetic-catalog.json',JSON.stringify(flowFixture()));"
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
 FROM node:22.23.2-bookworm-slim@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9 AS runtime
 ARG SOURCE_VERSION=local-unreviewed
-LABEL org.opencontainers.image.title="MAX G1: технический тест" \
+LABEL org.opencontainers.image.title="Культурный план: локальный исследовательский прототип" \
       org.opencontainers.image.version="0.1.0" \
       org.opencontainers.image.revision="${SOURCE_VERSION}"
 ENV NODE_ENV=production
@@ -22,6 +23,7 @@ COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/dist/src ./dist/src
 COPY --from=build /app/dist/scripts ./dist/scripts
 COPY --from=build /app/dist/tests/fixtures.js ./dist/tests/fixtures.js
+COPY --from=build /app/synthetic-catalog.json ./synthetic-catalog.json
 USER node
 EXPOSE 3000
 HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \

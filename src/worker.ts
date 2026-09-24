@@ -3,14 +3,19 @@ import type { AcceptedEvent } from './contracts.js';
 import { MaxError, type MaxOperation, type MaxTransport } from './max.js';
 import { Storage } from './storage.js';
 import { canSend, processProbe } from './probe.js';
+import { Catalog } from './culture/catalog.js';
+import { getState, processCulture, enterProbeRoute } from './culture/flow.js';
 
 export class Worker {
   private timer?: NodeJS.Timeout;
   private current?: Promise<void>;
   private stopping = false;
   private lastCleanup = 0;
+  private ticking = false;
+  private nextFlowSend = 0;
   constructor(readonly store: Storage, private readonly config: Config, private readonly max: MaxTransport,
-    private readonly clock: () => number = Date.now, private readonly report: (value: object) => void = () => {}) {}
+    private readonly clock: () => number = Date.now, private readonly report: (value: object) => void = () => {},
+    private readonly catalog: Catalog = new Catalog(config.flowDataMode)) {}
 
   start() {
     this.stopping = false;
@@ -23,12 +28,30 @@ export class Worker {
   }
   async stop() { this.stopping = true; clearTimeout(this.timer); await this.current; }
   async tick(): Promise<void> {
+    if (this.ticking) return;
+    this.ticking = true;
+    try { await this.runTick(); } finally { this.ticking = false; }
+  }
+  private async runTick(): Promise<void> {
     // Один process/tick; транзакции только синхронные. Сеть идёт после commit.
     for (const row of this.store.pendingInbox(20)) {
       try {
         this.store.db.transaction(() => {
           const now = this.clock();
-          const result = processProbe(this.store, this.config, JSON.parse(row.payload) as AcceptedEvent, now);
+          const event = JSON.parse(row.payload) as AcceptedEvent;
+          const flowState = getState(this.store,event.actor);
+          const probeRoute = !flowState || JSON.parse(flowState.data).route === 'probe';
+          const probe = event.probeEntry || event.commandId || (event.kind === 'message_created' && !event.homeEntry && !event.input && probeRoute && this.store.latestProbe(event.actor));
+          const olderRoute = event.probeEntry && flowState && event.timestamp < flowState.event_ts;
+          const result = olderRoute ? 'FLOW_OLDER_EVENT' : probe ? processProbe(this.store, this.config, event, now) : processCulture(this.store, this.config, event, now, this.catalog);
+          // Менять владельца диалога можно только ПОСЛЕ принятия нового входа.
+          if (result === 'PROBE_STARTED') {
+            enterProbeRoute(this.store,event,now);
+            this.store.db.prepare('DELETE FROM flow_actions WHERE actor=?').run(event.actor);
+            this.store.db.prepare("UPDATE outbox SET status='STALE',result='ROUTE_CHANGED',finished_at=? WHERE actor=? AND status='PENDING' AND flow_revision IS NOT NULL").run(now,event.actor);
+          } else if (result === 'FLOW_ACCEPTED') {
+            this.store.db.prepare("UPDATE probes SET state='SUPERSEDED' WHERE actor=? AND state<>'COMPLETE'").run(event.actor);
+          }
           this.store.finishInbox(row.id, result, now);
         }).immediate();
       } catch {
@@ -37,12 +60,18 @@ export class Worker {
           .run(attempts, attempts >= 3 ? 'FAILED' : 'PENDING', 'PROCESSING_FAILURE', attempts >= 3 ? this.clock() : null, row.id);
       }
     }
+    // Не отправлять экран, пока более новые уже принятые события ещё ждут обработки.
+    if (this.store.pendingInbox(1).length) return;
     const now = this.clock();
     this.store.db.prepare("UPDATE outbox SET status='STALE',result='EXPIRED',finished_at=? WHERE status='PENDING' AND expires_at<=?").run(now, now);
     const row = this.store.pendingOutbox(now);
     if (row) {
+      if (row.purpose.startsWith('culture') && now < this.nextFlowSend) return;
       const probe = row.probe_id ? this.store.probe(row.probe_id) : undefined;
-      if (row.probe_id && (!probe || probe.expires_at <= now || probe.state === 'SUPERSEDED')) {
+      if (row.flow_revision !== null && (getState(this.store, row.actor)?.revision !== row.flow_revision
+        || (row.catalog_version !== null && row.catalog_version !== this.catalog.version))) {
+        this.store.finishOutbox(row.id, 'STALE', 'FLOW_OR_SNAPSHOT_CHANGED', now);
+      } else if (row.probe_id && (!probe || probe.expires_at <= now || probe.state === 'SUPERSEDED')) {
         this.store.finishOutbox(row.id, 'STALE', 'PROBE_EXPIRED_OR_REPLACED', now);
       } else if (this.store.getMeta('auth_blocked') === 'true') {
         this.store.finishOutbox(row.id, 'FAILED_AUTH', 'AUTH_BLOCKED', now);
@@ -50,12 +79,18 @@ export class Worker {
         this.store.finishOutbox(row.id, 'SUPPRESSED_CONTACT', 'CONTACT_UNAVAILABLE', now);
       } else {
         const operation = JSON.parse(row.payload) as MaxOperation;
+        if (this.config.mode === 'live' && (operation.audience === 'PROVIDER' || (operation.audience === 'SYNTHETIC' && this.config.flowDataMode !== 'synthetic-test'))) {
+          this.store.finishOutbox(row.id, 'SUPPRESSED_DISPLAY', 'SOURCE_DISPLAY_NOT_CLEARED', now); return;
+        }
+        if (row.purpose.startsWith('culture')) this.nextFlowSend = now + 1100;
         this.store.db.prepare("UPDATE outbox SET status='SENDING',attempts=attempts+1 WHERE id=?").run(row.id);
         try {
           const result = await this.max.execute(operation);
           this.store.db.transaction(() => {
             const finished = this.clock();
-            this.store.finishOutbox(row.id, result.simulated ? 'SIMULATED' : 'ACKNOWLEDGED', result.simulated ? 'LOCAL_ONLY' : 'MAX_ACCEPTED', finished, 200, result.mid);
+            const superseded = row.flow_revision !== null && (getState(this.store,row.actor)?.revision !== row.flow_revision
+              || (row.catalog_version !== null && row.catalog_version !== this.catalog.version) || this.store.pendingInbox(1).length > 0);
+            this.store.finishOutbox(row.id, result.simulated ? 'SIMULATED' : 'ACKNOWLEDGED', superseded ? 'SENT_BEFORE_NEW_INPUT_OR_SNAPSHOT' : result.simulated ? 'LOCAL_ONLY' : 'MAX_ACCEPTED', finished, 200, result.mid);
             if (row.purpose === 'question' && result.mid && probe && finished < probe.expires_at) {
               this.store.db.prepare("UPDATE probes SET question_mid=?,state='WAITING_REPLY' WHERE id=? AND state='QUESTION_PENDING'").run(result.mid, probe.id);
             }

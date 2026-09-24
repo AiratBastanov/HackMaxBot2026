@@ -2,7 +2,7 @@
 
 - Follow the latest user authorization and README; finish that scope without unnecessary pauses.
 - "Игра состоится" is REJECTED_BY_USER / SUPERSEDED. Do not implement its meetings, enrollment, capacity or waiting list.
-- KEYLESS_SOURCES is user-selected for the local data stage: KudaGo, snapshots, deterministic selection and CLI/tests are authorized. Ministry/PRO access requests are DEFERRED_BY_USER. Full MAX conversation, bookmarks, reminders, deployment and demand validation remain separate future work; do not infer full product approval.
+- KEYLESS_SOURCES выбран пользователем. Исследовательский локальный диалог (этап 2) и минимальные личные закладки (этап 3) явно разрешены и реализованы; сохраняйте разделение strict/candidate и запрет публичной доставки данных. Минкультуры/PRO — DEFERRED_BY_USER. Напоминания, deployment, публичный показ KudaGo и проверка спроса остаются вне этого объёма; полного одобрения продукта не подразумевать.
 - Keep product documents in Russian and preserve requirement IDs, weights and product wording.
 
 # Read only relevant context

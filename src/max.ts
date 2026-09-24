@@ -1,13 +1,27 @@
 import { randomUUID } from 'node:crypto';
 import { parseJson, simpleResultSchema, subscriptionsSchema, userSchema, validateMessage } from './contracts.js';
 import type { Config } from './config.js';
+import { safeLink } from './data/contract.js';
 
 export type FailureKind = 'SEMANTIC' | 'MALFORMED' | 'AUTH' | 'PERMISSION' | 'RATE_LIMIT' | 'SERVER' | 'HTTP' | 'TIMEOUT_AMBIGUOUS' | 'TRANSPORT_AMBIGUOUS';
 export class MaxError extends Error {
   constructor(public readonly kind: FailureKind, public readonly status?: number, public readonly retryAfterMs?: number) { super(kind); }
 }
-export type MessageRequest = { text: string; notify?: boolean; attachments?: { type: 'inline_keyboard'; payload: { buttons: { type: 'callback'; text: string; payload: string }[][] } }[] };
-export type MaxOperation = { method: 'messages'; recipient: string; body: MessageRequest } | { method: 'answers'; callbackId: string; body: { notification: string } };
+export type Button = { type: 'callback'; text: string; payload: string } | { type: 'link'; text: string; url: string };
+export type MessageRequest = { text: string; notify?: boolean; attachments?: { type: 'inline_keyboard'; payload: { buttons: Button[][] } }[] };
+export type MaxOperation = ({ method: 'messages'; recipient: string; body: MessageRequest } | { method: 'answers'; callbackId: string; body: { notification: string } }) & { audience?: 'SYNTHETIC' | 'PROVIDER' };
+export function validateOperation(op: MaxOperation) {
+  if (op.method === 'answers') { if (op.body.notification.length > 200) throw new MaxError('SEMANTIC'); return; }
+  if (!op.body.text || op.body.text.length > 4000 || (op.body.attachments?.length ?? 0) > 1) throw new MaxError('SEMANTIC');
+  for (const a of op.body.attachments ?? []) {
+    if (a.payload.buttons.length > 30) throw new MaxError('SEMANTIC');
+    for (const row of a.payload.buttons) {
+      if (row.length > (row.some(b => b.type === 'link') ? 3 : 7)) throw new MaxError('SEMANTIC');
+      for (const b of row) if (!b.text || b.text.length > 80 || (b.type === 'link'
+        ? b.url.length > 2048 || !safeLink(b.url) : Buffer.byteLength(b.payload) > 128)) throw new MaxError('SEMANTIC');
+    }
+  }
+}
 export type MaxResult = { simulated: boolean; mid?: string };
 export interface MaxTransport { execute(operation: MaxOperation): Promise<MaxResult> }
 
@@ -59,12 +73,14 @@ export class LiveMax implements MaxTransport {
     try { return fn(); } catch (e) { if (e instanceof MaxError) throw e; throw new MaxError('MALFORMED', 200); }
   }
   async execute(op: MaxOperation): Promise<MaxResult> {
+    validateOperation(op);
+    if (op.audience === 'PROVIDER' || (op.audience === 'SYNTHETIC' && this.config.flowDataMode !== 'synthetic-test')) throw new MaxError('PERMISSION');
     if (op.method === 'messages') {
-      const raw = await this.request('POST', `/messages?user_id=${encodeURIComponent(op.recipient)}`, op.body);
+      const raw = await this.request('POST', `/messages?user_id=${encodeURIComponent(op.recipient)}&disable_link_preview=true`, op.body);
       const message = this.validate(() => validateMessage(raw, op.recipient));
       return { simulated: false, mid: message.body!.mid };
     }
-    const raw = await this.request('POST', `/answers?callback_id=${encodeURIComponent(op.callbackId)}`, op.body);
+    const raw = await this.request('POST', `/answers?callback_id=${encodeURIComponent(op.callbackId)}&disable_link_preview=true`, op.body);
     this.validate(() => { if (!simpleResultSchema.parse(raw).success) throw new MaxError('SEMANTIC', 200); });
     return { simulated: false };
   }
@@ -85,6 +101,7 @@ export class LiveMax implements MaxTransport {
 // Нет fetch, токена или URL. Это маркированная симуляция, а не резервный live-транспорт.
 export class LocalMax implements MaxTransport {
   async execute(op: MaxOperation): Promise<MaxResult> {
+    validateOperation(op);
     return { simulated: true, ...(op.method === 'messages' ? { mid: `synthetic-${randomUUID()}` } : {}) };
   }
 }

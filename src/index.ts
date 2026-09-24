@@ -6,7 +6,7 @@ async function main() {
   const runtime = createApp(config, { report: value => console.log(JSON.stringify(value)) });
   await runtime.app.listen({ port: config.port, host: config.host });
   runtime.worker.start();
-  console.log(JSON.stringify({ operation: 'startup', mode: config.mode, port: config.port, message: 'Технический тест G1' }));
+  console.log(JSON.stringify({ operation: 'startup', mode: config.mode, dataMode: config.flowDataMode, port: config.port, message: 'Культурный план: локальный исследовательский прототип' }));
   let closing = false;
   const close = async () => {
     if (closing) return;
@@ -19,7 +19,7 @@ async function main() {
 }
 main().catch(error => {
   // В startup выводятся только наши сообщения конфигурации, не вложенные fetch/SQLite errors.
-  const safe = error instanceof Error && /^(Конфигурация:|Live требует|Локальный режим)/.test(error.message) ? error.message : 'Не удалось запустить G1: проверьте конфигурацию, порт и SQLite';
+  const safe = error instanceof Error && /^(Конфигурация:|Live требует|Локальный режим)/.test(error.message) ? error.message : 'Не удалось запустить Культурный план: проверьте конфигурацию, снимок, порт и SQLite';
   console.error(JSON.stringify({ operation: 'startup', errorClass: 'STARTUP_FAILURE', message: safe }));
   process.exitCode = 1;
 });

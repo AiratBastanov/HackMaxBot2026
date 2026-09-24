@@ -16,6 +16,9 @@ const envSchema = z.object({
   PROBE_TTL_SECONDS: z.coerce.number().int().min(60).max(900).default(600),
   MAX_REQUEST_TIMEOUT_MS: z.coerce.number().int().min(100).max(10000).default(5000),
   LIVE_SCOPE_CONFIRMED: z.enum(['true', 'false']).default('false'),
+  FLOW_DATA_MODE: z.enum(['real', 'synthetic-test']).default('real'),
+  DATA_SNAPSHOT_PATH: z.string().min(1).optional(),
+  FLOW_TEST_CLOCK: z.string().datetime({offset:true}).optional(),
 });
 
 export type Config = {
@@ -23,6 +26,7 @@ export type Config = {
   databasePath: string; webhookSecret: string; apiBaseUrl: string;
   token?: string; botId: string; publicBaseUrl?: string; testers: ReadonlySet<string>;
   probeTtlMs: number; requestTimeoutMs: number;
+  flowDataMode: 'real' | 'synthetic-test'; snapshotPath?: string; flowTestClock?: string;
 };
 
 export function loadConfig(env: NodeJS.ProcessEnv): Config {
@@ -38,6 +42,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
   const parsed = envSchema.safeParse(values);
   if (!parsed.success) throw new Error(`Конфигурация: проверьте ${[...new Set(parsed.error.issues.map(i => i.path[0]))].join(', ')}`);
   const v = parsed.data;
+  if (v.FLOW_TEST_CLOCK && v.FLOW_DATA_MODE !== 'synthetic-test') throw new Error('Конфигурация: FLOW_TEST_CLOCK требует synthetic-test');
   const testerIds = v.PROBE_TESTER_IDS.split(',').map(s => s.trim());
   if (testerIds.length > 20 || testerIds.some(s => !id.safeParse(s).success)) throw new Error('Конфигурация: PROBE_TESTER_IDS');
   if (v.APP_MODE === 'local' && (v.MAX_BOT_TOKEN || v.PUBLIC_BASE_URL || v.LIVE_SCOPE_CONFIRMED === 'true')) {
@@ -56,5 +61,6 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
   return { mode: v.APP_MODE, host: v.HOST, port: v.PORT, databasePath: v.DATABASE_PATH,
     webhookSecret: v.MAX_WEBHOOK_SECRET, apiBaseUrl: v.MAX_API_BASE_URL, token: v.MAX_BOT_TOKEN,
     botId: v.MAX_EXPECTED_BOT_ID ?? '777', publicBaseUrl: v.PUBLIC_BASE_URL?.replace(/\/$/, ''),
-    testers: new Set(testerIds), probeTtlMs: v.PROBE_TTL_SECONDS * 1000, requestTimeoutMs: v.MAX_REQUEST_TIMEOUT_MS };
+    testers: new Set(testerIds), probeTtlMs: v.PROBE_TTL_SECONDS * 1000, requestTimeoutMs: v.MAX_REQUEST_TIMEOUT_MS,
+    flowDataMode: v.FLOW_DATA_MODE, snapshotPath: v.DATA_SNAPSHOT_PATH, flowTestClock: v.FLOW_TEST_CLOCK };
 }

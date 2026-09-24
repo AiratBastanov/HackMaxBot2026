@@ -1,5 +1,6 @@
 import { type Snapshot, type Query, type NormalizedEvent, type Occurrence, type Venue, type Observation, querySchema, validateSnapshot } from './contract.js';
 import { localDate } from './normalize.js';
+import { sourceReviews, type SourceReview } from './reviews.js';
 
 export const reasonText: Record<string, string> = {
   OTHER_CITY: 'В событии или площадке указан город вне Казани.', VENUE_UNKNOWN: 'Не подтверждена физическая площадка в Казани.',
@@ -150,7 +151,8 @@ function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | un
 }
 
 // Чистая функция: только snapshot/query/clock. Без сети, БД и неявного Date.now().
-export function select(snapshotInput: unknown | null, queryInput: unknown, clock: Date, allowSynthetic = false, includeUncertain = false) {
+export function select(snapshotInput: unknown | null, queryInput: unknown, clock: Date, allowSynthetic = false, includeUncertain = false,
+  reviews: readonly SourceReview[] = sourceReviews) {
   const query = querySchema.parse(queryInput), time = clock.getTime();
   if (!Number.isFinite(time)) throw new Error('INVALID_CLOCK');
   const empty = { recommendations: [] as Recommendation[], strictTotal: 0,
@@ -168,6 +170,9 @@ export function select(snapshotInput: unknown | null, queryInput: unknown, clock
   const venues = new Map(snapshot.venues.map(v => [v.id, v]));
   const matches: Recommendation[] = [], uncertain = empty.uncertain, excluded = empty.excluded;
   for (const e of snapshot.events) {
+    if (reviews.some(r => r.eventId === e.id && r.status === 'QUARANTINED')) {
+      excluded.SOURCE_IDENTITY_CONFLICT = (excluded.SOURCE_IDENTITY_CONFLICT ?? 0) + 1; continue;
+    }
     const assessments = e.occurrences.length ? e.occurrences.map(o => assess(e, o, o.venueId ? venues.get(o.venueId) : undefined, query, time))
       : [assess(e, undefined, undefined, query, time)];
     const best = assessments.flatMap(a => a.match ? [a.match] : []).sort(compare)[0];

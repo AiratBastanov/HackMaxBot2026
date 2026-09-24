@@ -6,6 +6,9 @@
   "description": "Технический probe G1 для проверки интеграции MAX",
   "engines": { "node": ">=22.23.2 <23" },
   "scripts": {
+    "flow:demo": "node dist/scripts/flow-walkthrough.js --synthetic",
+    "flow:replay": "node dist/scripts/flow-walkthrough.js --real-replay",
+    "test:flow": "node --test --test-timeout=20000 dist/tests/flow-*.test.js",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "data": "node dist/scripts/data.js",

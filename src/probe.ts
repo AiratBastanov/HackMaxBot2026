@@ -5,7 +5,7 @@ import { Storage, type ContactRow } from './storage.js';
 
 export function canSend(contact: ContactRow | undefined): boolean { return contact?.access_mask === 1; }
 
-function observeContact(store: Storage, event: AcceptedEvent, now: number): void {
+export function observeContact(store: Storage, event: AcceptedEvent, now: number): void {
   if (!event.chat) return;
   const existing = store.contact(event.actor);
   const c: ContactRow = existing ?? { actor: event.actor, chat: event.chat, access_ts: -1, access_mask: 0, mute_ts: -1, mute_mask: 0, clear_ts: -1, updated_at: now };
@@ -13,7 +13,7 @@ function observeContact(store: Storage, event: AcceptedEvent, now: number): void
   if (event.kind === 'bot_started') bit = 1;
   if (event.kind === 'bot_stopped' || event.kind === 'dialog_removed') bit = 2;
   // Первое явное /probe из личного диалога позволяет ответить. Stop/UNKNOWN не снимаются текстом.
-  if (!existing && event.kind === 'message_created' && event.probeEntry) bit = 1;
+  if (!existing && event.kind === 'message_created' && (event.probeEntry || event.homeEntry)) bit = 1;
   if (bit && event.timestamp >= c.access_ts) {
     c.access_mask = event.timestamp === c.access_ts ? c.access_mask | bit : bit;
     c.access_ts = event.timestamp;

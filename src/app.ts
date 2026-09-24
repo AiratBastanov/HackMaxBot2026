@@ -5,12 +5,18 @@ import { parseJson, parseUpdate } from './contracts.js';
 import { createTransport, type MaxTransport } from './max.js';
 import { Storage } from './storage.js';
 import { Worker } from './worker.js';
+import { Catalog } from './culture/catalog.js';
 
-export function createApp(config: Config, options: { store?: Storage; transport?: MaxTransport; clock?: () => number; report?: (value: object) => void } = {}) {
-  const clock = options.clock ?? Date.now;
+export function createApp(config: Config, options: { store?: Storage; transport?: MaxTransport; clock?: () => number; catalog?: Catalog; report?: (value: object) => void } = {}) {
+  if (config.mode === 'live' && options.clock && config.flowDataMode !== 'synthetic-test') throw new Error('LIVE_CLOCK_INJECTION_FORBIDDEN');
+  const catalog = options.catalog ?? Catalog.load(config);
+  if (catalog.mode !== config.flowDataMode) throw new Error('CATALOG_MODE_MISMATCH');
+  const started = Date.now();
+  if (config.flowTestClock && config.flowDataMode !== 'synthetic-test') throw new Error('LIVE_CLOCK_INJECTION_FORBIDDEN');
+  const clock = options.clock ?? (config.flowTestClock ? () => Date.parse(config.flowTestClock!) + Date.now() - started : Date.now);
   const store = options.store ?? new Storage(config.databasePath, config);
   const app = Fastify({ logger: false, bodyLimit: 65536, requestTimeout: 5000, connectionTimeout: 5000 });
-  const worker = new Worker(store, config, options.transport ?? createTransport(config), clock, options.report);
+  const worker = new Worker(store, config, options.transport ?? createTransport(config), clock, options.report, catalog);
   app.removeContentTypeParser('application/json');
   app.addContentTypeParser('application/json', { parseAs: 'string' }, (_request, body, done) => {
     try { done(null, parseJson(body as string)); } catch { const e = Object.assign(new Error('Некорректный JSON'), { statusCode: 400 }); done(e); }
@@ -40,5 +46,5 @@ export function createApp(config: Config, options: { store?: Storage; transport?
     catch { options.report?.({ operation: 'webhook_accept', errorClass: 'PERSISTENCE' }); return reply.code(503).send({ error: 'persistence_unavailable' }); }
   });
   app.addHook('onClose', async () => { await worker.stop(); store.close(); });
-  return { app, store, worker };
+  return { app, store, worker, catalog };
 }

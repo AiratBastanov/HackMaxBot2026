@@ -1,0 +1,116 @@
+{
+  "local": "MAXBOT_EXPLORATORY_FLOW_LOCAL_PASS",
+  "dataSuitability": "EXPLORATORY_ONLY",
+  "publicDisplay": "NOT_CLEARED",
+  "realMax": {
+    "mobile": "NOT_VERIFIED",
+    "web": "NOT_VERIFIED",
+    "applicationSmoke": "REQUIRED"
+  },
+  "checks": [
+    {
+      "label": "typecheck-release",
+      "seconds": 0.474,
+      "exitCode": 0,
+      "tests": 0,
+      "pass": 0
+    },
+    {
+      "label": "build-release",
+      "seconds": 0.489,
+      "exitCode": 0,
+      "tests": 0,
+      "pass": 0
+    },
+    {
+      "label": "flow-release",
+      "seconds": 4.828,
+      "exitCode": 0,
+      "tests": 24,
+      "pass": 24
+    },
+    {
+      "label": "foundation-release",
+      "seconds": 2.545,
+      "exitCode": 0,
+      "tests": 50,
+      "pass": 50
+    },
+    {
+      "label": "data",
+      "seconds": 1.188,
+      "exitCode": 0,
+      "tests": 82,
+      "pass": 82
+    },
+    {
+      "label": "runtime-release",
+      "seconds": 1.612,
+      "exitCode": 0,
+      "tests": 0,
+      "pass": 0
+    },
+    {
+      "label": "real-replay-release",
+      "seconds": 0.801,
+      "exitCode": 0,
+      "tests": 0,
+      "pass": 0
+    },
+    {
+      "label": "docker-release",
+      "seconds": 16.56,
+      "exitCode": 0,
+      "tests": 0,
+      "pass": 0
+    },
+    {
+      "label": "docker-release-start",
+      "seconds": 6.162,
+      "exitCode": 0,
+      "tests": 0,
+      "pass": 0
+    },
+    {
+      "label": "docker-release-flow",
+      "seconds": 23.668,
+      "exitCode": 0,
+      "tests": 0,
+      "pass": 0
+    },
+    {
+      "label": "docker-release-restart",
+      "seconds": 0.764,
+      "exitCode": 0,
+      "tests": 0,
+      "pass": 0
+    },
+    {
+      "label": "docker-release-after-restart",
+      "seconds": 10.393,
+      "exitCode": 0,
+      "tests": 0,
+      "pass": 0
+    }
+  ],
+  "foundation": {
+    "unit": 29,
+    "integration": 21
+  },
+  "dockerTests": {
+    "flow": 24,
+    "data": 82,
+    "foundationUnit": 29,
+    "foundationIntegration": 21
+  },
+  "affectedHistoricalReplay": {
+    "clock": "2026-09-24T08:58:57.295Z",
+    "strictBefore": 1,
+    "strictAfter": 0,
+    "candidatesBefore": 3,
+    "candidatesAfter": 3
+  },
+  "newCatalogRequests": 0,
+  "realRuntimeMode": "HISTORICAL_REPLAY",
+  "historicalReceiptsUnchanged": true
+}

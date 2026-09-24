@@ -1,0 +1,30 @@
+name: maxbot-cultural-flow-test
+services:
+  app:
+    image: maxbot-cultural-flow:local-test
+    build:
+      context: .
+      args:
+        SOURCE_VERSION: ${SOURCE_VERSION:-exploratory-local-review}
+    environment:
+      APP_MODE: local
+      FLOW_DATA_MODE: synthetic-test
+      FLOW_TEST_CLOCK: '2030-04-05T06:00:00.000Z'
+      DATA_SNAPSHOT_PATH: /app/synthetic-catalog.json
+      DATABASE_PATH: /app/runtime/flow-test.sqlite
+      MAX_WEBHOOK_SECRET: synthetic-test-secret-000000000000000000
+      PROBE_TESTER_IDS: '9007199254740993,9007199254740995'
+      HOST: 0.0.0.0
+      PORT: '3000'
+    ports:
+      - '127.0.0.1:3008:3000'
+    volumes:
+      - flow-test-data:/app/runtime
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    init: true
+    stop_grace_period: 20s
+volumes:
+  flow-test-data:

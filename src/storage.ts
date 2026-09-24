@@ -8,7 +8,7 @@ import type { MaxOperation } from './max.js';
 export type InboxRow = { id: number; payload: string; attempts: number; received_at: number };
 export type ProbeRow = { id: string; actor: string; chat: string; expires_at: number; state: string; question_mid: string | null; created_at: number };
 export type ContactRow = { actor: string; chat: string; access_ts: number; access_mask: number; mute_ts: number; mute_mask: number; clear_ts: number; updated_at: number };
-export type OutboxRow = { id: number; actor: string; probe_id: string | null; purpose: string; payload: string; status: string; attempts: number; expires_at: number; next_at: number };
+export type OutboxRow = { id: number; actor: string; probe_id: string | null; purpose: string; payload: string; status: string; attempts: number; expires_at: number; next_at: number; flow_revision: number | null; catalog_version: string | null };
 
 export class Storage {
   readonly db: Database.Database;
@@ -19,7 +19,7 @@ export class Storage {
     this.db.pragma('synchronous = FULL');
     this.db.pragma('foreign_keys = ON');
     const version = this.db.pragma('user_version', { simple: true });
-    if (version !== 0 && version !== 1) { this.db.close(); throw new Error('Версия SQLite не поддерживается'); }
+    if (![0, 1, 2].includes(Number(version))) { this.db.close(); throw new Error('Версия SQLite не поддерживается'); }
     try { this.db.transaction(() => {
       this.db.exec(`
         CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -46,7 +46,15 @@ export class Storage {
           next_at INTEGER NOT NULL, finished_at INTEGER, result TEXT, http_status INTEGER, message_mid TEXT
         );
         CREATE INDEX IF NOT EXISTS outbox_pending ON outbox(status, next_at, id);
-        PRAGMA user_version = 1;
+      `);
+      if (Number(version) < 2) this.db.exec(`
+        ALTER TABLE outbox ADD COLUMN flow_revision INTEGER;
+        ALTER TABLE outbox ADD COLUMN catalog_version TEXT;
+        CREATE TABLE flow_states (actor TEXT PRIMARY KEY, revision INTEGER NOT NULL, event_ts INTEGER NOT NULL, updated_at INTEGER NOT NULL, data TEXT NOT NULL);
+        CREATE TABLE flow_actions (id TEXT PRIMARY KEY, actor TEXT NOT NULL, revision INTEGER NOT NULL, purpose TEXT NOT NULL, data TEXT NOT NULL, expires_at INTEGER NOT NULL);
+        CREATE INDEX flow_actions_actor ON flow_actions(actor);
+        CREATE TABLE bookmarks (actor TEXT NOT NULL, identity TEXT NOT NULL, generation TEXT NOT NULL, saved_at INTEGER NOT NULL, data TEXT NOT NULL, PRIMARY KEY(actor,identity));
+        PRAGMA user_version = 2;
       `);
       const identity = `${config.mode}:${config.botId}`;
       const previous = this.getMeta('identity');
@@ -74,9 +82,10 @@ export class Storage {
   contact(actor: string) { return this.db.prepare('SELECT * FROM contacts WHERE actor=?').get(actor) as ContactRow | undefined; }
   probe(id: string) { return this.db.prepare('SELECT * FROM probes WHERE id=?').get(id) as ProbeRow | undefined; }
   latestProbe(actor: string) { return this.db.prepare('SELECT * FROM probes WHERE actor=? ORDER BY created_at DESC, rowid DESC LIMIT 1').get(actor) as ProbeRow | undefined; }
-  enqueue(key: string, actor: string, probeId: string | null, purpose: string, operation: MaxOperation, now: number, expires: number) {
-    this.db.prepare('INSERT OR IGNORE INTO outbox(action_key,actor,probe_id,purpose,payload,created_at,expires_at,next_at) VALUES(?,?,?,?,?,?,?,?)')
-      .run(key, actor, probeId, purpose, JSON.stringify(operation), now, Math.min(now + 60000, expires), now);
+  enqueue(key: string, actor: string, probeId: string | null, purpose: string, operation: MaxOperation, now: number, expires: number,
+    fence?: { revision: number; catalogVersion?: string }) {
+    this.db.prepare('INSERT OR IGNORE INTO outbox(action_key,actor,probe_id,purpose,payload,created_at,expires_at,next_at,flow_revision,catalog_version) VALUES(?,?,?,?,?,?,?,?,?,?)')
+      .run(key, actor, probeId, purpose, JSON.stringify(operation), now, Math.min(now + 60000, expires), now, fence?.revision ?? null, fence?.catalogVersion ?? null);
   }
   pendingOutbox(now: number) { return this.db.prepare("SELECT * FROM outbox WHERE status='PENDING' AND next_at<=? ORDER BY id LIMIT 1").get(now) as OutboxRow | undefined; }
   finishOutbox(id: number, status: string, result: string, now: number, httpStatus?: number, mid?: string) {
@@ -89,7 +98,9 @@ export class Storage {
       this.db.prepare('DELETE FROM inbox WHERE received_at<?').run(now - 7 * 86400000);
       this.db.prepare('DELETE FROM outbox WHERE created_at<?').run(now - 7 * 86400000);
       this.db.prepare('DELETE FROM probes WHERE expires_at<?').run(now - 86400000);
-      this.db.prepare('DELETE FROM contacts WHERE updated_at<?').run(now - 7 * 86400000);
+      this.db.prepare('DELETE FROM flow_actions WHERE expires_at<=?').run(now);
+      this.db.prepare('DELETE FROM flow_states WHERE updated_at<?').run(now - 30 * 86400000);
+      this.db.prepare('DELETE FROM contacts WHERE updated_at<? AND actor NOT IN (SELECT actor FROM flow_states) AND actor NOT IN (SELECT actor FROM bookmarks)').run(now - 7 * 86400000);
     }).immediate();
   }
 }

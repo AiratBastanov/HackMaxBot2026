@@ -40,6 +40,7 @@ export type AcceptedEvent = {
   key: string; kind: LifecycleType | 'message_created' | 'message_callback'; timestamp: number;
   actor: string; chat: string | null; callbackId?: string; commandId?: string;
   mid?: string; replyMid?: string; replyChat?: string; replyIsReady?: boolean; probeEntry?: boolean;
+  flowAction?: string; input?: string; homeEntry?: boolean;
 };
 export type ParsedEvent = { ignored: true } | { ignored: false; event: AcceptedEvent };
 
@@ -51,7 +52,7 @@ export function parseUpdate(raw: unknown, botId: string): ParsedEvent {
     if (base.update_type === 'dialog_muted' && v.muted_until === undefined) throw new Error('muted_until');
     if (v.user.is_bot) return { ignored: true };
     const key = hash([base.update_type, v.user.user_id, v.chat_id, base.timestamp, base.update_type === 'bot_started' ? v.payload ?? null : null]);
-    return { ignored: false, event: { key, kind: base.update_type as LifecycleType, timestamp: base.timestamp, actor: v.user.user_id, chat: v.chat_id, probeEntry: base.update_type === 'bot_started' && (v.payload === 'g1' || !v.payload) } };
+    return { ignored: false, event: { key, kind: base.update_type as LifecycleType, timestamp: base.timestamp, actor: v.user.user_id, chat: v.chat_id, probeEntry: base.update_type === 'bot_started' && v.payload === 'g1', homeEntry: base.update_type === 'bot_started' && !v.payload } };
   }
   if (base.update_type === 'message_callback') {
     const v = z.object({ callback: z.object({ callback_id: shortString, timestamp, user: userSchema, payload: z.string().max(4096).optional() }), message: messageSchema.nullable().optional() }).parse(raw);
@@ -59,7 +60,8 @@ export function parseUpdate(raw: unknown, botId: string): ParsedEvent {
     if (v.message?.sender && v.message.sender.user_id !== botId) return { ignored: true };
     return { ignored: false, event: { key: hash(['message_callback', v.callback.callback_id]), kind: 'message_callback', timestamp: base.timestamp,
       actor: v.callback.user.user_id, chat: v.message?.recipient.chat_id ?? null, callbackId: v.callback.callback_id,
-      commandId: /^g1:[0-9a-f-]{36}$/.test(v.callback.payload ?? '') ? v.callback.payload!.slice(3) : undefined } };
+      commandId: /^g1:[0-9a-f-]{36}$/.test(v.callback.payload ?? '') ? v.callback.payload!.slice(3) : undefined,
+      flowAction: /^cp:[a-zA-Z0-9_-]{24}$/.test(v.callback.payload ?? '') ? v.callback.payload!.slice(3) : undefined } };
   }
   if (base.update_type === 'message_created') {
     const { message: v } = z.object({ message: messageSchema }).parse(raw);
@@ -68,7 +70,10 @@ export function parseUpdate(raw: unknown, botId: string): ParsedEvent {
       actor: v.sender.user_id, chat: v.recipient.chat_id, mid: v.body.mid,
       replyMid: v.link?.type === 'reply' ? v.link.message.mid : undefined,
       replyChat: v.link?.type === 'reply' ? v.link.chat_id : undefined,
-      replyIsReady: v.body.text?.trim().toLocaleLowerCase('ru') === 'готово', probeEntry: v.body.text?.trim() === '/probe' } };
+      replyIsReady: v.body.text?.trim().toLocaleLowerCase('ru') === 'готово', probeEntry: v.body.text?.trim() === '/probe',
+      homeEntry: v.body.text?.trim() === '/start',
+      // Не архивируем произвольный пользовательский текст: только ограниченный язык ввода.
+      input: /^(?:[A-F0-9]{6} (?:\d{4}-\d{2}-\d{2}|\d{2}:\d{2}-\d{2}:\d{2}|\d{1,5})|\/start|\/saved|\/delete_data)$/.test(v.body.text?.trim() ?? '') ? v.body.text!.trim() : undefined } };
   }
   // Неизвестный/нерелевантный тип с валидным базовым Update подтверждаем без сохранения тела.
   return { ignored: true };

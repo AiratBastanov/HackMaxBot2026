@@ -22,3 +22,7 @@
 - Keep secrets, raw events, private research, runtime files and original reference documents out of publication; use ignored local evidence and safe placeholders.
 - Inspect repository boundaries, history, all remote URLs, index and explicit file sets before Git mutations. Preserve user work and history; stage/commit/push only with explicit authorization.
 - Do not bypass filesystem restrictions, change ACLs, weaken TLS or expose credentials. Use bounded, proportionate checks; retry only for a concrete reason.
+
+- Текущий assertion-ledger — [MAX runbook, C](docs/EXPLORATORY_MAX_RUNBOOK.md#c-текущий-assertion-ledger-и-ограниченная-delta); исторические квитанции не копировать в новую очередь.
+- PASS повторять только после записи конкретного релевантного изменения, противоречия или дефекта evidence и затронутого scope; PARTIAL другого подшага/клиента, docs commit, новая кампания или synthetic-дата PASS не отменяют.
+- Существующий AUTOMATED PASS не превращать в новый HUMAN PASS; проверять только точный незакрытый клиентский остаток, без дублирования общих серверных комбинаций.

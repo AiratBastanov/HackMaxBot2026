@@ -2,7 +2,7 @@
 
 - Follow the latest user authorization and README; finish that scope without unnecessary pauses.
 - "Игра состоится" is REJECTED_BY_USER / SUPERSEDED. Do not implement its meetings, enrollment, capacity or waiting list.
-- The replacement recommendation is PENDING_USER_APPROVAL; implementation is NOT_STARTED. Publication authorization does not authorize product features or live operations.
+- KEYLESS_SOURCES is user-selected for the local data stage: KudaGo, snapshots, deterministic selection and CLI/tests are authorized. Ministry/PRO access requests are DEFERRED_BY_USER. Full MAX conversation, bookmarks, reminders, deployment and demand validation remain separate future work; do not infer full product approval.
 - Keep product documents in Russian and preserve requirement IDs, weights and product wording.
 
 # Read only relevant context
@@ -11,6 +11,7 @@
 - `docs/pivot/01_PRODUCT_DECISION.md`: active proposal and product boundaries.
 - `docs/pivot/02_DATA_FEASIBILITY.md`: sources, real sample, access and unknowns.
 - `docs/pivot/03_IMPLEMENTATION_PLAN.md`: reuse, effort, acceptance and prerequisites.
+- `docs/pivot/06_DATA_MODULE_RECEIPT.md`: current keyless module, source conditions, commands and measured results.
 - `docs/05_G1_TECHNICAL_RECEIPT.md` and actual later receipts: technical evidence. Preserve historical receipts/manifests; old domain plans are historical.
 
 # Evidence and safe work

@@ -8,6 +8,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsc",
+    "data": "node dist/scripts/data.js",
+    "test:data": "node --test --test-timeout=10000 dist/tests/data-*.test.js",
     "test:unit": "node --test --test-timeout=10000 dist/tests/config.test.js dist/tests/contracts.test.js",
     "test:integration": "node --test --test-timeout=20000 dist/tests/integration.test.js",
     "test": "npm run test:unit && npm run test:integration",

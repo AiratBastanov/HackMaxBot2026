@@ -1,0 +1,366 @@
+{
+  "date": "2026-09-24",
+  "verdict": "MAXBOT_KEYLESS_DATA_MODULE_PARTIAL",
+  "sourceAccess": {
+    "kudago": "ANONYMOUS_EVENTS_FETCH_VERIFIED",
+    "timepad": "SKIPPED_HTTP_403"
+  },
+  "scope": {
+    "city": "kzn",
+    "timezone": "Europe/Moscow",
+    "start": "2026-09-23T21:00:00.000Z",
+    "end": "2026-10-23T21:00:00.000Z",
+    "categories": [
+      "exhibition",
+      "theater",
+      "concert",
+      "cinema",
+      "education",
+      "festival",
+      "tour"
+    ],
+    "zone": null
+  },
+  "retrievedAt": "2026-09-24T07:25:00.985Z",
+  "queryClock": "2026-09-24T07:57:13.820Z",
+  "catalog": {
+    "providerCount": 64,
+    "retrievedRows": 64,
+    "uniqueProviderIds": 64,
+    "duplicateIds": 0,
+    "pages": 1,
+    "normalizedEvents": 64,
+    "occurrences": 64,
+    "venues": 33,
+    "omitted": {
+      "PAST_OCCURRENCE": 8
+    },
+    "rawOccurrences": 72,
+    "successfulEventFetches": 2,
+    "rowsAcrossSuccessfulEventFetches": 128,
+    "eventPaginationComplete": true,
+    "snapshotOutcome": "PARTIAL",
+    "venueDetailRecords": 1,
+    "verifiedPhysicalVenues": 0,
+    "reliableZones": 0
+  },
+  "quality": {
+    "prices": {
+      "FROM": 48,
+      "UNKNOWN": 4,
+      "EXACT": 8,
+      "FREE": 4
+    },
+    "occurrenceKinds": {
+      "FLEXIBLE_VISIT": 46,
+      "UNRESOLVED": 16,
+      "TIMED_SESSION": 2
+    },
+    "openingKnown": 0,
+    "timedWithValidEnd": 1,
+    "endless": 59,
+    "equalEndpoints": 1,
+    "structuredSchedulesUnsupported": 3,
+    "providerUpdatedAtKnown": 0,
+    "publicationYears": {
+      "2014": 10,
+      "2015": 22,
+      "2016": 2,
+      "2017": 1,
+      "2022": 20,
+      "2025": 2,
+      "2026": 7
+    }
+  },
+  "network": {
+    "requests": 19,
+    "decodedBytes": 80502,
+    "results": {
+      "NETWORK_FAILURE": 1,
+      "CREDENTIALS_OR_ACCESS_DENIED": 1,
+      "TIMEOUT": 13,
+      "OK": 4
+    },
+    "perHost": {
+      "kudago.com": 18,
+      "api.timepad.ru": 1
+    },
+    "requestBudget": 24,
+    "decodedByteBudget": 16777216,
+    "perRequestTimeoutMs": 20000,
+    "perHostMinStartIntervalMs": 1000
+  },
+  "queries": {
+    "weekend500": {
+      "query": {
+        "city": "kzn",
+        "start": "2026-09-26T09:00:00.000Z",
+        "end": "2026-09-26T15:00:00.000Z",
+        "budgetRub": 500,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "status": "INCOMPLETE_CATALOG",
+      "strictTotal": 0,
+      "returned": 0,
+      "uncertain": 60,
+      "excluded": {
+        "VENUE_UNKNOWN": 64,
+        "PRICE_UNKNOWN": 52,
+        "OPENING_UNKNOWN": 46,
+        "TIME_UNKNOWN": 17,
+        "OVER_BUDGET": 3,
+        "OUTSIDE_WINDOW": 2
+      }
+    },
+    "weekdayEvening": {
+      "query": {
+        "city": "kzn",
+        "start": "2026-09-25T15:00:00.000Z",
+        "end": "2026-09-25T19:00:00.000Z",
+        "budgetRub": null,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "status": "INCOMPLETE_CATALOG",
+      "strictTotal": 0,
+      "returned": 0,
+      "uncertain": 62,
+      "excluded": {
+        "VENUE_UNKNOWN": 64,
+        "OPENING_UNKNOWN": 46,
+        "TIME_UNKNOWN": 17,
+        "OUTSIDE_WINDOW": 2
+      }
+    },
+    "free": {
+      "query": {
+        "city": "kzn",
+        "start": "2026-09-26T07:00:00.000Z",
+        "end": "2026-09-26T17:00:00.000Z",
+        "budgetRub": 0,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "status": "INCOMPLETE_CATALOG",
+      "strictTotal": 0,
+      "returned": 0,
+      "uncertain": 55,
+      "excluded": {
+        "VENUE_UNKNOWN": 64,
+        "PRICE_UNKNOWN": 52,
+        "OPENING_UNKNOWN": 46,
+        "TIME_UNKNOWN": 17,
+        "OVER_BUDGET": 8,
+        "OUTSIDE_WINDOW": 2
+      }
+    },
+    "deliberateNoMatch": {
+      "query": {
+        "city": "kzn",
+        "start": "2026-09-26T00:00:00.000Z",
+        "end": "2026-09-26T00:15:00.000Z",
+        "budgetRub": 0,
+        "category": "theater",
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "status": "INCOMPLETE_CATALOG",
+      "strictTotal": 0,
+      "returned": 0,
+      "uncertain": 0,
+      "excluded": {
+        "WRONG_CATEGORY": 63,
+        "VENUE_UNKNOWN": 64,
+        "PRICE_UNKNOWN": 52,
+        "OPENING_UNKNOWN": 46,
+        "TIME_UNKNOWN": 17,
+        "OVER_BUDGET": 8,
+        "OUTSIDE_WINDOW": 2
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "typecheck",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "--noEmit"
+      ],
+      "startedAt": "2026-09-24T07:57:08.153Z",
+      "ms": 362,
+      "status": 0,
+      "tests": 0,
+      "pass": 0,
+      "fail": 0
+    },
+    {
+      "name": "build",
+      "args": [
+        "node_modules/typescript/bin/tsc"
+      ],
+      "startedAt": "2026-09-24T07:57:08.517Z",
+      "ms": 367,
+      "status": 0,
+      "tests": 0,
+      "pass": 0,
+      "fail": 0
+    },
+    {
+      "name": "data-tests",
+      "args": [
+        "--test",
+        "--test-timeout=10000",
+        "dist/tests/data-io.test.js",
+        "dist/tests/data-normalize.test.js",
+        "dist/tests/data-select.test.js"
+      ],
+      "startedAt": "2026-09-24T07:57:08.885Z",
+      "ms": 1151,
+      "status": 0,
+      "tests": 52,
+      "pass": 52,
+      "fail": 0
+    },
+    {
+      "name": "foundation-unit",
+      "args": [
+        "--test",
+        "--test-timeout=10000",
+        "dist/tests/config.test.js",
+        "dist/tests/contracts.test.js"
+      ],
+      "startedAt": "2026-09-24T07:57:10.037Z",
+      "ms": 431,
+      "status": 0,
+      "tests": 29,
+      "pass": 29,
+      "fail": 0
+    },
+    {
+      "name": "foundation-integration",
+      "args": [
+        "--test",
+        "--test-timeout=20000",
+        "dist/tests/integration.test.js"
+      ],
+      "startedAt": "2026-09-24T07:57:10.468Z",
+      "ms": 2776,
+      "status": 0,
+      "tests": 21,
+      "pass": 21,
+      "fail": 0
+    },
+    {
+      "name": "normalize-live",
+      "args": [
+        "dist/scripts/data.js",
+        "normalize",
+        "--resume",
+        ".cache/cultural-plan/kudago-download.json"
+      ],
+      "startedAt": "2026-09-24T07:57:13.245Z",
+      "ms": 208,
+      "status": 0,
+      "tests": 0,
+      "pass": 0,
+      "fail": 0
+    },
+    {
+      "name": "validate-live",
+      "args": [
+        "dist/scripts/data.js",
+        "validate"
+      ],
+      "startedAt": "2026-09-24T07:57:13.454Z",
+      "ms": 172,
+      "status": 0,
+      "tests": 0,
+      "pass": 0,
+      "fail": 0
+    },
+    {
+      "name": "synthetic-demo",
+      "args": [
+        "dist/scripts/data.js",
+        "demo",
+        "--synthetic"
+      ],
+      "startedAt": "2026-09-24T07:57:13.627Z",
+      "ms": 192,
+      "status": 0,
+      "tests": 0,
+      "pass": 0,
+      "fail": 0
+    },
+    {
+      "name": "final-typecheck",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "--noEmit"
+      ],
+      "startedAt": "2026-09-24T08:07:02.879Z",
+      "ms": 363,
+      "status": 0,
+      "tests": 0,
+      "pass": 0,
+      "fail": 0
+    },
+    {
+      "name": "final-build",
+      "args": [
+        "node_modules/typescript/bin/tsc"
+      ],
+      "startedAt": "2026-09-24T08:07:03.244Z",
+      "ms": 351,
+      "status": 0,
+      "tests": 0,
+      "pass": 0,
+      "fail": 0
+    },
+    {
+      "name": "final-data-tests",
+      "args": [
+        "--test",
+        "--test-timeout=10000",
+        "dist/tests/data-io.test.js",
+        "dist/tests/data-normalize.test.js",
+        "dist/tests/data-select.test.js"
+      ],
+      "startedAt": "2026-09-24T08:07:03.595Z",
+      "ms": 1137,
+      "status": 0,
+      "tests": 53,
+      "pass": 53,
+      "fail": 0
+    }
+  ],
+  "runtime": {
+    "node": "22.23.2",
+    "typescript": "7.0.2",
+    "dependenciesChanged": false
+  },
+  "publicDisplay": "NOT_CLEARED",
+  "realMaxMobile": "NOT_VERIFIED",
+  "realMaxWeb": "NOT_VERIFIED",
+  "realApplicationSmoke": "NOT_APPLICABLE_WITH_REASON: exercised local data path; MAX UI unchanged",
+  "historicalMinistryTests": {
+    "count": 10,
+    "status": "HISTORICAL_NOT_RERUN"
+  }
+}

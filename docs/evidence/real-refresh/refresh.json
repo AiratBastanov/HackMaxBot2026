@@ -1,0 +1,284 @@
+{
+  "baseline": "b842e86295857c0ddfab7363d4b28504c63eeaf3",
+  "SHIPPED_LIVE_REFRESH": "PARTIAL_PACING_DEVIATION",
+  "functionalCycle": "PASS_SELECTED_SCOPE",
+  "operationalMode": "OPERATOR_CLI",
+  "command": "node dist/scripts/real-catalog.js collect .review/real-catalog/r18/live",
+  "startedAt": "2026-09-25T09:10:44.851Z",
+  "finishedAt": "2026-09-25T09:12:33.532Z",
+  "requests": 56,
+  "decodedBytes": 8408173,
+  "retries": 0,
+  "campaigns": 1,
+  "perHost": {
+    "kazan-kremlin.ru": {
+      "requests": 30,
+      "decodedBytes": 5359241,
+      "firstStart": "2026-09-25T09:10:44.863Z",
+      "lastFinish": "2026-09-25T09:11:43.241Z",
+      "minStartGapMs": 2000,
+      "gapsBelow2000": [],
+      "maxRequestMs": 635,
+      "allHTTP200": true,
+      "sourceUpdatedPresent": 0
+    },
+    "m-i-e.ru": {
+      "requests": 26,
+      "decodedBytes": 3048932,
+      "firstStart": "2026-09-25T09:11:43.250Z",
+      "lastFinish": "2026-09-25T09:12:33.532Z",
+      "minStartGapMs": 1999,
+      "gapsBelow2000": [
+        1999
+      ],
+      "maxRequestMs": 409,
+      "allHTTP200": true,
+      "sourceUpdatedPresent": 26
+    }
+  },
+  "limits": {
+    "requests": 80,
+    "decodedBytes": 41943040,
+    "wallMs": 900000,
+    "requestMs": 20000,
+    "minStartGapMs": 2000
+  },
+  "privateLedgerHash": "95e8c0175f161dee7df531609caaf90a6796bdd3ce3e30580ef844b5cc8bfab5",
+  "pacingCorrection": {
+    "observed": "Один промежуток 1999 мс вместо 2000; раннее пробуждение timer.",
+    "fix": "Повторная проверка clock перед HTTP start.",
+    "regression": "Искусственный ранний timer: фактические старты 0/2000/4000 мс.",
+    "newNetworkCampaign": false
+  },
+  "initialCollectionStatus": {
+    "kazan-kremlin": "FETCHED_SELECTED_SCOPE",
+    "mie": "PARTIAL"
+  },
+  "blockedBeforeHTTP": [
+    {
+      "url": "https://m-i-e.ru/family_portret",
+      "reason": "ROBOTS_DENIED_NOT_FETCHED"
+    },
+    {
+      "url": "https://m-i-e.ru/foto_i_slovo",
+      "reason": "ROBOTS_DENIED_NOT_FETCHED"
+    }
+  ],
+  "postCorrectionReparse": {
+    "networkRequests": 0,
+    "extractor": "institution-dom/3",
+    "preparedReview": "docs/evidence/real-refresh/prepared-review.json"
+  },
+  "previous": {
+    "version": 1,
+    "snapshot": "6b96474106ae4a2018b5.json",
+    "review": "6b96474106ae4a2018b5.review.json"
+  },
+  "active": {
+    "version": 1,
+    "snapshot": "536829346bd0a60d3b35.json",
+    "review": "536829346bd0a60d3b35.review.json"
+  },
+  "candidateHash": "536829346bd0a60d3b35bee342f54b431be30b16b0b776f2a0777a60bf8900f6",
+  "files": [
+    {
+      "path": "catalog/real/536829346bd0a60d3b35.json",
+      "sha256": "977236a582e8267df0dce7bbffe789f0db965685bc8810553bc0133a32fe92b3"
+    },
+    {
+      "path": "catalog/real/536829346bd0a60d3b35.review.json",
+      "sha256": "7dd6f02add4d43e7a51d662b45ecf1ddd65e17e9d81eae25543b4032744dae21"
+    },
+    {
+      "path": "catalog/real/prepared-facts.json",
+      "sha256": "4e92dab8ac069b2aff0a261c1f8ae7d2cad17819bac392226dbec99f64fe5977"
+    }
+  ],
+  "snapshots": [
+    {
+      "city": "kzn",
+      "scope": {
+        "city": "kzn",
+        "timezone": "Europe/Moscow",
+        "start": "2026-09-24T21:00:00.000Z",
+        "end": "2026-10-24T21:00:00.000Z",
+        "categories": [
+          "exhibition",
+          "culture"
+        ],
+        "zone": null
+      },
+      "records": 17,
+      "occurrences": 23,
+      "snapshotHash": "92b067d2bdc258f4c97a52d8ed29cfab08b021bc42cf51729a8afbecd35212c9",
+      "retrievedAt": "2026-09-25T09:11:03.053Z",
+      "reviewValidUntil": "2026-09-28T09:11:03.053Z"
+    },
+    {
+      "city": "ekb",
+      "scope": {
+        "city": "ekb",
+        "timezone": "Asia/Yekaterinburg",
+        "start": "2026-09-24T19:00:00.000Z",
+        "end": "2026-10-24T19:00:00.000Z",
+        "categories": [
+          "exhibition",
+          "culture"
+        ],
+        "zone": null
+      },
+      "records": 9,
+      "occurrences": 9,
+      "snapshotHash": "2aca09c9b24c2f39ba1f549100807bb941efaa7644e240b1e1f9e0b3d5b5d5f2",
+      "retrievedAt": "2026-09-25T09:11:49.422Z",
+      "reviewValidUntil": "2026-09-28T09:11:49.422Z"
+    }
+  ],
+  "changes": {
+    "added": [
+      "kazan-kremlin:kremlyovskie-grani-polveka-v-obektive",
+      "mie:postoyannaya"
+    ],
+    "removed": [],
+    "changed": [],
+    "removedOccurrences": []
+  },
+  "reviewQueue": [
+    {
+      "url": "https://m-i-e.ru/family_portret",
+      "reason": "ROBOTS_DENIED_NOT_FETCHED"
+    },
+    {
+      "url": "https://m-i-e.ru/foto_i_slovo",
+      "reason": "ROBOTS_DENIED_NOT_FETCHED"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-vyshivka-tamburnym-shvom",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/ekskursiya-master-klass-sled-istorii-sozdanie-keramicheskogo-izrazcza",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/igra-kvest-v-poiskah-klada",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/nikolaj-ii-semya-i-prestol-iz-sobraniya-gosudarstvennogo-ermitazha",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/lapy-na-holste-istorii-sobak-v-iskusstve",
+      "reason": "QUARANTINED: В шапке организатор Эрмитаж-Казань; фактические объекты находятся в шести парках. Нужны отдельные места, музейный адрес неприменим."
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/tatar-namazlygy",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/palitra-islama-na-pochtovyh-markah",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/art-prostranstvo-kommunalka",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/kulturnyj-kod-kazani-duhovnoe-nasledie-i-tradiczii",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-zhivaya-bumaga",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-napishi-svoe-imya-arabskoj-vyazyu",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-bogatoe-srednevekove",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-tatarskie-ukrasheniya",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/interaktivnaya-vyezdnaya-programma-kak-nashi-predki-zhili-byli-moda-i-byt-povolzhya-v-detalyah",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/igrovaya-programma-po-vystavke-kazanskoe-povolzhe-obrazy-narodnoj-kultury",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/igrovaya-programma-po-sledam-kazanskoj-ikony-2",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/tvorcheskoe-zanyatie-semejnaya-matreshka",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/tvorcheskoe-zanyatie-knizhnye-ukrasheniya",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/lowlands_place",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/way_to_the_dream",
+      "reason": "QUARANTINED: Период расходится: карточка до 08.11.2026, список Дома Качки до 18.10.2026."
+    },
+    {
+      "url": "https://m-i-e.ru/venya_zhiv",
+      "reason": "QUARANTINED: Начало периода расходится: карточка 17.05.2026, главная страница 17.05.2024."
+    },
+    {
+      "url": "https://m-i-e.ru/scienceinthebigcity",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/ot-zavoda-k-gorodu",
+      "reason": "QUARANTINED: Старая страница показывает иной режим Дома Качки; название площадки и актуальный режим требуют отдельного разбора."
+    },
+    {
+      "url": "https://m-i-e.ru/rf_lektoriy",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/sketch_merch",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/demintsev",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/melancholia",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/chuvstvo_mery",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/zavtrak_hudozhnika",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/chelovek_i_mashina",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/mechtat_ne_vredno",
+      "reason": "OUTSIDE_SCOPE"
+    }
+  ],
+  "reviewQueueDisposition": "Сомнительные/архивные записи не включены. Прежние 24 события и их посещения сохранены; отсутствие не объявляется отменой.",
+  "explicitActivation": true,
+  "loadedByCatalog": true,
+  "backgroundUpdating": false
+}

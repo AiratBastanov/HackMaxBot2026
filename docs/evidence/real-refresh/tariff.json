@@ -1,0 +1,51 @@
+{
+  "issue": "R17-01",
+  "at": "2026-09-25T09:10:58.181Z",
+  "syntheticReproducer": {
+    "synthetic": true,
+    "baseline": "b842e86295857c0ddfab7363d4b28504c63eeaf3",
+    "result": {
+      "individual": {
+        "kind": "EXACT",
+        "amount": 500,
+        "lowerBound": 500,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "Обычный входной билет: 500 ₽.",
+        "conditions": []
+      },
+      "mixed": {
+        "kind": "EXACT",
+        "amount": 200,
+        "lowerBound": 200,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "Взрослый билет: 200 ₽.",
+        "conditions": [
+          "Семья самостоятельно не приравнивается к организованной группе."
+        ]
+      },
+      "groupOnly": {
+        "kind": "EXACT",
+        "amount": 200,
+        "lowerBound": 200,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "Взрослый билет: 200 ₽.",
+        "conditions": [
+          "Семья самостоятельно не приравнивается к организованной группе."
+        ]
+      }
+    }
+  },
+  "fixed": {
+    "individual": 500,
+    "mixed": 500,
+    "groupOnly": "UNKNOWN"
+  },
+  "cachedReparse": {
+    "networkRequests": 0,
+    "examinedRecords": 24,
+    "actualTariffChanges": []
+  }
+}

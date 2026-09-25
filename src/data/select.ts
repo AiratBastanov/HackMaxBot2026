@@ -30,8 +30,8 @@ export type Candidate = { eventId: string; occurrenceId: string | null; title: s
   reasons: string[]; checkAtSource: string[]; price: NormalizedEvent['price'];
   time: { from: string | null; until: string | null; lastEntry: string | null; assessment: Predicate };
   eventRetrievedAt: string; eventObservations: Observation[]; venueObservations: Observation[]; warnings: string[]; partyPrice: PartyAssessment };
-type Assessment = { hard: string[]; unknown: string[]; predicates: Predicate[]; facts: string[]; match?: Recommendation; candidate?: Candidate };
-function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | undefined, q: Query, clock: number, freshnessHours=24): Assessment {
+type Assessment = { hard: string[]; unknown: string[]; predicates: Predicate[]; facts: string[]; match?: Recommendation; candidate?: Candidate; view?:Candidate };
+export function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | undefined, q: Query, clock: number, freshnessHours=24): Assessment {
   const a: Assessment = { hard: [], unknown: [], predicates: [], facts: [] };
   const zone = q.timezone ?? cities[q.city].timezone, localDate = (s: string) => cityDate(s, zone), cost = assessParty(e, q);
   const predicate = (name: string, codes: string[], success: string) => {
@@ -131,15 +131,17 @@ function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | un
   }
   if (checks.some(t => !fresh(t))) a.unknown.push('FACTS_STALE');
   predicate('freshness', ['FACTS_STALE'], `Применимые факты получены не более ${freshnessHours} часов назад; источник не сообщает дату изменения условий.`);
-  if (a.hard.length) return a;
-  if (a.unknown.length || !o || from === null || until === null) {
-    a.candidate = { eventId: e.id, occurrenceId: o?.id ?? null, title: e.title, source: { label: e.sourceLabel, url: e.sourceUrl },
+  // Просмотр текущих фактов закладки доступен и при mismatch; подбор их не рекомендует.
+  a.view = { eventId: e.id, occurrenceId: o?.id ?? null, title: e.title, source: { label: e.sourceLabel, url: e.sourceUrl },
       predicates: a.predicates, factsMatched: a.predicates.filter(p => p.state === 'MATCH').map(p => p.detail), usefulFacts: a.facts,
-      reasons: [...new Set(a.unknown)].map(c => reasonText[c]!),
-      checkAtSource: a.predicates.filter(p => p.state === 'UNKNOWN').map(p => `Проверить у источника: ${p.detail}`),
+      reasons: [...new Set([...a.hard,...a.unknown])].map(c => reasonText[c]!),
+      checkAtSource: a.predicates.filter(p => p.state !== 'MATCH').map(p => `${p.state==='MISMATCH'?'Не соответствует':'Проверить у источника'}: ${p.detail}`),
       time: { from, until, lastEntry, assessment: a.predicates.find(p => p.name === 'time')! },
       price: e.price, partyPrice: cost, eventRetrievedAt: e.retrievedAt, eventObservations: e.observations, venueObservations: venue?.observations ?? [],
       warnings: ['Непроверенный вариант; соответствие всем условиям запроса не установлено.', 'Наличие билета и выполнение регистрации пользователем не подтверждены.'] };
+  if (a.hard.length) return a;
+  if (a.unknown.length || !o || from === null || until === null) {
+    a.candidate=a.view;
     return a;
   }
   const reasons = [o.kind === 'TIMED_SESSION' ? 'Сеанс целиком в заданном окне по опубликованному времени.'

@@ -6,7 +6,7 @@ import { cities, cityDate, cityInstant, type CityKey } from './cities.js';
 
 type Node = DefaultTreeAdapterMap['node'];
 export type Page = {url:string;body:string;fetchedAt:string;hash:string;modified:string|null};
-export const extractorVersion='institution-dom/2';
+export const extractorVersion='institution-dom/3';
 export const bodyHash=(s:string)=>createHash('sha256').update(s).digest('hex');
 export function nodes(n:Node):Node[] {return [n,...('childNodes' in n?n.childNodes.flatMap(nodes):[])];}
 export function attr(n:Node,key:string) {return 'attrs' in n?n.attrs.find(a=>a.name===key)?.value??'':'';}
@@ -62,6 +62,45 @@ export function discover(p:Page,source:Institution):string[] {
   }
   return [...new Set(result)];
 }
+type TicketContext = 'INDIVIDUAL'|'GROUP'|'SERVICE'|'PACKAGE'|'CONCESSION'|'UNKNOWN';
+function ticketContext(label:string):TicketContext {
+  if(/экскурси|обслужив|услуг/iu.test(label))return 'SERVICE';
+  if(/организован|групп/iu.test(label))return 'GROUP';
+  if(/пакет|комплексн|единый|абонемент/iu.test(label))return 'PACKAGE';
+  if(/льгот|школьник|студент|пенсионер/iu.test(label))return 'CONCESSION';
+  return /индивидуальн|^Входной билет$|^Взросл(?:ый билет|ые)$/iu.test(label)?'INDIVIDUAL':'UNKNOWN';
+}
+// Контекст заголовка/секции проверяется до чисел; строка другой услуги не является fallback.
+function individualTicketRows(dom:Node[]) {
+  const result:string[][]=[];let heading:TicketContext='UNKNOWN',section:TicketContext='UNKNOWN';
+  for(const n of dom) {
+    if(['h1','h2','h3','h4'].includes(tag(n)))heading=ticketContext(txt(n));
+    if(tag(n)==='table')section=heading;
+    if(tag(n)==='caption')section=ticketContext(txt(n));
+    if(tag(n)!=='tr'||!('childNodes'in n))continue;
+    const row=n.childNodes.filter(c=>['td','th'].includes(tag(c))).map(txt);
+    const own=ticketContext(row[0]??'');
+    if(row.length===1){section=own;continue;}
+    if(!['UNKNOWN','INDIVIDUAL'].includes(section))continue;
+    if(own==='INDIVIDUAL'||own==='UNKNOWN'&&section==='INDIVIDUAL')result.push(row);
+  }
+  return result;
+}
+function individualAmount(value:string):NormalizedEvent['price'] {
+  const price:NormalizedEvent['price']={kind:'UNKNOWN',amount:null,lowerBound:null,currency:null,applicability:'UNRESOLVED',evidence:null,conditions:[]};
+  if(!value)return price;
+  const text=clean(value),plain=text.replace(/\s*\(при индивидуальном посещении\)\s*$/iu,'');
+  if(/^Бесплатно$/iu.test(plain))Object.assign(price,{kind:'FREE',amount:0,lowerBound:0,currency:'RUB',applicability:'SINGLE_ADULT',evidence:'Бесплатный индивидуальный вход.'});
+  else if(/^\d+\s*(?:₽|руб(?:лей|ля|ль)?\.?)$/iu.test(plain)) {
+    const amount=Number(plain.match(/\d+/)![0]);Object.assign(price,{kind:'EXACT',amount,lowerBound:amount,currency:'RUB',applicability:'SINGLE_ADULT',evidence:`Обычный входной билет: ${amount} ₽.`});
+  }else if(/^от\s+\d+\s*(?:₽|руб(?:лей|ля|ль)?\.?)$/iu.test(plain))Object.assign(price,{kind:'FROM',lowerBound:Number(plain.match(/\d+/)![0]),currency:'RUB',evidence:text});
+  else {
+    const range=plain.match(/^(\d+)\s*[—–−-]\s*(\d+)\s*(?:₽|руб(?:лей|ля|ль)?\.?)$/iu);
+    if(range&&Number(range[1])<=Number(range[2]))Object.assign(price,{kind:'RANGE',lowerBound:Number(range[1]),upperBound:Number(range[2]),currency:'RUB',evidence:text});
+    else if(/\d+\s*(?:₽|руб)|бесплатно/iu.test(text))Object.assign(price,{kind:'CONDITIONAL',currency:'RUB',evidence:text,conditions:[text]});
+  }
+  return price;
+}
 export function extract(p:Page,source:Institution,scopeDate:string,venuePage?:Page) {
   if(new URL(p.url).origin!==sources[source].origin||bodyHash(p.body)!==p.hash)throw Error('PAGE_PROVENANCE');
   const dom=document(p),all=clean(domText(parse(p.body)));
@@ -100,34 +139,35 @@ export function extract(p:Page,source:Institution,scopeDate:string,venuePage?:Pa
   const price:NormalizedEvent['price']={kind:'UNKNOWN',amount:null,lowerBound:null,currency:null,applicability:'UNRESOLVED',evidence:null,conditions:[]};
   const tariffs:NonNullable<NormalizedEvent['tariffs']>=[];
   const admission:NormalizedEvent['admission']={registration:'UNKNOWN',conditions:[],ticketAvailability:'NOT_VERIFIED',requirements:{minimumAge:null,children:'UNKNOWN',accompaniedByAdult:'UNKNOWN'}};
-  const priceText=source==='mie'?columns.filter(n=>/^(Касса|Стоимость билетов)/u.test(txt(n))).map(txt).join(' '):tables.filter(t=>! /^(Пн|Вт|Ср|Чт|Пт|Сб|Вс)/.test(t[0]??'')).map(t=>t.join(': ')).join('; ');
-  const individual=tables.find(t=>/^Входной билет$/.test(t[0]??''))?.[1]??'';
-  if(source==='mie'?/Вход на выставку свободный/iu.test(priceText):/Бесплатно \(при индивидуальном посещении\)/iu.test(individual)) {
+  const applicable=individualTicketRows(dom);
+  const priceText=source==='mie'?columns.filter(n=>/^(Касса|Стоимость билетов)/u.test(txt(n))).map(txt).join(' '):applicable.map(t=>t.join(': ')).join('; ');
+  const individual=applicable.find(t=>/^Входной билет(?:\s*\(при индивидуальном посещении\))?$/.test(t[0]??''))?.[1]??'';
+  if(source==='kazan-kremlin') {
+    const adultRow=applicable.find(t=>/^Взросл(?:ые|ый билет)(?:\s*\(при индивидуальном посещении\))?$/.test(t[0]??''));
+    const adultPart=individual.split(/[,;]/).find(s=>/^\s*Взрослые\s*[—–-]/u.test(s)&&ticketContext(s)==='UNKNOWN');
+    const adultValue=adultRow?.[1]??adultPart?.replace(/^\s*Взрослые\s*[—–-]\s*/u,'');
+    Object.assign(price,individualAmount(adultValue??individual));
+    if(adultValue&&price.kind==='EXACT')price.evidence=`Взрослый билет: ${price.amount} ₽.`;
+  }
+  if(source==='mie'?/Вход на выставку свободный/iu.test(priceText):price.kind==='FREE') {
     Object.assign(price,{kind:'FREE',amount:0,lowerBound:0,currency:'RUB',applicability:'SINGLE_ADULT',evidence:'Бесплатный индивидуальный вход.'});
     price.conditions.push(source==='kazan-kremlin'?'Самостоятельное посещение; экскурсия и организованная группа оплачиваются отдельно.':'Указан свободный вход именно на эту выставку.');
     for(const audience of ['ADULT','CHILD'] as const)tariffs.push({audience,minAge:null,maxAge:null,kind:'FREE',amount:0,lowerBound:0,currency:'RUB',applicable:true,conditions:['Индивидуальное посещение.'],evidence:'Бесплатный индивидуальный вход.'});
   } else {
-    const range=priceText.match(/(?:Стоимость билетов:\s*)?(\d+)\s*[—–−-]\s*(\d+)\s*(?:руб|₽)/iu);
+    const range=source==='mie'?priceText.match(/(?:Стоимость билетов:\s*)?(\d+)\s*[—–−-]\s*(\d+)\s*(?:руб|₽)/iu):null;
     if(range) {
       if(Number(range[1])>Number(range[2]))throw Error('PRICE_RANGE_REVIEW');
       Object.assign(price,{kind:'RANGE',lowerBound:Number(range[1]),upperBound:Number(range[2]),currency:'RUB',evidence:`${range[1]}–${range[2]} ₽; категории посетителей не сопоставлены.`,conditions:['Тариф для выбранного состава требует уточнения.']});
     }
-    else if(source==='kazan-kremlin') {
-      const adult=priceText.match(/(?:Взрослые|Взрослый билет)[^;\d]{0,8}(\d+)\s*₽/u);
-      if(adult)Object.assign(price,{kind:'EXACT',amount:Number(adult[1]),lowerBound:Number(adult[1]),currency:'RUB',applicability:'SINGLE_ADULT',evidence:`Взрослый билет: ${adult[1]} ₽.`});
-      else if(/^\d+\s*₽$/.test(individual)) {
-        const amount=Number(individual.match(/\d+/)![0]);
-        Object.assign(price,{kind:'EXACT',amount,lowerBound:amount,currency:'RUB',applicability:'SINGLE_ADULT',evidence:`Обычный входной билет: ${amount} ₽.`});
-      }
-    }
   }
-  if(source==='kazan-kremlin'&&/организованных групп/u.test(priceText))price.conditions.push('Семья самостоятельно не приравнивается к организованной группе.');
+  if(source==='kazan-kremlin'&&tables.some(t=>/организованных групп/u.test(t.join(' '))))price.conditions.push('Семья самостоятельно не приравнивается к организованной группе.');
   if(source==='kazan-kremlin')for(const row of tables.filter(t=>/организованных групп|Экскурсионное обслуживание/u.test(t[0]??''))) {
     tariffs.push({audience:'GROUP',minAge:null,maxAge:null,kind:'CONDITIONAL',amount:null,lowerBound:null,currency:'RUB',applicable:false,conditions:[clean(row.join(': ')).slice(0,700)],evidence:'Отдельная услуга; не входит в расчёт самостоятельного посещения.'});
   }
-  const childFree=tables.find(t=>/^Дети до 18 лет \(при индивидуальном посещении\)$/.test(t[0]??'')&&/^Бесплатно$/.test(t[1]??''));
-  if(childFree) {
-    tariffs.push({audience:'CHILD',minAge:0,maxAge:17,kind:'FREE',amount:0,lowerBound:0,currency:'RUB',applicable:true,conditions:['Индивидуальное посещение.'],evidence:'Дети до 18 лет: бесплатно при индивидуальном посещении.'});
+  const childRow=applicable.find(t=>/^Дети до 18 лет \(при индивидуальном посещении\)$/.test(t[0]??''));
+  const childPrice=individualAmount(childRow?.[1]??'');
+  if(childRow&&['EXACT','FREE'].includes(childPrice.kind)) {
+    tariffs.push({audience:'CHILD',minAge:0,maxAge:17,kind:childPrice.kind as 'EXACT'|'FREE',amount:childPrice.amount,lowerBound:childPrice.lowerBound,currency:'RUB',applicable:true,conditions:['Индивидуальное посещение.'],evidence:childPrice.kind==='FREE'?'Дети до 18 лет: бесплатно при индивидуальном посещении.':`Дети до 18 лет: ${childPrice.amount} ₽ при индивидуальном посещении.`});
     admission.requirements!.children='ALLOWED';
   }
   if(/предварительн.{0,12}запис|регистраци.{0,12}обязательн/iu.test(priceText))admission.registration='REQUIRED';

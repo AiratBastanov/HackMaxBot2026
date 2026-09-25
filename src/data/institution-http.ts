@@ -49,9 +49,14 @@ export class InstitutionClient {
       if(!robots||!robotsAllows(robots.body,url.pathname))throw Error('ROBOTS_DENIED_OR_UNKNOWN');
     }
     const last=this.ledger.requests.filter(r=>new URL(r.url).origin===url.origin).at(-1);
-    const wait=Math.max(0,Date.parse(last?.startedAt??'1970-01-01')+2000-this.clock());
-    if(this.ledger.requests.length>=80||this.ledger.bytes>=40*1024*1024||this.clock()+wait+20000>Date.parse(this.ledger.startedAt)+900000)throw Error('ACQUISITION_BUDGET');
-    await this.sleep(wait);
+    const earliest=Date.parse(last?.startedAt??'1970-01-01')+2000;
+    // Таймер может проснуться раньше срока: проверяем clock перед реальным стартом.
+    for(;;) {
+      const wait=Math.max(0,earliest-this.clock());
+      if(this.ledger.requests.length>=80||this.ledger.bytes>=40*1024*1024||this.clock()+wait+20000>Date.parse(this.ledger.startedAt)+900000)throw Error('ACQUISITION_BUDGET');
+      if(!wait)break;
+      await this.sleep(wait);
+    }
     const row:FetchRow={url:value,startedAt:new Date(this.clock()).toISOString(),outcome:'STARTED',bytes:0};this.ledger.requests.push(row);this.persist();
     let redirect:string|undefined;
     try {

@@ -12,6 +12,7 @@ import { Catalog } from './catalog.js';
 import { type Card, projectCard, fingerprint, compact, presentationTitle, cardOverview, cardPages, displayDate, displayInstant } from './card.js';
 import { cities, cityKeySchema, cityDate, cityInstant, resolveCity, zoneLabel, type CityKey } from '../data/cities.js';
 import { activeScreen, desireScreen } from '../screens.js';
+import { currentBookmark } from './bookmark.js';
 export type { Card } from './card.js';
 export { fingerprint } from './card.js';
 
@@ -259,12 +260,14 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     if (s.cards.length) audience = catalog.snapshot?.mode === 'SYNTHETIC_FIXTURE' ? 'SYNTHETIC' : 'PROVIDER';
   } else if (['detail', 'bookmark', 'delete'].includes(s.stage)) {
     const saved = s.stage !== 'detail' ? findBookmark() : undefined;
-    const c: Card | undefined = saved ? JSON.parse(saved.data) : s.stage === 'detail' ? s.cards.find(c => c.identity === s.selected) : undefined;
-    const limitation = c ? bookmarkLimitation(c, catalog, now) : 'Эта закладка или карточка уже недоступна.';
-    if (!c || (s.stage === 'detail' && (c.snapshotVersion !== catalog.version || (c.kind === 'UNCERTAIN' && !s.optIn)))) {
+    const original: Card | undefined = saved ? JSON.parse(saved.data) : s.stage === 'detail' ? s.cards.find(c => c.identity === s.selected) : undefined;
+    const current=saved&&original&&!original.synthetic&&original.displayRef?currentBookmark(original,catalog,now):null;
+    const c=current?current.card:original;
+    const limitation = current?.notice??(c ? bookmarkLimitation(c, catalog, now) : 'Эта закладка или карточка уже недоступна.');
+    if (!original || (s.stage === 'detail' && (original.snapshotVersion !== catalog.version || (original.kind === 'UNCERTAIN' && !s.optIn)))) {
       text = 'Карточка устарела. Выполните подбор заново; событие не подменялось.'; rows = [[button('Подобрать', 'pick')], home()];
-    } else if (!showCard(c)) {
-      text=s.stage==='delete'?'Удалить эту закладку?':'Сохранённые сведения сейчас недоступны для показа: изменился проверенный снимок или истёк срок проверки. Выполните новый подбор.';
+    } else if (!c||!showCard(c)) {
+      text=s.stage==='delete'?'Удалить эту закладку?':current?.notice??'Сохранённые сведения сейчас недоступны для показа: изменился проверенный снимок или истёк срок проверки. Выполните новый подбор.';
       rows=s.stage==='delete'?[[button('Да, удалить','confirmRemove'),button('Отмена','cancel')]]:
         [...(saved?[[button('Удалить закладку','remove')]]:[]),[button('Подобрать','pick')],home()];
     } else {
@@ -274,7 +277,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
         text=`Удалить «${compact(presentationTitle(c),500)}» из сохранённого?`;
         rows=[[button('Да, удалить','confirmRemove'),button('Отмена','cancel')]];
       } else {
-      text = `${compact(presentationTitle(c))}\n${s.stage === 'detail' ? label(c) : `Сохранённый контекст: ${label(c)}`}\n${s.stage!=='detail'?`${cities[c.query.city].name} · ${c.query.party?.adults??1} взр., ${c.query.party?.childAges.length??0} дет. · бюджет ${c.query.budgetRub??'без лимита'} ₽ (${c.query.budgetBasis==='PARTY_TOTAL'?'на всех':'на одного взрослого'})\n`:''}${limitation ? `${limitation}\n` : ''}`;
+      text = `${compact(presentationTitle(c))}\n${s.stage === 'detail' ? label(c) : current?'Сохранённый выбор · текущие условия':`Сохранённый контекст: ${label(c)}`}\n${s.stage!=='detail'?`${cities[original.query.city].name} · ${original.query.party?.adults??1} взр., ${original.query.party?.childAges.length??0} дет. · бюджет ${original.query.budgetRub??'без лимита'} ₽ (${original.query.budgetBasis==='PARTY_TOTAL'?'на всех':'на одного взрослого'})\n`:''}${current?`Выбрано: ${displayInstant(original.visit?.from??original.query.start,original.query.timezone)} — ${displayInstant(original.visit?.until??original.query.end,original.query.timezone)}\n`:''}${limitation ? `${limitation}\n` : ''}`;
       if(s.conditionPage!==undefined) {
         const pages=cardPages(c,now), page=Math.max(0,Math.min(s.conditionPage,pages.length-1));
         text+=`Условия посещения · ${page+1}/${pages.length}\n${pages[page]}`;
@@ -292,9 +295,10 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     text = 'Мои события — личные закладки. Сохранение не бронирует места.';
     if (!saved.length) text += '\nЗакладок пока нет.';
     for (const [i,b] of saved.slice(0,5).entries()) {
-      const c: Card = JSON.parse(b.data),visible=showCard(c); text += `\n${s.page * 5 + i + 1}. ${visible?compact(presentationTitle(c))+' · '+(c.kind === 'UNCERTAIN' ? 'нужно уточнить' : 'совпадение при сохранении'):'Сохранённая запись · сведения сейчас недоступны'}`;
+      const original:Card=JSON.parse(b.data),current=!original.synthetic&&original.displayRef?currentBookmark(original,catalog,now):null;
+      const c=current?current.card:original,visible=Boolean(c&&showCard(c)); text += `\n${s.page * 5 + i + 1}. ${visible?compact(presentationTitle(c!))+' · '+(current?'текущие условия':c!.kind === 'UNCERTAIN' ? 'нужно уточнить' : 'совпадение при сохранении'):'Сохранённая запись · сведения сейчас недоступны'}`;
       rows.push([button(`Открыть ${i + 1}`, 'bookmark', JSON.stringify({ identity: b.identity, generation: b.generation }))]);
-      if(visible) {if (!c.synthetic) audience = 'PROVIDER'; else audience ??= 'SYNTHETIC';
+      if(visible&&c) {if (!c.synthetic) audience = 'PROVIDER'; else audience ??= 'SYNTHETIC';
       if(c.displayRef)displayRefs.push(c.displayRef);else if(!c.synthetic)displayRefs.push({snapshotHash:'',eventId:c.eventId});}
     }
     if (s.page > 0) rows.push([button('Предыдущие', 'saved', String(s.page - 1))]);

@@ -1,0 +1,85 @@
+{
+  "at": "2026-09-25T09:34:59.197Z",
+  "baseline": "b842e86295857c0ddfab7363d4b28504c63eeaf3",
+  "node": "v22.23.2",
+  "typecheck": "PASS",
+  "build": "PASS",
+  "tests": {
+    "command": "node scripts/real-checks.mjs",
+    "passed": 245,
+    "failed": 0,
+    "skipped": 0,
+    "logHash": "3806c7b5e88dddcdafc8399526abd1c9429f05639c0c42a58f6003344a9035a3",
+    "note": "После 244 PASS проверка acquisition ledger выявила один промежуток 1999 мс. Исправлен timer, добавлена регрессия; финальные 245 PASS относятся к этому коду."
+  },
+  "localApplication": "PASS",
+  "localBookmarkRefresh": "PASS",
+  "realApplicationSmoke": "REQUIRED",
+  "realMaxMobile": "NOT_RUN",
+  "realMaxWeb": "NOT_RUN",
+  "testers": "UNAVAILABLE",
+  "preflight": {
+    "result": "PASS",
+    "mode": "real",
+    "scope": "ADMITTED_TESTERS_FACTS",
+    "cities": [
+      "kzn",
+      "ekb"
+    ],
+    "records": 26,
+    "network": false,
+    "databaseOpened": false,
+    "clock": "SYSTEM"
+  },
+  "docker": {
+    "build": "PASS",
+    "runtime": "PASS",
+    "tag": "maxbot-real-refresh:r18",
+    "image": "sha256:fb275976be311b10ca790ede4143e648a92a311b29bb7a8b07829916572c5fbf",
+    "sourceLabel": "b842e86-real-refresh-review",
+    "runtimeAt": "2026-09-25T09:33:54.505Z",
+    "network": "none",
+    "readOnly": true,
+    "existingVolumes": false,
+    "disposableTmpfs": "/app/.review",
+    "exitCode": 0,
+    "containerRemoved": true,
+    "cleanSubmissionBenchmark": false,
+    "note": "Первый build выполнен до исправления timer; PowerShell отразил stderr BuildKit как NativeCommandError при завершённом image export. После конкретного исправления один финальный build с явным exit $LASTEXITCODE=0 и один runtime smoke."
+  },
+  "process": {
+    "liveCampaign": "NOT_STARTED",
+    "ownedPollingRequests": 0,
+    "consumerLock": "FREE_AND_RELEASED",
+    "testerStorageOpened": false,
+    "cursorChanged": false
+  },
+  "sourceCodeHashes": [
+    {
+      "path": "src/data/institutions.ts",
+      "sha256": "655074c98bd97e158f1d4a631f4405696f5fc61dcec10b073f8aa5f014cd8611"
+    },
+    {
+      "path": "src/data/institution-http.ts",
+      "sha256": "9467985ef88047801afd7981fb3f73529f7f3f10fd063213b7b474bbc2b4d450"
+    },
+    {
+      "path": "src/data/real-refresh.ts",
+      "sha256": "da68b25775bd9ea5fe46f7b1ece146dc527917a1ad7219b85097a3ada6a54940"
+    },
+    {
+      "path": "src/culture/bookmark.ts",
+      "sha256": "142b9a4a1fa0a3e6b636537e0119bd77699e75e6fe74087ef85a23792516c621"
+    },
+    {
+      "path": "src/culture/flow.ts",
+      "sha256": "0eaa2a9ed611ee9dcb62631c401d090b614171f7ccfab42b38801228521a77d2"
+    },
+    {
+      "path": "scripts/real-refresh-walkthrough.ts",
+      "sha256": "61b83254cac2a14cdf794f8937418206d64930a625c02d005ecc5221bfc6884a"
+    }
+  ],
+  "webhookIngress": "NOT_VERIFIED",
+  "deployment": "NOT_RUN"
+}

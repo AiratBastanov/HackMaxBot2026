@@ -16,7 +16,7 @@ try {
     const candidate=reparse(client,prepared,new Date().toISOString(),Number(process.env.REAL_FRESHNESS_HOURS??72),previous.availableCities.flatMap(c=>previous.forCity(c)??[]));
     if(fetched)candidate.sourceStatus=fetched;
     const hash=snapshotDigest(candidate),path=resolve(root,'candidate-'+hash.slice(0,20)+'.json');atomicJson(path,candidate);
-    console.log(JSON.stringify({candidate:path,sha256:hash,records:candidate.snapshots.reduce((n,s)=>n+s.events.length,0),reviewQueue:candidate.reviewQueue,sources:candidate.sourceStatus,mode:'OPERATOR_CLI',activated:false}));
+    console.log(JSON.stringify({candidate:path,sha256:hash,records:candidate.snapshots.reduce((n,s)=>n+s.events.length,0),reviewQueue:candidate.reviewQueue,changes:candidate.changes,sources:candidate.sourceStatus,mode:'OPERATOR_CLI',activated:false}));
   }else if(command==='activate') {
     if(args.length!==3)throw Error('USE_ACTIVATE_CANDIDATE_SHA_DESTINATION');
     const path=resolve(args[0]!);privateCampaign(resolve(path,'..'));

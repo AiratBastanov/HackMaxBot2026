@@ -1,0 +1,726 @@
+{
+  "verdict": "MAXBOT_REAL_CATALOG_LOCAL_PASS",
+  "at": "2026-09-25T09:28:05.510Z",
+  "counts": {
+    "records": 26,
+    "occurrences": 32,
+    "timedSessions": 18,
+    "flexibleVisits": 14,
+    "venueRecords": 10,
+    "identifiedVenueRecords": 7,
+    "identifiedVenues": 5,
+    "cities": 2
+  },
+  "LOCAL_INTEGRATION_SMOKE": "PASS",
+  "REAL_APPLICATION_SMOKE": "REQUIRED",
+  "REAL_MAX_MOBILE": "NOT_RUN",
+  "REAL_MAX_WEB": "NOT_RUN",
+  "simulatedMAX": true,
+  "queries": [
+    {
+      "name": "Один взрослый, ближайшая суббота днём, до 500 ₽",
+      "query": {
+        "version": 2,
+        "city": "kzn",
+        "timezone": "Europe/Moscow",
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "start": "2026-09-26T09:00:00.000Z",
+        "end": "2026-09-26T15:00:00.000Z",
+        "budgetRub": 500,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 2,
+      "candidates": 9,
+      "shownStrict": [
+        {
+          "title": "Гелий Коржев. Свет и тень",
+          "from": "2026-09-26T09:00:00.000Z",
+          "until": "2026-09-26T15:00:00.000Z",
+          "price": 400,
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/gelij-korzhev-svet-i-ten"
+          }
+        },
+        {
+          "title": "Казанское Поволжье: образы народной культуры",
+          "from": "2026-09-26T09:00:00.000Z",
+          "until": "2026-09-26T15:00:00.000Z",
+          "price": 0,
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2"
+          }
+        }
+      ],
+      "shownCandidates": [
+        {
+          "title": "Губернаторский дворец: 175 лет в центре исторических событий",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе."
+          ],
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/gubernatorskij-dvorecz-175-let-v-czentre-istoricheskih-sobytij"
+          }
+        },
+        {
+          "title": "Рождение света",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе."
+          ],
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/rozhdenie-sveta"
+          }
+        },
+        {
+          "title": "Сборная экскурсия по выставке «Гелий Коржев. Свет и тень»",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ],
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya"
+          }
+        }
+      ],
+      "excluded": {
+        "VENUE_UNKNOWN": 13,
+        "OUTSIDE_WINDOW": 9,
+        "PRICE_UNKNOWN": 12,
+        "TIME_UNKNOWN": 12
+      }
+    },
+    {
+      "name": "Два взрослых и ребёнок 7 лет, суббота днём, до 1500 ₽ за всех",
+      "query": {
+        "version": 2,
+        "city": "kzn",
+        "timezone": "Europe/Moscow",
+        "party": {
+          "adults": 2,
+          "childAges": [
+            7
+          ]
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "start": "2026-09-26T09:00:00.000Z",
+        "end": "2026-09-26T15:00:00.000Z",
+        "budgetRub": 1500,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 0,
+      "candidates": 11,
+      "shownStrict": [],
+      "shownCandidates": [
+        {
+          "title": "Казанское Поволжье: образы народной культуры",
+          "reasons": [
+            "Допуск выбранного состава посетителей требует уточнения."
+          ],
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2"
+          }
+        },
+        {
+          "title": "Рождение света",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе."
+          ],
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/rozhdenie-sveta"
+          }
+        },
+        {
+          "title": "Гелий Коржев. Свет и тень",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ],
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/gelij-korzhev-svet-i-ten"
+          }
+        }
+      ],
+      "excluded": {
+        "PRICE_UNKNOWN": 15,
+        "ADMISSION_UNKNOWN": 16,
+        "VENUE_UNKNOWN": 13,
+        "OUTSIDE_WINDOW": 9,
+        "TIME_UNKNOWN": 12
+      }
+    },
+    {
+      "name": "Бесплатно, один взрослый, суббота днём",
+      "query": {
+        "version": 2,
+        "city": "kzn",
+        "timezone": "Europe/Moscow",
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "start": "2026-09-26T09:00:00.000Z",
+        "end": "2026-09-26T15:00:00.000Z",
+        "budgetRub": 0,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 1,
+      "candidates": 7,
+      "shownStrict": [
+        {
+          "title": "Казанское Поволжье: образы народной культуры",
+          "from": "2026-09-26T09:00:00.000Z",
+          "until": "2026-09-26T15:00:00.000Z",
+          "price": 0,
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2"
+          }
+        }
+      ],
+      "shownCandidates": [
+        {
+          "title": "Сборная экскурсия по выставке «Гелий Коржев. Свет и тень»",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ],
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya"
+          }
+        },
+        {
+          "title": "Сборная экскурсия по выставке «Культурный код Казани: духовное наследие и традиции»",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ],
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya"
+          }
+        },
+        {
+          "title": "Экскурсия + Мастер-класс «След истории: создание керамического изразца»",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе.",
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ],
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya"
+          }
+        }
+      ],
+      "excluded": {
+        "OVER_BUDGET": 4,
+        "VENUE_UNKNOWN": 13,
+        "OUTSIDE_WINDOW": 9,
+        "PRICE_UNKNOWN": 12,
+        "TIME_UNKNOWN": 12
+      }
+    },
+    {
+      "name": "Вечером сегодня 18–21, один взрослый, без лимита цены",
+      "query": {
+        "version": 2,
+        "city": "kzn",
+        "timezone": "Europe/Moscow",
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "start": "2026-09-25T15:00:00.000Z",
+        "end": "2026-09-25T18:00:00.000Z",
+        "budgetRub": null,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 2,
+      "candidates": 4,
+      "shownStrict": [
+        {
+          "title": "Гелий Коржев. Свет и тень",
+          "from": "2026-09-25T15:00:00.000Z",
+          "until": "2026-09-25T17:00:00.000Z",
+          "price": 400,
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/gelij-korzhev-svet-i-ten"
+          }
+        },
+        {
+          "title": "Казанское Поволжье: образы народной культуры",
+          "from": "2026-09-25T15:00:00.000Z",
+          "until": "2026-09-25T17:00:00.000Z",
+          "price": 0,
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2"
+          }
+        }
+      ],
+      "shownCandidates": [
+        {
+          "title": "Губернаторский дворец: 175 лет в центре исторических событий",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе."
+          ],
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/gubernatorskij-dvorecz-175-let-v-czentre-istoricheskih-sobytij"
+          }
+        },
+        {
+          "title": "Кремлёвские грани: полвека в объективе",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе."
+          ],
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/kremlyovskie-grani-polveka-v-obektive"
+          }
+        },
+        {
+          "title": "Рождение света",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе."
+          ],
+          "source": {
+            "label": "Источник: Казанский Кремль",
+            "url": "https://kazan-kremlin.ru/exhibitions/rozhdenie-sveta"
+          }
+        }
+      ],
+      "excluded": {
+        "VENUE_UNKNOWN": 13,
+        "OUTSIDE_WINDOW": 12,
+        "TIME_UNKNOWN": 12
+      }
+    },
+    {
+      "name": "Намеренно без совпадений: завтра 02–03, бесплатно",
+      "query": {
+        "version": 2,
+        "city": "kzn",
+        "timezone": "Europe/Moscow",
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "start": "2026-09-25T23:00:00.000Z",
+        "end": "2026-09-26T00:00:00.000Z",
+        "budgetRub": 0,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 0,
+      "candidates": 0,
+      "shownStrict": [],
+      "shownCandidates": [],
+      "excluded": {
+        "OVER_BUDGET": 4,
+        "OUTSIDE_WINDOW": 17,
+        "VENUE_UNKNOWN": 13,
+        "PRICE_UNKNOWN": 12,
+        "TIME_UNKNOWN": 12
+      }
+    },
+    {
+      "name": "Один взрослый, ближайшая суббота днём, до 500 ₽",
+      "query": {
+        "version": 2,
+        "city": "ekb",
+        "timezone": "Asia/Yekaterinburg",
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "start": "2026-09-26T07:00:00.000Z",
+        "end": "2026-09-26T13:00:00.000Z",
+        "budgetRub": 500,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 1,
+      "candidates": 8,
+      "shownStrict": [
+        {
+          "title": "«Азины. Магия имени»",
+          "from": "2026-09-26T07:00:00.000Z",
+          "until": "2026-09-26T13:00:00.000Z",
+          "price": 0,
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/azins_magic_of_name"
+          }
+        }
+      ],
+      "shownCandidates": [
+        {
+          "title": "«Роковый корпус»",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ],
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/casing_of_rock"
+          }
+        },
+        {
+          "title": "«БУМ! Рождение креативных индустрий в Екатеринбурге в 1990–2000-е»",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ],
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/creative_industry"
+          }
+        },
+        {
+          "title": "«Хроники ресторанного Екатеринбурга: городские фудкорты XIX века»",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ],
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/ekb_fastfood"
+          }
+        }
+      ],
+      "excluded": {
+        "PRICE_UNKNOWN": 8,
+        "VENUE_UNKNOWN": 1
+      }
+    },
+    {
+      "name": "Два взрослых и ребёнок 7 лет, суббота днём, до 1500 ₽ за всех",
+      "query": {
+        "version": 2,
+        "city": "ekb",
+        "timezone": "Asia/Yekaterinburg",
+        "party": {
+          "adults": 2,
+          "childAges": [
+            7
+          ]
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "start": "2026-09-26T07:00:00.000Z",
+        "end": "2026-09-26T13:00:00.000Z",
+        "budgetRub": 1500,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 0,
+      "candidates": 9,
+      "shownStrict": [],
+      "shownCandidates": [
+        {
+          "title": "«Азины. Магия имени»",
+          "reasons": [
+            "Допуск выбранного состава посетителей требует уточнения."
+          ],
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/azins_magic_of_name"
+          }
+        },
+        {
+          "title": "«Роковый корпус»",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ],
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/casing_of_rock"
+          }
+        },
+        {
+          "title": "«БУМ! Рождение креативных индустрий в Екатеринбурге в 1990–2000-е»",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ],
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/creative_industry"
+          }
+        }
+      ],
+      "excluded": {
+        "ADMISSION_UNKNOWN": 9,
+        "PRICE_UNKNOWN": 8,
+        "VENUE_UNKNOWN": 1
+      }
+    },
+    {
+      "name": "Бесплатно, один взрослый, суббота днём",
+      "query": {
+        "version": 2,
+        "city": "ekb",
+        "timezone": "Asia/Yekaterinburg",
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "start": "2026-09-26T07:00:00.000Z",
+        "end": "2026-09-26T13:00:00.000Z",
+        "budgetRub": 0,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 1,
+      "candidates": 8,
+      "shownStrict": [
+        {
+          "title": "«Азины. Магия имени»",
+          "from": "2026-09-26T07:00:00.000Z",
+          "until": "2026-09-26T13:00:00.000Z",
+          "price": 0,
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/azins_magic_of_name"
+          }
+        }
+      ],
+      "shownCandidates": [
+        {
+          "title": "«Роковый корпус»",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ],
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/casing_of_rock"
+          }
+        },
+        {
+          "title": "«БУМ! Рождение креативных индустрий в Екатеринбурге в 1990–2000-е»",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ],
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/creative_industry"
+          }
+        },
+        {
+          "title": "«Хроники ресторанного Екатеринбурга: городские фудкорты XIX века»",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ],
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/ekb_fastfood"
+          }
+        }
+      ],
+      "excluded": {
+        "PRICE_UNKNOWN": 8,
+        "VENUE_UNKNOWN": 1
+      }
+    },
+    {
+      "name": "Вечером сегодня 18–21, один взрослый, без лимита цены",
+      "query": {
+        "version": 2,
+        "city": "ekb",
+        "timezone": "Asia/Yekaterinburg",
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "start": "2026-09-25T13:00:00.000Z",
+        "end": "2026-09-25T16:00:00.000Z",
+        "budgetRub": null,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 4,
+      "candidates": 0,
+      "shownStrict": [
+        {
+          "title": "«Роковый корпус»",
+          "from": "2026-09-25T13:00:00.000Z",
+          "until": "2026-09-25T15:00:00.000Z",
+          "price": null,
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/casing_of_rock"
+          }
+        },
+        {
+          "title": "«БУМ! Рождение креативных индустрий в Екатеринбурге в 1990–2000-е»",
+          "from": "2026-09-25T13:00:00.000Z",
+          "until": "2026-09-25T15:00:00.000Z",
+          "price": null,
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/creative_industry"
+          }
+        },
+        {
+          "title": "«Электронные волшебники»",
+          "from": "2026-09-25T13:00:00.000Z",
+          "until": "2026-09-25T14:00:00.000Z",
+          "price": null,
+          "source": {
+            "label": "Источник: Музей истории Екатеринбурга",
+            "url": "https://m-i-e.ru/electronic_mage"
+          }
+        }
+      ],
+      "shownCandidates": [],
+      "excluded": {
+        "OUTSIDE_WINDOW": 5,
+        "VENUE_UNKNOWN": 1
+      }
+    },
+    {
+      "name": "Намеренно без совпадений: завтра 02–03, бесплатно",
+      "query": {
+        "version": 2,
+        "city": "ekb",
+        "timezone": "Asia/Yekaterinburg",
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "start": "2026-09-25T21:00:00.000Z",
+        "end": "2026-09-25T22:00:00.000Z",
+        "budgetRub": 0,
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 0,
+      "candidates": 0,
+      "shownStrict": [],
+      "shownCandidates": [],
+      "excluded": {
+        "OUTSIDE_WINDOW": 9,
+        "PRICE_UNKNOWN": 8,
+        "VENUE_UNKNOWN": 1
+      }
+    }
+  ],
+  "frames": [
+    {
+      "title": "Казань: реальная карточка",
+      "text": "Гелий Коржев. Свет и тень\nСоответствует указанным данным источника\n📍 Казань · Выставочные залы Присутственных мест\nКазань, территория Казанского Кремля, Присутственные места\n📅 26 сентября 2026 г. · 12:00–18:00 (Москва, UTC+3)\nЧасы работы: 10:00–18:00\n💳 400 ₽ за всех\nПоследний вход: не установлен · касса до 17:30\nРегистрация: требование неизвестно.\nСемья самостоятельно не приравнивается к организованной группе.\nИсточник: Казанский Кремль · сведения получены менее часа назад.\nУсловия организатором не перепроверены.",
+      "links": [
+        "https://kazan-kremlin.ru/exhibitions/gelij-korzhev-svet-i-ten",
+        "https://kazan-kremlin.ru/museums/vystavochnye-zaly-prisutstvennyh-mest"
+      ]
+    },
+    {
+      "title": "Казань: условия",
+      "text": "Гелий Коржев. Свет и тень\nСоответствует указанным данным источника\nУсловия посещения · 1/1\nМесто: Выставочные залы Присутственных мест\nАдрес: Казань, территория Казанского Кремля, Присутственные места\n📅 26 сентября 2026 г. · 12:00–18:00 (Москва, UTC+3)\nЧасы работы: 10:00–18:00\nПоследний вход: не установлен · касса до 17:30\nВход: 400 ₽ за всех\nРегистрация: требование неизвестно.\nСемья самостоятельно не приравнивается к организованной группе.\nГруппа / пакет: применимость или цена требует уточнения (условия не подтверждены).\nЭкскурсионное обслуживание: 1500 ₽ (за группу до 10 человек)\nОтдельная услуга; не входит в расчёт самостоятельного посещения.\nМесто вручную сопоставлено с разделом музеев Кремля и страницей площадки; номер здания не установлен. Почтовый а/я учреждения не использован.\nНаличие билетов не проверено. Сохранение не означает регистрацию.\nДорога и длительность осмотра не рассчитаны.\nИсточник: Казанский Кремль · сведения получены менее часа назад.\nУсловия организатором не перепроверены.\nДата получения: 25 сентября 2026 г. 12:11 (Москва, UTC+3)\nИзменено источником: дата неизвестна\n",
+      "links": [
+        "https://kazan-kremlin.ru/exhibitions/gelij-korzhev-svet-i-ten",
+        "https://kazan-kremlin.ru/museums/vystavochnye-zaly-prisutstvennyh-mest"
+      ]
+    },
+    {
+      "title": "Казань: после restart",
+      "text": "Гелий Коржев. Свет и тень\nСохранённый выбор · текущие условия\nКазань · 1 взр., 0 дет. · бюджет 500 ₽ (на всех)\nВыбрано: 26 сентября 2026 г. 12:00 (Москва, UTC+3) — 26 сентября 2026 г. 18:00 (Москва, UTC+3)\nНиже текущие опубликованные условия; исходный выбор в закладке сохранён.\nИзменений тарифа, времени и допуска не выявлено.\nТекущие условия соответствуют сохранённому запросу по известным данным.\n📍 Казань · Выставочные залы Присутственных мест\nКазань, территория Казанского Кремля, Присутственные места\n📅 26 сентября 2026 г. · 12:00–18:00 (Москва, UTC+3)\nЧасы работы: 10:00–18:00\n💳 400 ₽ за всех\nПоследний вход: не установлен · касса до 17:30\nРегистрация: требование неизвестно.\nСемья самостоятельно не приравнивается к организованной группе.\nИсточник: Казанский Кремль · сведения получены менее часа назад.\nУсловия организатором не перепроверены.",
+      "links": [
+        "https://kazan-kremlin.ru/exhibitions/gelij-korzhev-svet-i-ten",
+        "https://kazan-kremlin.ru/museums/vystavochnye-zaly-prisutstvennyh-mest"
+      ]
+    },
+    {
+      "title": "Екатеринбург: реальная карточка",
+      "text": "«Азины. Магия имени»\nСоответствует указанным данным источника\n📍 Екатеринбург · Дом Качки\nул. Карла Либкнехта, 26\n📅 26 сентября 2026 г. · 12:00–18:00 (Екатеринбург, UTC+5)\nЧасы работы: 11:00–18:00\n💳 0 ₽ за всех\nПоследний вход: не установлен · касса до 17:00\nРегистрация: требование неизвестно.\nУказан свободный вход именно на эту выставку.\nИсточник: Музей истории Екатеринбурга · сведения получены менее часа назад.\nУсловия организатором не перепроверены.",
+      "links": [
+        "https://m-i-e.ru/azins_magic_of_name",
+        "https://m-i-e.ru/mie-filial"
+      ]
+    },
+    {
+      "title": "Екатеринбург: условия",
+      "text": "«Азины. Магия имени»\nСоответствует указанным данным источника\nУсловия посещения · 1/1\nМесто: Дом Качки\nАдрес: ул. Карла Либкнехта, 26\n📅 26 сентября 2026 г. · 12:00–18:00 (Екатеринбург, UTC+5)\nЧасы работы: 11:00–18:00\nПоследний вход: не установлен · касса до 17:00\nВход: 0 ₽ за всех\nРегистрация: требование неизвестно.\nУказан свободный вход именно на эту выставку.\nВзрослый: 0 ₽.\nИндивидуальное посещение.\nДетский 0–17 лет: 0 ₽.\nМаркировка источника: 12+ (не тариф и не отдельное правило допуска).\nНаличие билетов не проверено. Сохранение не означает регистрацию.\nДорога и длительность осмотра не рассчитаны.\nИсточник: Музей истории Екатеринбурга · сведения получены менее часа назад.\nУсловия организатором не перепроверены.\nДата получения: 25 сентября 2026 г. 14:11 (Екатеринбург, UTC+5)\nИзменено источником: дата неизвестна\n",
+      "links": [
+        "https://m-i-e.ru/azins_magic_of_name",
+        "https://m-i-e.ru/mie-filial"
+      ]
+    },
+    {
+      "title": "Екатеринбург: после restart",
+      "text": "«Азины. Магия имени»\nСохранённый выбор · текущие условия\nЕкатеринбург · 1 взр., 0 дет. · бюджет 500 ₽ (на всех)\nВыбрано: 26 сентября 2026 г. 12:00 (Екатеринбург, UTC+5) — 26 сентября 2026 г. 18:00 (Екатеринбург, UTC+5)\nНиже текущие опубликованные условия; исходный выбор в закладке сохранён.\nИзменений тарифа, времени и допуска не выявлено.\nТекущие условия соответствуют сохранённому запросу по известным данным.\n📍 Екатеринбург · Дом Качки\nул. Карла Либкнехта, 26\n📅 26 сентября 2026 г. · 12:00–18:00 (Екатеринбург, UTC+5)\nЧасы работы: 11:00–18:00\n💳 0 ₽ за всех\nПоследний вход: не установлен · касса до 17:00\nРегистрация: требование неизвестно.\nУказан свободный вход именно на эту выставку.\nИсточник: Музей истории Екатеринбурга · сведения получены менее часа назад.\nУсловия организатором не перепроверены.",
+      "links": [
+        "https://m-i-e.ru/azins_magic_of_name",
+        "https://m-i-e.ru/mie-filial"
+      ]
+    }
+  ],
+  "operations": {
+    "messages": 4,
+    "edit": 28,
+    "answers": 28,
+    "delete": 3
+  }
+}

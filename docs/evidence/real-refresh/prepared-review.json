@@ -1,0 +1,30 @@
+{
+  "method": "PREPARED_REAL",
+  "observedAt": "2026-09-25T09:20:06.775Z",
+  "sourceFetchedAt": "2026-09-25T09:10:53.134Z",
+  "sourceUrl": "https://kazan-kremlin.ru/museums/vystavochnye-zaly-prisutstvennyh-mest",
+  "previous": {
+    "sourceUrl": "https://kazan-kremlin.ru/museums/vystavochnye-zaly-prisutstvennyh-mest",
+    "contentHash": "6862b4ee9bd433edf7099d4b382176b0297b93534c988bf6bb0fe5e42ea511f4",
+    "observedAt": "2026-09-25T07:41:24.637Z",
+    "title": "Выставочные залы Присутственных мест",
+    "address": "Казань, территория Казанского Кремля, Присутственные места",
+    "note": "Место вручную сопоставлено с разделом музеев Кремля и страницей площадки; номер здания не установлен. Почтовый а/я учреждения не использован."
+  },
+  "current": {
+    "sourceUrl": "https://kazan-kremlin.ru/museums/vystavochnye-zaly-prisutstvennyh-mest",
+    "contentHash": "bfa4c6c2b06aa457a96d536a7f489d15d033f177eea07ba6140dc555008828d7",
+    "observedAt": "2026-09-25T09:20:06.775Z",
+    "title": "Выставочные залы Присутственных мест",
+    "address": "Казань, территория Казанского Кремля, Присутственные места",
+    "note": "Место вручную сопоставлено с разделом музеев Кремля и страницей площадки; номер здания не установлен. Почтовый а/я учреждения не использован."
+  },
+  "evidence": [
+    "H1 площадки совпадает с прежней идентичностью.",
+    "Ссылки двух выставок содержат название этой площадки.",
+    "Раздел музеев и выставочных залов Кремля и текст о размещении в историческом здании подтверждают прежнее сопоставление; адрес остаётся описанием территории без номера здания."
+  ],
+  "automaticRenewal": false,
+  "unusedPriorMapping": "Музей истории Благовещенского собора: исключён из текущих supplements, ни одна используемая связь с выставкой не подтверждена.",
+  "baselineFile": ".review/real-catalog/r18/before-prepared.json"
+}

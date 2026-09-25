@@ -11,7 +11,7 @@ export type Card = { identity: string; eventId: string; occurrenceId: string | n
   snapshotVersion: string; fingerprint: string; retrievedAt: string; synthetic: boolean; query: Query; displayRef?:DisplayRef;
   occurrence: { kind: string; start: string | null; end: string | null } | null;
   // Отсутствует в старых закладках. Не восстанавливаем исторические поля из нового каталога.
-  visit?: { version: 1; venue: { title: string | null; address: string | null };
+  visit?: { version: 1; venue: { id?:string|null; title: string | null; address: string | null };
     from: string | null; until: string | null; lastEntry: string | null; opening: OpeningInterval[] | null;
     timeAssessment?: Predicate;
     price: Price; admission: NormalizedEvent['admission']; warnings: string[]; partyPrice?: PartyAssessment;
@@ -35,7 +35,7 @@ export function projectCard(catalog: Catalog, query: Query, r: Recommendation | 
     retrievedAt:r.eventRetrievedAt,synthetic:snapshot.mode==='SYNTHETIC_FIXTURE',query,
     ...(snapshot.mode==='REAL_CATALOG'?{displayRef:{snapshotHash:snapshotDigest(snapshot),eventId:e.id}}:{}),
     occurrence:o ? {kind:o.kind,start:o.start,end:o.end}:null,
-    visit:{version:1,venue:{title:venue?.title?.trim()?venue.title:null,address:venue?.address?.trim()?venue.address:null},
+    visit:{version:1,venue:{id:venue?.id??null,title:venue?.title?.trim()?venue.title:null,address:venue?.address?.trim()?venue.address:null},
       from:strict?r.from:r.time.from??o?.start??null,until:strict?r.until:r.time.until??o?.end??null,
       lastEntry:strict?r.lastEntry:r.time.lastEntry,opening:o?.opening??null,
       ...(!strict?{timeAssessment:r.time.assessment}:{}),

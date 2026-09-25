@@ -4,10 +4,11 @@ import type { Candidate, Predicate, Recommendation } from '../data/select.js';
 import { Catalog, digest } from './catalog.js';
 import { cities, cityDate, localISO, zoneLabel, type CityKey, type Timezone } from '../data/cities.js';
 import { partyPrice, type PartyAssessment } from '../data/party.js';
+import { snapshotDigest, type DisplayRef } from '../data/source-policy.js';
 
 export type Card = { identity: string; eventId: string; occurrenceId: string | null; title: string;
   source: { label: string; url: string }; kind: 'STRICT' | 'UNCERTAIN'; facts: string[]; unknown: string[];
-  snapshotVersion: string; fingerprint: string; retrievedAt: string; synthetic: boolean; query: Query;
+  snapshotVersion: string; fingerprint: string; retrievedAt: string; synthetic: boolean; query: Query; displayRef?:DisplayRef;
   occurrence: { kind: string; start: string | null; end: string | null } | null;
   // Отсутствует в старых закладках. Не восстанавливаем исторические поля из нового каталога.
   visit?: { version: 1; venue: { title: string | null; address: string | null };
@@ -32,12 +33,13 @@ export function projectCard(catalog: Catalog, query: Query, r: Recommendation | 
     kind: strict ? 'STRICT':'UNCERTAIN', facts:strict ? r.reasons : [...r.usefulFacts,...r.factsMatched],
     unknown:strict ? []:r.checkAtSource, snapshotVersion:catalog.version,fingerprint:fingerprint(catalog,e.id,query.city)!,
     retrievedAt:r.eventRetrievedAt,synthetic:snapshot.mode==='SYNTHETIC_FIXTURE',query,
+    ...(snapshot.mode==='REAL_CATALOG'?{displayRef:{snapshotHash:snapshotDigest(snapshot),eventId:e.id}}:{}),
     occurrence:o ? {kind:o.kind,start:o.start,end:o.end}:null,
     visit:{version:1,venue:{title:venue?.title?.trim()?venue.title:null,address:venue?.address?.trim()?venue.address:null},
       from:strict?r.from:r.time.from??o?.start??null,until:strict?r.until:r.time.until??o?.end??null,
       lastEntry:strict?r.lastEntry:r.time.lastEntry,opening:o?.opening??null,
       ...(!strict?{timeAssessment:r.time.assessment}:{}),
-      price:r.price,partyPrice:r.partyPrice,tariffs:e.tariffs,providerAgeLabel:e.providerAgeLabel,admission:e.admission,warnings:r.warnings,providerUpdatedAt:e.providerUpdatedAt,
+      price:r.price,partyPrice:r.partyPrice,tariffs:e.tariffs,providerAgeLabel:e.providerAgeLabel,admission:e.admission,warnings:[...r.warnings,...e.issues,...(o?.issues??[])],providerUpdatedAt:e.providerUpdatedAt,
       eventObservations:r.eventObservations,venueObservations:r.venueObservations,
       links:[...(e.organizerUrl?[{label:catalog.snapshot!.mode==='SYNTHETIC_FIXTURE'?'Пример ссылки организатора':'Организатор',url:e.organizerUrl}]:[]),
         ...(e.ticketUrl?[{label:catalog.snapshot!.mode==='SYNTHETIC_FIXTURE'?'Пример ссылки билетов':'Билеты',url:e.ticketUrl}]:[]),
@@ -68,12 +70,16 @@ function schedule(c:Card) {
   const weekday=new Date(day+'T12:00:00Z').getUTCDay(),hours=v.opening?.filter(h=>h.weekday===weekday);
   return '📅 '+displayDate(day)+' · '+(v.from&&v.until?at(c,v.from)+'–'+at(c,v.until):'интервал не подтверждён')+' ('+zoneLabel(zone(c))+')\nЧасы работы: '+(hours?.length?unique(hours.map(h=>hh(h.open)+'–'+hh(h.close))).join('; '):'неизвестны');
 }
-const entry=(c:Card)=>'Последний вход: '+(c.visit!.lastEntry?at(c,c.visit!.lastEntry):'не установлен');
+const entry=(c:Card)=>{
+  const day=cityDate(c.visit!.from??c.query.start,zone(c)),weekday=new Date(day+'T12:00:00Z').getUTCDay();
+  const cutoff=c.visit!.opening?.find(h=>h.weekday===weekday)?.salesCutoff;
+  return 'Последний вход: '+(c.visit!.lastEntry?at(c,c.visit!.lastEntry):'не установлен')+(cutoff!=null?' · касса до '+hh(cutoff):'');
+};
 function freshness(c:Card,now=Date.now()) {
   if(c.synthetic) return 'Вымышленный набор для проверки интерфейса.';
   const hours=Math.floor((now-Date.parse(c.retrievedAt))/3600000);
-  const age=hours<0?'время получения требует уточнения':hours<1?'получено менее часа назад':hours<24?'получено '+hours+' ч назад':'получено '+Math.floor(hours/24)+' дн. назад';
-  return compact(c.source.label,100)+' · '+age+'.\nУсловия организатором не перепроверены.';
+  const age=hours<0?'с неизвестным временем получения':hours<1?'получены менее часа назад':hours<24?'получены '+hours+' ч назад':'получены '+Math.floor(hours/24)+' дн. назад';
+  return compact(c.source.label,100)+' · сведения '+age+'.\nУсловия организатором не перепроверены.';
 }
 function conditions(c:Card) {
   const v=c.visit!;

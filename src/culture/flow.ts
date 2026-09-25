@@ -5,7 +5,7 @@ import { type Query, type Party, partySchema, safeLink } from '../data/contract.
 import { localDate } from '../data/normalize.js';
 import { select } from '../data/select.js';
 import { sourceReviews } from '../data/reviews.js';
-import type { Button, MaxOperation } from '../max.js';
+import { deliveryAllowed, type Button, type MaxOperation } from '../max.js';
 import { canSend, observeContact } from '../probe.js';
 import type { Storage } from '../storage.js';
 import { Catalog } from './catalog.js';
@@ -54,7 +54,7 @@ export function bookmarkLimitation(c: Card, catalog: Catalog, now: number): stri
   if (!snapshot.events.some(e => e.id === c.eventId && (!c.occurrenceId || e.occurrences.some(o => o.id === c.occurrenceId))))
     return 'Событие или выбранное посещение отсутствует в текущем снимке. Это не подтверждение отмены.';
   if (fingerprint(catalog, c.eventId,c.query.city) !== c.fingerprint) return 'Данные изменились. Ниже условия при сохранении. Выполните новый подбор.';
-  if (now - Date.parse(c.retrievedAt) > 86400000 || now >= Date.parse(c.query.end)) return 'Сохранённые условия или выбранная дата устарели. Повторите подбор и проверьте источник.';
+  if (now - Date.parse(c.retrievedAt) > snapshot.freshnessHours*3600000 || now >= Date.parse(c.query.end)) return 'Сохранённые условия или выбранная дата устарели. Повторите подбор и проверьте источник.';
   return null;
 }
 const statuses: Record<string, string> = {
@@ -116,7 +116,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     }
     case 'city': {
       const city=cityKeySchema.parse(arg);
-      if(!catalog.forCity(city)) {s.stage='city';s.notice=`${cities[city].name}: пригодного снимка сейчас нет. Выберите другой город.`;break;}
+      if(!catalog.usableCities(now).includes(city)) {s.stage='city';s.notice=`${cities[city].name}: пригодного снимка сейчас нет. Выберите другой город.`;break;}
       s.draft.city=city;s.draft.date=datePlus(now,1,city);delete s.cityOptions;changed('date');break;
     }
     case 'date': s.draft.date = arg; changed('time'); break;
@@ -201,12 +201,14 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
   const home = () => [button('Главная', 'home'), button('Мои события', 'saved')];
   const editors = () => [[button('Город', 'edit', 'city'),button('Посетители','edit','party')],[button('Дата', 'edit', 'date'), button('Время', 'edit', 'time')], [button('Бюджет', 'edit', 'budget'), button('Интерес', 'edit', 'interest')]];
   let text = '', rows: Button[][] = [], audience: MaxOperation['audience'], catalogVersion: string | undefined;
+  const displayRefs:NonNullable<MaxOperation['displayRefs']>=[];
+  const showCard=(c:Card)=>c.synthetic||config.mode==='local'&&!catalog.requiresReview||catalog.permits(c.displayRef?[c.displayRef]:undefined,now);
   if (s.stage === 'home') {
     text = 'Культурный план\nВыберите город, время и бюджет на всех посетителей. Варианты с неизвестными условиями — по вашему запросу.';
     rows = [[button('Подобрать', 'pick'), button('Мои события', 'saved')], [button('О данных', 'about')]];
   } else if (s.stage === 'city') {
     text = '📍 В каком городе?\nНажмите кнопку или сразу напишите название города.';
-    const choices=s.cityOptions?.length?s.cityOptions:catalog.availableCities;
+    const choices=s.cityOptions?.length?s.cityOptions:catalog.usableCities(now);
     rows=choices.slice(0,6).map(city=>[button(cities[city].name,'city',city)]);
     text+=config.flowDataMode==='synthetic-test'?'\nКнопки ведут к вымышленным местным примерам.':'\nКнопки — города с локальным снимком; актуальность проверяется при подборе.';
     if(!choices.length)text+='\nСнимков сейчас нет. Закладки остаются доступны.';
@@ -240,12 +242,13 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     text = `Ваши условия:\n${summary(s)}\nПоказать строгие совпадения?`; rows = [[button('Показать результаты', 'results')], ...editors(), home()];
   } else if (s.stage === 'results') {
     const q = makeQuery(s.draft), snapshot=catalog.forCity(q.city),result = select(snapshot, q, new Date(now), config.flowDataMode === 'synthetic-test', s.optIn);
-    s.cards = [...result.recommendations, ...result.uncertain].map(r => projectCard(catalog, q, r));
+    s.cards = [...result.recommendations, ...result.uncertain].map(r => projectCard(catalog, q, r)).filter(showCard);
     text = summary(s);
     if (!result.recommendations.length) text += `\n\n${statuses[result.status] ?? 'Строгих совпадений нет.'}`;
     if (result.catalogIncomplete) text += '\nПокрытие неполное: это не вся афиша города.';
     if (snapshot && snapshot.mode!=='SYNTHETIC_FIXTURE') text += `\nСнимок получен: ${displayInstant(snapshot.retrievedAt,snapshot.scope.timezone)}. Условия организатором не перепроверены.`;
     for (const [i,c] of s.cards.entries()) {
+      if(c.displayRef)displayRefs.push(c.displayRef);
       if (i === 0 || s.cards[i-1]!.kind !== c.kind) text += `\n\n${c.kind === 'STRICT' ? 'Совпадает по известным условиям' : 'Варианты, где нужно уточнение'}:`;
       text += `\n${i + 1}. ${compact(presentationTitle(c))}${c.kind === 'UNCERTAIN' ? `\n${compact(c.unknown[0] ?? 'Уточните условия по источнику.',180)}` : ''}`;
       rows.push([button(`Подробнее ${i + 1}`, 'detail', c.identity)]);
@@ -260,8 +263,13 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     const limitation = c ? bookmarkLimitation(c, catalog, now) : 'Эта закладка или карточка уже недоступна.';
     if (!c || (s.stage === 'detail' && (c.snapshotVersion !== catalog.version || (c.kind === 'UNCERTAIN' && !s.optIn)))) {
       text = 'Карточка устарела. Выполните подбор заново; событие не подменялось.'; rows = [[button('Подобрать', 'pick')], home()];
+    } else if (!showCard(c)) {
+      text=s.stage==='delete'?'Удалить эту закладку?':'Сохранённые сведения сейчас недоступны для показа: изменился проверенный снимок или истёк срок проверки. Выполните новый подбор.';
+      rows=s.stage==='delete'?[[button('Да, удалить','confirmRemove'),button('Отмена','cancel')]]:
+        [...(saved?[[button('Удалить закладку','remove')]]:[]),[button('Подобрать','pick')],home()];
     } else {
       audience = c.synthetic ? 'SYNTHETIC' : 'PROVIDER'; catalogVersion = catalog.version;
+      if(c.displayRef)displayRefs.push(c.displayRef);
       if(s.stage==='delete') {
         text=`Удалить «${compact(presentationTitle(c),500)}» из сохранённого?`;
         rows=[[button('Да, удалить','confirmRemove'),button('Отмена','cancel')]];
@@ -284,9 +292,10 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     text = 'Мои события — личные закладки. Сохранение не бронирует места.';
     if (!saved.length) text += '\nЗакладок пока нет.';
     for (const [i,b] of saved.slice(0,5).entries()) {
-      const c: Card = JSON.parse(b.data); text += `\n${s.page * 5 + i + 1}. ${compact(presentationTitle(c))} · ${c.kind === 'UNCERTAIN' ? 'нужно уточнить' : 'совпадение при сохранении'}`;
+      const c: Card = JSON.parse(b.data),visible=showCard(c); text += `\n${s.page * 5 + i + 1}. ${visible?compact(presentationTitle(c))+' · '+(c.kind === 'UNCERTAIN' ? 'нужно уточнить' : 'совпадение при сохранении'):'Сохранённая запись · сведения сейчас недоступны'}`;
       rows.push([button(`Открыть ${i + 1}`, 'bookmark', JSON.stringify({ identity: b.identity, generation: b.generation }))]);
-      if (!c.synthetic) audience = 'PROVIDER'; else audience ??= 'SYNTHETIC';
+      if(visible) {if (!c.synthetic) audience = 'PROVIDER'; else audience ??= 'SYNTHETIC';
+      if(c.displayRef)displayRefs.push(c.displayRef);else if(!c.synthetic)displayRefs.push({snapshotHash:'',eventId:c.eventId});}
     }
     if (s.page > 0) rows.push([button('Предыдущие', 'saved', String(s.page - 1))]);
     if (saved.length > 5) rows.push([button('Следующие', 'saved', String(s.page + 1))]);
@@ -297,7 +306,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     text = 'О данных\nЛокальный исследовательский прототип. Город в реестре не означает доступную афишу. Неизвестная цена не означает бесплатный вход.\nДо 50 закладок — до удаления; параметры, включая возраст детей, — 30 дней без активности. Кнопки — 15 минут. /delete_data удаляет закладки и параметры. Имена и даты рождения не нужны.\nПубличный показ KudaGo не согласован. /probe — отдельный тест связи.';
     rows = [home()];
   }
-  if (config.mode === 'live' && audience === 'PROVIDER') {
+  if ((config.mode === 'live'||catalog.requiresReview) && !deliveryAllowed({method:'messages',recipient:event.actor,body:{text},audience,displayRefs},config,catalog,now)) {
     text = 'Показ материалов источника в MAX пока не разрешён для этого прототипа. Данные доступны только в частной локальной проверке.';
     rows = [home()]; audience = undefined; catalogVersion = undefined;
   }
@@ -307,7 +316,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     .run(event.actor, revision, event.timestamp, now, JSON.stringify(s));
   if(text.length>3950) throw new Error('FLOW_SCREEN_LENGTH');
   const screen=desireScreen(store,event.actor,store.contact(event.actor)!.chat,revision,s.stage,event.kind!=='message_callback'&&purpose!=='cityText'&&purpose!=='typed',now);
-  store.enqueue(`${event.key}:screen`, event.actor, null, 'culture_screen', { method: 'messages', recipient: event.actor, audience,screen,
+  store.enqueue(`${event.key}:screen`, event.actor, null, 'culture_screen', { method: 'messages', recipient: event.actor, audience,displayRefs,screen,
     body: { text, notify: false, attachments: [{ type: 'inline_keyboard', payload: { buttons: rows.filter(row=>row.length) } }] } }, now, now + 60000, { revision, catalogVersion });
   return valid ? 'FLOW_ACCEPTED' : 'FLOW_INVALID_INPUT';
 }

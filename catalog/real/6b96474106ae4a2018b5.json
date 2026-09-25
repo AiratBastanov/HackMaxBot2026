@@ -1,0 +1,3678 @@
+{
+  "snapshots": [
+    {
+      "version": 2,
+      "mode": "REAL_CATALOG",
+      "scope": {
+        "city": "kzn",
+        "timezone": "Europe/Moscow",
+        "start": "2026-09-24T21:00:00.000Z",
+        "end": "2026-10-24T21:00:00.000Z",
+        "categories": [
+          "exhibition",
+          "culture"
+        ],
+        "zone": null
+      },
+      "retrievedAt": "2026-09-25T07:40:29.030Z",
+      "freshnessHours": 72,
+      "outcome": "PARTIAL",
+      "paginationComplete": false,
+      "venueCoverageComplete": false,
+      "enrichedAt": null,
+      "coverage": "PROVIDER_CATALOG_ONLY",
+      "publicDisplay": "NOT_CLEARED",
+      "issues": [
+        "Ограниченный каталог двух учреждений; наличие билетов и отмены не гарантируются."
+      ],
+      "stats": {
+        "providerCount": null,
+        "retrievedRows": 16,
+        "uniqueProviderIds": 16,
+        "duplicateIds": 0,
+        "pages": 5,
+        "normalizedEvents": 16,
+        "occurrences": 22,
+        "venues": 5,
+        "omitted": {}
+      },
+      "events": [
+        {
+          "id": "kazan-kremlin:gelij-korzhev-svet-i-ten",
+          "provider": "kazan-kremlin",
+          "title": "Гелий Коржев. Свет и тень",
+          "city": "kzn",
+          "categories": [
+            "exhibition"
+          ],
+          "price": {
+            "kind": "EXACT",
+            "amount": 400,
+            "lowerBound": 400,
+            "currency": "RUB",
+            "applicability": "SINGLE_ADULT",
+            "evidence": "Взрослый билет: 400 ₽.",
+            "conditions": [
+              "Семья самостоятельно не приравнивается к организованной группе."
+            ]
+          },
+          "tariffs": [
+            {
+              "audience": "GROUP",
+              "minAge": null,
+              "maxAge": null,
+              "kind": "CONDITIONAL",
+              "amount": null,
+              "lowerBound": null,
+              "currency": "RUB",
+              "applicable": false,
+              "conditions": [
+                "Экскурсионное обслуживание: 1500 ₽ (за группу до 10 человек)"
+              ],
+              "evidence": "Отдельная услуга; не входит в расчёт самостоятельного посещения."
+            }
+          ],
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "UNKNOWN",
+            "conditions": [],
+            "requirements": {
+              "minimumAge": null,
+              "children": "UNKNOWN",
+              "accompaniedByAdult": "UNKNOWN"
+            },
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/exhibitions/gelij-korzhev-svet-i-ten",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": null,
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:45:38.482Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:38.482Z",
+              "requestUrl": "https://kazan-kremlin.ru/exhibitions/gelij-korzhev-svet-i-ten",
+              "fields": [
+                "title",
+                "dates",
+                "location",
+                "categories",
+                "price",
+                "admission",
+                "providerAgeLabel"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "20e60832754127bff65d9a211da0fbce8693cd6cf23a7930d50650698e28ad70",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:38.482Z",
+              "requestUrl": "https://kazan-kremlin.ru/exhibitions/gelij-korzhev-svet-i-ten",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "20e60832754127bff65d9a211da0fbce8693cd6cf23a7930d50650698e28ad70",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:gelij-korzhev-svet-i-ten:visit",
+              "venueId": "kazan-kremlin:venue:vystavochnye-zaly-prisutstvennyh-mest",
+              "kind": "FLEXIBLE_VISIT",
+              "timezone": "Europe/Moscow",
+              "start": null,
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-08-21",
+              "activeThrough": "2026-09-27",
+              "startless": false,
+              "endless": false,
+              "opening": [
+                {
+                  "weekday": 1,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 2,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 3,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 4,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 5,
+                  "open": 660,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1170
+                },
+                {
+                  "weekday": 6,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 0,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                }
+              ],
+              "scheduleBasis": "STRUCTURED",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": true,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Место вручную сопоставлено с разделом музеев Кремля и страницей площадки; номер здания не установлен. Почтовый а/я учреждения не использован."
+              ]
+            }
+          ],
+          "issues": [
+            "Место вручную сопоставлено с разделом музеев Кремля и страницей площадки; номер здания не установлен. Почтовый а/я учреждения не использован."
+          ]
+        },
+        {
+          "id": "kazan-kremlin:gubernatorskij-dvorecz-175-let-v-czentre-istoricheskih-sobytij",
+          "provider": "kazan-kremlin",
+          "title": "Губернаторский дворец: 175 лет в центре исторических событий",
+          "city": "kzn",
+          "categories": [
+            "exhibition"
+          ],
+          "price": {
+            "kind": "EXACT",
+            "amount": 300,
+            "lowerBound": 300,
+            "currency": "RUB",
+            "applicability": "SINGLE_ADULT",
+            "evidence": "Обычный входной билет: 300 ₽.",
+            "conditions": []
+          },
+          "tariffs": [],
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "UNKNOWN",
+            "conditions": [],
+            "requirements": {
+              "minimumAge": null,
+              "children": "UNKNOWN",
+              "accompaniedByAdult": "UNKNOWN"
+            },
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/exhibitions/gubernatorskij-dvorecz-175-let-v-czentre-istoricheskih-sobytij",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": null,
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:45:36.508Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:36.508Z",
+              "requestUrl": "https://kazan-kremlin.ru/exhibitions/gubernatorskij-dvorecz-175-let-v-czentre-istoricheskih-sobytij",
+              "fields": [
+                "title",
+                "dates",
+                "location",
+                "categories",
+                "price",
+                "admission",
+                "providerAgeLabel"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "4425274f28d5cb158f9c41e9c759a978453f6c60eb4d37b0d98a3b0dd48bfc22",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:36.508Z",
+              "requestUrl": "https://kazan-kremlin.ru/exhibitions/gubernatorskij-dvorecz-175-let-v-czentre-istoricheskih-sobytij",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "4425274f28d5cb158f9c41e9c759a978453f6c60eb4d37b0d98a3b0dd48bfc22",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:gubernatorskij-dvorecz-175-let-v-czentre-istoricheskih-sobytij:visit",
+              "venueId": "kazan-kremlin:venue:unknown-d7c4c00ac523",
+              "kind": "FLEXIBLE_VISIT",
+              "timezone": "Europe/Moscow",
+              "start": null,
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-08-22",
+              "activeThrough": "2026-10-14",
+              "startless": false,
+              "endless": false,
+              "opening": [
+                {
+                  "weekday": 1,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 2,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 3,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 4,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 5,
+                  "open": 660,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1170
+                },
+                {
+                  "weekday": 6,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 0,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                }
+              ],
+              "scheduleBasis": "STRUCTURED",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": true,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": []
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "kazan-kremlin:kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+          "provider": "kazan-kremlin",
+          "title": "Казанское Поволжье: образы народной культуры",
+          "city": "kzn",
+          "categories": [
+            "exhibition"
+          ],
+          "price": {
+            "kind": "FREE",
+            "amount": 0,
+            "lowerBound": 0,
+            "currency": "RUB",
+            "applicability": "SINGLE_ADULT",
+            "evidence": "Бесплатный индивидуальный вход.",
+            "conditions": [
+              "Самостоятельное посещение; экскурсия и организованная группа оплачиваются отдельно.",
+              "Семья самостоятельно не приравнивается к организованной группе."
+            ]
+          },
+          "tariffs": [
+            {
+              "audience": "ADULT",
+              "minAge": null,
+              "maxAge": null,
+              "kind": "FREE",
+              "amount": 0,
+              "lowerBound": 0,
+              "currency": "RUB",
+              "applicable": true,
+              "conditions": [
+                "Индивидуальное посещение."
+              ],
+              "evidence": "Бесплатный индивидуальный вход."
+            },
+            {
+              "audience": "CHILD",
+              "minAge": null,
+              "maxAge": null,
+              "kind": "FREE",
+              "amount": 0,
+              "lowerBound": 0,
+              "currency": "RUB",
+              "applicable": true,
+              "conditions": [
+                "Индивидуальное посещение."
+              ],
+              "evidence": "Бесплатный индивидуальный вход."
+            },
+            {
+              "audience": "GROUP",
+              "minAge": null,
+              "maxAge": null,
+              "kind": "CONDITIONAL",
+              "amount": null,
+              "lowerBound": null,
+              "currency": "RUB",
+              "applicable": false,
+              "conditions": [
+                "Входной билет для организованных групп: Взрослые и пенсионеры – 200 ₽, студенты и дети до 18 лет – 150 ₽"
+              ],
+              "evidence": "Отдельная услуга; не входит в расчёт самостоятельного посещения."
+            },
+            {
+              "audience": "GROUP",
+              "minAge": null,
+              "maxAge": null,
+              "kind": "CONDITIONAL",
+              "amount": null,
+              "lowerBound": null,
+              "currency": "RUB",
+              "applicable": false,
+              "conditions": [
+                "Экскурсионное обслуживание: 1500 ₽ (за группу до 10 человек)"
+              ],
+              "evidence": "Отдельная услуга; не входит в расчёт самостоятельного посещения."
+            }
+          ],
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "UNKNOWN",
+            "conditions": [],
+            "requirements": {
+              "minimumAge": null,
+              "children": "UNKNOWN",
+              "accompaniedByAdult": "UNKNOWN"
+            },
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": null,
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:40:29.030Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:40:29.030Z",
+              "requestUrl": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+              "fields": [
+                "title",
+                "dates",
+                "location",
+                "categories",
+                "price",
+                "admission",
+                "providerAgeLabel"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "ccdfafa69fb25922375c42055bdd32be483000bfe91ad45e62d85f3ebd581da6",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:40:29.030Z",
+              "requestUrl": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "ccdfafa69fb25922375c42055bdd32be483000bfe91ad45e62d85f3ebd581da6",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:kazanskoe-povolzhe-obrazy-narodnoj-kultury-2:visit",
+              "venueId": "kazan-kremlin:venue:vystavochnye-zaly-prisutstvennyh-mest",
+              "kind": "FLEXIBLE_VISIT",
+              "timezone": "Europe/Moscow",
+              "start": null,
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2025-12-25",
+              "activeThrough": "2026-12-31",
+              "startless": false,
+              "endless": false,
+              "opening": [
+                {
+                  "weekday": 1,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 2,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 3,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 4,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 5,
+                  "open": 660,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1170
+                },
+                {
+                  "weekday": 6,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                },
+                {
+                  "weekday": 0,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1050
+                }
+              ],
+              "scheduleBasis": "STRUCTURED",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": true,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Место вручную сопоставлено с разделом музеев Кремля и страницей площадки; номер здания не установлен. Почтовый а/я учреждения не использован."
+              ]
+            }
+          ],
+          "issues": [
+            "Место вручную сопоставлено с разделом музеев Кремля и страницей площадки; номер здания не установлен. Почтовый а/я учреждения не использован."
+          ]
+        },
+        {
+          "id": "kazan-kremlin:program-1e0d350ce97d2fd7",
+          "provider": "kazan-kremlin",
+          "title": "Сборная экскурсия по выставке «Гелий Коржев. Свет и тень»",
+          "city": "kzn",
+          "categories": [
+            "culture"
+          ],
+          "price": {
+            "kind": "UNKNOWN",
+            "amount": null,
+            "lowerBound": null,
+            "currency": null,
+            "applicability": "UNRESOLVED",
+            "evidence": null,
+            "conditions": []
+          },
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "REQUIRED",
+            "conditions": [
+              "В дайджесте указана предварительная запись на программы музеев."
+            ],
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": "2026-09-20T21:00:00.000Z",
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:50:34.229Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "dates",
+                "timetable",
+                "location",
+                "categories",
+                "price",
+                "admission"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:program-1e0d350ce97d2fd7:20260925T1700",
+              "venueId": "kazan-kremlin:venue:vystavochnye-zaly-prisutstvennyh-mest",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-25T14:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-25",
+              "activeThrough": "2026-09-25",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            },
+            {
+              "id": "kazan-kremlin:program-1e0d350ce97d2fd7:20260926T1400",
+              "venueId": "kazan-kremlin:venue:vystavochnye-zaly-prisutstvennyh-mest",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-26T11:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-26",
+              "activeThrough": "2026-09-26",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            }
+          ],
+          "issues": [
+            "Место вручную сопоставлено с разделом музеев Кремля и страницей площадки; номер здания не установлен. Почтовый а/я учреждения не использован."
+          ]
+        },
+        {
+          "id": "kazan-kremlin:program-1fcd1fe7124bda58",
+          "provider": "kazan-kremlin",
+          "title": "Экскурсия + Мастер-класс «След истории: создание керамического изразца»",
+          "city": "kzn",
+          "categories": [
+            "culture"
+          ],
+          "price": {
+            "kind": "UNKNOWN",
+            "amount": null,
+            "lowerBound": null,
+            "currency": null,
+            "applicability": "UNRESOLVED",
+            "evidence": null,
+            "conditions": []
+          },
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "REQUIRED",
+            "conditions": [
+              "В дайджесте указана предварительная запись на программы музеев."
+            ],
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": "2026-09-20T21:00:00.000Z",
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:50:34.229Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "dates",
+                "timetable",
+                "location",
+                "categories",
+                "price",
+                "admission"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:program-1fcd1fe7124bda58:20260926T1500",
+              "venueId": "kazan-kremlin:venue:60a0febcceb064f3",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-26T12:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-26",
+              "activeThrough": "2026-09-26",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "kazan-kremlin:program-28d4359ba5ffebfc",
+          "provider": "kazan-kremlin",
+          "title": "Аудиоспектакль «Тайна Спасской башни»",
+          "city": "kzn",
+          "categories": [
+            "culture"
+          ],
+          "price": {
+            "kind": "UNKNOWN",
+            "amount": null,
+            "lowerBound": null,
+            "currency": null,
+            "applicability": "UNRESOLVED",
+            "evidence": null,
+            "conditions": []
+          },
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "REQUIRED",
+            "conditions": [
+              "В дайджесте указана предварительная запись на программы музеев."
+            ],
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": "2026-09-20T21:00:00.000Z",
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:50:34.229Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "dates",
+                "timetable",
+                "location",
+                "categories",
+                "price",
+                "admission"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:program-28d4359ba5ffebfc:20260925T1300",
+              "venueId": "kazan-kremlin:venue:60a0febcceb064f3",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-25T10:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-25",
+              "activeThrough": "2026-09-25",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "kazan-kremlin:program-3442c35f1fee69a1",
+          "provider": "kazan-kremlin",
+          "title": "Воскресное научное шоу от лаборатории «Yesnauka» - «Ледниковый период» - интерактивный квест",
+          "city": "kzn",
+          "categories": [
+            "culture"
+          ],
+          "price": {
+            "kind": "UNKNOWN",
+            "amount": null,
+            "lowerBound": null,
+            "currency": null,
+            "applicability": "UNRESOLVED",
+            "evidence": null,
+            "conditions": []
+          },
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "REQUIRED",
+            "conditions": [
+              "В дайджесте указана предварительная запись на программы музеев."
+            ],
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": "2026-09-20T21:00:00.000Z",
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:50:34.229Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "dates",
+                "timetable",
+                "location",
+                "categories",
+                "price",
+                "admission"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:program-3442c35f1fee69a1:20260927T1300",
+              "venueId": "kazan-kremlin:venue:cdf6295a51381059",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-27T10:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-27",
+              "activeThrough": "2026-09-27",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "kazan-kremlin:program-695d18ece3a9705c",
+          "provider": "kazan-kremlin",
+          "title": "«Башни Кремля». Краеведческий квест по Казанскому Кремлю от лаборатории «Yesnauka»",
+          "city": "kzn",
+          "categories": [
+            "culture"
+          ],
+          "price": {
+            "kind": "UNKNOWN",
+            "amount": null,
+            "lowerBound": null,
+            "currency": null,
+            "applicability": "UNRESOLVED",
+            "evidence": null,
+            "conditions": []
+          },
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "REQUIRED",
+            "conditions": [
+              "В дайджесте указана предварительная запись на программы музеев."
+            ],
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": "2026-09-20T21:00:00.000Z",
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:50:34.229Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "dates",
+                "timetable",
+                "location",
+                "categories",
+                "price",
+                "admission"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:program-695d18ece3a9705c:20260926T1600",
+              "venueId": "kazan-kremlin:venue:cdf6295a51381059",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-26T13:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-26",
+              "activeThrough": "2026-09-26",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "kazan-kremlin:program-7ca55074c9dd3d6b",
+          "provider": "kazan-kremlin",
+          "title": "Экскурсия «Путешествие в затерянные миры»",
+          "city": "kzn",
+          "categories": [
+            "culture"
+          ],
+          "price": {
+            "kind": "UNKNOWN",
+            "amount": null,
+            "lowerBound": null,
+            "currency": null,
+            "applicability": "UNRESOLVED",
+            "evidence": null,
+            "conditions": []
+          },
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "REQUIRED",
+            "conditions": [
+              "В дайджесте указана предварительная запись на программы музеев."
+            ],
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": "2026-09-20T21:00:00.000Z",
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:50:34.229Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "dates",
+                "timetable",
+                "location",
+                "categories",
+                "price",
+                "admission"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:program-7ca55074c9dd3d6b:20260926T1500",
+              "venueId": "kazan-kremlin:venue:cdf6295a51381059",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-26T12:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-26",
+              "activeThrough": "2026-09-26",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            },
+            {
+              "id": "kazan-kremlin:program-7ca55074c9dd3d6b:20260927T1500",
+              "venueId": "kazan-kremlin:venue:cdf6295a51381059",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-27T12:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-27",
+              "activeThrough": "2026-09-27",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "kazan-kremlin:program-8d5af9f4f15955e3",
+          "provider": "kazan-kremlin",
+          "title": "Экскурсия-игра «По следам древних животных»",
+          "city": "kzn",
+          "categories": [
+            "culture"
+          ],
+          "price": {
+            "kind": "UNKNOWN",
+            "amount": null,
+            "lowerBound": null,
+            "currency": null,
+            "applicability": "UNRESOLVED",
+            "evidence": null,
+            "conditions": []
+          },
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "REQUIRED",
+            "conditions": [
+              "В дайджесте указана предварительная запись на программы музеев."
+            ],
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": "2026-09-20T21:00:00.000Z",
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:50:34.229Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "dates",
+                "timetable",
+                "location",
+                "categories",
+                "price",
+                "admission"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:program-8d5af9f4f15955e3:20260926T1200",
+              "venueId": "kazan-kremlin:venue:cdf6295a51381059",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-26T09:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-26",
+              "activeThrough": "2026-09-26",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "kazan-kremlin:program-9f32949a7dcb2b6a",
+          "provider": "kazan-kremlin",
+          "title": "Мастер-класс «Раскопки»",
+          "city": "kzn",
+          "categories": [
+            "culture"
+          ],
+          "price": {
+            "kind": "UNKNOWN",
+            "amount": null,
+            "lowerBound": null,
+            "currency": null,
+            "applicability": "UNRESOLVED",
+            "evidence": null,
+            "conditions": []
+          },
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "REQUIRED",
+            "conditions": [
+              "В дайджесте указана предварительная запись на программы музеев."
+            ],
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": "2026-09-20T21:00:00.000Z",
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:50:34.229Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "dates",
+                "timetable",
+                "location",
+                "categories",
+                "price",
+                "admission"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:program-9f32949a7dcb2b6a:20260927T1200",
+              "venueId": "kazan-kremlin:venue:cdf6295a51381059",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-27T09:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-27",
+              "activeThrough": "2026-09-27",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "kazan-kremlin:program-a8a9b7fcbf41e211",
+          "provider": "kazan-kremlin",
+          "title": "Мастер–класс «Магия камня»",
+          "city": "kzn",
+          "categories": [
+            "culture"
+          ],
+          "price": {
+            "kind": "UNKNOWN",
+            "amount": null,
+            "lowerBound": null,
+            "currency": null,
+            "applicability": "UNRESOLVED",
+            "evidence": null,
+            "conditions": []
+          },
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "REQUIRED",
+            "conditions": [
+              "В дайджесте указана предварительная запись на программы музеев."
+            ],
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": "2026-09-20T21:00:00.000Z",
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:50:34.229Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "dates",
+                "timetable",
+                "location",
+                "categories",
+                "price",
+                "admission"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:program-a8a9b7fcbf41e211:20260926T1300",
+              "venueId": "kazan-kremlin:venue:cdf6295a51381059",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-26T10:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-26",
+              "activeThrough": "2026-09-26",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "kazan-kremlin:program-b2f846a2efea9922",
+          "provider": "kazan-kremlin",
+          "title": "Мастер-класс «След истории: создание керамического изразца»",
+          "city": "kzn",
+          "categories": [
+            "culture"
+          ],
+          "price": {
+            "kind": "UNKNOWN",
+            "amount": null,
+            "lowerBound": null,
+            "currency": null,
+            "applicability": "UNRESOLVED",
+            "evidence": null,
+            "conditions": []
+          },
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "REQUIRED",
+            "conditions": [
+              "В дайджесте указана предварительная запись на программы музеев."
+            ],
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": "2026-09-20T21:00:00.000Z",
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:50:34.229Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "dates",
+                "timetable",
+                "location",
+                "categories",
+                "price",
+                "admission"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:program-b2f846a2efea9922:20260927T1600",
+              "venueId": "kazan-kremlin:venue:60a0febcceb064f3",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-27T13:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-27",
+              "activeThrough": "2026-09-27",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "kazan-kremlin:program-b62cfa8ca187497b",
+          "provider": "kazan-kremlin",
+          "title": "Экскурсия для сборных групп",
+          "city": "kzn",
+          "categories": [
+            "culture"
+          ],
+          "price": {
+            "kind": "UNKNOWN",
+            "amount": null,
+            "lowerBound": null,
+            "currency": null,
+            "applicability": "UNRESOLVED",
+            "evidence": null,
+            "conditions": []
+          },
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "REQUIRED",
+            "conditions": [
+              "В дайджесте указана предварительная запись на программы музеев."
+            ],
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": "2026-09-20T21:00:00.000Z",
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:50:34.229Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "dates",
+                "timetable",
+                "location",
+                "categories",
+                "price",
+                "admission"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:program-b62cfa8ca187497b:20260927T1500",
+              "venueId": "kazan-kremlin:venue:60a0febcceb064f3",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-27T12:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-27",
+              "activeThrough": "2026-09-27",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "kazan-kremlin:program-e8dd72f55da35302",
+          "provider": "kazan-kremlin",
+          "title": "Сборная экскурсия по выставке «Культурный код Казани: духовное наследие и традиции»",
+          "city": "kzn",
+          "categories": [
+            "culture"
+          ],
+          "price": {
+            "kind": "UNKNOWN",
+            "amount": null,
+            "lowerBound": null,
+            "currency": null,
+            "applicability": "UNRESOLVED",
+            "evidence": null,
+            "conditions": []
+          },
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "REQUIRED",
+            "conditions": [
+              "В дайджесте указана предварительная запись на программы музеев."
+            ],
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": "2026-09-20T21:00:00.000Z",
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:50:34.229Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "dates",
+                "timetable",
+                "location",
+                "categories",
+                "price",
+                "admission"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:program-e8dd72f55da35302:20260925T1830",
+              "venueId": "kazan-kremlin:venue:vystavochnye-zaly-prisutstvennyh-mest",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-25T15:30:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-25",
+              "activeThrough": "2026-09-25",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            },
+            {
+              "id": "kazan-kremlin:program-e8dd72f55da35302:20260926T1130",
+              "venueId": "kazan-kremlin:venue:vystavochnye-zaly-prisutstvennyh-mest",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-26T08:30:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-26",
+              "activeThrough": "2026-09-26",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            },
+            {
+              "id": "kazan-kremlin:program-e8dd72f55da35302:20260926T1600",
+              "venueId": "kazan-kremlin:venue:vystavochnye-zaly-prisutstvennyh-mest",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-26T13:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-26",
+              "activeThrough": "2026-09-26",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            },
+            {
+              "id": "kazan-kremlin:program-e8dd72f55da35302:20260927T1130",
+              "venueId": "kazan-kremlin:venue:vystavochnye-zaly-prisutstvennyh-mest",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-27T08:30:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-27",
+              "activeThrough": "2026-09-27",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            },
+            {
+              "id": "kazan-kremlin:program-e8dd72f55da35302:20260927T1600",
+              "venueId": "kazan-kremlin:venue:vystavochnye-zaly-prisutstvennyh-mest",
+              "kind": "TIMED_SESSION",
+              "timezone": "Europe/Moscow",
+              "start": "2026-09-27T13:00:00.000Z",
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-27",
+              "activeThrough": "2026-09-27",
+              "startless": false,
+              "endless": false,
+              "opening": null,
+              "scheduleBasis": "UNKNOWN",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": false,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Окончание сеанса и длительность не опубликованы в выбранном источнике."
+              ]
+            }
+          ],
+          "issues": [
+            "Место вручную сопоставлено с разделом музеев Кремля и страницей площадки; номер здания не установлен. Почтовый а/я учреждения не использован."
+          ]
+        },
+        {
+          "id": "kazan-kremlin:rozhdenie-sveta",
+          "provider": "kazan-kremlin",
+          "title": "Рождение света",
+          "city": "kzn",
+          "categories": [
+            "exhibition"
+          ],
+          "price": {
+            "kind": "EXACT",
+            "amount": 200,
+            "lowerBound": 200,
+            "currency": "RUB",
+            "applicability": "SINGLE_ADULT",
+            "evidence": "Обычный входной билет: 200 ₽.",
+            "conditions": []
+          },
+          "tariffs": [
+            {
+              "audience": "CHILD",
+              "minAge": 0,
+              "maxAge": 17,
+              "kind": "FREE",
+              "amount": 0,
+              "lowerBound": 0,
+              "currency": "RUB",
+              "applicable": true,
+              "conditions": [
+                "Индивидуальное посещение."
+              ],
+              "evidence": "Дети до 18 лет: бесплатно при индивидуальном посещении."
+            }
+          ],
+          "providerAgeLabel": null,
+          "admission": {
+            "registration": "UNKNOWN",
+            "conditions": [],
+            "requirements": {
+              "minimumAge": null,
+              "children": "ALLOWED",
+              "accompaniedByAdult": "UNKNOWN"
+            },
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://kazan-kremlin.ru/exhibitions/rozhdenie-sveta",
+          "sourceLabel": "Источник: Казанский Кремль",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": null,
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:45:32.663Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:32.663Z",
+              "requestUrl": "https://kazan-kremlin.ru/exhibitions/rozhdenie-sveta",
+              "fields": [
+                "title",
+                "dates",
+                "location",
+                "categories",
+                "price",
+                "admission",
+                "providerAgeLabel"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "654890f5178a9722a79fc6087545e335f8708d3c494dbab0ed5b50290fdbf88e",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:32.663Z",
+              "requestUrl": "https://kazan-kremlin.ru/exhibitions/rozhdenie-sveta",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "654890f5178a9722a79fc6087545e335f8708d3c494dbab0ed5b50290fdbf88e",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "kazan-kremlin:rozhdenie-sveta:visit",
+              "venueId": "kazan-kremlin:venue:unknown-91e079cf9ad0",
+              "kind": "FLEXIBLE_VISIT",
+              "timezone": "Europe/Moscow",
+              "start": null,
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-09-16",
+              "activeThrough": "2026-10-25",
+              "startless": false,
+              "endless": false,
+              "opening": [
+                {
+                  "weekday": 1,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": null
+                },
+                {
+                  "weekday": 2,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": null
+                },
+                {
+                  "weekday": 3,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": null
+                },
+                {
+                  "weekday": 4,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": null
+                },
+                {
+                  "weekday": 5,
+                  "open": 660,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": null
+                },
+                {
+                  "weekday": 6,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": null
+                },
+                {
+                  "weekday": 0,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": null
+                }
+              ],
+              "scheduleBasis": "STRUCTURED",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": true,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": []
+            }
+          ],
+          "issues": []
+        }
+      ],
+      "venues": [
+        {
+          "id": "kazan-kremlin:venue:vystavochnye-zaly-prisutstvennyh-mest",
+          "title": "Выставочные залы Присутственных мест",
+          "city": "kzn",
+          "zone": null,
+          "address": "Казань, территория Казанского Кремля, Присутственные места",
+          "sourceUrl": "https://kazan-kremlin.ru/museums/vystavochnye-zaly-prisutstvennyh-mest",
+          "websiteUrl": null,
+          "closed": null,
+          "stub": false,
+          "physical": true,
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "location",
+                "address"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:41:24.637Z",
+              "requestUrl": "https://kazan-kremlin.ru/museums/vystavochnye-zaly-prisutstvennyh-mest",
+              "fields": [
+                "address",
+                "title",
+                "location"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "reviewed-campus-location/1",
+                "contentHash": "6862b4ee9bd433edf7099d4b382176b0297b93534c988bf6bb0fe5e42ea511f4",
+                "method": "PREPARED_REAL"
+              }
+            }
+          ],
+          "coordinates": null,
+          "timetable": null,
+          "opening": null
+        },
+        {
+          "id": "kazan-kremlin:venue:unknown-91e079cf9ad0",
+          "title": null,
+          "city": "kzn",
+          "zone": null,
+          "address": null,
+          "sourceUrl": "https://kazan-kremlin.ru/exhibitions/rozhdenie-sveta",
+          "websiteUrl": null,
+          "closed": null,
+          "stub": false,
+          "physical": null,
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:32.663Z",
+              "requestUrl": "https://kazan-kremlin.ru/exhibitions/rozhdenie-sveta",
+              "fields": [
+                "location",
+                "address",
+                "title"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "654890f5178a9722a79fc6087545e335f8708d3c494dbab0ed5b50290fdbf88e",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:32.663Z",
+              "requestUrl": "https://kazan-kremlin.ru/exhibitions/rozhdenie-sveta",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "654890f5178a9722a79fc6087545e335f8708d3c494dbab0ed5b50290fdbf88e",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "coordinates": null,
+          "timetable": null,
+          "opening": [
+            {
+              "weekday": 1,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": null
+            },
+            {
+              "weekday": 2,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": null
+            },
+            {
+              "weekday": 3,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": null
+            },
+            {
+              "weekday": 4,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": null
+            },
+            {
+              "weekday": 5,
+              "open": 660,
+              "close": 1200,
+              "lastEntry": null,
+              "salesCutoff": null
+            },
+            {
+              "weekday": 6,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": null
+            },
+            {
+              "weekday": 0,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": null
+            }
+          ]
+        },
+        {
+          "id": "kazan-kremlin:venue:unknown-d7c4c00ac523",
+          "title": null,
+          "city": "kzn",
+          "zone": null,
+          "address": null,
+          "sourceUrl": "https://kazan-kremlin.ru/exhibitions/gubernatorskij-dvorecz-175-let-v-czentre-istoricheskih-sobytij",
+          "websiteUrl": null,
+          "closed": null,
+          "stub": false,
+          "physical": null,
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:36.508Z",
+              "requestUrl": "https://kazan-kremlin.ru/exhibitions/gubernatorskij-dvorecz-175-let-v-czentre-istoricheskih-sobytij",
+              "fields": [
+                "location",
+                "address",
+                "title"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "4425274f28d5cb158f9c41e9c759a978453f6c60eb4d37b0d98a3b0dd48bfc22",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:36.508Z",
+              "requestUrl": "https://kazan-kremlin.ru/exhibitions/gubernatorskij-dvorecz-175-let-v-czentre-istoricheskih-sobytij",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "4425274f28d5cb158f9c41e9c759a978453f6c60eb4d37b0d98a3b0dd48bfc22",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "coordinates": null,
+          "timetable": null,
+          "opening": [
+            {
+              "weekday": 1,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": 1050
+            },
+            {
+              "weekday": 2,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": 1050
+            },
+            {
+              "weekday": 3,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": 1050
+            },
+            {
+              "weekday": 4,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": 1050
+            },
+            {
+              "weekday": 5,
+              "open": 660,
+              "close": 1200,
+              "lastEntry": null,
+              "salesCutoff": 1170
+            },
+            {
+              "weekday": 6,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": 1050
+            },
+            {
+              "weekday": 0,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": 1050
+            }
+          ]
+        },
+        {
+          "id": "kazan-kremlin:venue:cdf6295a51381059",
+          "title": "Музей естественной истории Татарстана",
+          "city": "kzn",
+          "zone": null,
+          "address": null,
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "websiteUrl": null,
+          "closed": null,
+          "stub": false,
+          "physical": true,
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "location",
+                "address"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "coordinates": null,
+          "timetable": null,
+          "opening": null
+        },
+        {
+          "id": "kazan-kremlin:venue:60a0febcceb064f3",
+          "title": "Музей Спасской башни",
+          "city": "kzn",
+          "zone": null,
+          "address": null,
+          "sourceUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+          "websiteUrl": null,
+          "closed": null,
+          "stub": false,
+          "physical": true,
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:50:34.229Z",
+              "requestUrl": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+              "fields": [
+                "title",
+                "location",
+                "address"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "coordinates": null,
+          "timetable": null,
+          "opening": null
+        }
+      ]
+    },
+    {
+      "version": 2,
+      "mode": "REAL_CATALOG",
+      "scope": {
+        "city": "ekb",
+        "timezone": "Asia/Yekaterinburg",
+        "start": "2026-09-24T19:00:00.000Z",
+        "end": "2026-10-24T19:00:00.000Z",
+        "categories": [
+          "exhibition",
+          "culture"
+        ],
+        "zone": null
+      },
+      "retrievedAt": "2026-09-25T07:40:33.228Z",
+      "freshnessHours": 72,
+      "outcome": "PARTIAL",
+      "paginationComplete": false,
+      "venueCoverageComplete": false,
+      "enrichedAt": null,
+      "coverage": "PROVIDER_CATALOG_ONLY",
+      "publicDisplay": "NOT_CLEARED",
+      "issues": [
+        "Ограниченный каталог двух учреждений; наличие билетов и отмены не гарантируются."
+      ],
+      "stats": {
+        "providerCount": null,
+        "retrievedRows": 8,
+        "uniqueProviderIds": 8,
+        "duplicateIds": 0,
+        "pages": 8,
+        "normalizedEvents": 8,
+        "occurrences": 8,
+        "venues": 3,
+        "omitted": {}
+      },
+      "events": [
+        {
+          "id": "mie:azins_magic_of_name",
+          "provider": "mie",
+          "title": "«Азины. Магия имени»",
+          "city": "ekb",
+          "categories": [
+            "exhibition"
+          ],
+          "price": {
+            "kind": "FREE",
+            "amount": 0,
+            "lowerBound": 0,
+            "currency": "RUB",
+            "applicability": "SINGLE_ADULT",
+            "evidence": "Бесплатный индивидуальный вход.",
+            "conditions": [
+              "Указан свободный вход именно на эту выставку."
+            ]
+          },
+          "tariffs": [
+            {
+              "audience": "ADULT",
+              "minAge": null,
+              "maxAge": null,
+              "kind": "FREE",
+              "amount": 0,
+              "lowerBound": 0,
+              "currency": "RUB",
+              "applicable": true,
+              "conditions": [
+                "Индивидуальное посещение."
+              ],
+              "evidence": "Бесплатный индивидуальный вход."
+            },
+            {
+              "audience": "CHILD",
+              "minAge": null,
+              "maxAge": null,
+              "kind": "FREE",
+              "amount": 0,
+              "lowerBound": 0,
+              "currency": "RUB",
+              "applicable": true,
+              "conditions": [
+                "Индивидуальное посещение."
+              ],
+              "evidence": "Бесплатный индивидуальный вход."
+            }
+          ],
+          "providerAgeLabel": "12+",
+          "admission": {
+            "registration": "UNKNOWN",
+            "conditions": [],
+            "requirements": {
+              "minimumAge": null,
+              "children": "UNKNOWN",
+              "accompaniedByAdult": "UNKNOWN"
+            },
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://m-i-e.ru/azins_magic_of_name",
+          "sourceLabel": "Источник: Музей истории Екатеринбурга",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": null,
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:42:30.371Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:42:30.371Z",
+              "requestUrl": "https://m-i-e.ru/azins_magic_of_name",
+              "fields": [
+                "title",
+                "dates",
+                "location",
+                "categories",
+                "price",
+                "admission",
+                "providerAgeLabel"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "fea99b40133deb13b79038c2043d2d5bc4ad0b70f82c18b2f0d4a2488f29cd16",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:42:30.371Z",
+              "requestUrl": "https://m-i-e.ru/azins_magic_of_name",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "fea99b40133deb13b79038c2043d2d5bc4ad0b70f82c18b2f0d4a2488f29cd16",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "mie:azins_magic_of_name:visit",
+              "venueId": "mie:venue:83597f0fc26a14dd",
+              "kind": "FLEXIBLE_VISIT",
+              "timezone": "Asia/Yekaterinburg",
+              "start": null,
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-07-16",
+              "activeThrough": "2026-11-01",
+              "startless": false,
+              "endless": false,
+              "opening": [
+                {
+                  "weekday": 3,
+                  "open": 600,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                },
+                {
+                  "weekday": 4,
+                  "open": 600,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                },
+                {
+                  "weekday": 5,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1020
+                },
+                {
+                  "weekday": 6,
+                  "open": 660,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1020
+                },
+                {
+                  "weekday": 0,
+                  "open": 660,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1020
+                }
+              ],
+              "scheduleBasis": "STRUCTURED",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": true,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": []
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "mie:casing_of_rock",
+          "provider": "mie",
+          "title": "«Роковый корпус»",
+          "city": "ekb",
+          "categories": [
+            "exhibition"
+          ],
+          "price": {
+            "kind": "RANGE",
+            "amount": null,
+            "lowerBound": 150,
+            "upperBound": 300,
+            "currency": "RUB",
+            "applicability": "UNRESOLVED",
+            "evidence": "150–300 ₽; категории посетителей не сопоставлены.",
+            "conditions": [
+              "Тариф для выбранного состава требует уточнения."
+            ]
+          },
+          "tariffs": [],
+          "providerAgeLabel": "12+",
+          "admission": {
+            "registration": "UNKNOWN",
+            "conditions": [],
+            "requirements": {
+              "minimumAge": null,
+              "children": "UNKNOWN",
+              "accompaniedByAdult": "UNKNOWN"
+            },
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://m-i-e.ru/casing_of_rock",
+          "sourceLabel": "Источник: Музей истории Екатеринбурга",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": null,
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:45:56.757Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:56.757Z",
+              "requestUrl": "https://m-i-e.ru/casing_of_rock",
+              "fields": [
+                "title",
+                "dates",
+                "location",
+                "categories",
+                "price",
+                "admission",
+                "providerAgeLabel"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "44b52c0219154661b277f1cc9a22a9be5c5ce65ef02be23d7ea2486c11d624d0",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:56.757Z",
+              "requestUrl": "https://m-i-e.ru/casing_of_rock",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "44b52c0219154661b277f1cc9a22a9be5c5ce65ef02be23d7ea2486c11d624d0",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "mie:casing_of_rock:visit",
+              "venueId": "mie:venue:6cdf07922270e31d",
+              "kind": "FLEXIBLE_VISIT",
+              "timezone": "Asia/Yekaterinburg",
+              "start": null,
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-05-06",
+              "activeThrough": "2026-12-26",
+              "startless": false,
+              "endless": false,
+              "opening": [
+                {
+                  "weekday": 3,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                },
+                {
+                  "weekday": 4,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                },
+                {
+                  "weekday": 5,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                },
+                {
+                  "weekday": 6,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                },
+                {
+                  "weekday": 0,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                }
+              ],
+              "scheduleBasis": "STRUCTURED",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": true,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": []
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "mie:creative_industry",
+          "provider": "mie",
+          "title": "«БУМ! Рождение креативных индустрий в Екатеринбурге в 1990–2000-е»",
+          "city": "ekb",
+          "categories": [
+            "exhibition"
+          ],
+          "price": {
+            "kind": "RANGE",
+            "amount": null,
+            "lowerBound": 150,
+            "upperBound": 300,
+            "currency": "RUB",
+            "applicability": "UNRESOLVED",
+            "evidence": "150–300 ₽; категории посетителей не сопоставлены.",
+            "conditions": [
+              "Тариф для выбранного состава требует уточнения."
+            ]
+          },
+          "tariffs": [],
+          "providerAgeLabel": "18+",
+          "admission": {
+            "registration": "UNKNOWN",
+            "conditions": [],
+            "requirements": {
+              "minimumAge": null,
+              "children": "UNKNOWN",
+              "accompaniedByAdult": "UNKNOWN"
+            },
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://m-i-e.ru/creative_industry",
+          "sourceLabel": "Источник: Музей истории Екатеринбурга",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": null,
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:45:54.760Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:54.760Z",
+              "requestUrl": "https://m-i-e.ru/creative_industry",
+              "fields": [
+                "title",
+                "dates",
+                "location",
+                "categories",
+                "price",
+                "admission",
+                "providerAgeLabel"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "4ca1a9223d7c1c210fce039e5a63499ed1c593f65f4c19e44db4e1f978d1ffa0",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:54.760Z",
+              "requestUrl": "https://m-i-e.ru/creative_industry",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "4ca1a9223d7c1c210fce039e5a63499ed1c593f65f4c19e44db4e1f978d1ffa0",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "mie:creative_industry:visit",
+              "venueId": "mie:venue:6cdf07922270e31d",
+              "kind": "FLEXIBLE_VISIT",
+              "timezone": "Asia/Yekaterinburg",
+              "start": null,
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-08-15",
+              "activeThrough": "2026-10-18",
+              "startless": false,
+              "endless": false,
+              "opening": [
+                {
+                  "weekday": 3,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                },
+                {
+                  "weekday": 4,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                },
+                {
+                  "weekday": 5,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                },
+                {
+                  "weekday": 6,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                },
+                {
+                  "weekday": 0,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                }
+              ],
+              "scheduleBasis": "STRUCTURED",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": true,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": []
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "mie:ekb_fastfood",
+          "provider": "mie",
+          "title": "«Хроники ресторанного Екатеринбурга: городские фудкорты XIX века»",
+          "city": "ekb",
+          "categories": [
+            "exhibition"
+          ],
+          "price": {
+            "kind": "RANGE",
+            "amount": null,
+            "lowerBound": 100,
+            "upperBound": 200,
+            "currency": "RUB",
+            "applicability": "UNRESOLVED",
+            "evidence": "100–200 ₽; категории посетителей не сопоставлены.",
+            "conditions": [
+              "Тариф для выбранного состава требует уточнения."
+            ]
+          },
+          "tariffs": [],
+          "providerAgeLabel": "6+",
+          "admission": {
+            "registration": "UNKNOWN",
+            "conditions": [],
+            "requirements": {
+              "minimumAge": null,
+              "children": "UNKNOWN",
+              "accompaniedByAdult": "UNKNOWN"
+            },
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://m-i-e.ru/ekb_fastfood",
+          "sourceLabel": "Источник: Музей истории Екатеринбурга",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": null,
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:45:50.867Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:50.867Z",
+              "requestUrl": "https://m-i-e.ru/ekb_fastfood",
+              "fields": [
+                "title",
+                "dates",
+                "location",
+                "categories",
+                "price",
+                "admission",
+                "providerAgeLabel"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "ad42db9aa335b3a2e063ad2422b7a686b0f0feba9810eb0b21d0227dd52dc12b",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:50.867Z",
+              "requestUrl": "https://m-i-e.ru/ekb_fastfood",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "ad42db9aa335b3a2e063ad2422b7a686b0f0feba9810eb0b21d0227dd52dc12b",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "mie:ekb_fastfood:visit",
+              "venueId": "mie:venue:83597f0fc26a14dd",
+              "kind": "FLEXIBLE_VISIT",
+              "timezone": "Asia/Yekaterinburg",
+              "start": null,
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-08-27",
+              "activeThrough": "2026-10-15",
+              "startless": false,
+              "endless": false,
+              "opening": [
+                {
+                  "weekday": 3,
+                  "open": 600,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                },
+                {
+                  "weekday": 4,
+                  "open": 600,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                },
+                {
+                  "weekday": 5,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1020
+                },
+                {
+                  "weekday": 6,
+                  "open": 660,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1020
+                },
+                {
+                  "weekday": 0,
+                  "open": 660,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1020
+                }
+              ],
+              "scheduleBasis": "STRUCTURED",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": true,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": []
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "mie:electronic_mage",
+          "provider": "mie",
+          "title": "«Электронные волшебники»",
+          "city": "ekb",
+          "categories": [
+            "exhibition"
+          ],
+          "price": {
+            "kind": "RANGE",
+            "amount": null,
+            "lowerBound": 150,
+            "upperBound": 300,
+            "currency": "RUB",
+            "applicability": "UNRESOLVED",
+            "evidence": "150–300 ₽; категории посетителей не сопоставлены.",
+            "conditions": [
+              "Тариф для выбранного состава требует уточнения."
+            ]
+          },
+          "tariffs": [],
+          "providerAgeLabel": "6+",
+          "admission": {
+            "registration": "UNKNOWN",
+            "conditions": [],
+            "requirements": {
+              "minimumAge": null,
+              "children": "UNKNOWN",
+              "accompaniedByAdult": "UNKNOWN"
+            },
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://m-i-e.ru/electronic_mage",
+          "sourceLabel": "Источник: Музей истории Екатеринбурга",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": null,
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:45:58.777Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:58.777Z",
+              "requestUrl": "https://m-i-e.ru/electronic_mage",
+              "fields": [
+                "title",
+                "dates",
+                "location",
+                "categories",
+                "price",
+                "admission",
+                "providerAgeLabel"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "0144d7916943c56f066382b9a24cb1e00ef444493917efdb4d042ad37978ee88",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:58.777Z",
+              "requestUrl": "https://m-i-e.ru/electronic_mage",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "0144d7916943c56f066382b9a24cb1e00ef444493917efdb4d042ad37978ee88",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "mie:electronic_mage:visit",
+              "venueId": "mie:venue:aecad4c888ffbe07",
+              "kind": "FLEXIBLE_VISIT",
+              "timezone": "Asia/Yekaterinburg",
+              "start": null,
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2025-11-01",
+              "activeThrough": "2026-09-27",
+              "startless": false,
+              "endless": false,
+              "opening": [
+                {
+                  "weekday": 3,
+                  "open": 600,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                },
+                {
+                  "weekday": 4,
+                  "open": 600,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                },
+                {
+                  "weekday": 5,
+                  "open": 600,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                },
+                {
+                  "weekday": 6,
+                  "open": 660,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                },
+                {
+                  "weekday": 0,
+                  "open": 660,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                }
+              ],
+              "scheduleBasis": "STRUCTURED",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": true,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": []
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "mie:palace__coup",
+          "provider": "mie",
+          "title": "«Дворцовый переворот»",
+          "city": "ekb",
+          "categories": [
+            "exhibition"
+          ],
+          "price": {
+            "kind": "RANGE",
+            "amount": null,
+            "lowerBound": 150,
+            "upperBound": 300,
+            "currency": "RUB",
+            "applicability": "UNRESOLVED",
+            "evidence": "150–300 ₽; категории посетителей не сопоставлены.",
+            "conditions": [
+              "Тариф для выбранного состава требует уточнения."
+            ]
+          },
+          "tariffs": [],
+          "providerAgeLabel": "12+",
+          "admission": {
+            "registration": "UNKNOWN",
+            "conditions": [],
+            "requirements": {
+              "minimumAge": null,
+              "children": "UNKNOWN",
+              "accompaniedByAdult": "UNKNOWN"
+            },
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://m-i-e.ru/palace__coup",
+          "sourceLabel": "Источник: Музей истории Екатеринбурга",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": null,
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:45:52.672Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:52.672Z",
+              "requestUrl": "https://m-i-e.ru/palace__coup",
+              "fields": [
+                "title",
+                "dates",
+                "location",
+                "categories",
+                "price",
+                "admission",
+                "providerAgeLabel"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "e22077fdee7a9f97e1e44e28e0fd64189ea2bd1a945ab04773e10f0a92f4d2a7",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:52.672Z",
+              "requestUrl": "https://m-i-e.ru/palace__coup",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "e22077fdee7a9f97e1e44e28e0fd64189ea2bd1a945ab04773e10f0a92f4d2a7",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "mie:palace__coup:visit",
+              "venueId": "mie:venue:6cdf07922270e31d",
+              "kind": "FLEXIBLE_VISIT",
+              "timezone": "Asia/Yekaterinburg",
+              "start": null,
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-08-27",
+              "activeThrough": "2026-12-31",
+              "startless": false,
+              "endless": false,
+              "opening": [
+                {
+                  "weekday": 3,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                },
+                {
+                  "weekday": 4,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                },
+                {
+                  "weekday": 5,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                },
+                {
+                  "weekday": 6,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                },
+                {
+                  "weekday": 0,
+                  "open": 720,
+                  "close": 1200,
+                  "lastEntry": null,
+                  "salesCutoff": 1140
+                }
+              ],
+              "scheduleBasis": "STRUCTURED",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": true,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": []
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "mie:stone_city",
+          "provider": "mie",
+          "title": "«Каменный город»",
+          "city": "ekb",
+          "categories": [
+            "exhibition"
+          ],
+          "price": {
+            "kind": "RANGE",
+            "amount": null,
+            "lowerBound": 150,
+            "upperBound": 300,
+            "currency": "RUB",
+            "applicability": "UNRESOLVED",
+            "evidence": "150–300 ₽; категории посетителей не сопоставлены.",
+            "conditions": [
+              "Тариф для выбранного состава требует уточнения."
+            ]
+          },
+          "tariffs": [],
+          "providerAgeLabel": "12+",
+          "admission": {
+            "registration": "UNKNOWN",
+            "conditions": [],
+            "requirements": {
+              "minimumAge": null,
+              "children": "UNKNOWN",
+              "accompaniedByAdult": "UNKNOWN"
+            },
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://m-i-e.ru/stone_city",
+          "sourceLabel": "Источник: Музей истории Екатеринбурга",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": null,
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:40:33.228Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:40:33.228Z",
+              "requestUrl": "https://m-i-e.ru/stone_city",
+              "fields": [
+                "title",
+                "dates",
+                "location",
+                "categories",
+                "price",
+                "admission",
+                "providerAgeLabel"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "5556cd3b922b9b2984c1bf2cab854603f2e335c7b20bd23ff9c65366f5cd8de3",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:40:33.228Z",
+              "requestUrl": "https://m-i-e.ru/stone_city",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "5556cd3b922b9b2984c1bf2cab854603f2e335c7b20bd23ff9c65366f5cd8de3",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "mie:stone_city:visit",
+              "venueId": "mie:venue:83597f0fc26a14dd",
+              "kind": "FLEXIBLE_VISIT",
+              "timezone": "Asia/Yekaterinburg",
+              "start": null,
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-07-25",
+              "activeThrough": "2026-10-25",
+              "startless": false,
+              "endless": false,
+              "opening": [
+                {
+                  "weekday": 3,
+                  "open": 600,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                },
+                {
+                  "weekday": 4,
+                  "open": 600,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                },
+                {
+                  "weekday": 5,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1020
+                },
+                {
+                  "weekday": 6,
+                  "open": 660,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1020
+                },
+                {
+                  "weekday": 0,
+                  "open": 660,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1020
+                }
+              ],
+              "scheduleBasis": "STRUCTURED",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": true,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": []
+            }
+          ],
+          "issues": []
+        },
+        {
+          "id": "mie:suitcase_mood",
+          "provider": "mie",
+          "title": "«Чемоданное настроение»",
+          "city": "ekb",
+          "categories": [
+            "exhibition"
+          ],
+          "price": {
+            "kind": "RANGE",
+            "amount": null,
+            "lowerBound": 150,
+            "upperBound": 300,
+            "currency": "RUB",
+            "applicability": "UNRESOLVED",
+            "evidence": "150–300 ₽; категории посетителей не сопоставлены.",
+            "conditions": [
+              "Тариф для выбранного состава требует уточнения."
+            ]
+          },
+          "tariffs": [],
+          "providerAgeLabel": "6+",
+          "admission": {
+            "registration": "UNKNOWN",
+            "conditions": [],
+            "requirements": {
+              "minimumAge": null,
+              "children": "UNKNOWN",
+              "accompaniedByAdult": "UNKNOWN"
+            },
+            "ticketAvailability": "NOT_VERIFIED"
+          },
+          "sourceUrl": "https://m-i-e.ru/suitcase_mood",
+          "sourceLabel": "Источник: Музей истории Екатеринбурга",
+          "organizerUrl": null,
+          "ticketUrl": null,
+          "publicationAt": null,
+          "providerUpdatedAt": null,
+          "retrievedAt": "2026-09-25T07:40:35.137Z",
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:40:35.137Z",
+              "requestUrl": "https://m-i-e.ru/suitcase_mood",
+              "fields": [
+                "title",
+                "dates",
+                "location",
+                "categories",
+                "price",
+                "admission",
+                "providerAgeLabel"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "8607b057168600efe177e2f1bc4f045d01352172be9075a69eea100e3d98d35c",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:40:39.141Z",
+              "requestUrl": "https://m-i-e.ru/mie-filial",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "421690e66835ac68f8d034c2586604c7d30d442eff87c18e2ebee333495ecd09",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "cancelled": null,
+          "verification": "EXTRACTED_FACTS",
+          "advertisingAssessment": "FACTS_ONLY",
+          "occurrences": [
+            {
+              "id": "mie:suitcase_mood:visit",
+              "venueId": "mie:venue:83597f0fc26a14dd",
+              "kind": "FLEXIBLE_VISIT",
+              "timezone": "Asia/Yekaterinburg",
+              "start": null,
+              "end": null,
+              "durationMinutes": null,
+              "endBasis": "UNKNOWN",
+              "activeFrom": "2026-05-16",
+              "activeThrough": "2026-11-01",
+              "startless": false,
+              "endless": false,
+              "opening": [
+                {
+                  "weekday": 3,
+                  "open": 600,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                },
+                {
+                  "weekday": 4,
+                  "open": 600,
+                  "close": 1140,
+                  "lastEntry": null,
+                  "salesCutoff": 1080
+                },
+                {
+                  "weekday": 5,
+                  "open": 600,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1020
+                },
+                {
+                  "weekday": 6,
+                  "open": 660,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1020
+                },
+                {
+                  "weekday": 0,
+                  "open": 660,
+                  "close": 1080,
+                  "lastEntry": null,
+                  "salesCutoff": 1020
+                }
+              ],
+              "scheduleBasis": "STRUCTURED",
+              "metadata": {
+                "continuous": false,
+                "usePlaceSchedule": true,
+                "structuredSchedulePresent": false,
+                "equalEndpoints": false,
+                "placeholderEnd": false
+              },
+              "issues": [
+                "Часы страницы выставки не применимы к текущему окну; использован режим её площадки."
+              ]
+            }
+          ],
+          "issues": [
+            "Часы страницы выставки не применимы к текущему окну; использован режим её площадки."
+          ]
+        }
+      ],
+      "venues": [
+        {
+          "id": "mie:venue:83597f0fc26a14dd",
+          "title": "Дом Качки",
+          "city": "ekb",
+          "zone": null,
+          "address": "ул. Карла Либкнехта, 26",
+          "sourceUrl": "https://m-i-e.ru/mie-filial",
+          "websiteUrl": null,
+          "closed": null,
+          "stub": false,
+          "physical": true,
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:50.867Z",
+              "requestUrl": "https://m-i-e.ru/ekb_fastfood",
+              "fields": [
+                "location",
+                "address",
+                "title"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "ad42db9aa335b3a2e063ad2422b7a686b0f0feba9810eb0b21d0227dd52dc12b",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:50.867Z",
+              "requestUrl": "https://m-i-e.ru/ekb_fastfood",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "ad42db9aa335b3a2e063ad2422b7a686b0f0feba9810eb0b21d0227dd52dc12b",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "coordinates": null,
+          "timetable": null,
+          "opening": [
+            {
+              "weekday": 3,
+              "open": 600,
+              "close": 1140,
+              "lastEntry": null,
+              "salesCutoff": 1080
+            },
+            {
+              "weekday": 4,
+              "open": 600,
+              "close": 1140,
+              "lastEntry": null,
+              "salesCutoff": 1080
+            },
+            {
+              "weekday": 5,
+              "open": 600,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": 1020
+            },
+            {
+              "weekday": 6,
+              "open": 660,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": 1020
+            },
+            {
+              "weekday": 0,
+              "open": 660,
+              "close": 1080,
+              "lastEntry": null,
+              "salesCutoff": 1020
+            }
+          ]
+        },
+        {
+          "id": "mie:venue:6cdf07922270e31d",
+          "title": "Креативный кластер «Л52»",
+          "city": "ekb",
+          "zone": null,
+          "address": "ул. Ленина, 52",
+          "sourceUrl": "https://m-i-e.ru/casing_of_rock",
+          "websiteUrl": null,
+          "closed": null,
+          "stub": false,
+          "physical": true,
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:56.757Z",
+              "requestUrl": "https://m-i-e.ru/casing_of_rock",
+              "fields": [
+                "location",
+                "address",
+                "title"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "44b52c0219154661b277f1cc9a22a9be5c5ce65ef02be23d7ea2486c11d624d0",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:56.757Z",
+              "requestUrl": "https://m-i-e.ru/casing_of_rock",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "44b52c0219154661b277f1cc9a22a9be5c5ce65ef02be23d7ea2486c11d624d0",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "coordinates": null,
+          "timetable": null,
+          "opening": [
+            {
+              "weekday": 3,
+              "open": 720,
+              "close": 1200,
+              "lastEntry": null,
+              "salesCutoff": 1140
+            },
+            {
+              "weekday": 4,
+              "open": 720,
+              "close": 1200,
+              "lastEntry": null,
+              "salesCutoff": 1140
+            },
+            {
+              "weekday": 5,
+              "open": 720,
+              "close": 1200,
+              "lastEntry": null,
+              "salesCutoff": 1140
+            },
+            {
+              "weekday": 6,
+              "open": 720,
+              "close": 1200,
+              "lastEntry": null,
+              "salesCutoff": 1140
+            },
+            {
+              "weekday": 0,
+              "open": 720,
+              "close": 1200,
+              "lastEntry": null,
+              "salesCutoff": 1140
+            }
+          ]
+        },
+        {
+          "id": "mie:venue:aecad4c888ffbe07",
+          "title": "Креативный кластер «Л52»",
+          "city": "ekb",
+          "zone": null,
+          "address": "Вход с ул. Бажова, 124А",
+          "sourceUrl": "https://m-i-e.ru/electronic_mage",
+          "websiteUrl": null,
+          "closed": null,
+          "stub": false,
+          "physical": true,
+          "observations": [
+            {
+              "retrievedAt": "2026-09-25T07:45:58.777Z",
+              "requestUrl": "https://m-i-e.ru/electronic_mage",
+              "fields": [
+                "location",
+                "address",
+                "title"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "0144d7916943c56f066382b9a24cb1e00ef444493917efdb4d042ad37978ee88",
+                "method": "AUTOMATIC_HTML"
+              }
+            },
+            {
+              "retrievedAt": "2026-09-25T07:45:58.777Z",
+              "requestUrl": "https://m-i-e.ru/electronic_mage",
+              "fields": [
+                "timetable"
+              ],
+              "conflicts": [],
+              "provenance": {
+                "extractor": "institution-dom/2",
+                "contentHash": "0144d7916943c56f066382b9a24cb1e00ef444493917efdb4d042ad37978ee88",
+                "method": "AUTOMATIC_HTML"
+              }
+            }
+          ],
+          "coordinates": null,
+          "timetable": null,
+          "opening": [
+            {
+              "weekday": 3,
+              "open": 600,
+              "close": 1140,
+              "lastEntry": null,
+              "salesCutoff": 1080
+            },
+            {
+              "weekday": 4,
+              "open": 600,
+              "close": 1140,
+              "lastEntry": null,
+              "salesCutoff": 1080
+            },
+            {
+              "weekday": 5,
+              "open": 600,
+              "close": 1140,
+              "lastEntry": null,
+              "salesCutoff": 1080
+            },
+            {
+              "weekday": 6,
+              "open": 660,
+              "close": 1140,
+              "lastEntry": null,
+              "salesCutoff": 1080
+            },
+            {
+              "weekday": 0,
+              "open": 660,
+              "close": 1140,
+              "lastEntry": null,
+              "salesCutoff": 1080
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

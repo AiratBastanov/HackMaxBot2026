@@ -4,7 +4,7 @@
 
 **MAXBOT_REAL_CLIENT_SMOKE_PARTIAL; BOT_API_INSPECTION = PASS; REAL_APPLICATION_SMOKE = REQUIRED; REAL_MAX_MOBILE = PARTIAL; REAL_MAX_WEB = PARTIAL; CROSS_CLIENT_CONTINUITY = PASS в описанном объёме; CROSS_USER_ISOLATION = PASS для сохранности закладки B после стирания A; WEBHOOK_INGRESS = NOT_VERIFIED; PUBLIC_DEPLOYMENT = NOT_VERIFIED (не развёрнуто).** /me подтвердил «Хакатон МАХ 432», ID `426717762`, [@t432_hakaton_max_bot](https://max.ru/t432_hakaton_max_bot); subscriptions=0. Ротация и единственный consumer подтверждены оператором. Прежнее отсутствие токена относится к истории [10](pivot/10_USER_READINESS_AND_FIRST_MAX_CHECK.md); первое подключение — [11](pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md), базовые реальные наблюдения — [12](pivot/12_REAL_CLIENT_SMOKE_COMPLETION.md), историческое окно/решение выпуска — [13](pivot/13_RELEASE_DECISION_AND_REMAINING_SMOKE.md), исправление workflow — [14](pivot/14_DELTA_CLIENT_VERIFICATION.md); продолжение — [15](pivot/15_DELTA_CLIENT_CONTINUATION.md) и [ledger](#c-текущий-assertion-ledger-и-ограниченная-delta). PUBLIC_DISPLAY = NOT_CLEARED, DATA_SUITABILITY = EXPLORATORY_ONLY.
 
-Задача разрешает техническую настройку уже конкретно одобренного test environment, synthetic-каталог и consenting testers. Старый запрет phase 2/3 на deployment/subscription не запрещает этот узкий этап. Разрешение не определяет отсутствующего владельца host или бота. Новые hosting/accounts, DNS/firewall, desktop tunnels, provider-карточки и публичный выпуск не входят в работу.
+Задача разрешает техническую настройку уже конкретно одобренного test environment, synthetic-каталог и consenting testers. Старый запрет phase 2/3 на deployment/subscription не запрещает этот узкий этап. Разрешение не определяет отсутствующего владельца host или бота. Новые hosting/accounts, DNS/firewall, desktop tunnels и публичный выпуск не входят в работу. Квитанция 17 дополнительно разрешает reviewed фактические карточки Кремля/МИЕ ранее допущенным согласившимся A/B; прочие provider-карточки запрещены.
 
 ## Проверенные первичные контракты, 24.09.2026
 
@@ -168,11 +168,21 @@ Marker хранится lossless; весь batch валидируется до �
 |---|---|---|---|
 | U16-A — город, состав, ввод и сводка | WEB A / MOBILE B | C16 city/party/timezone/reset + прежняя binding-validation; PASS | NOT_RUN обоих клиентов. City button и обычный city text; состав/возраст или неизвестный возраст; бюджет на всех; актуальные формы date/time/budget и видимый отказ/возврат совместить с созданием одного запроса. Принятие/смена параметра видно в новой сводке; отдельный opt-in после изменения. |
 | U16-B — компактная карточка и навигация на месте | WEB A / MOBILE B | C16 renderer, party evaluator, реальный HTTP/polling E2E; PASS | NOT_RUN обоих клиентов. В рамках того же запроса: сумма за всех, последний вход/регистрация, условия→карточка→результаты; один явный candidate с неизвестной детской ценой. Увидеть, что активное сообщение изменилось и клавиатура заменена. |
-| U16-C — два действия удаления/cancel и уборка UI | WEB A / MOBILE B, фактический private-chat API отдельно | C16 ownership/edit/failure/cleanup/generation/erasure; PASS | NOT_RUN обоих клиентов. В сохранённом: ровно «Да, удалить»/«Отмена», cancel возвращает исходный экран со свежими действиями. Одно обычное новое command-сообщение позволяет наблюдать replacement/cleanup только tracked synthetic UI. API acceptance/delete availability записать отдельно от human observation. Новый A/B erasure не нужен. |
+| U16-C — два действия удаления/cancel и уборка UI | WEB A / MOBILE B, фактический private-chat API отдельно | C16 ownership/edit/failure/cleanup/generation/erasure; PASS | NOT_RUN обоих клиентов. В сохранённом: ровно «Да, удалить»/«Отмена», cancel возвращает исходный экран со свежими действиями. Одно обычное новое command-сообщение позволяет наблюдать replacement/cleanup только tracked UI бота. API acceptance/delete availability записать отдельно от human observation. Новый A/B erasure не нужен. |
 
 Основание SUPERSEDED: F02.W.back-date/time/budget → **U16-A.W**; F06.M.date/time/budget и F07.M.date/time/budget/rejection → **U16-A.M**; F03.W.detail-candidate и F04.W.full-back → **U16-B.W**; остаток F04.M.full-back → **U16-B.M**. U16-C — новый изменённый UI scope, не открытие прежнего серверного PASS.
 
 Единственное доступное будущее окно: **30 минут / 120 polling requests**, последние 5 минут — завершение и остановка. Сейчас бюджет не потрачен. Только после готовности людей и READY, по одному действию с фактической текущей кнопкой/формой; не выдавать всю таблицу как набор заданий. Прежние admission/credentials/process CA и pinned Node сохраняются, pairing не повторяется. Fresh fictional fixture допустим отдельным новым файлом; существующие реальные данные/DB/cursor/TTL не правятся. Нет автоматического второго окна. Если реальный DELETE недоступен, наблюдать один bounded keyboard retirement; старые действия остаются защищены сервером. Provider-контент, deployment и окончательный data-mode не входят.
+
+### Impact mapping 17 — реальные факты в той же delta
+
+[Квитанция 17](pivot/17_REAL_CATALOG_AND_SOURCE_INTEGRATION.md): U16-A/B/C остаются единственной новой клиентской очередью. Source policy, compact provenance, source link, saved и pending/edit затронуты реальным каталогом. 233/233 локальных теста и HTTP→worker→SQLite→simulated MAX PASS; это AUTOMATED, не HUMAN.
+
+- U16-A: создать один запрос с городом/составом/общим бюджетом. Город предлагается только при пригодном снимке.
+- U16-B: в том же запросе увидеть реальную карточку с «сведения получены…», открыть условия и настоящий источник, вернуться на месте. Сохранить, после контролируемого restart открыть ту же закладку с прежним составом. Один семейный candidate совмещается с прежним остатком, все серверные варианты не повторяются.
+- U16-C: на этой закладке увидеть «Да, удалить» / «Отмена», отменить; наблюдение edit/delete API записать отдельно. Cleanup касается только отслеживаемых UI сообщений бота, включая reviewed real.
+
+Статус нового scope обоих клиентов **NOT_RUN**: READY не получен, polling не запускался. Исторические PASS, включая F09 A/B isolation, сохраняются. Точный запуск с существующей identity/admission/CA — [17, команды](pivot/17_REAL_CATALOG_AND_SOURCE_INTEGRATION.md#команды). Первое человеческое действие после READY — «Подобрать», дальнейшие давать по одному. Одно окно ≤30 минут / 120 polling requests; без готовых людей не запускать.
 
 ### Замороженная очередь delta — окно завершено
 
@@ -202,6 +212,6 @@ Main: **18:00:04.023–18:27:48.262 UTC / 21:00:04–21:27:48 МСК**, deadline
 
 1. A выполнен: replacement file прочитан внутри приложения, ротация подтверждена оператором, /me и subscriptions успешны, pin/ссылка сохранены. Повторно запрашивать credential в чате не нужно.
 2. A и B допущены; текущие наблюдения и точный остаток — только в [ledger](#c-текущий-assertion-ledger-и-ограниченная-delta), результат продолжения — в [15](pivot/15_DELTA_CLIENT_CONTINUATION.md). Разрешённое продолжение завершено; автоматического следующего окна нет.
-3. Одобренный host/endpoint/период доступности нужны будущему deployment/webhook, не блокируют test-only polling. Публичная доставка provider-карточек остаётся запрещённой.
+3. Одобренный host/endpoint/период доступности нужны будущему deployment/webhook, не блокируют test-only polling. Публичная доставка остаётся вне разрешения; narrow ADMITTED_TESTERS_FACTS для reviewed Кремля/МИЕ действует по 17.
 
 Независимые исправления и пакет DRAFT завершены в 10 / [SUBMISSION_READINESS](SUBMISSION_READINESS.md). Recovery не переизобретался, исторический preflight не объявлен новой live-проверкой. Даже successful synthetic smoke не разрешает provider publication и не доказывает спрос/качество афиши. Напоминания, новое получение данных и публичный выпуск не начинаются.

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "scope": "ADMITTED_TESTERS_FACTS",
+  "factualScope": "title-period-session-venue-hours-tariff-admission-source",
+  "reviewedAt": "2026-09-25T08:31:57.521Z",
+  "entries": [
+    {
+      "snapshotHash": "464132896508765797ff432471aab958fac2fc41891d371af7e8f1419688e690",
+      "sources": [
+        "kazan-kremlin"
+      ],
+      "basis": "institution-facts/1",
+      "validUntil": "2026-09-28T07:40:29.030Z"
+    },
+    {
+      "snapshotHash": "90deda7858240ff23d0ace764a6183b3983b7969e1e4ccd33255171f4b839b89",
+      "sources": [
+        "mie"
+      ],
+      "basis": "institution-facts/1",
+      "validUntil": "2026-09-28T07:40:33.228Z"
+    }
+  ]
+}

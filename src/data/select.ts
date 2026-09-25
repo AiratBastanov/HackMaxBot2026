@@ -17,7 +17,7 @@ export const reasonText: Record<string, string> = {
   NO_OCCURRENCES: 'Нет сведений о конкретных датах посещения.',
   CITY_UNKNOWN: 'Город указан только областью запроса провайдера; город события и площадки не подтверждён.',
   VENUE_CONFLICT: 'В наблюдениях расходятся город или адрес площадки; нужен актуальный адрес у источника.',
-  CANCELLED: 'Событие отмечено отменённым.', FACTS_STALE: 'Давность применимых фактов больше 24 часов либо время их получения неизвестно.',
+  CANCELLED: 'Событие отмечено отменённым.', FACTS_STALE: 'Превышен срок годности применимых фактов либо время их получения неизвестно.',
   KIND_UNKNOWN: 'Режим посещения не установлен.', UNUSABLE_RECORD: 'Нет содержательного названия или прямой ссылки на материал.',
 };
 export type Recommendation = { eventId: string; occurrenceId: string; title: string; kind: Occurrence['kind'];
@@ -31,7 +31,7 @@ export type Candidate = { eventId: string; occurrenceId: string | null; title: s
   time: { from: string | null; until: string | null; lastEntry: string | null; assessment: Predicate };
   eventRetrievedAt: string; eventObservations: Observation[]; venueObservations: Observation[]; warnings: string[]; partyPrice: PartyAssessment };
 type Assessment = { hard: string[]; unknown: string[]; predicates: Predicate[]; facts: string[]; match?: Recommendation; candidate?: Candidate };
-function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | undefined, q: Query, clock: number): Assessment {
+function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | undefined, q: Query, clock: number, freshnessHours=24): Assessment {
   const a: Assessment = { hard: [], unknown: [], predicates: [], facts: [] };
   const zone = q.timezone ?? cities[q.city].timezone, localDate = (s: string) => cityDate(s, zone), cost = assessParty(e, q);
   const predicate = (name: string, codes: string[], success: string) => {
@@ -115,8 +115,9 @@ function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | un
   if (o?.issues.includes('WEEKDAY_CONVENTION_UNVERIFIED')) a.facts.push('Числовые дни structured schedules сохранены; соглашение о днях недели не подтверждено.');
   const fieldTime = (rows: Observation[], field: string, fallback: string | null) =>
     rows.length ? rows.filter(r => r.fields.includes(field)).at(-1)?.retrievedAt ?? null : fallback;
-  const fresh = (t: string | null) => t !== null && clock >= Date.parse(t) && clock - Date.parse(t) <= 86400000;
+  const fresh = (t: string | null) => t !== null && clock >= Date.parse(t) && clock - Date.parse(t) <= freshnessHours*3600000;
   const checks = [fieldTime(e.observations, 'dates', e.retrievedAt)];
+  if(e.verification==='EXTRACTED_FACTS'||e.verification==='PREPARED_REAL')checks.push(fieldTime(e.observations,'timetable',null));
   if (q.budgetRub !== null) checks.push(fieldTime(e.observations,
     e.price.kind === 'FREE' && !e.price.evidence?.trim() ? 'is_free' : 'price', e.retrievedAt));
   if (q.category) checks.push(fieldTime(e.observations, 'categories', e.retrievedAt));
@@ -129,7 +130,7 @@ function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | un
     if (o?.scheduleBasis === 'PLACE_TIMETABLE') checks.push(fieldTime(venue.observations, 'timetable', venueFallback));
   }
   if (checks.some(t => !fresh(t))) a.unknown.push('FACTS_STALE');
-  predicate('freshness', ['FACTS_STALE'], 'Применимые факты получены не более 24 часов назад; источник не сообщает дату изменения условий.');
+  predicate('freshness', ['FACTS_STALE'], `Применимые факты получены не более ${freshnessHours} часов назад; источник не сообщает дату изменения условий.`);
   if (a.hard.length) return a;
   if (a.unknown.length || !o || from === null || until === null) {
     a.candidate = { eventId: e.id, occurrenceId: o?.id ?? null, title: e.title, source: { label: e.sourceLabel, url: e.sourceUrl },
@@ -180,8 +181,8 @@ export function select(snapshotInput: unknown | null, queryInput: unknown, clock
     if (reviews.some(r => r.eventId === e.id && r.status === 'QUARANTINED')) {
       excluded.SOURCE_IDENTITY_CONFLICT = (excluded.SOURCE_IDENTITY_CONFLICT ?? 0) + 1; continue;
     }
-    const assessments = e.occurrences.length ? e.occurrences.map(o => assess(e, o, o.venueId ? venues.get(o.venueId) : undefined, query, time))
-      : [assess(e, undefined, undefined, query, time)];
+    const assessments = e.occurrences.length ? e.occurrences.map(o => assess(e, o, o.venueId ? venues.get(o.venueId) : undefined, query, time,snapshot.freshnessHours))
+      : [assess(e, undefined, undefined, query, time,snapshot.freshnessHours)];
     const best = assessments.flatMap(a => a.match ? [a.match] : []).sort(compare)[0];
     if (best) { matches.push(best); continue; } // Одно событие — максимум одна позиция.
     const plausible = assessments.flatMap(a => a.candidate ? [a.candidate] : []).sort(compareCandidates);

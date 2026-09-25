@@ -4,8 +4,13 @@
   "private": true,
   "type": "module",
   "description": "Технический probe G1 для проверки интеграции MAX",
-  "engines": { "node": ">=22.23.2 <23" },
+  "engines": {
+    "node": ">=22.23.2 <23"
+  },
   "scripts": {
+    "real:catalog": "node dist/scripts/real-catalog.js",
+    "real:smoke": "node dist/scripts/real-walkthrough.js",
+    "real:preflight": "node --env-file=.env.polling dist/scripts/real-preflight.js",
     "flow:demo": "node dist/scripts/flow-walkthrough.js --synthetic",
     "flow:replay": "node dist/scripts/flow-walkthrough.js --real-replay",
     "test:flow": "node --test --test-timeout=20000 dist/tests/flow-*.test.js",
@@ -31,6 +36,7 @@
     "better-sqlite3": "13.0.3",
     "fastify": "5.12.5",
     "lossless-json": "4.3.1",
+    "parse5": "8.0.0",
     "zod": "4.6.5"
   },
   "devDependencies": {

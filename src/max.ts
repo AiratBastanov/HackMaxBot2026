@@ -2,6 +2,8 @@ import { randomUUID } from 'node:crypto';
 import { parseJson, simpleResultSchema, subscriptionsSchema, userSchema, validateMessage, messageSchema } from './contracts.js';
 import type { Config } from './config.js';
 import { safeLink } from './data/contract.js';
+import { Catalog } from './culture/catalog.js';
+import type { DisplayRef } from './data/source-policy.js';
 
 export type FailureKind = 'SEMANTIC' | 'MALFORMED' | 'AUTH' | 'PERMISSION' | 'RATE_LIMIT' | 'SERVER' | 'HTTP' | 'TIMEOUT_AMBIGUOUS' | 'TRANSPORT_AMBIGUOUS' | 'CANCELLED';
 export class MaxError extends Error {
@@ -14,7 +16,14 @@ export type MaxOperation = ({ method: 'messages'; recipient: string; body: Messa
   | ({ method: 'edit'; body: MessageRequest } & MessageTarget)
   | ({ method: 'read' } & MessageTarget) | ({ method: 'delete' } & MessageTarget)
   | { method: 'answers'; callbackId: string; body: { notification: string } }) & {
-    audience?: 'SYNTHETIC' | 'PROVIDER'; screen?: { epoch: string; revision: number; chat: string; purpose: string } };
+    audience?: 'SYNTHETIC' | 'PROVIDER'; displayRefs?:DisplayRef[]; screen?: { epoch: string; revision: number; chat: string; purpose: string } };
+export function deliveryAllowed(op:MaxOperation,config:Config,catalog:Catalog,now=Date.now()) {
+  if(op.method==='read'||op.method==='delete')return true;
+  if(op.audience==='SYNTHETIC')return config.flowDataMode==='synthetic-test';
+  if(op.audience!=='PROVIDER')return true;
+  if(op.method==='answers'||config.mode==='live'&&!config.testers.has(op.recipient))return false;
+  return catalog.permits(op.displayRefs,now);
+}
 export function validateOperation(op: MaxOperation) {
   if (op.method === 'read' || op.method === 'delete') { if (!op.mid || !op.recipient || !op.chat) throw new MaxError('SEMANTIC'); return; }
   if (op.method === 'answers') { if (op.body.notification.length > 200) throw new MaxError('SEMANTIC'); return; }
@@ -97,14 +106,16 @@ export class ReadOnlyMax {
   }
 }
 export class LiveMax extends ReadOnlyMax implements MaxTransport {
+  private readonly catalog:Catalog;
   constructor(private readonly config:Config,fetcher:typeof fetch=fetch,private readonly signal?:AbortSignal) {
     super(config,fetcher);
+    this.catalog=Catalog.load(config);
     if(config.mode!=='live'||!config.token) throw new Error('LiveMax требует live-конфигурацию');
   }
   override async me() {return super.me(this.config.botId);}
   async execute(op: MaxOperation): Promise<MaxResult> {
     validateOperation(op);
-    if (op.audience === 'PROVIDER' || (op.audience === 'SYNTHETIC' && this.config.flowDataMode !== 'synthetic-test')) throw new MaxError('PERMISSION');
+    if (!deliveryAllowed(op,this.config,this.catalog)) throw new MaxError('PERMISSION');
     if (op.method === 'messages') {
       const raw = await this.request('POST', `/messages?user_id=${encodeURIComponent(op.recipient)}&disable_link_preview=true`, op.body, {signal:this.signal});
       const message = this.validate(() => validateMessage(raw, op.recipient));

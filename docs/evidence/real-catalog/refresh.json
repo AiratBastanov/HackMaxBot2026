@@ -1,0 +1,64 @@
+{
+  "result": "PASS",
+  "mode": "OPERATOR_CLI",
+  "networkRequests": 0,
+  "secondReparse": true,
+  "identitiesStable": true,
+  "observationsUnchanged": true,
+  "activeSnapshotsUnchanged": true,
+  "snapshotHashes": [
+    "464132896508765797ff432471aab958fac2fc41891d371af7e8f1419688e690",
+    "90deda7858240ff23d0ace764a6183b3983b7969e1e4ccd33255171f4b839b89"
+  ],
+  "reviewQueue": [
+    {
+      "url": "https://m-i-e.ru/way_to_the_dream",
+      "reason": "QUARANTINED: Период расходится: карточка до 08.11.2026, список Дома Качки до 18.10.2026."
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/lapy-na-holste-istorii-sobak-v-iskusstve",
+      "reason": "QUARANTINED: В шапке организатор Эрмитаж-Казань; фактические объекты находятся в шести парках. Нужны отдельные места, музейный адрес неприменим."
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/art-prostranstvo-kommunalka",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-vyshivka-tamburnym-shvom",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-zhivaya-bumaga",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/venya_zhiv",
+      "reason": "QUARANTINED: Начало периода расходится: карточка 17.05.2026, главная страница 17.05.2024."
+    },
+    {
+      "url": "https://m-i-e.ru/ot-zavoda-k-gorodu",
+      "reason": "QUARANTINED: Старая страница показывает иной режим Дома Качки; название площадки и актуальный режим требуют отдельного разбора."
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/kulturnyj-kod-kazani-duhovnoe-nasledie-i-tradiczii",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-napishi-svoe-imya-arabskoj-vyazyu",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-bogatoe-srednevekove",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-tatarskie-ukrasheniya",
+      "reason": "PERIOD_REVIEW"
+    }
+  ],
+  "sourceStatus": {
+    "kazan-kremlin": "PARSED_CACHED_SCOPE",
+    "mie": "PARSED_CACHED_SCOPE"
+  },
+  "at": "2026-09-25T08:31:57.751Z"
+}

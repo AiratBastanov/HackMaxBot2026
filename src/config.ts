@@ -18,6 +18,7 @@ const envSchema = z.object({
   LIVE_SCOPE_CONFIRMED: z.enum(['true', 'false']).default('false'),
   FLOW_DATA_MODE: z.enum(['real', 'synthetic-test']).default('real'),
   DATA_SNAPSHOT_PATH: z.string().min(1).optional(),
+  DATA_REVIEW_PATH: z.string().min(1).optional(),
   FLOW_TEST_CLOCK: z.string().datetime({offset:true}).optional(),
   PUBLIC_DISPLAY: z.literal('NOT_CLEARED').default('NOT_CLEARED'),
 });
@@ -28,7 +29,7 @@ export type Config = {
   databasePath: string; webhookSecret?: string; apiBaseUrl: string;
   token?: string; botId: string; publicBaseUrl?: string; testers: ReadonlySet<string>;
   probeTtlMs: number; requestTimeoutMs: number;
-  flowDataMode: 'real' | 'synthetic-test'; snapshotPath?: string; flowTestClock?: string;
+  flowDataMode: 'real' | 'synthetic-test'; snapshotPath?: string; reviewPath?:string; flowTestClock?: string;
 };
 
 export function loadConfig(env: NodeJS.ProcessEnv): Config {
@@ -66,7 +67,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     webhookSecret: v.MAX_WEBHOOK_SECRET, apiBaseUrl: v.MAX_API_BASE_URL, token: v.MAX_BOT_TOKEN,
     botId: v.MAX_EXPECTED_BOT_ID ?? '777', publicBaseUrl: v.PUBLIC_BASE_URL?.replace(/\/$/, ''),
     testers: new Set(testerIds), probeTtlMs: v.PROBE_TTL_SECONDS * 1000, requestTimeoutMs: v.MAX_REQUEST_TIMEOUT_MS,
-    flowDataMode: v.FLOW_DATA_MODE, snapshotPath: v.DATA_SNAPSHOT_PATH, flowTestClock: v.FLOW_TEST_CLOCK };
+    flowDataMode: v.FLOW_DATA_MODE, snapshotPath: v.DATA_SNAPSHOT_PATH, reviewPath:v.DATA_REVIEW_PATH, flowTestClock: v.FLOW_TEST_CLOCK };
 }
 
 // Read-only /me и /subscriptions не требуют доступного deployment, webhook secret или testers.

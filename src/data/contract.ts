@@ -16,17 +16,20 @@ const instant = z.string().datetime({ offset: true });
 const date = z.string().date();
 const text = z.string().max(4000);
 const link = z.string().refine(v => safeLink(v) !== null);
-const namespace = z.string().regex(/^(kudago|timepad|synthetic):[a-zA-Z0-9:_-]+$/);
+const namespace = z.string().regex(/^(kudago|timepad|synthetic|kazan-kremlin|mie):[a-zA-Z0-9:_-]+$/);
 const nullableInstant = instant.nullable();
 export const observationSchema = z.object({ retrievedAt: nullableInstant, requestUrl: link.nullable(),
-  fields: z.array(z.string()), conflicts: z.array(z.string()) }).strict();
+  fields: z.array(z.string()), conflicts: z.array(z.string()),
+  provenance: z.object({ extractor: z.string(), contentHash: z.string().regex(/^[a-f0-9]{64}$/),
+    method: z.enum(['AUTOMATIC_HTML', 'PREPARED_REAL']) }).strict().optional() }).strict();
 export type Observation = z.infer<typeof observationSchema>;
 const interval = z.object({ weekday: z.number().int().min(0).max(6), open: z.number().int().min(0).max(1439),
-  close: z.number().int().min(1).max(1440), lastEntry: z.number().int().min(0).max(1440).nullable() }).strict()
+  close: z.number().int().min(1).max(1440), lastEntry: z.number().int().min(0).max(1440).nullable(),
+  salesCutoff: z.number().int().min(0).max(1440).nullable().optional() }).strict()
   .refine(v => v.close > v.open && (v.lastEntry === null || (v.lastEntry >= v.open && v.lastEntry <= v.close)));
 export type OpeningInterval = z.infer<typeof interval>;
 export const priceSchema = z.object({ kind: z.enum(['FREE', 'EXACT', 'FROM', 'RANGE', 'CONDITIONAL', 'UNKNOWN', 'CONFLICT']),
-  amount: z.number().nonnegative().nullable(), lowerBound: z.number().nonnegative().nullable(), currency: z.literal('RUB').nullable(),
+  amount: z.number().nonnegative().nullable(), lowerBound: z.number().nonnegative().nullable(), upperBound:z.number().nonnegative().nullable().optional(), currency: z.literal('RUB').nullable(),
   applicability: z.enum(['SINGLE_ADULT', 'UNRESOLVED']), evidence: text.nullable(), conditions: z.array(text) }).strict();
 export type Price = z.infer<typeof priceSchema>;
 export const partySchema = z.object({ adults: z.number().int().min(1).max(8),
@@ -55,7 +58,7 @@ export const occurrenceSchema = z.object({ id: namespace, venueId: namespace.nul
   metadata: z.object({ continuous: z.boolean().nullable(), usePlaceSchedule: z.boolean().nullable(),
     structuredSchedulePresent: z.boolean(), equalEndpoints: z.boolean(), placeholderEnd: z.boolean() }).strict(),
   issues: z.array(text) }).strict();
-export const normalizedEventSchema = z.object({ id: namespace, provider: z.enum(['kudago', 'timepad', 'synthetic']),
+export const normalizedEventSchema = z.object({ id: namespace, provider: z.enum(['kudago', 'timepad', 'synthetic', 'kazan-kremlin', 'mie']),
   title: text.min(1), city: z.string().nullable(), categories: z.array(z.string()), price: priceSchema,
   tariffs: z.array(tariffSchema).max(30).optional(), providerAgeLabel: text.nullable().optional(),
   admission: z.object({ registration: z.enum(['REQUIRED', 'NOT_REQUIRED', 'UNKNOWN']), conditions: z.array(text),
@@ -65,23 +68,24 @@ export const normalizedEventSchema = z.object({ id: namespace, provider: z.enum(
   sourceUrl: link, sourceLabel: text.min(1), organizerUrl: link.nullable(), ticketUrl: link.nullable(),
   publicationAt: nullableInstant, providerUpdatedAt: nullableInstant, retrievedAt: instant,
   observations: z.array(observationSchema), cancelled: z.boolean().nullable(),
-  verification: z.enum(['API_FACTS_ONLY', 'SYNTHETIC_FIXTURE']),
-  advertisingAssessment: z.enum(['NOT_EXPOSED_BY_API', 'SYNTHETIC']),
+  verification: z.enum(['API_FACTS_ONLY', 'SYNTHETIC_FIXTURE', 'EXTRACTED_FACTS', 'PREPARED_REAL']),
+  advertisingAssessment: z.enum(['NOT_EXPOSED_BY_API', 'SYNTHETIC', 'FACTS_ONLY']),
   occurrences: z.array(occurrenceSchema), issues: z.array(text) }).strict();
 const statistics = z.object({ providerCount: z.number().int().nonnegative().nullable(), retrievedRows: z.number().int().nonnegative(),
   uniqueProviderIds: z.number().int().nonnegative(), duplicateIds: z.number().int().nonnegative(), pages: z.number().int().nonnegative(),
   normalizedEvents: z.number().int().nonnegative(), occurrences: z.number().int().nonnegative(), venues: z.number().int().nonnegative(),
   omitted: z.record(z.string(), z.number().int().nonnegative()) }).strict();
-export const snapshotSchema = z.object({ version: z.literal(2), mode: z.enum(['LIVE_PUBLIC', 'SYNTHETIC_FIXTURE']),
+export const snapshotSchema = z.object({ version: z.literal(2), mode: z.enum(['LIVE_PUBLIC', 'SYNTHETIC_FIXTURE', 'REAL_CATALOG']),
   scope: z.object({ city: cityKeySchema, timezone: timezoneSchema, start: instant, end: instant,
     categories: z.array(z.string()), zone: z.null() }).strict(),
-  retrievedAt: instant, freshnessHours: z.literal(24), outcome: z.enum(['COMPLETE', 'PARTIAL', 'FAILED']),
+  retrievedAt: instant, freshnessHours: z.number().int().min(1).max(168), outcome: z.enum(['COMPLETE', 'PARTIAL', 'FAILED']),
   paginationComplete: z.boolean(), venueCoverageComplete: z.boolean(), enrichedAt: nullableInstant,
   coverage: z.literal('PROVIDER_CATALOG_ONLY'),
   publicDisplay: z.literal('NOT_CLEARED'), issues: z.array(text), stats: statistics,
   events: z.array(normalizedEventSchema).max(5000), venues: z.array(venueSchema).max(5000) }).strict().superRefine((s, ctx) => {
     const fail = (message: string) => ctx.addIssue({ code: 'custom', message });
     if (cities[s.scope.city].timezone !== s.scope.timezone) fail('city_timezone');
+    if(s.mode!=='REAL_CATALOG'&&s.freshnessHours!==24)fail('legacy_freshness');
     if (Date.parse(s.scope.end) <= Date.parse(s.scope.start)) fail('scope_interval');
     if (s.outcome === 'COMPLETE' && (!s.paginationComplete || !s.venueCoverageComplete)) fail('completeness');
     if (s.outcome === 'FAILED' && s.events.length) fail('failed_with_events');
@@ -92,6 +96,10 @@ export const snapshotSchema = z.object({ version: z.literal(2), mode: z.enum(['L
       if (!e.id.startsWith(`${e.provider}:`)) fail('provider_namespace');
       if (s.mode === 'LIVE_PUBLIC' && (e.provider === 'synthetic' || e.verification !== 'API_FACTS_ONLY')) fail('synthetic_in_live');
       if (s.mode === 'SYNTHETIC_FIXTURE' && e.verification !== 'SYNTHETIC_FIXTURE') fail('unmarked_fixture');
+      if (s.mode === 'REAL_CATALOG' && (!['kazan-kremlin','mie'].includes(e.provider)
+        || !['EXTRACTED_FACTS','PREPARED_REAL'].includes(e.verification)
+        || !e.observations.length || e.observations.some(o => !o.provenance || !o.retrievedAt))) fail('real_provenance');
+      if(s.mode==='REAL_CATALOG'&&e.observations.some(o=>o.requestUrl===null||new URL(o.requestUrl).origin!==new URL(e.sourceUrl).origin))fail('real_provenance_origin');
       if (e.provider === 'kudago' && safeLink(e.sourceUrl, 'kudago.com') === null) fail('source_host');
       if (e.provider === 'kudago' && e.verification === 'API_FACTS_ONLY' && e.sourceLabel !== 'Источник: KudaGo') fail('source_attribution');
       if (['FREE', 'EXACT'].includes(e.price.kind) && (e.price.amount === null || e.price.currency !== 'RUB'

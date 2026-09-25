@@ -1,6 +1,6 @@
 import type { Config } from './config.js';
 import type { AcceptedEvent } from './contracts.js';
-import { MaxError, type MaxOperation, type MaxTransport } from './max.js';
+import { MaxError, deliveryAllowed, type MaxOperation, type MaxTransport } from './max.js';
 import { Storage } from './storage.js';
 import { canSend, processProbe } from './probe.js';
 import { Catalog } from './culture/catalog.js';
@@ -84,7 +84,7 @@ export class Worker {
         this.store.finishOutbox(row.id, 'SUPPRESSED_CONTACT', 'CONTACT_UNAVAILABLE', now);
       } else {
         let operation = JSON.parse(row.payload) as MaxOperation;
-        if (this.config.mode === 'live' && (operation.audience === 'PROVIDER' || (operation.audience === 'SYNTHETIC' && this.config.flowDataMode !== 'synthetic-test'))) {
+        if ((this.config.mode === 'live'||this.catalog.requiresReview) && !deliveryAllowed(operation,this.config,this.catalog,now)) {
           this.store.finishOutbox(row.id, 'SUPPRESSED_DISPLAY', 'SOURCE_DISPLAY_NOT_CLEARED', now); return;
         }
         const prepared=prepareScreenOperation(this.store,row,operation,now);

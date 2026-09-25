@@ -27,7 +27,7 @@ export function readTesters(botId: string, configured?: string, file = testerFil
 }
 
 export function loadPollingConfig(env: NodeJS.ProcessEnv, pairing = false, options: {access?:typeof replacementAccess; testerPath?:string} = {}): Config {
-  if (env.APP_MODE !== 'live' || env.APP_INGRESS !== 'test-polling' || env.FLOW_DATA_MODE !== 'synthetic-test'
+  if (env.APP_MODE !== 'live' || env.APP_INGRESS !== 'test-polling' || !['real','synthetic-test'].includes(env.FLOW_DATA_MODE??'')
     || env.PUBLIC_DISPLAY !== 'NOT_CLEARED' || env.LIVE_SCOPE_CONFIRMED !== 'true') throw Error('TEST_POLLING_CONFIGURATION_REQUIRED');
   if (env.PUBLIC_BASE_URL || env.MAX_WEBHOOK_SECRET || env.MAX_WEBHOOK_SECRET_FILE || env.FLOW_TEST_CLOCK) throw Error('POLLING_WEBHOOK_OR_CLOCK_FORBIDDEN');
   if (!testerId.safeParse(env.MAX_EXPECTED_BOT_ID).success) throw Error('PINNED_BOT_ID_REQUIRED');
@@ -35,7 +35,9 @@ export function loadPollingConfig(env: NodeJS.ProcessEnv, pairing = false, optio
   const databasePath = resolve(testRoot, `${botId}.sqlite`);
   if (env.DATABASE_PATH && resolve(env.DATABASE_PATH) !== databasePath) throw Error('DEDICATED_TEST_DATABASE_REQUIRED');
   const snapshotPath = env.DATA_SNAPSHOT_PATH ? resolve(env.DATA_SNAPSHOT_PATH) : undefined;
-  if (!snapshotPath || !snapshotPath.startsWith(testRoot + sep) || !snapshotPath.endsWith('.json')) throw Error('TEST_SNAPSHOT_PATH_REQUIRED');
+  if (!snapshotPath || !(snapshotPath.startsWith(testRoot + sep) || env.FLOW_DATA_MODE==='real'&&snapshotPath.startsWith(resolve('catalog/real')+sep)) || !snapshotPath.endsWith('.json')) throw Error('TEST_SNAPSHOT_PATH_REQUIRED');
+  const reviewPath=env.DATA_REVIEW_PATH?resolve(env.DATA_REVIEW_PATH):undefined;
+  if(env.FLOW_DATA_MODE==='real'&&reviewPath&&!reviewPath.startsWith(resolve('catalog/real')+sep)&&!reviewPath.startsWith(testRoot+sep))throw Error('REVIEW_PATH_REQUIRED');
   const testers = readTesters(botId, env.PROBE_TESTER_IDS, options.testerPath);
   if (!pairing && !testers.size) throw Error('CONSENTING_TESTER_OR_PAIRING_REQUIRED');
   const timeout = Number(env.MAX_REQUEST_TIMEOUT_MS ?? 5000);
@@ -43,7 +45,7 @@ export function loadPollingConfig(env: NodeJS.ProcessEnv, pairing = false, optio
   const access = (options.access ?? replacementAccess)(env);
   return { mode: 'live', ingress: 'test-polling', host: '127.0.0.1', port: 3000, databasePath,
     apiBaseUrl: access.apiBaseUrl, token: access.token, botId, testers, probeTtlMs: 600000,
-    requestTimeoutMs: timeout, flowDataMode: 'synthetic-test', snapshotPath };
+    requestTimeoutMs: timeout, flowDataMode: env.FLOW_DATA_MODE as Config['flowDataMode'], snapshotPath,reviewPath };
 }
 
 export function loadCurrentSynthetic(config: Config, now = Date.now()) {
@@ -52,5 +54,11 @@ export function loadCurrentSynthetic(config: Config, now = Date.now()) {
     const snapshot=catalog.forCity(city)!,age=now-Date.parse(snapshot.retrievedAt);
     return snapshot.mode!=='SYNTHETIC_FIXTURE'||!Number.isFinite(age)||age<0||age>3600000;
   })) throw Error('FRESH_SYNTHETIC_CURRENT_REQUIRED');
+  return catalog;
+}
+export function loadCurrentCatalog(config:Config,now=Date.now()) {
+  if(config.flowDataMode==='synthetic-test')return loadCurrentSynthetic(config,now);
+  const catalog=Catalog.load(config);
+  if(!catalog.usableCities(now).length||catalog.availableCities.some(c=>catalog.forCity(c)!.mode!=='REAL_CATALOG'||!catalog.usableCities(now).includes(c)))throw Error('REVIEWED_CURRENT_REAL_CATALOG_REQUIRED');
   return catalog;
 }

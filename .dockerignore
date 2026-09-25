@@ -11,6 +11,9 @@
 !tests/**
 !scripts/
 !scripts/**
+!catalog/
+!catalog/real/
+!catalog/real/*.json
 # Исключения действуют и внутри разрешённых каталогов.
 **/node_modules/**
 **/.env*

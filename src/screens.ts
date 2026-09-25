@@ -14,7 +14,7 @@ export function desireScreen(s:Storage,actor:string,chat:string,revision:number,
     .run(actor,chat,epoch,old?.mid??null,purpose,revision,Number(fresh||!old||old.force_new===1||old.chat!==chat),now);
   return {epoch,revision,chat,purpose};
 }
-function target(t:Tracked) { return {mid:t.mid,recipient:t.actor,chat:t.chat,audience:t.audience??undefined}; }
+function target(t:Tracked) { return {mid:t.mid,recipient:t.actor,chat:t.chat}; }
 function replaceReconciledScreen(s:Storage,mid:string,now:number) {
   const original=s.db.prepare("SELECT * FROM outbox WHERE purpose='culture_screen' AND status='UNKNOWN_RESULT' AND json_extract(payload,'$.mid')=? ORDER BY id DESC LIMIT 1").get(mid) as OutboxRow|undefined;
   if(!original)return;
@@ -22,7 +22,7 @@ function replaceReconciledScreen(s:Storage,mid:string,now:number) {
   if(op.method!=='edit'||!op.screen||current?.epoch!==op.screen.epoch||current.revision!==op.screen.revision)return;
   s.db.prepare('UPDATE flow_screens SET force_new=1 WHERE actor=?').run(original.actor);
   s.enqueue(`ui-replacement:${original.id}`,original.actor,null,'culture_screen',
-    {method:'messages',recipient:original.actor,body:op.body,audience:op.audience,screen:op.screen},now,original.expires_at,{revision:original.flow_revision!,catalogVersion:original.catalog_version??undefined});
+    {method:'messages',recipient:original.actor,body:op.body,audience:op.audience,displayRefs:op.displayRefs,screen:op.screen},now,original.expires_at,{revision:original.flow_revision!,catalogVersion:original.catalog_version??undefined});
 }
 export function queueReconciliation(s:Storage,now:number) {
   const rows=s.db.prepare("SELECT * FROM ui_messages WHERE status='UNCERTAIN' LIMIT 20").all() as Tracked[];
@@ -106,7 +106,7 @@ export function failedScreenOperation(s:Storage,row:OutboxRow,op:MaxOperation,er
     const current=activeScreen(s,row.actor);
     if(current?.epoch===op.screen.epoch&&current.revision===op.screen.revision) {
       s.db.prepare('UPDATE flow_screens SET force_new=1 WHERE actor=?').run(row.actor);
-      s.enqueue(`ui-replacement:${row.id}`,row.actor,null,'culture_screen',{method:'messages',recipient:row.actor,body:op.body,audience:op.audience,screen:op.screen},now,row.expires_at,{revision:row.flow_revision!,catalogVersion:row.catalog_version??undefined});
+      s.enqueue(`ui-replacement:${row.id}`,row.actor,null,'culture_screen',{method:'messages',recipient:row.actor,body:op.body,audience:op.audience,displayRefs:op.displayRefs,screen:op.screen},now,row.expires_at,{revision:row.flow_revision!,catalogVersion:row.catalog_version??undefined});
     }
   }
 }

@@ -1,5 +1,7 @@
 # Сторонние компоненты G1
 
+Дополнение 25.09.2026: HTML-парсер parse5 **8.0.0** — MIT; его закреплённая lockfile зависимость entities **6.0.1** — BSD-2-Clause. Их исходные LICENSE сохраняются в node_modules и Docker. DOM-парсер не исполняет HTML/JS и не загружает внешние сущности. Реальные данные двух учреждений — минимальные факты с собственным текстом карточек, отдельным [основанием и ограничениями](docs/pivot/17_REAL_CATALOG_AND_SOURCE_INTEGRATION.md); лицензии npm к этим фактам не применяются.
+
 Прямые зафиксированные зависимости: Fastify 5.12.5, better-sqlite3 13.0.3, lossless-json 4.3.1 и zod 4.6.5 — MIT. TypeScript 7.0.2 — Apache-2.0; @types/node 22.20.4 и @types/better-sqlite3 9.6.0 — MIT. Источники лицензий — package.json/LICENSE опубликованных пакетов; integrity полного графа находится в package-lock.json. [Инвентаризация](docs/evidence/g1/dependencies.json) содержит каждую locked-версию, включая optional platform packages.
 
 Node.js 22.23.2 распространяется с [собственным LICENSE и notices зависимостей](https://github.com/nodejs/node/blob/v22.23.2/LICENSE). SQLite — [public domain](https://www.sqlite.org/copyright.html). Caddy 2.11.4 — [Apache-2.0](https://github.com/caddyserver/caddy/blob/v2.11.4/LICENSE); бинарный официальный образ подготовлен только для будущего public окружения.

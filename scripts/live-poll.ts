@@ -1,6 +1,6 @@
 import { appendFileSync, mkdirSync } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
-import { loadPollingConfig, loadCurrentSynthetic, testerFile, testRoot } from '../src/polling-config.js';
+import { loadPollingConfig, loadCurrentCatalog, testerFile, testRoot } from '../src/polling-config.js';
 import { acquireConsumerLock } from '../src/consumer-lock.js';
 import { PollingMax, verifyPolling, openCampaign, runPolling, observeDelivery } from '../src/polling.js';
 import { LiveMax, MaxError } from '../src/max.js';
@@ -19,7 +19,7 @@ async function main() {
   const minutes=(args.length?Number(args[1]):15) as 15|30;
   if (command === 'pair' && (!process.stdin.isTTY || !process.stdout.isTTY)) throw Error('PAIRING_REQUIRES_OPERATOR_TERMINAL');
   const config = loadPollingConfig(process.env, command === 'pair');
-  const catalog = loadCurrentSynthetic(config);
+  const catalog = loadCurrentCatalog(config);
   const release = await acquireConsumerLock(config.botId);
   const controller = new AbortController();
   const stop = () => controller.abort();
@@ -46,7 +46,7 @@ async function main() {
       if(pairing) {
         console.log('READY_FOR_PAIRING: отправьте в этот бот ровно следующую строку. Код действует до двух минут, только один раз:');
         console.log(`/pair ${pairing.code}`); // Только интерактивный терминал, не evidence/log.
-      } else { worker!.start(); report({operation:'READY_FOR_TESTER_ACTION',message:'Теперь отправьте /start. Данные вымышленные.'}); }
+      } else { worker!.start(); report({operation:'READY_FOR_TESTER_ACTION',message:config.flowDataMode==='real'?'Теперь отправьте /start. Реальные факты из проверенного снимка.':'Теперь отправьте /start. Данные вымышленные.'}); }
     }});
     if(pairing && actor && !controller.signal.aborted) {
       const terminal=createInterface({input:process.stdin,output:process.stdout});

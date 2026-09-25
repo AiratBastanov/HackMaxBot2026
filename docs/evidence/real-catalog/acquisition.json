@@ -1,0 +1,422 @@
+{
+  "mode": "DIRECT_WORKSPACE_HTTPS",
+  "startedAt": "2026-09-25T07:39:54.137Z",
+  "finishedAt": "2026-09-25T07:50:34.229Z",
+  "requests": 45,
+  "decodedBytes": 8013214,
+  "retries": 0,
+  "limits": {
+    "requests": 80,
+    "decodedBytes": 41943040,
+    "requestTimeoutMs": 20000,
+    "wallTimeMs": 900000,
+    "spacingMs": 2000
+  },
+  "pages": [
+    {
+      "url": "https://kazan-kremlin.ru/robots.txt",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 70,
+      "contentHash": "6d237e5bab9f55ab7e2de2635e5952f15862c3484abf2f5c09da0dc173f31dff",
+      "fetchedAt": "2026-09-25T07:39:54.729Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://m-i-e.ru/robots.txt",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 724,
+      "contentHash": "8aa667553f404442f687a546d997a73aae1b647c208c6e7379ad95214f978893",
+      "fetchedAt": "2026-09-25T07:39:55.123Z",
+      "httpLastModified": "Thursday, 24-Sep-2026 17:46:28 GMT"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 1074551,
+      "contentHash": "7e63a37b26391ed3ae8cd0acd72a5305d7ec489cdf9476ee27876c7e9d6d3555",
+      "fetchedAt": "2026-09-25T07:40:25.225Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/",
+      "status": 308,
+      "outcome": "308",
+      "decodedBytes": 0,
+      "contentHash": null,
+      "fetchedAt": null,
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 219015,
+      "contentHash": "ccdfafa69fb25922375c42055bdd32be483000bfe91ad45e62d85f3ebd581da6",
+      "fetchedAt": "2026-09-25T07:40:29.030Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/prices-and-benefits",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 562403,
+      "contentHash": "49776a48e4bc6c5a206ca80adc82b200cec65c900abb6004d458abc7f2520eda",
+      "fetchedAt": "2026-09-25T07:40:31.025Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://m-i-e.ru/",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 218355,
+      "contentHash": "1c9f56c2a6c8fcd96febcf57fe2d9f544a17e075bd61a697905900a8e9100400",
+      "fetchedAt": "2026-09-25T07:40:31.205Z",
+      "httpLastModified": "Thu, 24 Sep 2026 04:33:56 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/stone_city",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 112688,
+      "contentHash": "5556cd3b922b9b2984c1bf2cab854603f2e335c7b20bd23ff9c65366f5cd8de3",
+      "fetchedAt": "2026-09-25T07:40:33.228Z",
+      "httpLastModified": "Tue, 18 Aug 2026 16:09:21 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/suitcase_mood",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 112173,
+      "contentHash": "8607b057168600efe177e2f1bc4f045d01352172be9075a69eea100e3d98d35c",
+      "fetchedAt": "2026-09-25T07:40:35.137Z",
+      "httpLastModified": "Thu, 27 Aug 2026 09:23:09 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/way_to_the_dream",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 115471,
+      "contentHash": "182d511925dd5ed97deec161fdf5df35057c960d7f5377e593bd416de057d329",
+      "fetchedAt": "2026-09-25T07:40:37.156Z",
+      "httpLastModified": "Thu, 24 Sep 2026 11:37:19 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/mie-filial",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 109098,
+      "contentHash": "421690e66835ac68f8d034c2586604c7d30d442eff87c18e2ebee333495ecd09",
+      "fetchedAt": "2026-09-25T07:40:39.141Z",
+      "httpLastModified": "Thu, 10 Sep 2026 04:26:20 GMT"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 99767,
+      "contentHash": "9dc6666626bcbc785cb8d75a27ac376f380d6b042f6ff8f86bb14d9a4ab33177",
+      "fetchedAt": "2026-09-25T07:41:20.415Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 98808,
+      "contentHash": "6d566d204a314a72149c56c848abbbc4f1af88b0a2a08c8ce7a718799c1c9cad",
+      "fetchedAt": "2026-09-25T07:41:22.229Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/museums/vystavochnye-zaly-prisutstvennyh-mest",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 583408,
+      "contentHash": "6862b4ee9bd433edf7099d4b382176b0297b93534c988bf6bb0fe5e42ea511f4",
+      "fetchedAt": "2026-09-25T07:41:24.637Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/pravila-poseshheniya",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 183057,
+      "contentHash": "6a394128a52177167b54594c585de8a4bfa40cd683b627bfc2adf686fb0e5b3d",
+      "fetchedAt": "2026-09-25T07:41:26.254Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/policy",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 105117,
+      "contentHash": "8e6040ebd2ad8d48c63b68bbc1801b0b5804fbb436ad5c05a4c52b02a3202386",
+      "fetchedAt": "2026-09-25T07:41:28.253Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://m-i-e.ru/exhibitions",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 198407,
+      "contentHash": "1cf943044240a05cfc81200bdd7ad28515ff6c34420fcaa979d3c7fbcf18e81d",
+      "fetchedAt": "2026-09-25T07:41:28.508Z",
+      "httpLastModified": "Thu, 10 Sep 2026 04:27:28 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/bileti",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 136532,
+      "contentHash": "c55a14d7f5afa45ae31f3c59833aaad446979953ac71e0175e376ca24975ac5f",
+      "fetchedAt": "2026-09-25T07:41:30.311Z",
+      "httpLastModified": "Thu, 24 Sep 2026 12:07:38 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/privacy",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 122161,
+      "contentHash": "5ff2ef4fcdd13aafedf26bcd5af2cf46ff5e90079083052c03daab2ca90800ce",
+      "fetchedAt": "2026-09-25T07:41:32.334Z",
+      "httpLastModified": "Mon, 02 Mar 2026 10:23:33 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/azins_magic_of_name",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 117041,
+      "contentHash": "fea99b40133deb13b79038c2043d2d5bc4ad0b70f82c18b2f0d4a2488f29cd16",
+      "fetchedAt": "2026-09-25T07:42:30.371Z",
+      "httpLastModified": "Wed, 15 Jul 2026 13:32:12 GMT"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/sitemap.xml",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 333211,
+      "contentHash": "2e7cbb13338766708556c9f729d2ad7523bc4726af8abdb37e82913c5588996a",
+      "fetchedAt": "2026-09-25T07:42:30.629Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/rozhdenie-sveta",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 120294,
+      "contentHash": "654890f5178a9722a79fc6087545e335f8708d3c494dbab0ed5b50290fdbf88e",
+      "fetchedAt": "2026-09-25T07:45:32.663Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/lapy-na-holste-istorii-sobak-v-iskusstve",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 139028,
+      "contentHash": "96f54d203c007240b1e595db58c668f177fd7f0476dc049560945d797da3aa4d",
+      "fetchedAt": "2026-09-25T07:45:34.480Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/gubernatorskij-dvorecz-175-let-v-czentre-istoricheskih-sobytij",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 130981,
+      "contentHash": "4425274f28d5cb158f9c41e9c759a978453f6c60eb4d37b0d98a3b0dd48bfc22",
+      "fetchedAt": "2026-09-25T07:45:36.508Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/gelij-korzhev-svet-i-ten",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 129832,
+      "contentHash": "20e60832754127bff65d9a211da0fbce8693cd6cf23a7930d50650698e28ad70",
+      "fetchedAt": "2026-09-25T07:45:38.482Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/art-prostranstvo-kommunalka",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 123798,
+      "contentHash": "c2e2f4d3939b44d0ef5e70dfd39aea316ec5ba001d258460f9d3ac4f40be9d1c",
+      "fetchedAt": "2026-09-25T07:45:40.514Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-vyshivka-tamburnym-shvom",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 104280,
+      "contentHash": "8b35de0ca532fdfbe579531868f93245c04af1976635c862afec8ac4d7491b14",
+      "fetchedAt": "2026-09-25T07:45:42.512Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-zhivaya-bumaga",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 104512,
+      "contentHash": "a7eb491fe605178446d083684de246c0c53595b4afaa1dd4719f6cd9c60126e0",
+      "fetchedAt": "2026-09-25T07:45:44.527Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/museums/muzej-istorii-blagoveshhenskogo-sobora",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 231855,
+      "contentHash": "6efd03633ba4665af4be62f4c1d8e910330997c93dadef108a5fbc787234b0e0",
+      "fetchedAt": "2026-09-25T07:45:46.580Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/museums/czentr-ermitazh-kazan",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 283714,
+      "contentHash": "7e7beea5bd0935ea6853d5037fe63eb8bc5eac07662c036bbed60e633e736645",
+      "fetchedAt": "2026-09-25T07:45:48.576Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/museums/vystavochnyj-zal-manezh",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 203943,
+      "contentHash": "14a65e176563a4a56c9fa9637b08fcbd5e27fd9661fcf5956c7f05dce8961ae5",
+      "fetchedAt": "2026-09-25T07:45:50.594Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://m-i-e.ru/ekb_fastfood",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 111366,
+      "contentHash": "ad42db9aa335b3a2e063ad2422b7a686b0f0feba9810eb0b21d0227dd52dc12b",
+      "fetchedAt": "2026-09-25T07:45:50.867Z",
+      "httpLastModified": "Fri, 28 Aug 2026 18:18:44 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/palace__coup",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 109707,
+      "contentHash": "e22077fdee7a9f97e1e44e28e0fd64189ea2bd1a945ab04773e10f0a92f4d2a7",
+      "fetchedAt": "2026-09-25T07:45:52.672Z",
+      "httpLastModified": "Thu, 03 Sep 2026 05:06:49 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/creative_industry",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 110070,
+      "contentHash": "4ca1a9223d7c1c210fce039e5a63499ed1c593f65f4c19e44db4e1f978d1ffa0",
+      "fetchedAt": "2026-09-25T07:45:54.760Z",
+      "httpLastModified": "Mon, 24 Aug 2026 11:17:52 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/casing_of_rock",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 112145,
+      "contentHash": "44b52c0219154661b277f1cc9a22a9be5c5ce65ef02be23d7ea2486c11d624d0",
+      "fetchedAt": "2026-09-25T07:45:56.757Z",
+      "httpLastModified": "Wed, 02 Sep 2026 05:29:20 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/electronic_mage",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 119245,
+      "contentHash": "0144d7916943c56f066382b9a24cb1e00ef444493917efdb4d042ad37978ee88",
+      "fetchedAt": "2026-09-25T07:45:58.777Z",
+      "httpLastModified": "Thu, 24 Sep 2026 06:10:14 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/venya_zhiv",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 105697,
+      "contentHash": "72316cfc230a6001923e7764d961ef6b67fcd5958ba360cf0fec0d2b2cec6dca",
+      "fetchedAt": "2026-09-25T07:46:00.682Z",
+      "httpLastModified": "Thu, 27 Aug 2026 04:29:52 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/uktus_arheo",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 107510,
+      "contentHash": "1575154f2cc38cab89bbbbdb4dd3827806150e28628e3e57c95c6a7150d24c55",
+      "fetchedAt": "2026-09-25T07:46:03.582Z",
+      "httpLastModified": "Thu, 10 Sep 2026 04:22:18 GMT"
+    },
+    {
+      "url": "https://m-i-e.ru/ot-zavoda-k-gorodu",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 122828,
+      "contentHash": "b8e8446bbddfa7327220badfe5ad74a3b49e044fa6fa2c6122a4b4067e5f49a2",
+      "fetchedAt": "2026-09-25T07:46:04.710Z",
+      "httpLastModified": "Thu, 14 May 2026 06:30:49 GMT"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/kak-dobratsya",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 96984,
+      "contentHash": "d1ce04ce698d8d28a70704edd48ca87cca04d5ed0630140fb105b145002a3294",
+      "fetchedAt": "2026-09-25T07:50:24.372Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/kulturnyj-kod-kazani-duhovnoe-nasledie-i-tradiczii",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 384667,
+      "contentHash": "b2f95c82a6bd603ef992f61a9646e5ee2915a4829366291568bad8728c541208",
+      "fetchedAt": "2026-09-25T07:50:26.235Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-napishi-svoe-imya-arabskoj-vyazyu",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 104407,
+      "contentHash": "7ad842f40223b284ed74448bcc187e71daa546c718d7d9ceba695aac5e563463",
+      "fetchedAt": "2026-09-25T07:50:28.181Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-bogatoe-srednevekove",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 105060,
+      "contentHash": "5541b22f9828ffedf311d30d38d3eba7cb0e04d0545d3a7d6309a4c761e007b2",
+      "fetchedAt": "2026-09-25T07:50:30.184Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-tatarskie-ukrasheniya",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 104654,
+      "contentHash": "bbb8af1d415dca535c2d3bc326c6484afc339ad32b8a49b0f18d984aff883caa",
+      "fetchedAt": "2026-09-25T07:50:32.180Z",
+      "httpLastModified": null
+    },
+    {
+      "url": "https://kazan-kremlin.ru/news/meropriyatiya-kazanskogo-kremlya-21-27-sentyabrya",
+      "status": 200,
+      "outcome": "OK",
+      "decodedBytes": 244580,
+      "contentHash": "9ce885d0ccb6c3c5bebc735a71db978f882f225eda5ac01c0d130787add1ef85",
+      "fetchedAt": "2026-09-25T07:50:34.229Z",
+      "httpLastModified": null
+    }
+  ]
+}

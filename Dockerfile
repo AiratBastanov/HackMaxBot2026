@@ -6,6 +6,7 @@ COPY tsconfig.json ./
 COPY src ./src
 COPY tests ./tests
 COPY scripts ./scripts
+COPY catalog/real ./catalog/real
 RUN npm run typecheck && npm run build && npm test && npm run test:flow && npm run test:data
 RUN node --input-type=module -e "import {stage4Fixture} from './dist/src/culture/stage4-fixture.js'; import {writeFileSync} from 'node:fs'; writeFileSync('/app/synthetic-catalog.json',JSON.stringify(stage4Fixture()));"
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
@@ -24,6 +25,7 @@ COPY --from=build /app/dist/src ./dist/src
 COPY --from=build /app/dist/scripts ./dist/scripts
 COPY --from=build /app/dist/tests/fixtures.js ./dist/tests/fixtures.js
 COPY --from=build /app/synthetic-catalog.json ./synthetic-catalog.json
+COPY --from=build /app/catalog/real ./catalog/real
 USER node
 EXPOSE 3000
 HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \

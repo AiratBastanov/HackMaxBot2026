@@ -133,7 +133,8 @@ test('Test-only конфигурация без public origin/secret, с dedicat
   const options={testerPath:resolve(workspace(t),'testers.json'),access:()=>({token:'synthetic-contract-only',apiBaseUrl:'https://platform-api2.max.ru',requestTimeoutMs:5000,expectedBotId:BOT})};
   const c=loadPollingConfig(env,false,options);assert.equal(c.webhookSecret,undefined);assert.equal(c.publicBaseUrl,undefined);assert(c.databasePath.endsWith(`${BOT}.sqlite`));
   assert.throws(()=>createApp(c),/WEBHOOK_INGRESS/);assert.throws(()=>loadConfig(env),/live:poll/);
-  for(const patch of [{APP_MODE:'local'},{MAX_EXPECTED_BOT_ID:''},{FLOW_DATA_MODE:'real'},{PUBLIC_DISPLAY:'CLEARED'},{PUBLIC_BASE_URL:'https://example.org'},{MAX_WEBHOOK_SECRET:SECRET},{FLOW_TEST_CLOCK:'2030-01-01T00:00:00Z'},{DATABASE_PATH:'runtime/local.sqlite'},{PROBE_TESTER_IDS:''}]) assert.throws(()=>loadPollingConfig({...env,...patch},false,options));
+  assert.equal(loadPollingConfig({...env,FLOW_DATA_MODE:'real'},false,options).flowDataMode,'real'); // Сам снимок проверяется отдельным loadCurrentCatalog.
+  for(const patch of [{APP_MODE:'local'},{MAX_EXPECTED_BOT_ID:''},{FLOW_DATA_MODE:'unreviewed'},{PUBLIC_DISPLAY:'CLEARED'},{PUBLIC_BASE_URL:'https://example.org'},{MAX_WEBHOOK_SECRET:SECRET},{FLOW_TEST_CLOCK:'2030-01-01T00:00:00Z'},{DATABASE_PATH:'runtime/local.sqlite'},{PROBE_TESTER_IDS:''}]) assert.throws(()=>loadPollingConfig({...env,...patch},false,options));
   assert.throws(()=>loadConfig({APP_MODE:'live',DATABASE_PATH:':memory:',MAX_WEBHOOK_SECRET:SECRET,PROBE_TESTER_IDS:ACTOR,MAX_EXPECTED_BOT_ID:BOT,MAX_BOT_TOKEN:'synthetic-contract-only',LIVE_SCOPE_CONFIRMED:'true'}),/PUBLIC_BASE_URL/);
   assert.throws(()=>replacementAccess({MAX_BOT_TOKEN_FILE:'secrets/max_bot_token'}),/ROTATION_PENDING/);
   assert.throws(()=>replacementAccess({MAX_CREDENTIAL_ROTATION_CONFIRMED:'true',MAX_BOT_TOKEN_FILE:'unrelated'}),/DESIGNATED/);

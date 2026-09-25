@@ -1,0 +1,63 @@
+{
+  "baseline": "a72b77aabdbf88da97fb154873e82115a2557865",
+  "sourceVersion": "d6541c08ef732fd3ec61bb2942b0e72568c5309529367d4ac2144b254145f684",
+  "at": "2026-09-25T13:15:09.273Z",
+  "scope": "LOCAL_INTEGRATION_SMOKE",
+  "container": "maxbot-r19-smoke-1790342109248",
+  "network": "none",
+  "ports": [],
+  "caddy": "NOT_STARTED",
+  "current": "536829346bd0a60d3b35.json",
+  "results": {
+    "compose": "PASS",
+    "build": "PASS",
+    "first": {
+      "result": "LOCAL_INTEGRATION_SMOKE_PASS",
+      "phase": "save-before-activation",
+      "at": "2026-09-25T13:16:06.794Z",
+      "catalogVersion": "91c27c96b91468a2acfa4c119aa852460ff27474524faafae77e4774f8524aa6",
+      "nonRoot": true,
+      "readOnlyMounts": true,
+      "network": "NONE; simulated MAX on loopback",
+      "realIngress": "NOT_VERIFIED",
+      "subscriptionMutations": 0,
+      "processes": "STOPPED",
+      "operations": {
+        "GET /me": 1,
+        "POST /messages": 1,
+        "POST /answers": 12,
+        "PUT /messages": 12
+      }
+    },
+    "second": {
+      "result": "LOCAL_INTEGRATION_SMOKE_PASS",
+      "phase": "restart-current-and-failures",
+      "at": "2026-09-25T13:17:09.785Z",
+      "catalogVersion": "c33b315f485e3f9e6bf163633274fd563b26f5f29eae22a1ab832dc588dab1b2",
+      "nonRoot": true,
+      "readOnlyMounts": true,
+      "network": "NONE; simulated MAX on loopback",
+      "realIngress": "NOT_VERIFIED",
+      "subscriptionMutations": 0,
+      "processes": "STOPPED",
+      "operations": {
+        "GET /me": 5,
+        "POST /messages": 7,
+        "DELETE /messages": 7,
+        "POST /answers": 12,
+        "PUT /messages": 12
+      }
+    },
+    "catalogFiles": [
+      {
+        "path": "536829346bd0a60d3b35.json",
+        "sha256": "977236a582e8267df0dce7bbffe789f0db965685bc8810553bc0133a32fe92b3"
+      },
+      {
+        "path": "536829346bd0a60d3b35.review.json",
+        "sha256": "7dd6f02add4d43e7a51d662b45ecf1ddd65e17e9d81eae25543b4032744dae21"
+      }
+    ]
+  },
+  "stopped": true
+}

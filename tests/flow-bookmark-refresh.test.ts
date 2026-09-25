@@ -69,6 +69,8 @@ test('R18 HTTP application: save -> replacement/reload -> current refs -> cancel
     writeFileSync(path,JSON.stringify({snapshots:replacement.values}));writeFileSync(reviewPath,JSON.stringify(replacement.review));
     d.config.reviewPath=reviewPath;await d.reloadCatalog(path);await d.say('/saved');await d.click('Открыть 1');
     assert(d.screen()!.body.text.includes('Сохранённый выбор · текущие условия'));assert(d.screen()!.body.text.includes('Изменений тарифа, времени и допуска не выявлено'));
+    assert.equal(d.screen()!.body.text.match(/Москва, UTC\+3/g)?.length,1);
+    assert.match(d.screen()!.body.text,/Выбрано:.*12:00–18:00/);
     assert(deliveryAllowed(d.screen()!,d.config,d.catalog,d.now));assert.notEqual(d.screen()!.displayRefs![0]!.snapshotHash,JSON.parse(before.data).displayRef.snapshotHash);
     assert.deepEqual(d.runtime.store.db.prepare('SELECT * FROM bookmarks').get(),before);
     await d.click('Условия посещения');await d.click('К карточке');await d.click('Удалить закладку');

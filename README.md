@@ -2,7 +2,7 @@
 
 Пользователь выбрал реальные события. Бот подбирает культурное посещение в Казани или Екатеринбурге по дате, времени, составу и общему бюджету, показывает условия и источник, сохраняет личную закладку. Synthetic используется в тестах.
 
-**MAXBOT_REAL_REFRESH_AND_CLIENT_DELTA_PARTIAL · 25.09.2026.** [Квитанция 18](docs/pivot/18_REAL_REFRESH_AND_CLIENT_DELTA.md): 26 событий, 32 посещения (14 периодов выставок и 18 сеансов), два города. Исправлена подмена индивидуальной цены групповой. Настоящий штатный refresh с сайтов Казанского Кремля и Музея истории Екатеринбурга выполнен, снимок активирован; закладка открывает текущие проверенные условия после смены каталога. Локальный путь и Docker PASS, MAX симулирован. Новые mobile/web **NOT_RUN**, **REAL_APPLICATION_SMOKE=REQUIRED**: тестировщик пока недоступен. У live refresh один зафиксированный промежуток 1999 мс вместо 2000; ожидание исправлено и проверено локально. Публичного размещения нет.
+**MAXBOT_REAL_MAX_AND_WEBHOOK_PREPARATION_PARTIAL · 25.09.2026.** [Квитанция 19](docs/pivot/19_REAL_MAX_AND_WEBHOOK_PREPARATION.md): реальная карточка и edit наблюдены в MAX mobile/web; точный остаток U16 сохранён. Существующий Compose переведён в live/webhook/real и прошёл закрытый контейнерный путь с simulated MAX, persistent SQLite/journal, атомарной сменой pointer и restart. **REAL_WEBHOOK_PROFILE_LOCAL=PASS; REAL_APPLICATION_SMOKE=REQUIRED; DEPLOYMENT=NOT_RUN.** Каталог R18 сохранён: 26 событий / 32 посещения, два города. Functional refresh и тарифный PASS перенесены; исторические 1999 мс остаются отклонением, исправление темпа имеет только локальное evidence.
 
 ## Реальные данные и ограничения
 
@@ -52,7 +52,7 @@
 .\.tools\node-v22.23.2\node.exe --env-file=.env.polling dist/scripts/real-preflight.js
 ```
 
-Только после READY одного допущенного A или B и при свежем review — одно разрешённое окно:
+Окно 19 завершено; нового READY/разрешения на второе окно нет. Ниже шаблон для отдельно разрешённой будущей кампании, после проверки свежести и готовности допущенного тестировщика:
 
 ```powershell
 $env:FLOW_DATA_MODE='real'
@@ -60,7 +60,7 @@ $env:DATA_SNAPSHOT_PATH=(Resolve-Path 'catalog/real/active.json').Path
 .\.tools\node-v22.23.2\node.exe --env-file=.env.polling dist/scripts/live-poll.js start --minutes 30
 ```
 
-Сеанс ограничен 30 минутами / 120 polling requests; последние пять минут — завершение и остановка. `resume` внутри того же окна не продлевает срок. Единственный consumer, сохранённые DB/cursor и отсутствие webhook-подписки проверяются прежним runner. `FLOW_TEST_CLOCK` в live запрещён. Людям давать по одному действию из [текущего ledger U16-A/B/C](docs/EXPLORATORY_MAX_RUNBOOK.md#c-текущий-assertion-ledger-и-ограниченная-delta), совмещая UI delta с реальной карточкой/источником/save/reopen. Перед стартом выбрать актуальные примеры локальным запросом; записывать аккаунт и клиент отдельно. Исторические PASS и A/B isolation не переоткрываются. В 18 пользователь сообщил, что тестировщик пока недоступен; polling не запускался, consumer-lock свободен.
+Сеанс ограничен 30 минутами / 120 polling requests; последние пять минут — завершение и остановка. `resume` не продлевает срок. Один consumer, сохранённые DB/cursor и отсутствие webhook проверяются прежним runner; FLOW_TEST_CLOCK запрещён. Точный остаток — [U16-A/B/C](docs/EXPLORATORY_MAX_RUNBOOK.md#c-текущий-assertion-ledger-и-ограниченная-delta), без повторов historical PASS/A/B isolation. В 19 один A прошёл часть mobile/web пути; после 65 запросов runner остановлен, PID отсутствует, lock свободен. Замечания к заметности сохранения и повтору зоны исправлены после окна и пока проверены только локально.
 
 ## Устройство, история и выпуск
 
@@ -68,4 +68,4 @@ $env:DATA_SNAPSHOT_PATH=(Resolve-Path 'catalog/real/active.json').Path
 
 [Продукт](docs/pivot/01_PRODUCT_DECISION.md), [пять этапов](docs/pivot/03_IMPLEMENTATION_PLAN.md), [готовность сдачи](docs/SUBMISSION_READINESS.md), [требования и источники](docs/00_REQUIREMENTS_AND_EVIDENCE.md), [notices](THIRD_PARTY_NOTICES.md), [recovery](docs/RECOVERY_RUNBOOK.md). История: [данные 06](docs/pivot/06_DATA_MODULE_RECEIPT.md), [локальный flow 08](docs/pivot/08_EXPLORATORY_BOT_RECEIPT.md), [MAX 11](docs/pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md), [клиенты 12](docs/pivot/12_REAL_CLIENT_SMOKE_COMPLETION.md), [решение 13](docs/pivot/13_RELEASE_DECISION_AND_REMAINING_SMOKE.md), [UX/city/party 16](docs/pivot/16_COMPACT_UX_CITY_AND_PARTY.md). Старые решения и manifests не переписываются.
 
-Публикация кода и минимальных фактов не является deployment. `deploy/compose.public.yaml` остаётся исторической подготовкой synthetic-конфигурации. Следующий выпуск требует отдельного согласованного host/оператора/периода/доступа проверяющих, свежего real review, наблюдений U16 mobile/web, финальных API/PDF и clean benchmark. Ключи Минкультуры/PRO отложены и для текущего пути не нужны. Secrets, actual env, raw payloads, частные наблюдения, tester data, DB и backups игнорируются.
+Публикация кода и минимальных фактов не является deployment. `deploy/compose.public.yaml` использует real webhook, отдельный `webhook-data`, read-only directory mount каталога и secrets; обычный startup не меняет подписки. Закрытая проверка: `node scripts/webhook-profile-check.mjs` (fake credentials, network none, без Caddy/портов; нужны ещё действующие reviews). [Операторские команды](docs/EXPLORATORY_MAX_RUNBOOK.md#b-одобренные-test-hostendpoint-и-регистрация). Следующий выпуск требует одобренных host/HTTPS hostname/оператора/периода/доступа проверяющих и ответственного за refresh, оставшихся U16, финальных API/PDF и clean benchmark. Имя провайдера допустимо; платный домен не предполагается. Ключи Минкультуры/PRO отложены. Secrets, actual env, raw payloads, tester data, DB и backups игнорируются.

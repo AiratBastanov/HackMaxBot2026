@@ -38,7 +38,7 @@ test('Backup → удаление закладки/данных → loss: ста
     let d:Awaited<ReturnType<typeof flowDriver>>,restored:Awaited<ReturnType<typeof flowDriver>>;
     const root=dir(t,async()=>{await restored?.close();await d?.close();}),source=resolve(root,'source.sqlite'),backup=resolve(root,'backup.sqlite'),target=resolve(root,'restored.sqlite');
     d=await flowDriver(source);await d.enter();await chooseDefaults(d);await d.click('Подробнее 1');await d.click('Сохранить');
-    const oldSave=d.payload('Сохранить');
+    const oldSave=d.payload('✅ Сохранено');
     d.runtime.store.enqueue('interrupted',ACTOR,null,'culture_screen',{method:'messages',recipient:ACTOR,body:{text:'старый личный экран'}},d.now,d.now+60000);
     d.runtime.store.db.prepare("UPDATE outbox SET status='SENDING' WHERE action_key='interrupted'").run();
     await backupDatabase(source,backup,identity);

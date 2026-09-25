@@ -1,6 +1,6 @@
 # Готовность комплекта сдачи
 
-**DRAFT / NOT_SUBMITTED · 25.09.2026. SUBMISSION_PACKAGE = DRAFT; RELEASE_DATA_DECISION = REAL_CATALOG / USER_SELECTED.** [Квитанция 18](pivot/18_REAL_REFRESH_AND_CLIENT_DELTA.md): рабочий штатный refresh, исправленный тариф и текущие условия прежней закладки. Общий результат PARTIAL: тестировщик пока недоступен; зафиксировано и исправлено отклонение HTTP-темпа на 1 мс. Это не полная продуктовая сертификация. [Требования](00_REQUIREMENTS_AND_EVIDENCE.md), ID и веса сохранены: 40% продукт / 60% техника. Клиентские факты — в едином [ledger](EXPLORATORY_MAX_RUNBOOK.md#c-текущий-assertion-ledger-и-ограниченная-delta); новые U16 mobile/web NOT_RUN.
+**DRAFT / NOT_SUBMITTED · 25.09.2026. SUBMISSION_PACKAGE = DRAFT; RELEASE_DATA_DECISION = REAL_CATALOG / USER_SELECTED.** [Квитанция 19](pivot/19_REAL_MAX_AND_WEBHOOK_PREPARATION.md): существующий Compose подготовлен для real webhook и проверен в закрытом контейнере; U16 mobile/web имеют новые частичные человеческие наблюдения. REAL_APPLICATION_SMOKE=REQUIRED, LOCAL_INTEGRATION_SMOKE=PASS; общего deployment/продуктового PASS нет. [Требования](00_REQUIREMENTS_AND_EVIDENCE.md), ID и веса сохранены: 40% продукт / 60% техника. Точные клиентские факты и пробелы — в едином [ledger](EXPLORATORY_MAX_RUNBOOK.md#c-текущий-assertion-ledger-и-ограниченная-delta).
 
 ## Продукт и реализованный путь
 
@@ -20,8 +20,8 @@
 | Доставка | ADMITTED_TESTERS_FACTS: проверяются source/hash/поля/атрибуция/срок на renderer, worker и transport, в том числе edit/saved/pending. Общий PUBLIC_DISPLAY=NOT_CLEARED; прочие источники не разрешены |
 | Обновление | OPERATOR_CLI: штатный живой цикл выполнен, 56 HTTP / 8,4 МБ, один темповый интервал 1999 мс исправлен локально; два robots-denied пути МИЕ пропущены. Review/activate/restart; по умолчанию 72 часа, чтение свежесть не продлевает. Следующий refresh до expiry; фонового процесса нет |
 | Закладки после refresh | Исходные факты, выбранная дата/сеанс, состав, бюджет и generation сохраняются. Текущие условия только при той же идентичности и действующем текущем review, с переоценкой и раскрытием изменений; иначе нейтральная запись и удаление |
-| Локальная проверка | 245/245 актуальных тестов, typecheck/build, HTTP→worker→SQLite→реальная карточка→save→замена Catalog/restart→та же закладка→cancel/delete и затронутый Docker runtime PASS; MAX симулирован |
-| Реальные клиенты | REAL_APPLICATION_SMOKE=REQUIRED; новые REAL_MAX_MOBILE/WEB=NOT_RUN. Исторические PASS остаются. Пользователь: «Пока недоступен»; polling не запускался |
+| Локальная проверка | R18: исторические 245/245. R19: 82 уникальных затронутых host tests, typecheck/build; штатный Docker build отдельно повторил 224 теста. Compose live/webhook/real, настоящий startup/HTTP/worker/SQLite/renderer/LiveMax с simulator, read-only directory pointer/restart, persistent volume и failures PASS. Это LOCAL_INTEGRATION_SMOKE |
+| Реальные клиенты | REAL_APPLICATION_SMOKE=REQUIRED; REAL_MAX_MOBILE/WEB=PARTIAL нового U16 scope. [Ответы A](evidence/real-webhook/human.md) отдельно от API ACK. Исторические PASS и A/B isolation сохранены |
 | Выпуск | DEPLOYMENT=NOT_RUN, DRAFT / NOT_SUBMITTED. Текущий снимок `536829346bd0a60d3b35` истекает 28.09 в 12:11 МСК; срок оценки требует операторского обновления и согласованного размещения |
 
 Команды, точные даты, новый снимок, карточки и измеренные примеры — [18](pivot/18_REAL_REFRESH_AND_CLIENT_DELTA.md); прежний узкий use basis — [17](pivot/17_REAL_CATALOG_AND_SOURCE_INTEGRATION.md). Показ минимальных фактов независимых учреждений не наследует ограничения KudaGo. Это внутреннее ограниченное решение проекта, не выданная учреждением лицензия и не юридическая сертификация. Карантин 58328 сохранён.
@@ -30,7 +30,7 @@
 
 Один экземпляр Node **22.23.2 / Fastify**, SQLite на постоянном диске, один consumer, HTTPS webhook. Это подготовка передачи, **PUBLIC_DEPLOYMENT=NOT_VERIFIED / NOT_DEPLOYED; WEBHOOK_INGRESS=NOT_VERIFIED**. Наличие `deploy/compose.public.yaml` и `deploy/Caddyfile` не означает развёрнутую службу.
 
-На 24.09.2026 официальные [GET /updates](https://dev.max.ru/docs-api/methods/GET/updates) разрешают polling для разработки/тестирования без webhook и требуют webhook для production; [POST /subscriptions](https://dev.max.ru/docs-api/methods/POST/subscriptions) требует HTTPS:443 с полной доверенной цепочкой и совпадением hostname с CN/SAN, без самоподписного сертификата; endpoint должен отвечать HTTP 200 не позднее 30 секунд. При активной подписке polling не работает. Приложение использует `X-Max-Bot-Api-Secret`; исходящие запросы — `platform-api2.max.ru` с сохранённым credential и проверенным process-scoped CA при необходимости. Проверка cutover включает быструю durable запись входа/ACK отдельно от последующей worker-обработки и чтения человеком; один health не доказывает доставку.
+На 25.09.2026 официальные [GET /updates](https://dev.max.ru/docs-api/methods/GET/updates) разрешают polling для разработки/тестирования без webhook и требуют webhook для production; [POST /subscriptions](https://dev.max.ru/docs-api/methods/POST/subscriptions) требует HTTPS:443 с полной доверенной цепочкой и совпадением hostname с CN/SAN, без самоподписного сертификата; endpoint должен отвечать HTTP 200 не позднее 30 секунд. При активной подписке polling не работает. Приложение использует `X-Max-Bot-Api-Secret`; исходящие запросы — `platform-api2.max.ru` с сохранённым credential и проверенным process-scoped CA при необходимости. Проверка cutover включает быструю durable запись входа/ACK отдельно от последующей worker-обработки и чтения человеком; один health не доказывает доставку.
 
 | Вход для передачи | Сейчас | Что предоставить/проверить до развёртывания |
 |---|---|---|
@@ -40,6 +40,8 @@
 | Начало / конец доступности | **UNKNOWN / UNKNOWN** | Дата, время и зона, требования на перезапуск/наблюдение и ответственный за завершение; они определяют необходимый срок обновления реальных данных |
 | Проверяющие | **UNKNOWN** | Согласованный ограниченный список/роли, собственные аккаунты MAX, порядок предварительного допуска и канал помощи. A/B уже допущены к тесту; это не готовая процедура для жюри |
 | Ответственный за refresh | **UNKNOWN** | Кто выполняет collect → проверку источников/очереди/PREPARED_REAL → activate → контролируемый restart до истечения review весь период оценки |
+
+Пользователь подтвердил эти UNKNOWN 25.09.2026: размещение, стоимость, доступ и ответственность будут согласованы отдельно. Существующий допуск A/B сохраняется; это сообщение не означает новый tester READY. Повторно запрашивать недостающие входы в рамках локальной подготовки не требуется.
 
 Бесплатный тариф без проверки persistent disk, sleeping, TLS, сети и нужного срока не рекомендуется. Существующий Compose использует Caddy с портами 80/443 и собственным сертификатом: host должен поддержать именно этот вариант. Если approved provider hostname имеет управляемый TLS/ingress, потребуется ограниченная адаптация proxy/Compose под его контракт с закрытым upstream Fastify; пригодность пока не установлена. DNS/firewall, ресурсы и сертификаты этой задачей не создаются. Реквизиты/политика пользователя, хранение и удаление, backups/RPO/RTO остаются входами оператора, а не обещанными свойствами host.
 
@@ -53,7 +55,7 @@
 4. Один раз зарегистрировать назначенный `/webhooks/max` через имеющийся `live-admin subscribe`, только при отсутствии подписки. При неоднозначном POST сохранить journal и выполнить GET reconciliation; не повторять POST и не менять путь журнала для обхода. Существующий правильный endpoint сверить, не регистрировать заново.
 5. Наблюдать новое настоящее входящее действие допущенного проверяющего, durable обработку и ответ; выполнить mobile/web путь выбранного release mode. Проверить доступность и сохранение состояния после restart. Пропусков при переключении не исключаем: lossless cutover не установлен, полагаться на перенос marker нельзя.
 
-Команды и детали исходного test Compose находятся в [runbook, B](EXPLORATORY_MAX_RUNBOOK.md#b-одобренные-test-hostendpoint-и-регистрация); это будущая процедура; текущий real review предназначен для допущенных тестировщиков, публичный Compose сам в real mode не переведён.
+Команды выбранного real Compose находятся в [runbook, B](EXPLORATORY_MAX_RUNBOOK.md#b-одобренные-test-hostendpoint-и-регистрация). `REAL_WEBHOOK_PROFILE_LOCAL=PASS` подтверждён закрытым harness без Caddy, сети MAX и портов; PUBLIC_WEBHOOK_INGRESS=NOT_VERIFIED, DEPLOYMENT=NOT_RUN. Directory mount содержит pointer/версии/reviews; операторский activate требует контролируемого restart. Preflight отклоняет неподходящий review; expiry не удаляет личные закладки и не разрешает показ старых фактов. До **28.09.2026 12:11 МСК** назначенный оператор данных должен выполнить необходимый refresh/review; конкретный ответственный пока UNKNOWN. Текущий review распространяется только на согласившихся допущенных тестировщиков.
 
 ## Инвентаризация
 
@@ -62,10 +64,10 @@
 | Требования | Состояние | Артефакт / что осталось |
 |---|---|---|
 | A01, R01, REC02–03 | Черновик | Продукт и demo-сценарий ниже; гипотеза пользы и спрос ещё не проверены. AI не используется |
-| A02, R02 | Локально готово; реальный MAX PARTIAL | [245/245 текущих тестов](evidence/real-refresh/validation.json), [смена снимка и закладка через приложение](evidence/real-refresh/bookmark-walkthrough.json). Исторические человеческие PASS сохранены в ledger. Только U16-A/B/C на реальных карточках ещё NOT_RUN; REAL_APPLICATION_SMOKE=REQUIRED |
+| A02, R02 | Локально готово; реальный MAX PARTIAL | R18 [245/245](evidence/real-refresh/validation.json) перенесены; R19 [real webhook container](evidence/real-webhook/container.json) и [человеческие наблюдения](evidence/real-webhook/human.md) раздельны. Остаток только U16-A/B/C; REAL_APPLICATION_SMOKE=REQUIRED |
 | R03, C06 | Готово / неприменимо | Bot-only; мини-приложения и его initData нет |
 | R04–05, C01 | Частично | /me и subscriptions проверены, pin/ссылка бота получены. Test polling работает без host; production host/HTTPS endpoint и период доступности не подтверждены |
-| R06–07 | Черновик | [README](../README.md), reviewed commit и отдельный sanitized archive checkpoint 18; [проверенная ссылка](https://max.ru/t432_hakaton_max_bot). Test runner остановлен; это не постоянно работающий deployment. Финальную фиксацию связать с реально работающей версией и материалами |
+| R06–07 | Черновик | [README](../README.md), reviewed commit и отдельный sanitized delta checkpoint 19 поверх R18; [проверенная ссылка](https://max.ru/t432_hakaton_max_bot). Test runner остановлен; это не постоянно работающий deployment. Финальную фиксацию связать с реально работающей версией и материалами |
 | R08–10 | Локально готово | [lockfile](../package-lock.json), [Node](../.node-version), [Dockerfile](../Dockerfile), [Compose](../compose.yaml), [synthetic Compose](../compose.flow-test.yaml), [public Compose](../deploy/compose.public.yaml), [Caddy](../deploy/Caddyfile), [.dockerignore](../.dockerignore), [.env.example](../.env.example). Запуск и внешние предпосылки — README |
 | R11 | Черновик | Исторический rebuild/smoke из 10 сохранён; финальный замер чистой submission-сборки ≤300 с без первоначальной загрузки базовых образов ещё нужен |
 | A03, R12 | Черновик | Сценарий и содержание слайдов ниже. Итоговый PDF и закрытая служебная часть ещё не подготовлены |

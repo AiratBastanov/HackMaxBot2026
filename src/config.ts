@@ -59,11 +59,11 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
       throw new Error('Live требует MAX_EXPECTED_BOT_ID, PUBLIC_BASE_URL и подтверждённый LIVE_SCOPE_CONFIRMED');
     }
     const u = new URL(v.PUBLIC_BASE_URL);
-    if (u.protocol !== 'https:' || u.port || u.username || u.password || u.search || u.hash || u.pathname !== '/' || /^(localhost|127\.|\[::1\])/.test(u.hostname) || u.hostname.endsWith('.invalid')) {
+    if (u.protocol !== 'https:' || u.port || u.username || u.password || u.search || u.hash || u.pathname !== '/' || /^(localhost|127\.|\[::1\])/.test(u.hostname) || u.hostname.endsWith('.invalid') || /placeholder/i.test(u.hostname)) {
       throw new Error('Конфигурация: PUBLIC_BASE_URL должен быть согласованным HTTPS origin на порту 443');
     }
   }
-  return { mode: v.APP_MODE, host: v.HOST, port: v.PORT, databasePath: v.DATABASE_PATH,
+  return { ingress:'webhook', mode: v.APP_MODE, host: v.HOST, port: v.PORT, databasePath: v.DATABASE_PATH,
     webhookSecret: v.MAX_WEBHOOK_SECRET, apiBaseUrl: v.MAX_API_BASE_URL, token: v.MAX_BOT_TOKEN,
     botId: v.MAX_EXPECTED_BOT_ID ?? '777', publicBaseUrl: v.PUBLIC_BASE_URL?.replace(/\/$/, ''),
     testers: new Set(testerIds), probeTtlMs: v.PROBE_TTL_SECONDS * 1000, requestTimeoutMs: v.MAX_REQUEST_TIMEOUT_MS,

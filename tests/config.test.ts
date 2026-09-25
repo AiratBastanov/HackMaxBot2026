@@ -18,7 +18,9 @@ for (const [name, patch] of Object.entries({
 test('Live требует полную конфигурацию и подтверждение области теста', () => {
   const v = { ...local, APP_MODE: 'live', MAX_BOT_TOKEN: 'synthetic-contract-token', MAX_EXPECTED_BOT_ID: '777', PUBLIC_BASE_URL: 'https://probe.example.org', LIVE_SCOPE_CONFIRMED: 'true' };
   assert.equal(loadConfig(v).mode, 'live');
-  for (const url of ['http://probe.example.org', 'https://probe.example.org:8443', 'https://x:y@probe.example.org', 'https://probe.example.org/path', 'https://localhost']) assert.throws(() => loadConfig({ ...v, PUBLIC_BASE_URL: url }));
+  for (const url of [undefined,'http://probe.example.org', 'https://probe.example.org:8443', 'https://x:y@probe.example.org', 'https://probe.example.org/path', 'https://localhost','https://PLACEHOLDER_APPROVED_HOST']) assert.throws(() => loadConfig({ ...v, PUBLIC_BASE_URL: url }));
+  assert.equal(loadConfig({...v,APP_INGRESS:'webhook'}).ingress,'webhook');
+  assert.throws(()=>loadConfig({...v,APP_INGRESS:'test-polling'}));
 });
 test('Ошибка конфигурации не раскрывает секрет', () => {
   const secret = 'secret with private characters';

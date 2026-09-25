@@ -1,12 +1,12 @@
 # Культурный план: smoke MAX и текущий assertion-ledger
 
-**25.09.2026: MAXBOT_COMPACT_UX_LOCAL_PASS; REAL_APPLICATION_SMOKE=AUTOMATED_PASS.** Новый код описан в [16](pivot/16_COMPACT_UX_CITY_AND_PARTY.md). Реальные новые edit/delete, MOBILE B и WEB A — NOT_RUN: пользователь сообщил, что тестировщики недоступны. Окно не запускалось; admission/DB/cursor сохранены. Следующий абзац — исторический статус до 16.
+**25.09.2026: checkpoint 19, REAL_APPLICATION_SMOKE=REQUIRED.** Локальная симуляция — отдельный `LOCAL_INTEGRATION_SMOKE`; она никогда не HUMAN_PASS. Текущие реальные наблюдения U16 и локальный real-webhook профиль — [19](pivot/19_REAL_MAX_AND_WEBHOOK_PREPARATION.md). [16](pivot/16_COMPACT_UX_CITY_AND_PARTY.md) сохранена как историческое evidence. Следующий абзац — исторический статус до 16.
 
 **MAXBOT_REAL_CLIENT_SMOKE_PARTIAL; BOT_API_INSPECTION = PASS; REAL_APPLICATION_SMOKE = REQUIRED; REAL_MAX_MOBILE = PARTIAL; REAL_MAX_WEB = PARTIAL; CROSS_CLIENT_CONTINUITY = PASS в описанном объёме; CROSS_USER_ISOLATION = PASS для сохранности закладки B после стирания A; WEBHOOK_INGRESS = NOT_VERIFIED; PUBLIC_DEPLOYMENT = NOT_VERIFIED (не развёрнуто).** /me подтвердил «Хакатон МАХ 432», ID `426717762`, [@t432_hakaton_max_bot](https://max.ru/t432_hakaton_max_bot); subscriptions=0. Ротация и единственный consumer подтверждены оператором. Прежнее отсутствие токена относится к истории [10](pivot/10_USER_READINESS_AND_FIRST_MAX_CHECK.md); первое подключение — [11](pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md), базовые реальные наблюдения — [12](pivot/12_REAL_CLIENT_SMOKE_COMPLETION.md), историческое окно/решение выпуска — [13](pivot/13_RELEASE_DECISION_AND_REMAINING_SMOKE.md), исправление workflow — [14](pivot/14_DELTA_CLIENT_VERIFICATION.md); продолжение — [15](pivot/15_DELTA_CLIENT_CONTINUATION.md) и [ledger](#c-текущий-assertion-ledger-и-ограниченная-delta). PUBLIC_DISPLAY = NOT_CLEARED, DATA_SUITABILITY = EXPLORATORY_ONLY.
 
-Задача разрешает техническую настройку уже конкретно одобренного test environment, synthetic-каталог и consenting testers. Старый запрет phase 2/3 на deployment/subscription не запрещает этот узкий этап. Разрешение не определяет отсутствующего владельца host или бота. Новые hosting/accounts, DNS/firewall, desktop tunnels и публичный выпуск не входят в работу. Квитанция 17 дополнительно разрешает reviewed фактические карточки Кремля/МИЕ ранее допущенным согласившимся A/B; прочие provider-карточки запрещены.
+Текущая задача 19 разрешает локальную подготовку real webhook и одно ограниченное polling-окно с прежними consenting testers; это окно завершено. Реальный deployment, hosting/accounts, DNS/firewall, сертификаты, публичные порты и subscription mutations не разрешены. Квитанция 17 разрешает reviewed фактические карточки Кремля/МИЕ ранее допущенным согласившимся A/B; прочие provider-карточки запрещены. Разделы A/B описывают операторские команды, а не новое разрешение их выполнить.
 
-## Проверенные первичные контракты, 24.09.2026
+## Проверенные первичные контракты, 25.09.2026
 
 | Метод | Значение для этого сеанса |
 |---|---|
@@ -16,6 +16,8 @@
 | [POST /subscriptions](https://dev.max.ru/docs-api/methods/POST/subscriptions) | Webhook использует доверенный HTTPS на 443 и X-Max-Bot-Api-Secret. При активной подписке polling не работает; это основной production ingress |
 | [POST /messages](https://dev.max.ru/docs-api/methods/POST/messages) | Текст до 4000 символов, inline keyboard; предел два сообщения в секунду на диалог. Текущая очередь отправляет последовательно с интервалом |
 | [POST /answers](https://dev.max.ru/docs-api/methods/POST/answers) | Ответ на callback: сообщение и/или одноразовое уведомление; не более двух ответов в секунду в диалог. Успех транспорта не равен наблюдению человеком |
+| [PUT /messages](https://dev.max.ru/docs-api/methods/PUT/messages) | Свои сообщения с inline keyboard редактируются независимо от возраста; ≤2/с в диалог. Пустой attachments удаляет вложения, null не меняет их |
+| [DELETE /messages](https://dev.max.ru/docs-api/methods/DELETE/messages) | В диалоге только свои сообщения; возможность удаления проверяется отдельно. Refusal сохраняется, bounded retirement не требует расширения прав |
 
 Методы указывают `https://platform-api2.max.ru`, токен только в Authorization. Действующая конфигурация/адаптер уже используют этот контракт. Authenticated запросов без рабочего токена не выполняем; placeholders предназначены только для offline проверки конфигурации.
 
@@ -37,24 +39,25 @@
 
 Нужны конкретные существующие host/HTTPS origin, доступ оператора, закреплённый bot ID и ID согласившихся A/B. Один consumer; Long Polling одновременно с webhook не использовать. Существующие ambiguous/чужие subscriptions сохраняются. Пользовательская или G1 БД в тест не переносится.
 
-Public Compose/Caddy действительно находятся в Git. Compose использует отдельный client-test-data, /app/runtime/client-test.sqlite, HOST=0.0.0.0, secret mount и read-only mount нового synthetic snapshot. Caddy принимает только /healthz и /webhooks/max; HTTPS — 443. Наличие файла не разрешает занять 80/443 или выпустить сертификат на чужом host.
+Public Compose переведён в `APP_MODE=live`, `APP_INGRESS=webhook`, `FLOW_DATA_MODE=real`. Отдельный `webhook-data` хранит `/app/runtime/webhook.sqlite` и subscription journal; polling DB/cursor туда не копируются. Весь `REAL_CATALOG_DIR` монтируется read-only в `/app/catalog/real`: active.json и указанные им versioned snapshot/review разрешаются относительно этой директории. Каталог нельзя заменять одиночным bind указателя: после атомарной активации нужен контролируемый restart app. Caddy принимает только /healthz и /webhooks/max; HTTPS — 443. Наличие файлов не разрешает занять 80/443 или выпустить сертификат.
 
 Из корня на разрешённом host:
 
 ```sh
 # Оператор заполняет .env.live по .env.live.example; SOURCE_VERSION — reviewed SHA.
-node dist/scripts/prepare-flow-fixture.js --synthetic-current runtime/synthetic-client-test.json
 docker compose --env-file .env.live -f deploy/compose.public.yaml config --quiet
 docker compose --env-file .env.live -f deploy/compose.public.yaml build app
 docker compose --env-file .env.live -f deploy/compose.public.yaml run --rm --no-deps app node dist/scripts/live-preflight.js
 docker compose --env-file .env.live -f deploy/compose.public.yaml up -d --no-build --wait
 ```
 
-Генератор создаёт новые вымышленные события на фактическое время, существующий JSON не заменяет. Для повторного сеанса выбрать новый файл и обновить путь. FLOW_TEST_CLOCK в live запрещён. Нельзя менять даты реальных событий. Встроенный /app/synthetic-catalog.json с часами 2030 года для клиентов не используется.
+Перед preflight оператор проверяет действующий real review и нужные даты. При необходимости — существующий collect → review изменений/PREPARED_REAL → activate → restart; старые версии сохраняются. Нельзя продлевать review или менять реальные даты ради старта. FLOW_TEST_CLOCK в live запрещён; synthetic fallback отсутствует. Текущий review истекает 28.09.2026 в 12:11 МСК; до этой границы отвечает назначенный оператор данных (конкретный человек пока не указан).
 
-Пути: --env-file .env.live разрешается от cwd; относительные bind sources ../secrets и ../runtime/... — от deploy/compose.public.yaml; внутри app используются /run/secrets/... и /app/fixtures/.... .env.live участвует в interpolation, целиком в контейнер не импортируется. Host admin CLI использует свои ./secrets/... paths. Не выводить resolved live `compose config`; допустим --quiet.
+Пути: --env-file .env.live разрешается от cwd; относительные `../secrets` и `../catalog/real` — от deploy/compose.public.yaml; внутри app — `/run/secrets` и `/app/catalog/real`. .env.live участвует в interpolation, целиком не импортируется. `PUBLIC_BASE_URL` обязателен и должен совпадать по hostname с `PUBLIC_HOST`; фиктивный origin для live не подставляется. Host admin CLI использует собственные пути от cwd. Не выводить resolved live `compose config`; допустим --quiet.
 
-live-preflight.js без сети/БД проверяет live synthetic config, snapshot возрастом ≤1 часа, чтение secrets, writable runtime и bind address. Образ работает как node (UID 1000); оператор заранее обеспечивает чтение mounts этим пользователем, без запуска app от root и без системного изменения ACL. Optional NODE_EXTRA_CA_CERTS_CONTAINER=/run/secrets/verified-official-ca.pem передаёт проверенный CA только процессу. Startup выполняет GET /me до открытия БД/порта и никогда не регистрирует подписку.
+live-preflight.js без сети/открытия БД проверяет live webhook/real config, действующие source/hash reviews, чтение файлов secrets/CA, writable runtime/journal, non-root и bind address. Образ работает как node (UID 1000), read-only root; оператор обеспечивает чтение mounts без root/изменения ACL. Optional NODE_EXTRA_CA_CERTS_CONTAINER=/run/secrets/verified-official-ca.pem передаёт CA только процессу. Startup делает GET /me до БД/порта и не регистрирует, не удаляет и не заменяет подписки. Пропавший/повреждённый/истёкший каталог блокирует preflight публикации; уже запущенное приложение сохраняет нейтральную навигацию/недоступную закладку и её удаление, не выдаёт старые факты.
+
+Закрытая локальная проверка: `node scripts/webhook-profile-check.mjs`. Она создаёт только disposable `.env`, fake secrets, копии ранее рассмотренных версий и отдельный volume; применяет временный override к этому же app (`network_mode: none`, `restart: no`, без Caddy/портов). Настоящие index/HTTP/worker/SQLite/renderer/LiveMax проходят реальную карточку и restart того же контейнера после атомарной замены указателя. API fetch подменяется только явным test preload; обычный live API host/TLS не изменены. Это LOCAL_INTEGRATION_SMOKE, не проверка HTTPS MAX ingress. Harness требует ещё действующих исторического и текущего reviews; после expiry он честно отказывает, timestamps не обновляет.
 
 После проверки HTTPS /healthz, ownership и отсутствия другого consumer:
 
@@ -70,9 +73,9 @@ docker compose --env-file .env.live -f deploy/compose.public.yaml exec -T app no
 
 MAX допускает test-only Long Polling без webhook. Entry point **реализован**: `APP_MODE=live`, `APP_INGRESS=test-polling`, отдельный [.env.polling.example](../.env.polling.example). Сначала A, пустые subscriptions и отдельное подтверждение оператора об отсутствии других consumers; на этой машине они уже получены. Нельзя снимать существующий webhook ради polling или автоматически выбирать ingress.
 
-Runner повторно использует decoder/admission/worker/renderer/SQLite/MAX adapter. DB только `runtime/max-test/<bot-id>.sqlite`, identity test-polling отделена от local/webhook/recovery. Нужны свежий synthetic-current snapshot и allowlist. Для неизвестного ID оператор запускает `npm.cmd run live:poll -- pair`: A отправляет одноразовый код проверенному боту, затем оператор отдельно подтверждает его в локальном терминале. До этого ни flow, ни исходящих сообщений нет. ID сохраняется только в ignored runtime/max-test/testers.json; подробности/expiry — [11](pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md#исполняемый-путь). B необязателен для A, но нужен для F09.
+Runner повторно использует decoder/admission/worker/renderer/SQLite/MAX adapter. DB только `runtime/max-test/<bot-id>.sqlite`, identity test-polling отделена от local/webhook/recovery. Для выбранного REAL_CATALOG нужны действующие active snapshot/review и подходящие даты; credentials/CA/allowlist A/B уже сохранены. Повторный pairing, ротация и новый admission без реальной причины не выполняются. Историческая процедура первого подключения — [11](pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md#исполняемый-путь). Одного A достаточно для U16; прежний F09 A/B isolation остаётся PASS.
 
-Обычный сеанс: `npm.cmd run live:poll -- start`; Ctrl+C, затем `npm.cmd run live:poll -- resume` для F10 внутри той же кампании. Limit=10, timeout=30 с, отдельный deadline=35 с; POST остаётся 5 с. По умолчанию ≤15 минут/120 polling requests; по отдельной просьбе пользователя добавлен явный новый `start --minutes 30` с тем же пределом 120 запросов. `resume` не продлевает deadline. ≥1 с между запросами, Retry-After, максимум три повторные ошибки. Счётчик/deadline/cursor переживают restart; БД не чистить. Worker не блокируется ожидающим GET. ОС mutex на loopback запрещает второй cooperating consumer на workstation; удалённые/сторонние процессы не обнаруживает. Подписки повторно проверяются в каждом цикле.
+В 19 разрешённый `start --minutes 30` завершён после 65 запросов, без resume; команды в [README](../README.md) — шаблон для отдельно разрешённого следующего окна. Контролируемый restart внутри кампании нужен только для конкретного непроверенного интеграционного вопроса; F10 заново не назначается. Limit=10, timeout=30 с, отдельный deadline=35 с; POST остаётся 5 с. По умолчанию ≤15 минут/120 polling requests; явный `start --minutes 30` сохраняет предел 120 запросов. `resume` не продлевает deadline. ≥1 с между запросами, Retry-After, максимум три повторные ошибки. Счётчик/deadline/cursor переживают restart; БД не чистить. Worker не блокируется ожидающим GET. ОС mutex на loopback запрещает второй cooperating consumer на workstation; удалённые/сторонние процессы не обнаруживает. Подписки повторно проверяются в каждом цикле.
 
 Marker хранится lossless; весь batch валидируется до атомарного inbox/cursor commit. Ошибка не продвигает marker. Без marker/null API отдаёт только latest, не историю; bootstrap предшествует **READY_FOR_TESTER_ACTION**, после которого A отправляет /start. Непустой ответ без next marker или сброс cursor в null прекращает polling. Prepared/API/processed/send/human результаты различаются. Новый путь прошёл offline HTTP E2E и 21 focused тест; это не real-client PASS. WEBHOOK_INGRESS и PUBLIC_DEPLOYMENT остаются NOT_VERIFIED; production использует webhook.
 
@@ -166,13 +169,13 @@ Marker хранится lossless; весь batch валидируется до �
 
 | Новый assertion / совмещённое наблюдение | Scope | Automated evidence | Human статус / точный остаток |
 |---|---|---|---|
-| U16-A — город, состав, ввод и сводка | WEB A / MOBILE B | C16 city/party/timezone/reset + прежняя binding-validation; PASS | NOT_RUN обоих клиентов. City button и обычный city text; состав/возраст или неизвестный возраст; бюджет на всех; актуальные формы date/time/budget и видимый отказ/возврат совместить с созданием одного запроса. Принятие/смена параметра видно в новой сводке; отдельный opt-in после изменения. |
-| U16-B — компактная карточка и навигация на месте | WEB A / MOBILE B | C16 renderer, party evaluator, реальный HTTP/polling E2E; PASS | NOT_RUN обоих клиентов. В рамках того же запроса: сумма за всех, последний вход/регистрация, условия→карточка→результаты; один явный candidate с неизвестной детской ценой. Увидеть, что активное сообщение изменилось и клавиатура заменена. |
-| U16-C — два действия удаления/cancel и уборка UI | WEB A / MOBILE B, фактический private-chat API отдельно | C16 ownership/edit/failure/cleanup/generation/erasure; PASS | NOT_RUN обоих клиентов. В сохранённом: ровно «Да, удалить»/«Отмена», cancel возвращает исходный экран со свежими действиями. Одно обычное новое command-сообщение позволяет наблюдать replacement/cleanup только tracked UI бота. API acceptance/delete availability записать отдельно от human observation. Новый A/B erasure не нужен. |
+| U16-A — город, состав, ввод и сводка | Фактически A MOBILE / A WEB | C16 city/party/timezone/reset + прежняя binding-validation; PASS сохранён | PARTIAL по 19: MOBILE — city button, Казань, 26.09 / 12–18 Москва UTC+3, 1 взрослый и ≤500 ₽ на всех подтверждены. Остаток: plain-text city, семейный состав, актуальный ввод/изменение параметров с отказом/возвратом и новым opt-in; WEB-ввод не наблюдён. Общие серверные permutations не дублировать. |
+| U16-B — компактная карточка и навигация на месте | A MOBILE / A WEB | C16 renderer, party evaluator, HTTP/polling E2E; PASS сохранён | PARTIAL по 19: real strict и видимый edit MOBILE/WEB PASS, настоящий source-link MOBILE PASS. WEB условия→карточка подтверждены с замечанием «много текста». Остаток: family candidate после отдельного opt-in; условия/возврат MOBILE, «К результатам» из карточки, source-link WEB. Новое сокращение повторов зоны после окна локально PASS, HUMAN NOT_RUN. |
+| U16-C — два действия удаления/cancel и уборка UI | A WEB / A MOBILE; private-chat API отдельно | C16 ownership/edit/failure/cleanup/generation/erasure; PASS сохранён | PARTIAL по 19: WEB save/open, ровно две кнопки и cancel PASS; MOBILE новый saved list PASS. Остаток: мобильные open/confirm/cancel и видимое исчезновение/retirement конкретного tracked экрана. DELETE ровно одного owned mid принят MAX, человек подтвердил только новый список. Новый save indicator после замечания WEB локально PASS, HUMAN NOT_RUN. A/B erasure не нужен. |
 
 Основание SUPERSEDED: F02.W.back-date/time/budget → **U16-A.W**; F06.M.date/time/budget и F07.M.date/time/budget/rejection → **U16-A.M**; F03.W.detail-candidate и F04.W.full-back → **U16-B.W**; остаток F04.M.full-back → **U16-B.M**. U16-C — новый изменённый UI scope, не открытие прежнего серверного PASS.
 
-Единственное доступное будущее окно: **30 минут / 120 polling requests**, последние 5 минут — завершение и остановка. Сейчас бюджет не потрачен. Только после READY одного уже допущенного A или B, по одному действию с фактической текущей кнопкой/формой. Оба аккаунта одновременно не требуются; WEB A / MOBILE B в таблице — прежняя привязка, фактический аккаунт/клиент каждого нового наблюдения записать отдельно. Прежние admission/credentials/process CA и pinned Node сохраняются, pairing не повторяется. Для этой delta выбран **REAL_CATALOG**, свежий reviewed pointer и системные часы; synthetic fallback и правка DB/cursor/TTL не допускаются. Нет автоматического второго окна. При недоступности DELETE наблюдать bounded keyboard retirement без расширения прав. Узкий показ reviewed institutional facts разрешён допущенным тестировщикам; deployment и публичный показ не входят.
+Единственное разрешённое окно 19 **завершено**: 12:42:25–13:09:39 UTC, 65/120 запросов, исходный deadline 13:12:25 UTC. После 13:07 завершали текущий U16-C; нового маршрута не начинали. Один A использовал mobile/web, B не требовался. Сохранены credentials/CA/admission/DB/cursor; pairing, новый сбор и restart poller не выполнялись. REAL_CATALOG и ADMITTED_TESTERS_FACTS сохранены. Автоматического второго окна/продления нет; новый start этим документом не разрешается. При будущем отказе DELETE остаётся прежний bounded retirement без расширения прав.
 
 ### Impact mapping 17 — реальные факты в той же delta
 
@@ -182,7 +185,7 @@ Marker хранится lossless; весь batch валидируется до �
 - U16-B: в том же запросе увидеть реальную карточку с «сведения получены…», открыть условия и настоящий источник, вернуться на месте. Сохранить, после контролируемого restart открыть ту же закладку с прежним составом. Один семейный candidate совмещается с прежним остатком, все серверные варианты не повторяются.
 - U16-C: на этой закладке увидеть «Да, удалить» / «Отмена», отменить; наблюдение edit/delete API записать отдельно. Cleanup касается только отслеживаемых UI сообщений бота, включая reviewed real.
 
-Статус нового scope обоих клиентов **NOT_RUN**. Исторические PASS, включая F09 A/B isolation, сохраняются. Первое человеческое действие после READY и фактического запуска — «Подобрать», дальнейшие давать по одному. Без готовых людей окно не запускать.
+Статус на момент 17 был **NOT_RUN** обоих клиентов; текущий PARTIAL и точный остаток — в таблице U16 выше. Исторические PASS, включая F09 A/B isolation, сохраняются.
 
 ### Дополнение 18 — refresh и текущие условия закладки
 
@@ -194,7 +197,15 @@ Marker хранится lossless; весь batch валидируется до �
 
 **Пользователь: «Пока недоступен». REAL_MAX_MOBILE=NOT_RUN, REAL_MAX_WEB=NOT_RUN; REAL_APPLICATION_SMOKE=REQUIRED.** Нового polling/API MAX в 18 нет, consumer-lock свободен, персональные DB/cursor сохранены. После доступности тестировщика сначала проверить системную дату, fresh snapshot и реальные примеры через локальный query; не назначать прошедший сеанс/выставку. Одного аккаунта в имеющемся у него клиенте достаточно для начала, это не доказательство cross-client continuity. Сейчас выполнять действия в MAX не нужно.
 
-### Замороженная очередь delta — окно завершено
+### Дополнение 19 — фактическое окно и локальный webhook
+
+[19](pivot/19_REAL_MAX_AND_WEBHOOK_PREPARATION.md), [построчные ответы](evidence/real-webhook/human.md), [API/остановка](evidence/real-webhook/session.json). REAL_EDIT=PASS (API + наблюдение обоих клиентов). REAL_DELETE_OR_FALLBACK=PARTIAL: DELETE API PASS, видимое исчезновение HUMAN_NOT_VERIFIED; fallback не потребовался. Ctrl+C дал SESSION_STOPPED; PTY exit 1, PID отсутствует, lock свободен, pending=0. После остановки действий MAX не запрашивали.
+
+R19-UX01/02: WEB отметил незаметность сохранения и повторы часового пояса. После окна добавлены «✅ СОХРАНЕНО»/состояние кнопки и одна зона в сохранённом представлении. Локальные регрессии проверяют идемпотентность/сохранность строки и даты/времени; нового human PASS нет. Изменение затрагивает только эти визуальные assertions, не отменяет серверный save/open, транспортный edit и прочие PASS. Объём развёрнутых условий остаётся UX замечанием.
+
+REAL_WEBHOOK_PROFILE_LOCAL=PASS отдельно от PUBLIC_WEBHOOK_INGRESS=NOT_VERIFIED / DEPLOYMENT=NOT_RUN. Host/hostname/operator/access/period/evaluator procedure/refresh owner пользователь явно подтвердил как UNKNOWN; это не препятствие завершённой локальной подготовке и не новый READY. См. единственную передачу в SUBMISSION_READINESS.
+
+### Историческая замороженная очередь delta 15 — окно завершено
 
 Продолжение отдельно разрешено пользователем после остановленного окна 14. До main start сохранены исходный ledger и ограниченная очередь: приоритет F09 → F08.C.generation → недостающие MOBILE → точные WEB-маршруты. WEB=A, MOBILE=B; оба уже допущены. Повторного pairing, запроса токена и переоценки F01/F05/WEB F06–F07 не было. История заморозки и выполненных действий — в [15](pivot/15_DELTA_CLIENT_CONTINUATION.md); она не является активной очередью.
 

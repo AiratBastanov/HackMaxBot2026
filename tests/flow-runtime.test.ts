@@ -33,7 +33,10 @@ test('HTTP: секрет, lossless actor, весь путь strict → дета�
   assert.match(text(d),/Совпадает по известным условиям/); assert.doesNotMatch(text(d),/мастерская|дорогой/);
   await d.click('Подробнее 1'); assert.match(text(d),/Вымышленный набор/);
   assert(d.buttons().some(b => b.type === 'link' && b.url === 'https://example.org/synthetic-cultural-option-1'));
-  await d.click('Сохранить'); await d.click('Сохранить'); assert.equal(count(d),1);
+  await d.click('Сохранить');
+  assert.match(text(d),/^✅ СОХРАНЕНО\n/);assert(d.buttons().some(b=>b.text==='✅ Сохранено'));
+  assert(!d.buttons().some(b=>b.text==='Сохранить'));
+  await d.click('✅ Сохранено'); assert.equal(count(d),1);
   const saved = d.runtime.store.db.prepare('SELECT data FROM bookmarks').get() as {data:string};
   assert.match(saved.data,/FLEXIBLE_VISIT/); assert.equal(JSON.parse(saved.data).occurrence.start,null);
   await d.restart(); await d.click('Мои события'); await d.click('Открыть 1'); await d.click('Удалить закладку'); await d.click('Да, удалить'); assert.equal(count(d),0);

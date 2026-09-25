@@ -9,7 +9,7 @@ import { deliveryAllowed, type Button, type MaxOperation } from '../max.js';
 import { canSend, observeContact } from '../probe.js';
 import type { Storage } from '../storage.js';
 import { Catalog } from './catalog.js';
-import { type Card, projectCard, fingerprint, compact, presentationTitle, cardOverview, cardPages, displayDate, displayInstant } from './card.js';
+import { type Card, projectCard, fingerprint, compact, presentationTitle, cardOverview, cardPages, displayDate, displayInstant, displayInterval } from './card.js';
 import { cities, cityKeySchema, cityDate, cityInstant, resolveCity, zoneLabel, type CityKey } from '../data/cities.js';
 import { activeScreen, desireScreen } from '../screens.js';
 import { currentBookmark } from './bookmark.js';
@@ -170,7 +170,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
       const n = (store.db.prepare('SELECT count(*) n FROM bookmarks WHERE actor=?').get(event.actor) as { n: number }).n;
       if (n >= 50 && !store.db.prepare('SELECT 1 FROM bookmarks WHERE actor=? AND identity=?').get(event.actor,c.identity)) { s.notice = 'Лимит 50 закладок. Удалите ненужную в «Мои события».'; break; }
       store.db.prepare('INSERT OR IGNORE INTO bookmarks(actor,identity,generation,saved_at,data) VALUES(?,?,?,?,?)').run(event.actor, c.identity, randomUUID(), now, JSON.stringify(c));
-      s.notice = 'Сохранено в «Мои события». Это личная закладка, не покупка и не регистрация.'; break;
+      s.notice = '✅ СОХРАНЕНО\nВ «Мои события» — личная закладка, без покупки и регистрации.'; break;
     }
     case 'saved': s.stage = 'saved'; s.page = Number(arg || 0); break;
     case 'bookmark': s.bookmark = JSON.parse(arg); s.stage = 'bookmark'; delete s.conditionPage; break;
@@ -277,15 +277,16 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
         text=`Удалить «${compact(presentationTitle(c),500)}» из сохранённого?`;
         rows=[[button('Да, удалить','confirmRemove'),button('Отмена','cancel')]];
       } else {
-      text = `${compact(presentationTitle(c))}\n${s.stage === 'detail' ? label(c) : current?'Сохранённый выбор · текущие условия':`Сохранённый контекст: ${label(c)}`}\n${s.stage!=='detail'?`${cities[original.query.city].name} · ${original.query.party?.adults??1} взр., ${original.query.party?.childAges.length??0} дет. · бюджет ${original.query.budgetRub??'без лимита'} ₽ (${original.query.budgetBasis==='PARTY_TOTAL'?'на всех':'на одного взрослого'})\n`:''}${current?`Выбрано: ${displayInstant(original.visit?.from??original.query.start,original.query.timezone)} — ${displayInstant(original.visit?.until??original.query.end,original.query.timezone)}\n`:''}${limitation ? `${limitation}\n` : ''}`;
+      text = `${compact(presentationTitle(c))}\n${s.stage === 'detail' ? label(c) : current?'Сохранённый выбор · текущие условия':`Сохранённый контекст: ${label(c)}`}\n${s.stage!=='detail'?`${cities[original.query.city].name} · ${original.query.party?.adults??1} взр., ${original.query.party?.childAges.length??0} дет. · бюджет ${original.query.budgetRub??'без лимита'} ₽ (${original.query.budgetBasis==='PARTY_TOTAL'?'на всех':'на одного взрослого'})\n`:''}${current?`Выбрано: ${displayInterval(original.visit?.from??original.query.start,original.visit?.until??original.query.end,original.query.timezone??cities[original.query.city].timezone)}\n`:''}${limitation ? `${limitation}\n` : ''}`;
       if(s.conditionPage!==undefined) {
-        const pages=cardPages(c,now), page=Math.max(0,Math.min(s.conditionPage,pages.length-1));
+        const pages=cardPages(c,now,!current), page=Math.max(0,Math.min(s.conditionPage,pages.length-1));
         text+=`Условия посещения · ${page+1}/${pages.length}\n${pages[page]}`;
         rows.push([...(page>0?[button('Ранее условия','conditions',String(page-1))]:[]),...(page+1<pages.length?[button('Далее условия','conditions',String(page+1))]:[])]);
         rows.push([button('К карточке','conditionOverview')]);
-      } else {text+=cardOverview(c,now);rows.push([button('Условия посещения','conditions')]);}
+      } else {text+=cardOverview(c,now,!current);rows.push([button('Условия посещения','conditions')]);}
       for(const link of [c.source,...(c.visit?.links??[])]) if (safeLink(link.url) && link.url.length <= 2048) rows.push([{ type: 'link', text: compact(link.label,80), url: link.url }]);
-      rows.push(s.stage === 'detail' ? [button('Сохранить', 'save'), button('К результатам', 'results')]
+      const isSaved=s.stage==='detail'&&store.db.prepare('SELECT 1 FROM bookmarks WHERE actor=? AND identity=?').get(event.actor,c.identity);
+      rows.push(s.stage === 'detail' ? [button(isSaved?'✅ Сохранено':'Сохранить', 'save'), button('К результатам', 'results')]
         : [button('Удалить закладку', 'remove')]);
       rows.push(home());
       }

@@ -1,0 +1,63 @@
+{
+  "checkpoint": 19,
+  "date": "2026-09-25",
+  "baseline": "a72b77aabdbf88da97fb154873e82115a2557865",
+  "node": "22.23.2",
+  "sourceVersion": "d6541c08ef732fd3ec61bb2942b0e72568c5309529367d4ac2144b254145f684",
+  "sourceVersionScope": "Manifest at final container build; only documentation and Python archive scanner changed afterwards, not runtime or tests",
+  "typecheck": "PASS",
+  "build": "PASS",
+  "host": {
+    "initialConfigSourcePolicyAdmin": 20,
+    "configAdminAndAllFlow": { "tests": 81, "pass": 81, "fail": 0 },
+    "affectedRecovery": { "tests": 1, "pass": 1, "fail": 0 },
+    "uniqueTestsRun": 82,
+    "initial20IncludedIn81": true,
+    "recoverySelection": "node --test --test-name-pattern Backup dist/tests/recovery.test.js",
+    "npmCi": "NOT_RUN",
+    "afterDocumentationApplicationTests": "NOT_RUN"
+  },
+  "docker": {
+    "command": "node scripts/webhook-profile-check.mjs",
+    "build": "PASS",
+    "stockDockerfileTests": { "unit": 32, "integration": 25, "flow": 66, "data": 101, "total": 224, "fail": 0 },
+    "countsAreRepeatedBuildChecksNotAdditionalUniqueTests": true,
+    "dependencyLayer": "CACHED",
+    "composeInterpolation": "PASS",
+    "uidReadOnlyMountsAndWritablePersistentStorage": "PASS",
+    "realCatalogPointerAndSameContainerRestart": "PASS",
+    "httpHandlerWorkerSQLiteRendererSourcePolicy": "PASS",
+    "missingCorruptExpiredCatalogAndConfigurationFailures": "PASS",
+    "evidence": "container.json",
+    "caddyAdapt": "PASS_NETWORK_NONE_FAKE_HOST_NO_SERVER",
+    "caddyServer": "NOT_STARTED",
+    "hostPorts": [],
+    "simulatorCredentials": "FAKE_ONLY",
+    "externalMaxCalls": 0,
+    "subscriptionMutations": 0,
+    "ownedContainersAndVolumes": "REMOVED"
+  },
+  "uiRegressions": {
+    "saveNoticeAndButtonStateIdempotency": "PASS",
+    "savedIntervalSingleTimezoneAndImmutableBookmark": "PASS",
+    "newHumanObservationAfterFixes": "NOT_RUN",
+    "longExpandedConditionsUsability": "PARTIAL"
+  },
+  "carriedForward": {
+    "R18Tests": 245,
+    "shippedRefreshFunctional": "PASS",
+    "tariffAndCurrentBookmark": "PASS",
+    "ABIsolation": "PASS",
+    "pacingLiveObservation": "PARTIAL_HISTORICAL_1999MS",
+    "correctedPacing": "LOCAL_REGRESSION_ONLY"
+  },
+  "catalogRefreshThisTask": "NOT_NEEDED_NOT_RUN",
+  "sourceRequests": 0,
+  "realApplicationSmoke": "REQUIRED",
+  "localIntegrationSmoke": "PASS",
+  "realWebhookProfileLocal": "PASS",
+  "sourceDisplayScope": "ADMITTED_TESTERS_FACTS",
+  "publicWebhookIngress": "NOT_VERIFIED",
+  "deployment": "NOT_RUN",
+  "finalCleanSubmissionBenchmark": "NOT_RUN"
+}

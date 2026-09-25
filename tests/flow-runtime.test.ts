@@ -9,6 +9,7 @@ import { getState } from '../src/culture/flow.js';
 import { Catalog } from '../src/culture/catalog.js';
 import { createApp } from '../src/app.js';
 import { LiveMax, validateOperation } from '../src/max.js';
+import { activeScreen } from '../src/screens.js';
 import { Storage } from '../src/storage.js';
 import { select } from '../src/data/select.js';
 import { representativeQueries } from '../src/data/examples.js';
@@ -29,20 +30,20 @@ const text = (d: Awaited<ReturnType<typeof setup>>) => d.screen()!.body.text;
 test('HTTP: секрет, lossless actor, весь путь strict → детали → save → restart → list → delete', async t => {
   const d = await setup(t); assert.equal((await d.post(lifecycle(),'wrong')).status,401);
   await d.enter(); assert.match(text(d),/Культурный план/); await chooseDefaults(d);
-  assert.match(text(d),/Соответствует указанным данным источника/); assert.doesNotMatch(text(d),/мастерская|дорогой/);
-  await d.click('Подробнее 1'); assert.match(text(d),/Источник: синтетический пример/);
+  assert.match(text(d),/Совпадает по известным условиям/); assert.doesNotMatch(text(d),/мастерская|дорогой/);
+  await d.click('Подробнее 1'); assert.match(text(d),/Вымышленный набор/);
   assert(d.buttons().some(b => b.type === 'link' && b.url === 'https://example.org/synthetic-cultural-option-1'));
   await d.click('Сохранить'); await d.click('Сохранить'); assert.equal(count(d),1);
   const saved = d.runtime.store.db.prepare('SELECT data FROM bookmarks').get() as {data:string};
   assert.match(saved.data,/FLEXIBLE_VISIT/); assert.equal(JSON.parse(saved.data).occurrence.start,null);
   await d.restart(); await d.click('Мои события'); await d.click('Открыть 1'); await d.click('Удалить закладку'); await d.click('Да, удалить'); assert.equal(count(d),0);
-  assert.equal(d.runtime.store.db.pragma('user_version',{simple:true}),2);
+  assert.equal(d.runtime.store.db.pragma('user_version',{simple:true}),3);
 });
 test('Опциональные варианты: отдельная кнопка, UNKNOWN не превращается в строгое совпадение, фильтр сбрасывает opt-in', async t => {
   const d = await setup(t); await d.enter(); await chooseDefaults(d); await d.click('Показать варианты для проверки');
-  assert.match(text(d),/Нужно уточнить условия/); assert.doesNotMatch(text(d),/дорогой зал/);
+  assert.match(text(d),/Варианты, где нужно уточнение/); assert.doesNotMatch(text(d),/дорогой зал/);
   await d.click('Подробнее 2'); assert.match(text(d),/цен|тариф/); await d.click('Сохранить');
-  await d.click('Мои события'); await d.click('Открыть 1'); assert.match(text(d),/При сохранении: Нужно уточнить условия/);
+  await d.click('Мои события'); await d.click('Открыть 1'); assert.match(text(d),/Сохранённый контекст: Нужно уточнить условия/);
   await d.click('Главная'); await chooseDefaults(d); assert.doesNotMatch(text(d),/мастерская/);
   await d.click('Показать варианты для проверки'); const old = d.payload('Подробнее 2');
   await d.click('Бюджет'); await d.click('Бесплатно'); await d.click('Показать результаты'); await d.press(old);
@@ -64,7 +65,7 @@ test('Дубликат доставки и новая доставка стар�
 test('Из двух клиентов принимается один переход данной ревизии; поздний timestamp не возвращает старый экран', async t => {
   const d = await setup(t); await d.enter(); const pick = d.payload('Подобрать'), about = d.payload('О данных');
   await d.press(pick,ACTOR,'new',d.now + 1,false); await d.press(about,ACTOR,'old',d.now,false); await d.drain();
-  assert.equal(JSON.parse(getState(d.runtime.store,ACTOR)!.data).stage,'date');
+  assert.equal(JSON.parse(getState(d.runtime.store,ACTOR)!.data).stage,'city');
 });
 test('Delete → save again: поколение закладки и старая кнопка удаления защищают новую запись', async t => {
   const d = await setup(t); await d.enter(); await chooseDefaults(d); await d.click('Подробнее 1'); await d.click('Сохранить');
@@ -88,7 +89,7 @@ test('Сохранённые данные: изменение, исчезнов�
   d.catalog.replace(flowFixture()); d.advance(86400000); await d.say('/saved'); await d.click('Открыть 1'); assert.match(text(d),/устарели/);
 });
 test('Отложенный экран отбрасывается при новой ревизии и при новой версии снимка', async t => {
-  const d = await setup(t); await d.enter(); await d.click('Подобрать'); await d.click('Завтра'); await d.click('12:00–18:00'); await d.click('До 500 ₽'); await d.click('Любой');
+  const d = await setup(t); await d.enter(); await d.click('Подобрать'); await d.click('Казань'); await d.click('Завтра'); await d.click('12:00–18:00'); await d.click('Продолжить'); await d.click('До 500 ₽'); await d.click('Любой');
   await d.press(d.payload('Показать результаты'),ACTOR,'delayed',d.now + 1,false);
   d.advance(1200); await d.runtime.worker.tick(); // callback ACK; экран ещё в outbox
   const next = flowFixture(); next.events[0]!.title += ' изменено'; d.catalog.replace(next); await d.drain();
@@ -103,18 +104,18 @@ test('Пустой, неполный, старый, отсутствующий �
     if (mode === 'empty') { s.events=[]; s.stats.normalizedEvents=0; s.stats.occurrences=0; }
     if (mode === 'partial') { s.outcome='PARTIAL'; s.paginationComplete=false; }
     const d = await setup(t,mode === 'missing' ? null : s); if (mode === 'stale') d.advance(2*86400000); if (mode === 'outside') d.advance(31*86400000);
-    await d.enter(); await chooseDefaults(d);
-    assert.match(text(d),mode==='empty' ? /совпадений.*нет/ : mode==='partial' ? /неполное/ : mode==='stale' ? /старше/ : mode==='missing' ? /недоступен/ : /вне дат/);
+    await d.enter(); if(mode==='missing'){await d.click('Подобрать');assert.match(text(d),/Снимков сейчас нет/);continue;} await chooseDefaults(d);
+    assert.match(text(d),mode==='empty' ? /совпадений.*нет/ : mode==='partial' ? /неполное/ : mode==='stale' ? /старше/ : /вне дат/);
     assert(d.buttons().some(b=>b.text==='Дата')); assert.doesNotMatch(text(d),/дорогой зал/);
   }
 });
 test('Ввод ограничен явным форматом и кодом ревизии; невозможные даты/время/числа отвергаются', async t => {
-  const d = await setup(t); await d.enter(); await d.click('Подобрать'); await d.click('Другая дата');
+  const d = await setup(t); await d.enter(); await d.click('Подобрать'); await d.click('Казань'); await d.click('Другая дата');
   const token = /([A-F0-9]{6}) ГГГГ/.exec(text(d))![1];
   for (const value of ['завтра',`${token} 2030-04-31`,`${token} 2040-01-01`]) { await d.say(value); assert.match(text(d),/Ввод не принят/); }
   await d.say(`${token} 2030-04-06`); assert.match(text(d),/В какое время/); await d.click('Другое время');
   const tt = /([A-F0-9]{6}) ЧЧ/.exec(text(d))![1]; await d.say(`${tt} 24:00-25:00`); assert.match(text(d),/Ввод не принят/);
-  await d.say(`${tt} 19:00-18:00`); assert.match(text(d),/Ввод не принят/); await d.say(`${tt} 12:00-18:00`);
+  await d.say(`${tt} 19:00-18:00`); assert.match(text(d),/Ввод не принят/); await d.say(`${tt} 12:00-18:00`);await d.click('Продолжить');
   await d.click('Другая сумма'); const bt = /([A-F0-9]{6}) СУММА/.exec(text(d))![1]; await d.say(`${token} 500`); assert.match(text(d),/Ввод не принят/);
   await d.say(`${bt} 500`); assert.match(text(d),/Культурный интерес/);
   const arbitrary = d.runtime.store.db.prepare("SELECT payload FROM inbox WHERE payload LIKE '%завтра%'").get(); assert.equal(arbitrary,undefined);
@@ -127,7 +128,7 @@ test('Истёкшее действие восстанавливается че�
 test('Удаление личных данных и probe cleanup не удаляют активные закладки', async t => {
   const d = await setup(t); await d.enter(); await chooseDefaults(d); await d.click('Подробнее 1'); await d.click('Сохранить');
   d.runtime.store.cleanup(d.now+8*86400000); assert.equal(count(d),1);
-  await d.say('/delete_data'); await d.click('Да, удалить мои данные'); assert.equal(count(d),0);
+  await d.say('/delete_data'); await d.click('Да, удалить'); assert.equal(count(d),0);
   assert.equal(JSON.parse(getState(d.runtime.store,ACTOR)!.data).cards.length,0);
 });
 test('Лимит/страницы: 5 из 50, личная изоляция, запись не превращается в регистрацию', async t => {
@@ -137,9 +138,9 @@ test('Лимит/страницы: 5 из 50, личная изоляция, з�
   await d.click('Мои события'); assert.equal(d.buttons().filter(b=>b.text.startsWith('Открыть')).length,5); await d.click('Следующие'); assert.equal(d.buttons().filter(b=>b.text.startsWith('Открыть')).length,2);
   await d.enter(OTHER); await d.click('Мои события',OTHER); assert.match(d.screen(OTHER)!.body.text,/пока нет/);
 });
-test('SQLite v1 мигрирует без потери очереди; повторный startup сохраняет v2/закладки', async t => {
+test('SQLite v1 мигрирует без потери очереди; повторный startup сохраняет v3/закладки', async t => {
   const d = await setup(t); const path=d.config.databasePath; await d.close();
-  const db = new Storage(path,d.config); db.db.exec('DROP TABLE flow_actions; DROP TABLE flow_states; DROP TABLE bookmarks; ALTER TABLE outbox DROP COLUMN flow_revision; ALTER TABLE outbox DROP COLUMN catalog_version; PRAGMA user_version=1;');
+  const db = new Storage(path,d.config); db.db.exec('DROP TABLE flow_screens; DROP TABLE ui_messages; DROP TABLE flow_actions; DROP TABLE flow_states; DROP TABLE bookmarks; ALTER TABLE outbox DROP COLUMN flow_revision; ALTER TABLE outbox DROP COLUMN catalog_version; PRAGMA user_version=1;');
   db.setMeta('migration_test','keep'); db.close(); await d.restart(); assert.equal(d.runtime.store.getMeta('migration_test'),'keep');
   await d.enter(); await chooseDefaults(d); await d.click('Подробнее 1'); await d.click('Сохранить'); await d.restart(); assert.equal(count(d),1);
 });
@@ -181,8 +182,8 @@ test('Worker запрещает provider-карточку у транспорт�
 test('Отложенный ответ транспорта не привязывается к новой ревизии; overlapping tick не запускает вторую отправку', async t => {
   const d=await setup(t);await d.enter();const row=getState(d.runtime.store,ACTOR)!;let calls=0;let release!:()=>void;
   const waiting=new Promise<void>(r=>{release=r;});
-  const worker=new Worker(d.runtime.store,d.config,{execute:async()=>{calls++;await waiting;return {simulated:true,mid:'delayed'};}},()=>d.now,undefined,d.catalog);
-  d.runtime.store.enqueue('delayed-transport',ACTOR,null,'culture_screen',{method:'messages',recipient:ACTOR,body:{text:'старый экран'}},d.now,d.now+60000,{revision:row.revision,catalogVersion:d.catalog.version});
+  const worker=new Worker(d.runtime.store,d.config,{execute:async()=>{calls++;await waiting;return {simulated:true,mid:activeScreen(d.runtime.store,ACTOR)!.mid!,chat:activeScreen(d.runtime.store,ACTOR)!.chat};}},()=>d.now,undefined,d.catalog);
+  d.runtime.store.enqueue('delayed-transport',ACTOR,null,'culture_screen',{method:'messages',recipient:ACTOR,screen:{...activeScreen(d.runtime.store,ACTOR)!,revision:row.revision},body:{text:'старый экран',attachments:[]}},d.now,d.now+60000,{revision:row.revision,catalogVersion:d.catalog.version});
   const sending=worker.tick();await worker.tick();assert.equal(calls,1);
   await d.post(reply(undefined,d.now+1,'/start',ACTOR,'newer-query'));release();await sending;
   assert(d.runtime.store.db.prepare("SELECT 1 FROM outbox WHERE result='SENT_BEFORE_NEW_INPUT_OR_SNAPSHOT'").get());

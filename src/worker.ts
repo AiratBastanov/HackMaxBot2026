@@ -5,6 +5,7 @@ import { Storage } from './storage.js';
 import { canSend, processProbe } from './probe.js';
 import { Catalog } from './culture/catalog.js';
 import { getState, processCulture, enterProbeRoute } from './culture/flow.js';
+import { queueReconciliation, prepareScreenOperation, completeScreenOperation, failedScreenOperation } from './screens.js';
 
 export class Worker {
   private timer?: NodeJS.Timeout;
@@ -41,7 +42,7 @@ export class Worker {
           const event = JSON.parse(row.payload) as AcceptedEvent;
           const flowState = getState(this.store,event.actor);
           const probeRoute = !flowState || JSON.parse(flowState.data).route === 'probe';
-          const probe = event.probeEntry || event.commandId || (event.kind === 'message_created' && !event.homeEntry && !event.input && probeRoute && this.store.latestProbe(event.actor));
+          const probe = event.probeEntry || event.commandId || (event.kind === 'message_created' && !event.homeEntry && !['/saved','/delete_data'].includes(event.input??'') && probeRoute && this.store.latestProbe(event.actor));
           const olderRoute = event.probeEntry && flowState && event.timestamp < flowState.event_ts;
           const result = olderRoute ? 'FLOW_OLDER_EVENT' : probe ? processProbe(this.store, this.config, event, now) : processCulture(this.store, this.config, event, now, this.catalog);
           // Менять владельца диалога можно только ПОСЛЕ принятия нового входа.
@@ -64,6 +65,7 @@ export class Worker {
     // Не отправлять экран, пока более новые уже принятые события ещё ждут обработки.
     if (this.store.pendingInbox(1).length) return;
     const now = this.clock();
+    queueReconciliation(this.store,now);
     this.store.db.prepare("UPDATE outbox SET status='STALE',result='EXPIRED',finished_at=? WHERE status='PENDING' AND expires_at<=?").run(now, now);
     const row = this.store.pendingOutbox(now);
     if (row) {
@@ -81,10 +83,13 @@ export class Worker {
       } else if (!canSend(this.store.contact(row.actor))) {
         this.store.finishOutbox(row.id, 'SUPPRESSED_CONTACT', 'CONTACT_UNAVAILABLE', now);
       } else {
-        const operation = JSON.parse(row.payload) as MaxOperation;
+        let operation = JSON.parse(row.payload) as MaxOperation;
         if (this.config.mode === 'live' && (operation.audience === 'PROVIDER' || (operation.audience === 'SYNTHETIC' && this.config.flowDataMode !== 'synthetic-test'))) {
           this.store.finishOutbox(row.id, 'SUPPRESSED_DISPLAY', 'SOURCE_DISPLAY_NOT_CLEARED', now); return;
         }
+        const prepared=prepareScreenOperation(this.store,row,operation,now);
+        if(!prepared) return;
+        operation=prepared;
         if (row.purpose.startsWith('culture')) this.nextFlowSend = now + 1100;
         this.store.db.prepare("UPDATE outbox SET status='SENDING',attempts=attempts+1 WHERE id=?").run(row.id);
         try {
@@ -93,27 +98,29 @@ export class Worker {
             const finished = this.clock();
             const superseded = row.flow_revision !== null && (getState(this.store,row.actor)?.revision !== row.flow_revision
               || (row.catalog_version !== null && row.catalog_version !== this.catalog.version) || this.store.pendingInbox(1).length > 0);
+            completeScreenOperation(this.store,row,operation,result,finished,superseded);
             this.store.finishOutbox(row.id, result.simulated ? 'SIMULATED' : 'ACKNOWLEDGED', superseded ? 'SENT_BEFORE_NEW_INPUT_OR_SNAPSHOT' : result.simulated ? 'LOCAL_ONLY' : 'MAX_ACCEPTED', finished, 200, result.mid);
             if (row.purpose === 'question' && result.mid && probe && finished < probe.expires_at) {
               this.store.db.prepare("UPDATE probes SET question_mid=?,state='WAITING_REPLY' WHERE id=? AND state='QUESTION_PENDING'").run(result.mid, probe.id);
             }
           }).immediate();
-          this.report({ operation: operation.method, result: result.simulated ? 'SIMULATED' : 'MAX_ACCEPTED', attempts: row.attempts + 1 });
+          this.report({ operation: operation.method, purpose:row.purpose,result: result.simulated ? 'SIMULATED' : 'MAX_ACCEPTED', attempts: row.attempts + 1 });
         } catch (error) {
           // Ошибка фиксации после ответа MAX тоже не допускает повторной отправки.
           const e = error instanceof MaxError ? error : new MaxError('TRANSPORT_AMBIGUOUS');
           const finished = this.clock();
           const nextAt = finished + Math.max(e.retryAfterMs ?? 0, 2000 * 2 ** row.attempts);
           this.store.db.transaction(() => {
+            const ambiguous = ['MALFORMED', 'SERVER', 'TIMEOUT_AMBIGUOUS', 'TRANSPORT_AMBIGUOUS', 'CANCELLED'].includes(e.kind);
+            failedScreenOperation(this.store,row,operation,e,finished,ambiguous);
             if (e.kind === 'AUTH') this.store.setMeta('auth_blocked', 'true');
             if (e.kind === 'RATE_LIMIT' && row.attempts + 1 < 3 && nextAt < row.expires_at) {
               this.store.db.prepare("UPDATE outbox SET status='PENDING',result='RATE_LIMIT',http_status=429,next_at=? WHERE id=?").run(nextAt, row.id);
             } else {
-              const ambiguous = ['MALFORMED', 'SERVER', 'TIMEOUT_AMBIGUOUS', 'TRANSPORT_AMBIGUOUS', 'CANCELLED'].includes(e.kind);
               this.store.finishOutbox(row.id, ambiguous ? 'UNKNOWN_RESULT' : `FAILED_${e.kind}`, e.kind, finished, e.status);
             }
           }).immediate();
-          this.report({ operation: operation.method, errorClass: e.kind, status: e.status, attempts: row.attempts + 1 });
+          this.report({ operation: operation.method, purpose:row.purpose,errorClass: e.kind, status: e.status, attempts: row.attempts + 1 });
         }
       }
     }

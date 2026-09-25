@@ -31,7 +31,8 @@ export async function writeSnapshot(path: string, candidate: unknown) {
     const enrichment = current && next.retrievedAt === current.retrievedAt && next.enrichedAt !== null
       && Date.parse(next.enrichedAt) > Date.parse(current.enrichedAt ?? '1970-01-01T00:00:00Z')
       && current.events.every(e => next.events.some(n => n.id === e.id));
-    const reason = current && current.mode !== next.mode ? 'MODE_MISMATCH'
+    const reason = current && current.scope.city !== next.scope.city ? 'CITY_MISMATCH'
+      : current && current.mode !== next.mode ? 'MODE_MISMATCH'
       : current && Date.parse(next.retrievedAt) < Date.parse(current.retrievedAt) ? 'OLDER_REFRESH'
       : next.outcome === 'FAILED' ? 'FAILED_REFRESH'
       : current?.outcome === 'COMPLETE' && next.outcome !== 'COMPLETE' && !enrichment ? 'INCOMPLETE_REFRESH'

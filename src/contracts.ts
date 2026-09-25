@@ -27,7 +27,7 @@ const userId = int64.refine(v => BigInt(v) > 0n);
 const shortString = z.string().min(1).max(512);
 export const userSchema = z.object({ user_id: userId, first_name: z.string(), is_bot: z.boolean(), username: z.string().nullable().optional() });
 const recipientSchema = z.object({ chat_type: z.enum(['dialog', 'chat', 'channel']), chat_id: int64.nullable().optional(), user_id: userId.nullable().optional() });
-const bodySchema = z.object({ mid: shortString, seq: int64, text: z.string().nullable().optional() });
+const bodySchema = z.object({ mid: shortString, seq: int64, text: z.string().nullable().optional(), attachments: z.array(z.unknown()).nullable().optional() });
 export const messageSchema = z.object({ sender: userSchema.nullable().optional(), recipient: recipientSchema,
   timestamp, body: bodySchema.nullable(),
   link: z.object({ type: z.enum(['reply', 'forward']), message: bodySchema, chat_id: int64.optional() }).nullable().optional(),
@@ -60,6 +60,7 @@ export function parseUpdate(raw: unknown, botId: string): ParsedEvent {
     if (v.message?.sender && v.message.sender.user_id !== botId) return { ignored: true };
     return { ignored: false, event: { key: hash(['message_callback', v.callback.callback_id]), kind: 'message_callback', timestamp: base.timestamp,
       actor: v.callback.user.user_id, chat: v.message?.recipient.chat_id ?? null, callbackId: v.callback.callback_id,
+      mid: v.message?.body?.mid,
       commandId: /^g1:[0-9a-f-]{36}$/.test(v.callback.payload ?? '') ? v.callback.payload!.slice(3) : undefined,
       flowAction: /^cp:[a-zA-Z0-9_-]{24}$/.test(v.callback.payload ?? '') ? v.callback.payload!.slice(3) : undefined } };
   }
@@ -73,7 +74,7 @@ export function parseUpdate(raw: unknown, botId: string): ParsedEvent {
       replyIsReady: v.body.text?.trim().toLocaleLowerCase('ru') === 'готово', probeEntry: v.body.text?.trim() === '/probe',
       homeEntry: v.body.text?.trim() === '/start',
       // Не архивируем произвольный пользовательский текст: только ограниченный язык ввода.
-      input: /^(?:[A-F0-9]{6} (?:\d{4}-\d{2}-\d{2}|\d{2}:\d{2}-\d{2}:\d{2}|\d{1,5})|\/start|\/saved|\/delete_data)$/.test(v.body.text?.trim() ?? '') ? v.body.text!.trim() : undefined } };
+      input: /^(?:[A-F0-9]{6} (?:\d{4}-\d{2}-\d{2}|\d{2}:\d{2}-\d{2}:\d{2}|[\d, ?]{1,32})|[\p{L} -]{1,64}|\d{1,2}|\/start|\/saved|\/delete_data)$/u.test(v.body.text?.trim() ?? '') ? v.body.text!.trim() : undefined } };
   }
   // Неизвестный/нерелевантный тип с валидным базовым Update подтверждаем без сохранения тела.
   return { ignored: true };

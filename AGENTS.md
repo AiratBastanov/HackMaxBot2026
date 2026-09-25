@@ -3,6 +3,7 @@
 - Follow the latest user authorization and README; finish that scope without unnecessary pauses.
 - "Игра состоится" is REJECTED_BY_USER / SUPERSEDED. Do not implement its meetings, enrollment, capacity or waiting list.
 - KEYLESS_SOURCES выбран пользователем. Исследовательский локальный диалог (этап 2) и минимальные личные закладки (этап 3) явно разрешены и реализованы; сохраняйте разделение strict/candidate и запрет публичной доставки данных. Минкультуры/PRO — DEFERRED_BY_USER. Напоминания, deployment, публичный показ KudaGo и проверка спроса остаются вне этого объёма; полного одобрения продукта не подразумевать.
+- City/party и компактный UX явно разрешены 25.09.2026 и реализованы в квитанции 16; прежние single-city/single-adult ограничения относятся к истории. Новый client остаток — U16-A/B/C единого ledger; A/B isolation не перепроверять без причины.
 - Keep product documents in Russian and preserve requirement IDs, weights and product wording.
 
 # Read only relevant context

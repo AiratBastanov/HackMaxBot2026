@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { parseJson, simpleResultSchema, subscriptionsSchema, userSchema, validateMessage } from './contracts.js';
+import { parseJson, simpleResultSchema, subscriptionsSchema, userSchema, validateMessage, messageSchema } from './contracts.js';
 import type { Config } from './config.js';
 import { safeLink } from './data/contract.js';
 
@@ -9,10 +9,17 @@ export class MaxError extends Error {
 }
 export type Button = { type: 'callback'; text: string; payload: string } | { type: 'link'; text: string; url: string };
 export type MessageRequest = { text: string; notify?: boolean; attachments?: { type: 'inline_keyboard'; payload: { buttons: Button[][] } }[] };
-export type MaxOperation = ({ method: 'messages'; recipient: string; body: MessageRequest } | { method: 'answers'; callbackId: string; body: { notification: string } }) & { audience?: 'SYNTHETIC' | 'PROVIDER' };
+export type MessageTarget = { mid: string; recipient: string; chat: string };
+export type MaxOperation = ({ method: 'messages'; recipient: string; body: MessageRequest }
+  | ({ method: 'edit'; body: MessageRequest } & MessageTarget)
+  | ({ method: 'read' } & MessageTarget) | ({ method: 'delete' } & MessageTarget)
+  | { method: 'answers'; callbackId: string; body: { notification: string } }) & {
+    audience?: 'SYNTHETIC' | 'PROVIDER'; screen?: { epoch: string; revision: number; chat: string; purpose: string } };
 export function validateOperation(op: MaxOperation) {
+  if (op.method === 'read' || op.method === 'delete') { if (!op.mid || !op.recipient || !op.chat) throw new MaxError('SEMANTIC'); return; }
   if (op.method === 'answers') { if (op.body.notification.length > 200) throw new MaxError('SEMANTIC'); return; }
   if (!op.body.text || op.body.text.length > 4000 || (op.body.attachments?.length ?? 0) > 1) throw new MaxError('SEMANTIC');
+  if (op.method === 'edit' && (!op.mid || !op.recipient || !op.chat || !Array.isArray(op.body.attachments))) throw new MaxError('SEMANTIC');
   for (const a of op.body.attachments ?? []) {
     if (a.payload.buttons.length > 30) throw new MaxError('SEMANTIC');
     for (const row of a.payload.buttons) {
@@ -22,7 +29,7 @@ export function validateOperation(op: MaxOperation) {
     }
   }
 }
-export type MaxResult = { simulated: boolean; mid?: string };
+export type MaxResult = { simulated: boolean; mid?: string; chat?: string; message?: MessageRequest };
 export interface MaxTransport { execute(operation: MaxOperation): Promise<MaxResult> }
 
 function retryAfter(value: string | null): number | undefined {
@@ -101,7 +108,21 @@ export class LiveMax extends ReadOnlyMax implements MaxTransport {
     if (op.method === 'messages') {
       const raw = await this.request('POST', `/messages?user_id=${encodeURIComponent(op.recipient)}&disable_link_preview=true`, op.body, {signal:this.signal});
       const message = this.validate(() => validateMessage(raw, op.recipient));
-      return { simulated: false, mid: message.body!.mid };
+      if (message.sender?.user_id !== this.config.botId || !message.sender.is_bot || (op.screen && message.recipient.chat_id !== op.screen.chat)) throw new MaxError('MALFORMED',200);
+      return { simulated: false, mid: message.body!.mid, chat: message.recipient.chat_id ?? undefined };
+    }
+    if (op.method === 'read') {
+      const raw = await this.request('GET', `/messages/${encodeURIComponent(op.mid)}`, undefined, {signal:this.signal});
+      const message = this.validate(() => messageSchema.parse(raw));
+      if (message.sender?.user_id !== this.config.botId || !message.sender.is_bot || message.recipient.chat_type !== 'dialog'
+        || message.recipient.chat_id !== op.chat || message.recipient.user_id !== op.recipient || message.body?.mid !== op.mid) throw new MaxError('PERMISSION',200);
+      return {simulated:false,mid:op.mid,chat:op.chat,message:{text:message.body.text??'',attachments:(message.body.attachments??[]) as MessageRequest['attachments']}};
+    }
+    if (op.method === 'edit' || op.method === 'delete') {
+      const raw = await this.request(op.method === 'edit' ? 'PUT' : 'DELETE', `/messages?message_id=${encodeURIComponent(op.mid)}`,
+        op.method === 'edit' ? {...op.body, notify:false} : undefined, {signal:this.signal});
+      this.validate(() => { if (!simpleResultSchema.parse(raw).success) throw new MaxError('SEMANTIC',200); });
+      return {simulated:false,mid:op.mid,chat:op.chat};
     }
     const raw = await this.request('POST', `/answers?callback_id=${encodeURIComponent(op.callbackId)}&disable_link_preview=true`, op.body, {signal:this.signal});
     this.validate(() => { if (!simpleResultSchema.parse(raw).success) throw new MaxError('SEMANTIC', 200); });
@@ -116,9 +137,20 @@ export class LiveMax extends ReadOnlyMax implements MaxTransport {
 
 // Нет fetch, токена или URL. Это маркированная симуляция, а не резервный live-транспорт.
 export class LocalMax implements MaxTransport {
+  readonly messages = new Map<string, {recipient:string;chat:string;body:MessageRequest}>();
   async execute(op: MaxOperation): Promise<MaxResult> {
     validateOperation(op);
-    return { simulated: true, ...(op.method === 'messages' ? { mid: `synthetic-${randomUUID()}` } : {}) };
+    if (op.method === 'answers') return {simulated:true};
+    if (op.method === 'messages') {
+      const mid=`synthetic-${randomUUID()}`,chat=op.screen?.chat??op.recipient;
+      this.messages.set(mid,{recipient:op.recipient,chat,body:structuredClone(op.body)}); return {simulated:true,mid,chat};
+    }
+    const message=this.messages.get(op.mid);
+    if (!message) throw new MaxError('HTTP',404);
+    if(message.recipient!==op.recipient||message.chat!==op.chat) throw new MaxError('PERMISSION',403);
+    if(op.method==='read') return {simulated:true,mid:op.mid,chat:op.chat,message:structuredClone(message.body)};
+    if(op.method==='edit') message.body=structuredClone(op.body); else this.messages.delete(op.mid);
+    return {simulated:true,mid:op.mid,chat:op.chat};
   }
 }
 export function createTransport(config: Config): MaxTransport { return config.mode === 'local' ? new LocalMax() : new LiveMax(config); }

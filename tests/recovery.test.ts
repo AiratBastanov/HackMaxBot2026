@@ -17,7 +17,7 @@ test('Consistent backup с активным WAL: schema/identity/time/integrity,
   let store:Storage;
   const root=dir(t,()=>store?.close()),source=resolve(root,'source.sqlite'),backup=resolve(root,'backup.sqlite'),restored=resolve(root,'restored.sqlite');
   store=new Storage(source,identity);store.setMeta('sentinel','committed');
-  const receipt=await backupDatabase(source,backup,identity);assert.equal(receipt.integrity,'ok');assert.equal(receipt.schema,2);assert.equal(receipt.identity,'local:777');assert(Number.isFinite(Date.parse(receipt.createdAt)));
+  const receipt=await backupDatabase(source,backup,identity);assert.equal(receipt.integrity,'ok');assert.equal(receipt.schema,3);assert.equal(receipt.identity,'local:777');assert(Number.isFinite(Date.parse(receipt.createdAt)));
   assert.equal(store.getMeta('recovery_state'),undefined);assert.equal(store.getMeta('sentinel'),'committed');
   await assert.rejects(backupDatabase(source,backup,identity),/DESTINATION_EXISTS/);
   assert.throws(()=>new Storage(backup,identity),/QUARANTINED/);
@@ -42,14 +42,14 @@ test('Backup → удаление закладки/данных → loss: ста
     d.runtime.store.enqueue('interrupted',ACTOR,null,'culture_screen',{method:'messages',recipient:ACTOR,body:{text:'старый личный экран'}},d.now,d.now+60000);
     d.runtime.store.db.prepare("UPDATE outbox SET status='SENDING' WHERE action_key='interrupted'").run();
     await backupDatabase(source,backup,identity);
-    if(erase) {await d.say('/delete_data');await d.click('Да, удалить мои данные');}
+    if(erase) {await d.say('/delete_data');await d.click('Да, удалить');}
     else {await d.click('Мои события');await d.click('Открыть 1');await d.click('Удалить закладку');await d.click('Да, удалить');}
     assert.equal((d.runtime.store.db.prepare('SELECT count(*) n FROM bookmarks').get() as any).n,0);
     await restoreDatabase(backup,target,identity);assert.throws(()=>new Storage(target,identity),/QUARANTINED/);
     const quarantined=new Database(target,{readonly:true});
     assert.equal((quarantined.prepare('SELECT count(*) n FROM bookmarks').get() as any).n,1);
     assert.equal((quarantined.prepare("SELECT count(*) n FROM outbox WHERE payload IS NOT NULL OR finished_at IS NULL OR status<>'RECOVERY_SUPPRESSED'").get() as any).n,0);
-    assert.equal((quarantined.prepare('SELECT count(*) n FROM flow_actions').get() as any).n,0);quarantined.close();
+    for(const table of ['flow_actions','flow_screens','ui_messages']) assert.equal((quarantined.prepare(`SELECT count(*) n FROM ${table}`).get() as any).n,0);quarantined.close();
     assert.throws(()=>discardRestoredPersonalization(target,identity,''),/CONFIRMATION/);
     discardRestoredPersonalization(target,identity,'DISCARD_RESTORED_PERSONALIZATION');
     restored=await flowDriver(target);await restored.enter();await restored.say('/saved');

@@ -33,7 +33,7 @@ const count=(d:Driver,actor=ACTOR)=>(d.runtime.store.db.prepare('SELECT count(*)
 test('R08-01: projection → render → save → restart сохраняет существенные условия посещения',async t=>{
   const d=await setup(t);await d.enter();await chooseDefaults(d);await d.click('Подробнее 1');
   const check=()=>{
-    for(const pattern of [/Вымышленный зал/,/Тестовая улица, 17/,/10:00.*18:00/,/12:00.*18:00/,/Последний вход.*17:30/,/200.*₽/,/Регистрация.*обязательна/,/Запись на сайте/,/не подтверждает.*свежесть/]) assert.match(screen(d),pattern);
+    for(const pattern of [/Вымышленный зал/,/Тестовая улица, 17/,/10:00.*18:00/,/12:00.*18:00/,/Последний вход.*17:30/,/200.*₽/,/Регистрация.*обязательна/,/Запись на сайте/,/Вымышленный набор/]) assert.match(screen(d),pattern);
   };
   check(); const identity=state(d).cards[0].identity;await d.click('Сохранить');await d.restart();await d.say('/saved');await d.click('Открыть 1');check();
   assert.equal((d.runtime.store.db.prepare('SELECT identity FROM bookmarks').get() as any).identity,identity);
@@ -41,10 +41,10 @@ test('R08-01: projection → render → save → restart сохраняет су
 });
 
 test('R08-02: Назад из custom при первичном вводе не превращает его в редактирование',async t=>{
-  const d=await setup(t);await d.enter();await d.click('Подобрать');
-  for(const [custom,choice,next] of [['Другая дата','Завтра','time'],['Другое время','12:00–18:00','budget'],['Другая сумма','До 500 ₽','interest']]) {
+  const d=await setup(t);await d.enter();await d.click('Подобрать'); await d.click('Казань');
+  for(const [custom,choice,next] of [['Другая дата','Завтра','time'],['Другое время','12:00–18:00','party'],['Другая сумма','До 500 ₽','interest']]) {
     await d.click(custom!); const old=d.payload('Назад');await d.click('Назад');await d.click(choice!);
-    assert.equal(state(d).stage,next); assert.equal(state(d).editing,false);await d.press(old);assert.equal(state(d).stage,next);
+    assert.equal(state(d).stage,next); assert.equal(state(d).editing,false);await d.press(old);assert.equal(state(d).stage,next);if(next==='party')await d.click('Продолжить');
   }
 });
 
@@ -68,9 +68,9 @@ test('R08-03: интерес ранжирует несколько катего�
 
 test('R08-04: текущее подтверждение стирания доходит через worker один раз, прежние payload очищены',async t=>{
   const d=await setup(t);await d.enter();await chooseDefaults(d);await d.click('Подробнее 1');const oldSave=d.payload('Сохранить');await d.click('Сохранить');
-  await d.enter(OTHER);for(const label of ['Подобрать','Завтра','12:00–18:00','До 500 ₽','Любой','Показать результаты','Подробнее 1','Сохранить','Мои события']) await d.click(label,OTHER);
+  await d.enter(OTHER);for(const label of ['Подобрать','Казань','Завтра','12:00–18:00','Продолжить','До 500 ₽','Любой','Показать результаты','Подробнее 1','Сохранить','Мои события']) await d.click(label,OTHER);
   const otherState=getState(d.runtime.store,OTHER)!.data;
-  await d.say('/delete_data');const confirm=d.payload('Да, удалить мои данные');
+  await d.say('/delete_data');const confirm=d.payload('Да, удалить');
   const previous=(d.runtime.store.db.prepare('SELECT max(id) n FROM outbox').get() as any).n;
   await d.press(confirm,ACTOR,'erase-current');await d.press(confirm,ACTOR,'erase-current');
   assert.equal(d.operations.filter(o=>o.method==='answers'&&o.callbackId==='erase-current').length,1);
@@ -82,7 +82,7 @@ test('R08-04: текущее подтверждение стирания дох�
 
 test('R08-04: semantic false у текущего erasure ACK не становится успешной отправкой',async t=>{
   const d=await setup(t);await d.enter();await d.say('/delete_data');
-  await d.press(d.payload('Да, удалить мои данные'),ACTOR,'erase-semantic',d.now+1,false);
+  await d.press(d.payload('Да, удалить'),ACTOR,'erase-semantic',d.now+1,false);
   const calls:string[]=[];
   const config={...d.config,mode:'live' as const,token:'synthetic-only-token-123'};
   const max=new LiveMax(config,(async(u:unknown)=>{calls.push(String(u));return new Response('{"success":false}');}) as typeof fetch);
@@ -93,7 +93,7 @@ test('R08-04: semantic false у текущего erasure ACK не станови
 
 test('R08-01: отсутствующий адрес явно неизвестен и остаётся таким после сохранения',async t=>{
   const s=visit();s.venues[0]!.address=null;const d=await setup(t,s);await d.enter();await chooseDefaults(d);await d.click('Показать варианты для проверки');await d.click('Подробнее 1');
-  assert.match(screen(d),/Адрес: не указан/);await d.click('Сохранить');await d.restart();await d.say('/saved');await d.click('Открыть 1');assert.match(screen(d),/Адрес: не указан/);
+  assert.match(screen(d),/Адрес неизвестен/);await d.click('Сохранить');await d.restart();await d.say('/saved');await d.click('Открыть 1');assert.match(screen(d),/Адрес неизвестен/);
 });
 
 test('R08-01: длинные допустимые поля полностью доступны постранично и сохраняются без обрезки',async t=>{
@@ -102,7 +102,7 @@ test('R08-01: длинные допустимые поля полностью д
   s.venues[0]!.address='Б'.repeat(3900)+' КОНЕЦ_АДРЕСА';
   const d=await setup(t,s);await d.enter();await chooseDefaults(d);await d.click('Подробнее 1');
   assert.match(screen(d),/Последний вход.*17:30/);assert.match(screen(d),/Регистрация.*обязательна/);
-  await d.click('Сохранить');await d.restart();await d.say('/saved');await d.click('Открыть 1');await d.click('Все условия');
+  await d.click('Сохранить');await d.restart();await d.say('/saved');await d.click('Открыть 1');await d.click('Условия посещения');
   let all=screen(d), pages=1;
   while(d.buttons().some(b=>b.text==='Далее условия')) {assert(pages++<40);await d.click('Далее условия');all+='\n'+screen(d);}
   for(const marker of ['КОНЕЦ_ТАРИФА','КОНЕЦ_ДОПУСКА','КОНЕЦ_АДРЕСА']) assert(all.includes(marker));
@@ -119,5 +119,5 @@ test('R08-01: прежняя закладка не получает выдума
 test('R08-01: сеанс отображается как сеанс с точным окончанием, не как часы открытия',async t=>{
   const s=visit(),o=s.events[0]!.occurrences[0]!;
   o.kind='TIMED_SESSION';o.start='2030-04-06T10:00:00Z';o.end='2030-04-06T11:30:00Z';o.endBasis='PUBLISHED';o.opening=null;
-  const d=await setup(t,s);await d.enter();await chooseDefaults(d);await d.click('Подробнее 1');assert.match(screen(d),/Сеанс:.*13:00.*14:30/);assert.doesNotMatch(screen(d),/Пересечение с запросом/);
+  const d=await setup(t,s);await d.enter();await chooseDefaults(d);await d.click('Подробнее 1');assert.match(screen(d),/📅.*13:00.*14:30/);assert.doesNotMatch(screen(d),/Пересечение с запросом/);
 });

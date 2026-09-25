@@ -26,7 +26,7 @@ test('R10-A: группы разделены, opt-in и identity кнопки к
   assert.doesNotMatch(d.screen()!.body.text,/Варианты, где нужно уточнение|мастерская цвета/);
   await d.click('Показать варианты для проверки');const text=d.screen()!.body.text;
   assert(text.indexOf('Совпадает по известным условиям')<text.indexOf('Варианты, где нужно уточнение'));
-  assert(text.indexOf('Варианты, где нужно уточнение')<text.indexOf('3. СИНТЕТИКА: мастерская цвета'));
+  assert(text.indexOf('Варианты, где нужно уточнение')<text.indexOf('3. мастерская цвета'));
   const cards=JSON.parse(getState(d.runtime.store,ACTOR)!.data).cards;
   await d.click('Подробнее 3');assert.equal(JSON.parse(getState(d.runtime.store,ACTOR)!.data).selected,cards[2].identity);
   assert.match(d.screen()!.body.text,/Нужно уточнить условия/);
@@ -36,10 +36,10 @@ test('R10-A: группы разделены, opt-in и identity кнопки к
 
 test('R10-B: обзор компактен, существенные условия и русская дата видимы без повторов предупреждений',()=>{
   const c=projection(),text=cardOverview(c);
-  for(const re of [/тестовый зал/,/Вымышленная улица/,/10:00.*18:00/,/12:00.*18:00/,/Последний вход:.*17:30/,/200 ₽/,/Один взрослый/,/Регистрация: обязательна/,/предварительная запись/,/6 апреля 2030/,/Москва, UTC\+3/,/не подтверждает.*свежесть/]) assert.match(text,re);
+  for(const re of [/тестовый зал/,/Вымышленная улица/,/10:00.*18:00/,/12:00.*18:00/,/Последний вход:.*17:30/,/200 ₽/,/Регистрация: обязательна/,/предварительная запись/,/6 апреля 2030/,/Москва, UTC\+3/,/Вымышленный набор/]) assert.match(text,re);
   assert.equal(text.match(/17:30/g)?.length,1);
-  assert.equal(text.match(/Наличие билета/g)?.length,1);
-  assert.equal(text.match(/не подтверждает/g)?.length,1);
+  assert.doesNotMatch(text,/Наличие билета/);
+  assert.equal(text.match(/Вымышленный набор/g)?.length,1);
   assert.doesNotMatch(text,/2030-04-05T/);
   assert(text.length<1900);
 });
@@ -52,8 +52,8 @@ test('R10-B: provenance объединяет только одну сущнос�
   v.eventObservations=[{...row,fields:['dates']}];v.providerUpdatedAt='2030-04-04T06:00:00Z';
   v.warnings.push('Вход с отдельного двора.','Вход с отдельного двора.','Вход с другой улицы.');
   const before=JSON.stringify(c),text=cardPages(c).join('\n');
-  assert.equal(text.split(url).length-1,5); // три точных времени (включая unknown), конфликт и другая сущность
-  for(const re of [/адрес/i,/часы работы/i,/название/i,/даты/i,/Конфликт.*адрес/,/дата неизвестна/,/09:00:00\.123/,/Дата изменения у источника: 4 апреля 2030/]) assert.match(text,re);
+  assert.doesNotMatch(text,/URL получения|Поля:|09:00:00\.123|example.org\/observation-a/);
+  assert.match(text,/расходятся сведения: адрес/);
   assert.equal(text.match(/Вход с отдельного двора/g)?.length,1);assert.match(text,/Вход с другой улицы/);
   assert.equal(JSON.stringify(c),before); // grouping не переписывает точные machine timestamps/наблюдения
 });
@@ -78,7 +78,7 @@ test('R10-D: evaluator time=MATCH при price=UNKNOWN сохраняется в
   assert.equal(candidate.predicates.find(p=>p.name==='time')!.state,'MATCH');
   assert.equal(candidate.predicates.find(p=>p.name==='price')!.state,'UNKNOWN');
   const d=await setup(t,s);await d.enter();await chooseDefaults(d);await d.click('Показать варианты для проверки');await d.click('Подробнее 3');
-  const check=()=>{const text=d.screen()!.body.text;assert.match(text,/Нужно уточнить условия/);assert.match(text,/Пересечение с запросом:.*12:00.*18:00/);assert.match(text,/взросл.*тариф.*не установлен|применимую цену/);assert.doesNotMatch(text,/Пересечение с запросом: не подтверждено/);};
+  const check=()=>{const text=d.screen()!.body.text;assert.match(text,/Нужно уточнить условия/);assert.match(text,/📅.*12:00.*18:00/);assert.match(text,/Взросл.*тариф.*не установлен|итоговую цену/);assert.doesNotMatch(text,/Пересечение с запросом: не подтверждено/);};
   check();await d.click('Сохранить');await d.restart();await d.say('/saved');await d.click('Открыть 1');check();
 });
 

@@ -1,0 +1,71 @@
+{
+  "baseline": "4de871330fe3814c2a2f06fa1b59567a053c014c",
+  "previousRuntime": "7c8fab121ba8ac01be10b77b92232fe00d358720",
+  "node": "22.23.2",
+  "syntheticOnly": true,
+  "checks": [
+    {
+      "name": "typecheck",
+      "exitCode": 0,
+      "elapsedMs": 521,
+      "summary": []
+    },
+    {
+      "name": "build",
+      "exitCode": 0,
+      "elapsedMs": 557,
+      "summary": []
+    },
+    {
+      "name": "shared-regression",
+      "exitCode": 0,
+      "elapsedMs": 9815,
+      "summary": [
+        "# tests 219",
+        "# pass 219",
+        "# fail 0",
+        "# duration_ms 9739.5297"
+      ]
+    },
+    {
+      "name": "application-smoke",
+      "exitCode": 0,
+      "elapsedMs": 1518,
+      "summary": [
+        "{\"result\":\"PASS\",\"realApplicationSmoke\":\"PASS\",\"http\":true,\"admission\":true,\"worker\":true,\"sqlite\":true,\"renderer\":true,\"restart\":true,\"simulatedMax\":true,\"realMax\":false,\"sameActiveMessage\":true,\"cityCount\":2,\"timezones\":[\"Europe/Moscow\",\"Asia/Yekaterinburg\"],\"exactPartyTotal\":true,\"unknownChildTotal\":true,\"twoButtonConfirmations\":true,\"operations\":{\"messages\":4,\"edit\":35,\"read\":0,\"delete\":2,\"answers\":34}}"
+      ]
+    }
+  ],
+  "smoke": {
+    "result": "PASS",
+    "realApplicationSmoke": "PASS",
+    "http": true,
+    "admission": true,
+    "worker": true,
+    "sqlite": true,
+    "renderer": true,
+    "restart": true,
+    "simulatedMax": true,
+    "realMax": false,
+    "sameActiveMessage": true,
+    "cityCount": 2,
+    "timezones": [
+      "Europe/Moscow",
+      "Asia/Yekaterinburg"
+    ],
+    "exactPartyTotal": true,
+    "unknownChildTotal": true,
+    "twoButtonConfirmations": true,
+    "operations": {
+      "messages": 4,
+      "edit": 35,
+      "read": 0,
+      "delete": 2,
+      "answers": 34
+    }
+  },
+  "realClients": "NOT_RUN_TESTERS_UNAVAILABLE",
+  "newMaxRequests": 0,
+  "providerRequests": 0,
+  "docker": "NOT_RUN_PACKAGING_UNCHANGED"
+}

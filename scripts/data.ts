@@ -10,9 +10,10 @@ import { normalizeKudago } from '../src/data/normalize.js';
 import { select } from '../src/data/select.js';
 import { representativeQueries, syntheticClock, syntheticSnapshot } from '../src/data/examples.js';
 import { runEnrichmentCampaign } from '../src/data/enrich.js';
+import { cityKeySchema } from '../src/data/cities.js';
 
 const [command, ...args] = process.argv.slice(2);
-const supported = ['--cache', '--snapshot', '--query', '--clock', '--transport', '--resume', '--check-timepad', '--synthetic', '--expanded', '--city-places', '--include-uncertain', '--plan'];
+const supported = ['--city','--cache', '--snapshot', '--query', '--clock', '--transport', '--resume', '--check-timepad', '--synthetic', '--expanded', '--city-places', '--include-uncertain', '--plan'];
 const options = new Map<string, string>();
 for (let i = 0; i < args.length; i++) {
   const key = args[i]!;
@@ -20,7 +21,8 @@ for (let i = 0; i < args.length; i++) {
   if (['--check-timepad', '--synthetic', '--expanded', '--city-places', '--include-uncertain'].includes(key)) options.set(key, 'true');
   else { const value = args[++i]; if (!value || value.startsWith('--')) throw new Error(`Нет значения: ${key}`); options.set(key, value); }
 }
-const cache = resolve(options.get('--cache') ?? '.cache/cultural-plan');
+const city=cityKeySchema.parse(options.get('--city')??'kzn');
+const cache = resolve(options.has('--city') ? join(options.get('--cache')??'.cache/cultural-plan',city) : options.get('--cache') ?? '.cache/cultural-plan');
 const path = resolve(options.get('--snapshot') ?? join(cache, 'snapshot.json'));
 const print = (value: unknown) => process.stdout.write(JSON.stringify(value, null, 2) + '\n');
 function explicitClock(): Date {
@@ -40,6 +42,7 @@ async function run() {
         if (!options.has('--resume') || !options.has('--plan')) throw new Error('enrich требует --resume и --plan с обоснованными ID существующих записей.');
         if (options.has('--check-timepad') || options.has('--city-places') || options.has('--expanded')) throw new Error('Кампания enrich использует только точечный план KudaGo.');
         const previous = validateDownload(await readJson(options.get('--resume')!));
+        if((previous.city??'kzn')!==city)throw Error('CITY_RESUME_MISMATCH');
         const abort = new AbortController(), cancel = () => abort.abort();
         process.once('SIGINT', cancel); process.once('SIGTERM', cancel);
         try {
@@ -62,7 +65,7 @@ async function run() {
       const client = new BoundedClient(ledger, value => atomicJson(ledgerPath, value),
         transport === 'curl' ? curlTransport(() => 16 * 1024 * 1024 - ledger.decodedBytes) : fetch);
       const previous = options.has('--resume') ? validateDownload(await readJson(options.get('--resume')!)) : undefined;
-      const download = await fetchKudago(client, new Date(), previous, options.has('--expanded'));
+      const download = await fetchKudago(client, new Date(), previous, options.has('--expanded'),city);
       await atomicJson(join(cache, `download-${Date.now()}.json`), download);
       // Не теряем успешный provider payload при неудаче следующего шага.
       if (download.events.complete || !previous?.events.complete)

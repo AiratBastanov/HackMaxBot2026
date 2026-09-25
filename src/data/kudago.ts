@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { DataError, type JsonClient } from './http.js';
+import { cities, cityKeySchema, timezoneSchema, cityWindow, type CityKey } from './cities.js';
 
 const id = z.number().int().positive().max(Number.MAX_SAFE_INTEGER);
 const nullableText = z.string().max(4000).nullable().optional();
@@ -15,7 +16,7 @@ export const eventSchema = z.object({
   dates: z.array(dateSchema).max(10000).optional(),
   place: z.lazy(() => placeSchema).nullable().optional(),
   location: z.union([z.string(), z.object({ slug: z.string() })]).nullable().optional(),
-  categories: z.array(z.string()).optional(), price: nullableText, is_free: z.boolean().nullable().optional(),
+  categories: z.array(z.string()).optional(), price: nullableText, is_free: z.boolean().nullable().optional(), age_restriction: nullableText,
 });
 export const placeSchema = z.object({
   id, title: nullableText, address: nullableText, location: z.string().nullable().optional(),
@@ -27,7 +28,7 @@ export type KudaEvent = z.infer<typeof eventSchema>;
 export type KudaPlace = z.infer<typeof placeSchema>;
 export const culturalCategories = ['exhibition', 'theater', 'concert', 'cinema', 'education', 'festival', 'tour'];
 export const base = 'https://kudago.com/public-api/v1.4/';
-export const eventFields = 'id,title,site_url,publication_date,dates,place,location,categories,price,is_free';
+export const eventFields = 'id,title,site_url,publication_date,dates,place,location,categories,price,is_free,age_restriction';
 export const placeFields = 'id,title,address,location,timetable,site_url,foreign_url,is_closed,is_stub,coords';
 export type PageResult<T> = { rows: T[]; count: number | null; retrieved: number; duplicates: number; pages: number;
   complete: boolean; issues: string[] };
@@ -98,6 +99,7 @@ export async function pages<T extends { id: number }>(client: JsonClient, url: U
 }
 
 export type KudaDownload = {
+  city?: CityKey;
   retrievedAt: string; window: { start: string; end: string }; location: { slug: string; name: string; timezone: string } | null;
   categories: { slug: string; name: string }[]; events: PageResult<KudaEvent>; places: PageResult<KudaPlace>;
   issues: string[];
@@ -139,10 +141,10 @@ export function validateDownload(value: unknown): KudaDownload {
   return z.object({ retrievedAt: z.string().datetime({ offset: true }),
     window: z.object({ start: z.string().datetime({ offset: true }), end: z.string().datetime({ offset: true }) })
       .refine(w => Date.parse(w.end) - Date.parse(w.start) === 30 * 86400000),
-    location: z.object({ slug: z.literal('kzn'), name: z.literal('Казань'), timezone: z.literal('Europe/Moscow') }).nullable(),
+    city:cityKeySchema.optional(),location: z.object({ slug:cityKeySchema,name:z.string(),timezone:timezoneSchema }).nullable(),
     categories: z.array(z.object({ slug: z.string(), name: z.string() })),
     events: page(eventSchema), places: page(placeSchema), issues: z.array(z.string()),
-    observations: z.array(factObservationSchema).optional() }).parse(value);
+    observations: z.array(factObservationSchema).optional() }).refine(d=>!d.location||d.location.slug===(d.city??'kzn')&&d.location.timezone===cities[d.city??'kzn'].timezone,'download_city').parse(value);
 }
 export function mergeEvent(first: KudaEvent, later: KudaEvent): KudaEvent {
   const { dates: firstDates, ...a } = first, { dates: laterDates, ...b } = later;
@@ -157,7 +159,7 @@ export function moscowWindow(clock: Date): { start: string; end: string } {
 
 export async function enrichFromCityPlaces(client: JsonClient, previous: KudaDownload): Promise<KudaDownload> {
   const result = structuredClone(previous), url = new URL(`${base}places/`);
-  url.search = new URLSearchParams({ location: 'kzn', fields: placeFields, order_by: 'id', page_size: '100' }).toString();
+  url.search = new URLSearchParams({ location: cityKeySchema.parse(previous.city??'kzn'), fields: placeFields, order_by: 'id', page_size: '100' }).toString();
   const found = await pages(client, url, placeSchema, 2);
   const needed = new Set(result.events.rows.flatMap(e => e.place ? [e.place.id] : []));
   const known = new Map(result.places.rows.map(p => [p.id, p]));
@@ -199,21 +201,22 @@ export async function enrichPlaces(client: JsonClient, previous: KudaDownload, l
   return result;
 }
 
-export async function fetchKudago(client: JsonClient, clock: Date, previous?: KudaDownload, expanded = false): Promise<KudaDownload> {
+export async function fetchKudago(client: JsonClient, clock: Date, previous?: KudaDownload, expanded = false, city:CityKey='kzn'): Promise<KudaDownload> {
+  city=cityKeySchema.parse(city);
   const empty = <T>(): PageResult<T> => ({ rows: [], count: null, retrieved: 0, duplicates: 0, pages: 0, complete: false, issues: [] });
-  const result: KudaDownload = { retrievedAt: clock.toISOString(), window: moscowWindow(clock), location: null,
+  const result: KudaDownload = { city,retrievedAt: clock.toISOString(), window: cityWindow(clock,city), location: null,
     categories: [], events: empty(), places: empty(), issues: [] };
-  if (previous && (previous.window.start !== result.window.start || previous.window.end !== result.window.end))
+  if (previous && ((previous.city??'kzn')!==city||previous.window.start !== result.window.start || previous.window.end !== result.window.end))
     throw new DataError('RESUME_SCOPE_CHANGED');
   if (previous) result.retrievedAt = previous.retrievedAt;
   if (previous) result.location = previous.location;
   else try {
-    result.location = z.object({ slug: z.literal('kzn'), name: z.literal('Казань'), timezone: z.literal('Europe/Moscow') })
-      .parse(await client.get(`${base}locations/kzn/?fields=slug,name,timezone`));
+    result.location = z.object({ slug: z.literal(city), name: z.literal(cities[city].name), timezone: z.literal(cities[city].timezone) })
+      .parse(await client.get(`${base}locations/${city}/?fields=slug,name,timezone`));
   } catch { result.issues.push('LOCATION_UNAVAILABLE'); }
   try {
     const url = new URL(`${base}events/`);
-    const params = { location: 'kzn', actual_since: String(Date.parse(result.window.start) / 1000),
+    const params = { location: city, actual_since: String(Date.parse(result.window.start) / 1000),
       actual_until: String(Date.parse(result.window.end) / 1000 - 1), order_by: 'id', page_size: '100',
       fields: eventFields, expand: expanded ? 'dates,place,location' : 'dates', categories: culturalCategories.join(',') };
     url.search = new URLSearchParams(params).toString();

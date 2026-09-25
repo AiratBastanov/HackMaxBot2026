@@ -1,4 +1,6 @@
-# Культурный план: первый технический smoke MAX mobile/web
+# Культурный план: smoke MAX и текущий assertion-ledger
+
+**25.09.2026: MAXBOT_COMPACT_UX_LOCAL_PASS; REAL_APPLICATION_SMOKE=AUTOMATED_PASS.** Новый код описан в [16](pivot/16_COMPACT_UX_CITY_AND_PARTY.md). Реальные новые edit/delete, MOBILE B и WEB A — NOT_RUN: пользователь сообщил, что тестировщики недоступны. Окно не запускалось; admission/DB/cursor сохранены. Следующий абзац — исторический статус до 16.
 
 **MAXBOT_REAL_CLIENT_SMOKE_PARTIAL; BOT_API_INSPECTION = PASS; REAL_APPLICATION_SMOKE = REQUIRED; REAL_MAX_MOBILE = PARTIAL; REAL_MAX_WEB = PARTIAL; CROSS_CLIENT_CONTINUITY = PASS в описанном объёме; CROSS_USER_ISOLATION = PASS для сохранности закладки B после стирания A; WEBHOOK_INGRESS = NOT_VERIFIED; PUBLIC_DEPLOYMENT = NOT_VERIFIED (не развёрнуто).** /me подтвердил «Хакатон МАХ 432», ID `426717762`, [@t432_hakaton_max_bot](https://max.ru/t432_hakaton_max_bot); subscriptions=0. Ротация и единственный consumer подтверждены оператором. Прежнее отсутствие токена относится к истории [10](pivot/10_USER_READINESS_AND_FIRST_MAX_CHECK.md); первое подключение — [11](pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md), базовые реальные наблюдения — [12](pivot/12_REAL_CLIENT_SMOKE_COMPLETION.md), историческое окно/решение выпуска — [13](pivot/13_RELEASE_DECISION_AND_REMAINING_SMOKE.md), исправление workflow — [14](pivot/14_DELTA_CLIENT_VERIFICATION.md); продолжение — [15](pivot/15_DELTA_CLIENT_CONTINUATION.md) и [ledger](#c-текущий-assertion-ledger-и-ограниченная-delta). PUBLIC_DISPLAY = NOT_CLEARED, DATA_SUITABILITY = EXPLORATORY_ONLY.
 
@@ -76,9 +78,9 @@ Marker хранится lossless; весь batch валидируется до �
 
 ## C. Текущий assertion-ledger и ограниченная delta
 
-Единственный текущий реестр — таблица ниже; [11](pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md), [12](pivot/12_REAL_CLIENT_SMOKE_COMPLETION.md), [13](pivot/13_RELEASE_DECISION_AND_REMAINING_SMOKE.md) и [14](pivot/14_DELTA_CLIENT_VERIFICATION.md) неизменны и служат evidence, а не очередями исполнения. Итог продолжения — [15](pivot/15_DELTA_CLIENT_CONTINUATION.md). `C = 7c8fab121ba8ac01be10b77b92232fe00d358720`, исходный опубликованный baseline — `b98d9df524224d9d3a2aeb58fb82e6399490f754`, checkpoint перед продолжением — `99cbf22e21656808b3f90d37980423eac24cd3e9`; код C не менялся. `S11/S12/S13/S15` — synthetic fixtures соответствующих квитанций; новый fixture сам по себе не отменяет проверку поведения.
+Единственный текущий реестр — таблица ниже и её impact mapping 16; [11](pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md), [12](pivot/12_REAL_CLIENT_SMOKE_COMPLETION.md), [13](pivot/13_RELEASE_DECISION_AND_REMAINING_SMOKE.md) и [14](pivot/14_DELTA_CLIENT_VERIFICATION.md) неизменны и служат evidence, а не очередями исполнения. Итог продолжения — [15](pivot/15_DELTA_CLIENT_CONTINUATION.md). `C = 7c8fab121ba8ac01be10b77b92232fe00d358720`, исходный опубликованный baseline — `b98d9df524224d9d3a2aeb58fb82e6399490f754`, checkpoint перед продолжением — `99cbf22e21656808b3f90d37980423eac24cd3e9`; C — исторический runtime, изменённый реализацией 16. `S11/S12/S13/S15` — synthetic fixtures соответствующих квитанций; новый fixture сам по себе не отменяет проверку поведения.
 
-`HUMAN_PASS` сохраняется в указанном клиенте; `NOT_RUN` — точное отсутствующее наблюдение, не FAIL. `AUTOMATED_PASS` — уже исполненная автоматическая проверка, не новый HUMAN PASS. PARTIAL группы не делает её выполненные assertions ожидающими. Перед повтором PASS сюда записываются конкретное релевантное изменение, противоречащий результат либо доказанный дефект evidence и затронутый scope; без причины повтор запрещён. Документ, квитанция, кампания или новая synthetic-дата не являются такой причиной. Незавершённый MOBILE не понижает WEB. **Причин инвалидировать перенесённые PASS в delta нет.**
+`HUMAN_PASS` сохраняется в указанном клиенте; `NOT_RUN` — точное отсутствующее наблюдение, не FAIL. `AUTOMATED_PASS` — уже исполненная автоматическая проверка, не новый HUMAN PASS. PARTIAL группы не делает её выполненные assertions ожидающими. Перед повтором PASS сюда записываются конкретное релевантное изменение, противоречащий результат либо доказанный дефект evidence и затронутый scope; без причины повтор запрещён. Документ, квитанция, кампания или новая synthetic-дата не являются такой причиной. Незавершённый MOBILE не понижает WEB. **В окне 15 причин инвалидировать PASS не было. Для нового кода 16 точное влияние указано ниже; история не аннулирована.**
 
 Автоматическое evidence `V11` — [записанный passing run](evidence/first-max-session/validation.json) и [область проверки 11](pivot/11_FIRST_AUTHENTICATED_MAX_SESSION.md#проверки-и-реальные-наблюдения): Node 22.23.2, 40 flow tests в составе 118 уникальных host tests; отдельное уточнение polling E2E в 14:31:59 UTC. Поле `baseline` в JSON обозначает исходную версию до работы 11, а итоговый код привязан квитанцией 11 к C. Проверены тела перечисленных ниже assertions и их passing записи в ignored `.review/first-max-session/flow.log`; набор заново не запускался.
 
@@ -92,23 +94,23 @@ Marker хранится lossless; весь batch валидируется до �
 | F02.M.back-date — custom → Назад → preset | MOBILE B | HUMAN_PASS | 15 C15-04 | C / S15 | Нет |
 | F02.M.back-time — custom → Назад → preset | MOBILE B | HUMAN_PASS | 15 C15-05 | C / S15 | Нет |
 | F02.M.back-budget — custom → Назад → preset | MOBILE B | HUMAN_PASS | 15 C15-06 | C / S15 | Нет |
-| F02.W.back-date — custom → Назад → preset | WEB | NOT_RUN | 13: точный остаток F02 | C | Только Back → «Завтра»; сводку/reset F06 не перепроверять |
-| F02.W.back-time — custom → Назад → preset | WEB | NOT_RUN | 13: точный остаток F02 | C | Только Back → «12:00–18:00» |
-| F02.W.back-budget — custom → Назад → preset | WEB | NOT_RUN | 13: точный остаток F02 | C | Только Back → «До 500 ₽» |
+| F02.W.back-date — custom → Назад → preset | WEB | SUPERSEDED → U16-A (ранее NOT_RUN) | 13: точный остаток F02 | C | Только Back → «Завтра»; сводку/reset F06 не перепроверять |
+| F02.W.back-time — custom → Назад → preset | WEB | SUPERSEDED → U16-A (ранее NOT_RUN) | 13: точный остаток F02 | C | Только Back → «12:00–18:00» |
+| F02.W.back-budget — custom → Назад → preset | WEB | SUPERSEDED → U16-A (ранее NOT_RUN) | 13: точный остаток F02 | C | Только Back → «До 500 ₽» |
 | F03.M.candidate — отдельная мастерская, время известно, тариф неизвестен | MOBILE A | HUMAN_PASS | 11 F03 | C / S11 | Нет |
 | F03.W.order — театр раньше света | WEB A | HUMAN_PASS | 12 C12-03–04 | C / S12 | Нет |
 | F03.W.optin — кандидаты по отдельному действию | WEB A | HUMAN_PASS | 12 C12-03–04 | C / S12 | Нет |
 | F03.W.exclusion — дорогого зала нет | WEB A | HUMAN_PASS | 12 C12-03–04 | C / S12 | Нет |
 | F03.M.results — порядок и исключение дорогого зала | MOBILE B | HUMAN_PASS | 14 C14-02 | C / S13, запрос 25.09.2026 12–18 / 500 ₽ / театр | Нет |
-| F03.W.detail-candidate — «Подробнее 3» открывает мастерскую | WEB | NOT_RUN | 13 остаток F03 | C | После opt-in открыть именно «Подробнее 3» |
+| F03.W.detail-candidate — «Подробнее 3» открывает мастерскую | WEB | SUPERSEDED → U16-B (ранее NOT_RUN) | 13 остаток F03 | C | После opt-in открыть именно «Подробнее 3» |
 | F04.M.card — карточка открывается | MOBILE A | HUMAN_PASS | 11 F04 | C / S11 | Нет |
 | F04.W.conditions — существенные условия | WEB A | HUMAN_PASS | 11 F04 | C / S11 | Нет |
 | F04.W.date-zone — дата, Москва/UTC+3, давность | WEB A | HUMAN_PASS | 12 C12-04 | C / S12 | Нет |
 | F04.W.source — переход по source-link | WEB A | HUMAN_PASS | 12 C12-04 | C / S12 | Нет; HTTP 200 вымышленной страницы не требовался |
 | F04.M.conditions — читаемые существенные условия/дата/зона/давность | MOBILE B | HUMAN_PASS | 15 C15-01 | C / S15, 25.09.2026 12–18 / 500 ₽ / театр | Нет |
 | F04.M.source — открытие ссылки | MOBILE B | HUMAN_PASS | 15 C15-08: браузер открылся; ответ example.org не сообщён | C / S15 | Нет; HTTP 200 вымышленной страницы не требовался |
-| F04.M.full-back — полные условия и возврат | MOBILE B | HUMAN_PARTIAL | 15 C15-09: «Все условия · 1/1» → «К карточке» подтверждено | C / S15 | Только «К результатам» из detail; полные условия и возврат к карточке не повторять |
-| F04.W.full-back — полные условия и возврат | WEB | NOT_RUN | 13 остаток F04 | C | Только ещё не наблюдённый возврат «К карточке» → «К результатам» |
+| F04.M.full-back — полные условия и возврат | MOBILE B | SUPERSEDED → U16-B (исторический HUMAN_PARTIAL сохранён) | 15 C15-09: «Все условия · 1/1» → «К карточке» подтверждено | C / S15 | Только «К результатам» из detail; полные условия и возврат к карточке не повторять |
+| F04.W.full-back — полные условия и возврат | WEB | SUPERSEDED → U16-B (ранее NOT_RUN) | 13 остаток F04 | C | Только ещё не наблюдённый возврат «К карточке» → «К результатам» |
 | F05.W.strict — save/open strict | WEB A | HUMAN_PASS | 11 F05 | C / S11 | Нет |
 | F05.M.strict-open — strict из WEB открыт | MOBILE A | HUMAN_PASS | 11 F05 | C / S11 | Нет |
 | F05.M.candidate-save — candidate сохранён | MOBILE A | HUMAN_PASS | 11 F05 | C / S11 | Нет |
@@ -118,16 +120,16 @@ Marker хранится lossless; весь batch валидируется до �
 | F06.W.date — preset/edit/summary/reset | WEB A | HUMAN_PASS | 13 C13-15–18 | C / S13 | Нет |
 | F06.W.time — preset/edit/summary/reset | WEB A | HUMAN_PASS | 13 C13-19–22 | C / S13 | Нет |
 | F06.W.stale-budget — старое действие не вернуло запрос | WEB A | HUMAN_PASS | 13 C13-11–14 | C / S13 | Нет; краткое notification не критерий целостности |
-| F06.M.date — edit/сводка/reset | MOBILE | NOT_RUN | 13: новых действий A не было | C | Из включённых вариантов изменить дату, увидеть сводку и отдельный opt-in |
-| F06.M.time — edit/сводка/reset | MOBILE | NOT_RUN | 13: новых действий A не было | C | Из включённых вариантов изменить время, увидеть сводку и отдельный opt-in |
-| F06.M.budget — edit/сводка/reset | MOBILE | NOT_RUN | 12 C12-05: только технический результат | C | Из включённых вариантов изменить сумму, увидеть сводку и отдельный opt-in |
+| F06.M.date — edit/сводка/reset | MOBILE | SUPERSEDED → U16-A (ранее NOT_RUN) | 13: новых действий A не было | C | Из включённых вариантов изменить дату, увидеть сводку и отдельный opt-in |
+| F06.M.time — edit/сводка/reset | MOBILE | SUPERSEDED → U16-A (ранее NOT_RUN) | 13: новых действий A не было | C | Из включённых вариантов изменить время, увидеть сводку и отдельный opt-in |
+| F06.M.budget — edit/сводка/reset | MOBILE | SUPERSEDED → U16-A (ранее NOT_RUN) | 12 C12-05: только технический результат | C | Из включённых вариантов изменить сумму, увидеть сводку и отдельный opt-in |
 | F07.W.date — invalid/current/old-code | WEB A | HUMAN_PASS | 12 C12-01 | C / S12 | Нет |
 | F07.W.time — invalid/current/old-code | WEB A | HUMAN_PASS | 12 C12-02 | C / S12 | Нет |
 | F07.W.budget — invalid/current/old-code | WEB A | HUMAN_PASS | 12 C12-03 | C / S12 | Нет |
-| F07.M.date — доставка текущего custom-ввода | MOBILE | NOT_RUN | 13 остаток F07 | C | Фактический код + допустимая дата, увидеть её принятие |
-| F07.M.time — доставка текущего custom-ввода | MOBILE | NOT_RUN | 13 остаток F07 | C | Фактический код + 12:00-18:00, увидеть принятие |
-| F07.M.budget — доставка текущего custom-ввода | MOBILE | NOT_RUN | 13 остаток F07 | C | Фактический код + сумма, увидеть принятие |
-| F07.M.rejection — видимый отказ ввода | MOBILE | NOT_RUN | 13 остаток F07 | C | Один пример неверной суммы, затем прежнего кода; исправление текущим кодом совместить с F07.M.budget |
+| F07.M.date — доставка текущего custom-ввода | MOBILE | SUPERSEDED → U16-A (ранее NOT_RUN) | 13 остаток F07 | C | Фактический код + допустимая дата, увидеть её принятие |
+| F07.M.time — доставка текущего custom-ввода | MOBILE | SUPERSEDED → U16-A (ранее NOT_RUN) | 13 остаток F07 | C | Фактический код + 12:00-18:00, увидеть принятие |
+| F07.M.budget — доставка текущего custom-ввода | MOBILE | SUPERSEDED → U16-A (ранее NOT_RUN) | 13 остаток F07 | C | Фактический код + сумма, увидеть принятие |
+| F07.M.rejection — видимый отказ ввода | MOBILE | SUPERSEDED → U16-A (ранее NOT_RUN) | 13 остаток F07 | C | Один пример неверной суммы, затем прежнего кода; исправление текущим кодом совместить с F07.M.budget |
 | F08.M.delete — обычное удаление | MOBILE A | HUMAN_PASS | 11 follow-up | C / S11 | Нет |
 | F08.W.delete — обычное удаление | WEB A | HUMAN_PASS | 13 C13-35–36 | C / S13 | Нет |
 | F08.W.erase — явное стирание и нейтральный ответ | WEB A | HUMAN_PASS | 12 C12-06 | C / S12 | Нет; действие в F09 только setup изоляции |
@@ -150,11 +152,33 @@ Marker хранится lossless; весь batch валидируется до �
 | F04.S.projection — отсутствие повторов и группировка происхождения | Общий renderer | AUTOMATED_PASS; отдельные HUMAN assertions NOT_RUN | V11; [flow-readiness](../tests/flow-readiness.test.ts), два R10-B | C / synthetic projection | Нет ручного подсчёта всех повторов; чтение MOBILE подтверждено, точный остаток full/back — в клиентских строках |
 | F10.S.restart-delete — restart → list/open → обычное удаление | Общий сервер | AUTOMATED_PASS; единая HUMAN последовательность NOT_RUN | V11; flow-runtime «HTTP: секрет…»; flow-stage4 R08-01 projection/restart | C / synthetic test | Нет нового restart: реальные card/full-conditions и обычные удаления уже наблюдались отдельно |
 
+### Impact mapping 16 — действующая ограниченная delta
+
+Изменения кода, обосновывающие targeted recheck: **PUT/GET/DELETE вместо нового POST на каждый переход; новый renderer/conditions; canonical city/timezone; party/общая цена; отдельные подтверждения; миграция UI references**. Это конкретные изменения scope, а не повтор из-за нового HEAD/fixture. Старые 43 HUMAN_PASS и 9 AUTOMATED_PASS сохраняются как evidence к C, новый код ими не удостоверяется.
+
+| Старое свидетельство / scope | Влияние 16 |
+|---|---|
+| F09.X.isolation, F05.X.continuity, F08.C.generation | CARRIED_FORWARD в ранее наблюдённом объёме. Не повторять A/B erasure или old delete/re-save ради нового HUMAN PASS. Новые поля/миграция проверены автоматизированно. |
+| F05 save/open, F10 restart, F07.S.validation, F06.S.stale, F08.S erasure/generation | Сохраняются исторические факты. Серверные проверки адаптированы и PASS; новый renderer/транспорт проверяется только U16, без дублирования всех комбинаций на обоих клиентах. |
+| F01/F03/F04 presentation, F08 delete/erase UI | AFFECTED: новые тексты/клавиатуры/редактирование требуют U16-B/C. Старая source-link возможность сохранена, открытие всех ссылок заново не требуется. |
+| F02/F06/F07 client-ввод и budget summary | AFFECTED: общий бюджет/city/party, in-place переходы. Новый scope U16-A; прежние HUMAN_PASS остаются привязаны к C. |
+| 13 прежних незавершённых assertions | SUPERSEDED именованными U16 ниже, не PASS. Таблица C сохраняет исходный статус в скобках. Историческая очередь 15 больше не назначает действий. |
+
+| Новый assertion / совмещённое наблюдение | Scope | Automated evidence | Human статус / точный остаток |
+|---|---|---|---|
+| U16-A — город, состав, ввод и сводка | WEB A / MOBILE B | C16 city/party/timezone/reset + прежняя binding-validation; PASS | NOT_RUN обоих клиентов. City button и обычный city text; состав/возраст или неизвестный возраст; бюджет на всех; актуальные формы date/time/budget и видимый отказ/возврат совместить с созданием одного запроса. Принятие/смена параметра видно в новой сводке; отдельный opt-in после изменения. |
+| U16-B — компактная карточка и навигация на месте | WEB A / MOBILE B | C16 renderer, party evaluator, реальный HTTP/polling E2E; PASS | NOT_RUN обоих клиентов. В рамках того же запроса: сумма за всех, последний вход/регистрация, условия→карточка→результаты; один явный candidate с неизвестной детской ценой. Увидеть, что активное сообщение изменилось и клавиатура заменена. |
+| U16-C — два действия удаления/cancel и уборка UI | WEB A / MOBILE B, фактический private-chat API отдельно | C16 ownership/edit/failure/cleanup/generation/erasure; PASS | NOT_RUN обоих клиентов. В сохранённом: ровно «Да, удалить»/«Отмена», cancel возвращает исходный экран со свежими действиями. Одно обычное новое command-сообщение позволяет наблюдать replacement/cleanup только tracked synthetic UI. API acceptance/delete availability записать отдельно от human observation. Новый A/B erasure не нужен. |
+
+Основание SUPERSEDED: F02.W.back-date/time/budget → **U16-A.W**; F06.M.date/time/budget и F07.M.date/time/budget/rejection → **U16-A.M**; F03.W.detail-candidate и F04.W.full-back → **U16-B.W**; остаток F04.M.full-back → **U16-B.M**. U16-C — новый изменённый UI scope, не открытие прежнего серверного PASS.
+
+Единственное доступное будущее окно: **30 минут / 120 polling requests**, последние 5 минут — завершение и остановка. Сейчас бюджет не потрачен. Только после готовности людей и READY, по одному действию с фактической текущей кнопкой/формой; не выдавать всю таблицу как набор заданий. Прежние admission/credentials/process CA и pinned Node сохраняются, pairing не повторяется. Fresh fictional fixture допустим отдельным новым файлом; существующие реальные данные/DB/cursor/TTL не правятся. Нет автоматического второго окна. Если реальный DELETE недоступен, наблюдать один bounded keyboard retirement; старые действия остаются защищены сервером. Provider-контент, deployment и окончательный data-mode не входят.
+
 ### Замороженная очередь delta — окно завершено
 
 Продолжение отдельно разрешено пользователем после остановленного окна 14. До main start сохранены исходный ledger и ограниченная очередь: приоритет F09 → F08.C.generation → недостающие MOBILE → точные WEB-маршруты. WEB=A, MOBILE=B; оба уже допущены. Повторного pairing, запроса токена и переоценки F01/F05/WEB F06–F07 не было. История заморозки и выполненных действий — в [15](pivot/15_DELTA_CLIENT_CONTINUATION.md); она не является активной очередью.
 
-**Текущий остаток — 13 assertions: 12 NOT_RUN и 1 HUMAN_PARTIAL.** Ниже только недостающие действия; после остановки это не инструкции к исполнению:
+**Исторический остаток окна 15 — 13 assertions: 12 NOT_RUN и 1 HUMAN_PARTIAL; теперь SUPERSEDED → U16-A/B.** Ниже только недостающие действия; после остановки это не инструкции к исполнению:
 
 1. MOBILE B: три текущих custom-ввода F07.M.date/time/budget совместить с тремя F06.M edit/summary/reset. Перед каждым редактированием варианты должны быть включены; после принятого ввода увидеть новый запрос и отдельный opt-in. Один неверный ввод и старый код — только F07.M.rejection на сумме. Читать фактический код формы; Back→preset уже выполнены.
 2. MOBILE B: только «К результатам» из detail — остаток F04.M.full-back. «Все условия» → «К карточке», source-link и probe→start завершены; не повторять.
@@ -172,7 +196,7 @@ Marker хранится lossless; весь batch валидируется до �
 
 Main: **18:00:04.023–18:27:48.262 UTC / 21:00:04–21:27:48 МСК**, deadline 18:30:04.023 UTC; 75/120 зарезервированных запросов, 74 успешных ответа/commit, 42 обработанных события. MAX принял 40 messages + 34 answers; это транспортные записи. После последнего человеческого ответа новые действия не запрашивались. Ctrl+C не остановил владельца; адресный `Stop-Process` после сверки PID/пути/start time завершил его, терминал exit 1, SESSION_STOPPED отсутствует. В 18:27:48.873 UTC PID отсутствует, mutex свободен, PENDING/SENDING=0; DB/cursor/admission A+B сохранены, у A 0 закладок, у B 1. **RUNNER=STOPPED, принудительно**, graceful restart не заявлен. Подготовительная неудача resume и замена только истёкшего fixture описаны в 15.
 
-**Одна передача без назначения нового окна:** текущий B/MOBILE находится в home после `/start`, закладка B сохранена. Для отдельно разрешённого продолжения после проверки fixture и READY первый шаг — «Подобрать» как setup к сводке 25.09.2026 / 12–18 / 500 ₽ / театр, если эта дата ещё допустима по фактическому clock; иначе выбрать подходящую будущую дату synthetic-каталога. Первый недостающий результат — текущий custom-ввод даты вместе с F06.M.date reset. Проверенные меню/Back→preset не подтверждать заново. Сейчас runner остановлен; выполнять действия MAX не нужно.
+**Историческая передача 15, заменена U16 выше:** текущий B/MOBILE находится в home после `/start`, закладка B сохранена. Для отдельно разрешённого продолжения после проверки fixture и READY первый шаг — «Подобрать» как setup к сводке 25.09.2026 / 12–18 / 500 ₽ / театр, если эта дата ещё допустима по фактическому clock; иначе выбрать подходящую будущую дату synthetic-каталога. Первый недостающий результат — текущий custom-ввод даты вместе с F06.M.date reset. Проверенные меню/Back→preset не подтверждать заново. Сейчас runner остановлен; выполнять действия MAX не нужно.
 
 ## Передача оператору: отсутствующие условия
 

@@ -26,7 +26,7 @@ async function main() {
       await d.click('Дата'); await d.click('Другая дата'); await d.say('непонятная дата');
       const token = /([A-F0-9]{6}) ГГГГ/.exec(d.screen()!.body.text)![1]; await d.say(`${token} 2030-04-31`);
       await d.click('Главная'); const old = d.payload('Подобрать'); await d.click('О данных'); await d.press(old);
-      await d.say('/delete_data'); await d.click('Да, удалить мои данные'); await d.restart(); await d.say('/saved');
+      await d.say('/delete_data'); await d.click('Да, удалить'); await d.restart(); await d.say('/saved');
     }
     const output = `${real ? 'PRIVATE · HISTORICAL_REPLAY · исходный clock 2026-09-24T08:58:57.295Z; новый карантин применяется; новых данных нет' : 'СИНТЕТИЧЕСКИЙ ЛОКАЛЬНЫЙ HTTP-ПРОГОН · fixed clock 2030-04-05; MAX симулирован'}\n\n${d.transcript.join('\n\n')}`;
     const target = resolve(root, real ? 'private-real-replay.txt' : 'synthetic-transcript.txt'); writeFileSync(target, output.replace(/[A-F0-9]{6}(?= (?:ГГГГ|ЧЧ|СУММА))/g, '<код формы>'));

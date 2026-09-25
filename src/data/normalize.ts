@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { type KudaDownload, type KudaEvent, type KudaPlace, type FactObservation, chronological, observationsOf, culturalCategories, dateSchema, eventSchema, placeSchema } from './kudago.js';
 import { type Snapshot, type Price, type OpeningInterval, type Occurrence, type Venue, type Observation, safeLink, validateSnapshot } from './contract.js';
+import { cities, cityKeySchema, cityDate, type Timezone } from './cities.js';
 
 export function normalizePrice(raw: string | null | undefined, free: boolean | null | undefined): Price {
   const value = (raw ?? '').trim().toLowerCase().replace(/\u00a0/g, ' ');
@@ -60,7 +61,7 @@ export function isoSeconds(value: number | null | undefined): string | null {
   return value !== null && value !== undefined && Number.isSafeInteger(value) && value >= 0 && value < 4102444800
     ? new Date(value * 1000).toISOString() : null;
 }
-export const localDate = (iso: string) => new Date(Date.parse(iso) + 3 * 3600000).toISOString().slice(0, 10);
+export const localDate = cityDate;
 function dateOnly(value: string | null | undefined): string | null {
   return value && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value))
     && new Date(value).toISOString().slice(0, 10) === value ? value : null;
@@ -75,7 +76,7 @@ function venue(row: KudaPlace, observations: Observation[] = []): Venue {
       ? { lat: coords.lat, lon: coords.lon } : null,
     timetable: row.timetable ?? null, opening: parseTimetable(row.timetable) };
 }
-function occurrence(event: KudaEvent, raw: unknown, place: Venue | undefined): Occurrence {
+function occurrence(event: KudaEvent, raw: unknown, place: Venue | undefined, timezone:Timezone): Occurrence {
   const d = dateSchema.parse(raw), issues: string[] = [];
   const start = isoSeconds(d.start), end = isoSeconds(d.end);
   const delta = start && end ? Date.parse(end) - Date.parse(start) : 0;
@@ -92,17 +93,18 @@ function occurrence(event: KudaEvent, raw: unknown, place: Venue | undefined): O
   const opening = kind === 'FLEXIBLE_VISIT' && d.use_place_schedule === true && !structured ? place?.opening ?? null : null;
   if (kind === 'FLEXIBLE_VISIT' && opening === null && !structured) issues.push('OPENING_UNKNOWN');
   const identity = createHash('sha256').update(JSON.stringify(d)).digest('hex').slice(0, 20);
-  return { id: `kudago:${event.id}:occ:${identity}`, venueId: place?.id ?? null, kind, timezone: 'Europe/Moscow',
+  return { id: `kudago:${event.id}:occ:${identity}`, venueId: place?.id ?? null, kind, timezone,
     start: kind === 'TIMED_SESSION' ? start : null, end: validEnd, durationMinutes: null,
     endBasis: validEnd ? 'PUBLISHED' : 'UNKNOWN',
-    activeFrom: d.is_startless ? null : dateOnly(d.start_date) ?? (start ? localDate(start) : null),
-    activeThrough: d.is_endless || placeholder ? null : dateOnly(d.end_date) ?? (end ? localDate(end) : null),
+    activeFrom: d.is_startless ? null : dateOnly(d.start_date) ?? (start ? localDate(start,timezone) : null),
+    activeThrough: d.is_endless || placeholder ? null : dateOnly(d.end_date) ?? (end ? localDate(end,timezone) : null),
     startless: d.is_startless === true, endless: d.is_endless === true, opening,
     scheduleBasis: opening === null ? 'UNKNOWN' : 'PLACE_TIMETABLE',
     metadata: { continuous: d.is_continuous ?? null, usePlaceSchedule: d.use_place_schedule ?? null,
       structuredSchedulePresent: structured, equalEndpoints: equal, placeholderEnd: placeholder }, issues };
 }
 export function normalizeKudago(download: KudaDownload, mode: Snapshot['mode'] = 'LIVE_PUBLIC'): Snapshot {
+  const scopeCity=cityKeySchema.parse(download.city??'kzn'),timezone=cities[scopeCity].timezone;
   const events = download.events.rows.map(e => eventSchema.parse(e));
   const observations = chronological(observationsOf(download));
   const describe = (rows: FactObservation[]): Observation[] => {
@@ -144,15 +146,16 @@ export function normalizeKudago(download: KudaDownload, mode: Snapshot['mode'] =
     const place = event.place ? placeMap.get(`kudago:place:${event.place.id}`) : undefined;
     const unique = new Map<string, Occurrence>();
     for (const d of event.dates ?? []) {
-      const o = occurrence(event, d, place);
+      const o = occurrence(event, d, place,timezone);
       // Длинный период сохраняем по пересечению, не по публикации/началу в окне.
-      if (o.activeThrough && o.activeThrough < localDate(download.window.start)) { omit('PAST_OCCURRENCE'); continue; }
-      if (o.activeFrom && o.activeFrom >= localDate(download.window.end)) { omit('FUTURE_OCCURRENCE'); continue; }
+      if (o.activeThrough && o.activeThrough < localDate(download.window.start,timezone)) { omit('PAST_OCCURRENCE'); continue; }
+      if (o.activeFrom && o.activeFrom >= localDate(download.window.end,timezone)) { omit('FUTURE_OCCURRENCE'); continue; }
       unique.set(o.id, o);
     }
     if (event.dates?.length && unique.size === 0) { omit('NO_OCCURRENCE_IN_WINDOW'); continue; }
     normalized.push({ id: `kudago:${event.id}`, provider: 'kudago', title: event.title, city,
       categories: event.categories, price: normalizePrice(event.price, event.is_free),
+      ...(event.age_restriction!==undefined?{providerAgeLabel:event.age_restriction}:{}),
       admission: { registration: 'UNKNOWN', conditions: [], ticketAvailability: 'NOT_VERIFIED' },
       sourceUrl, sourceLabel: mode === 'LIVE_PUBLIC' ? 'Источник: KudaGo' : 'СИНТЕТИЧЕСКИЙ ПРИМЕР (формат KudaGo)', organizerUrl: null, ticketUrl: null,
       publicationAt: isoSeconds(event.publication_date), providerUpdatedAt: null,
@@ -163,7 +166,7 @@ export function normalizeKudago(download: KudaDownload, mode: Snapshot['mode'] =
       occurrences: [...unique.values()], issues: ['CONDITIONS_NOT_REVERIFIED_BY_ORGANIZER', ...(!place ? ['VENUE_UNKNOWN'] : [])] });
   }
   const complete = download.events.complete && download.places.complete;
-  return validateSnapshot({ version: 2, mode, scope: { city: 'kzn', timezone: 'Europe/Moscow', ...download.window,
+  return validateSnapshot({ version: 2, mode, scope: { city:scopeCity, timezone, ...download.window,
     categories: culturalCategories, zone: null }, retrievedAt: download.retrievedAt, freshnessHours: 24,
     outcome: complete ? 'COMPLETE' : normalized.length ? 'PARTIAL' : 'FAILED', paginationComplete: download.events.complete,
     venueCoverageComplete: download.places.complete,

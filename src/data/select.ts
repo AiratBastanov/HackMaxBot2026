@@ -1,16 +1,19 @@
 import { type Snapshot, type Query, type NormalizedEvent, type Occurrence, type Venue, type Observation, querySchema, validateSnapshot } from './contract.js';
 import { localDate } from './normalize.js';
 import { sourceReviews, type SourceReview } from './reviews.js';
+import { cities, cityDate, cityInstant, localISO } from './cities.js';
+import { assessParty, partyPrice, type PartyAssessment } from './party.js';
 
 export const reasonText: Record<string, string> = {
-  OTHER_CITY: 'В событии или площадке указан город вне Казани.', VENUE_UNKNOWN: 'Не подтверждена физическая площадка в Казани.',
+  OTHER_CITY: 'В событии или площадке указан другой город.', VENUE_UNKNOWN: 'Не подтверждена физическая площадка в выбранном городе.',
   CLOSED: 'Площадка отмечена закрытой.', ZONE_UNKNOWN: 'Нет проверенного соответствия площадки выбранной зоне.',
   WRONG_ZONE: 'Площадка вне выбранной зоны.', WRONG_CATEGORY: 'Категория не соответствует запросу.',
   CATEGORY_UNKNOWN: 'Категория неизвестна.', WRONG_KIND: 'Другой режим посещения.',
   TIME_UNKNOWN: 'Не установлены начало, окончание или длительность конкретного сеанса.',
   PERIOD_UNKNOWN: 'Не установлены границы периода посещения.', OPENING_UNKNOWN: 'Нет применимого расписания на этот день.',
   OUTSIDE_WINDOW: 'Нет подходящего сеанса или пересечения часов входа с окном.',
-  PRICE_UNKNOWN: 'Нельзя подтвердить применимую цену для одного взрослого.', OVER_BUDGET: 'Опубликованная цена выше бюджета.',
+  PRICE_UNKNOWN: 'Нельзя подтвердить итоговую цену для всех посетителей.', OVER_BUDGET: 'Доказанная стоимость выше бюджета на всех.',
+  ADMISSION_UNKNOWN: 'Допуск выбранного состава посетителей требует уточнения.', ADMISSION_MISMATCH: 'Известные требования допуска несовместимы с составом посетителей.',
   NO_OCCURRENCES: 'Нет сведений о конкретных датах посещения.',
   CITY_UNKNOWN: 'Город указан только областью запроса провайдера; город события и площадки не подтверждён.',
   VENUE_CONFLICT: 'В наблюдениях расходятся город или адрес площадки; нужен актуальный адрес у источника.',
@@ -20,16 +23,17 @@ export const reasonText: Record<string, string> = {
 export type Recommendation = { eventId: string; occurrenceId: string; title: string; kind: Occurrence['kind'];
   from: string; until: string; lastEntry: string | null; source: { label: string; url: string }; reasons: string[];
   price: NormalizedEvent['price']; warnings: string[]; eventRetrievedAt: string;
-  eventObservations: Observation[]; venueObservations: Observation[] };
+  eventObservations: Observation[]; venueObservations: Observation[]; partyPrice: PartyAssessment };
 export type Predicate = { name: string; state: 'MATCH' | 'MISMATCH' | 'UNKNOWN'; detail: string };
 export type Candidate = { eventId: string; occurrenceId: string | null; title: string;
   source: { label: string; url: string }; predicates: Predicate[]; factsMatched: string[]; usefulFacts: string[];
   reasons: string[]; checkAtSource: string[]; price: NormalizedEvent['price'];
   time: { from: string | null; until: string | null; lastEntry: string | null; assessment: Predicate };
-  eventRetrievedAt: string; eventObservations: Observation[]; venueObservations: Observation[]; warnings: string[] };
+  eventRetrievedAt: string; eventObservations: Observation[]; venueObservations: Observation[]; warnings: string[]; partyPrice: PartyAssessment };
 type Assessment = { hard: string[]; unknown: string[]; predicates: Predicate[]; facts: string[]; match?: Recommendation; candidate?: Candidate };
 function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | undefined, q: Query, clock: number): Assessment {
   const a: Assessment = { hard: [], unknown: [], predicates: [], facts: [] };
+  const zone = q.timezone ?? cities[q.city].timezone, localDate = (s: string) => cityDate(s, zone), cost = assessParty(e, q);
   const predicate = (name: string, codes: string[], success: string) => {
     const hard = a.hard.filter(c => codes.includes(c)), unknown = a.unknown.filter(c => codes.includes(c));
     a.predicates.push({ name, state: hard.length ? 'MISMATCH' : unknown.length ? 'UNKNOWN' : 'MATCH',
@@ -40,7 +44,7 @@ function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | un
   if ((e.city && e.city !== q.city) || (venue?.city && venue.city !== q.city)) a.hard.push('OTHER_CITY');
   if (e.city !== q.city && venue?.city !== q.city) a.unknown.push('CITY_UNKNOWN');
   if (venue?.observations.some(o => o.conflicts.some(f => ['location', 'address'].includes(f)))) a.unknown.push('VENUE_CONFLICT');
-  predicate('city', ['OTHER_CITY', 'CITY_UNKNOWN', 'VENUE_CONFLICT'], e.city === q.city ? 'В поле города события указана Казань.' : 'В поле города площадки указана Казань.');
+  predicate('city', ['OTHER_CITY', 'CITY_UNKNOWN', 'VENUE_CONFLICT'], `Город: ${cities[q.city].name}.`);
   predicate('destination', ['VENUE_UNKNOWN', 'VENUE_CONFLICT'], `Опубликован адрес: ${venue?.address}.`);
   if (venue?.closed === true) a.hard.push('CLOSED');
   if (e.cancelled === true) a.hard.push('CANCELLED');
@@ -59,13 +63,13 @@ function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | un
     predicate('kind', ['KIND_UNKNOWN', 'WRONG_KIND'], 'Режим посещения соответствует запросу.');
   }
   if (q.budgetRub !== null) {
-    if (e.price.kind === 'FROM' && e.price.lowerBound !== null && e.price.currency === 'RUB' && e.price.lowerBound > q.budgetRub)
-      a.hard.push('OVER_BUDGET');
-    else if (!['FREE', 'EXACT'].includes(e.price.kind) || e.price.amount === null || e.price.currency !== 'RUB'
-      || e.price.applicability !== 'SINGLE_ADULT') a.unknown.push('PRICE_UNKNOWN');
-    else if (e.price.amount > q.budgetRub) a.hard.push('OVER_BUDGET');
-    predicate('price', ['PRICE_UNKNOWN', 'OVER_BUDGET'], `Опубликованный вход на одного взрослого: ${e.price.amount} RUB, в пределах ${q.budgetRub} RUB.`);
+    if (cost.lowerBound > q.budgetRub) a.hard.push('OVER_BUDGET');
+    else if (cost.total === null) a.unknown.push('PRICE_UNKNOWN');
+    predicate('price', ['PRICE_UNKNOWN', 'OVER_BUDGET'], `${partyPrice(cost)}, в пределах ${q.budgetRub} ₽.`);
   }
+  if (cost.admission === 'MISMATCH') a.hard.push('ADMISSION_MISMATCH');
+  if (cost.admission === 'UNKNOWN') a.unknown.push('ADMISSION_UNKNOWN');
+  predicate('admission', ['ADMISSION_UNKNOWN','ADMISSION_MISMATCH'], cost.admissionNotes.join(' ') || 'Известные требования допуска не противоречат составу посетителей.');
   if (e.price.evidence?.trim()) a.facts.push(`Цена в источнике: «${e.price.evidence}».`);
   else if (e.price.kind === 'FREE') a.facts.push('В источнике указан бесплатный вход.');
   if (e.price.kind === 'CONFLICT') a.facts.push('Текст цены противоречит признаку бесплатного входа; требуется уточнить применимый тариф.');
@@ -79,7 +83,7 @@ function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | un
     const start = o.start ? Date.parse(o.start) : null;
     const end = o.end ? Date.parse(o.end) : o.durationMinutes && start !== null ? start + o.durationMinutes * 60000 : null;
     if (start !== null && (start < lower || start >= upper)) a.hard.push('OUTSIDE_WINDOW');
-    if (o.start) a.facts.push(`Начало: ${new Date(Date.parse(o.start) + 3 * 3600000).toISOString().slice(0, 16).replace('T', ' ')} (Москва); ${end === null ? 'окончание не указано' : `окончание: ${new Date(end + 3 * 3600000).toISOString().slice(11, 16)} (Москва)`}.`);
+    if (o.start) a.facts.push(`Начало: ${localISO(o.start, zone).slice(0,16).replace('T',' ')}; ${end === null ? 'окончание не указано' : `окончание: ${localISO(new Date(end).toISOString(),zone).slice(11,16)}`} (${zone}).`);
     if (start === null || end === null || end <= start) a.unknown.push('TIME_UNKNOWN');
     else if (end > upper) a.hard.push('OUTSIDE_WINDOW');
     else { from = o.start; until = new Date(end).toISOString(); }
@@ -89,7 +93,7 @@ function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | un
     if (o.activeThrough && o.activeThrough < localDate(q.start)) a.hard.push('OUTSIDE_WINDOW');
     if (o.activeFrom && o.activeFrom > localDate(q.end)) a.hard.push('OUTSIDE_WINDOW');
     if (o.opening !== null) {
-      const first = Date.parse(`${localDate(q.start)}T00:00:00+03:00`);
+      const first = Date.parse(cityInstant(localDate(q.start), '00:00', zone));
       for (let day = first; day < upper && !from; day += 86400000) {
         const date = localDate(new Date(day).toISOString());
         if ((o.activeFrom && date < o.activeFrom) || (o.activeThrough && date > o.activeThrough)) continue;
@@ -133,17 +137,17 @@ function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Venue | un
       reasons: [...new Set(a.unknown)].map(c => reasonText[c]!),
       checkAtSource: a.predicates.filter(p => p.state === 'UNKNOWN').map(p => `Проверить у источника: ${p.detail}`),
       time: { from, until, lastEntry, assessment: a.predicates.find(p => p.name === 'time')! },
-      price: e.price, eventRetrievedAt: e.retrievedAt, eventObservations: e.observations, venueObservations: venue?.observations ?? [],
+      price: e.price, partyPrice: cost, eventRetrievedAt: e.retrievedAt, eventObservations: e.observations, venueObservations: venue?.observations ?? [],
       warnings: ['Непроверенный вариант; соответствие всем условиям запроса не установлено.', 'Наличие билета и выполнение регистрации пользователем не подтверждены.'] };
     return a;
   }
   const reasons = [o.kind === 'TIMED_SESSION' ? 'Сеанс целиком в заданном окне по опубликованному времени.'
-    : 'Есть пересечение окна с опубликованными часами посещения.', 'Площадка с опубликованным адресом; поле города указывает Казань.'];
-  if (q.budgetRub !== null) reasons.push(`Опубликованный вход на одного взрослого: ${e.price.amount} RUB, в пределах ${q.budgetRub} RUB.`);
+    : 'Есть пересечение окна с опубликованными часами посещения.', `Площадка с опубликованным адресом; город: ${cities[q.city].name}.`];
+  if (q.budgetRub !== null) reasons.push(`${partyPrice(cost)}, в пределах ${q.budgetRub} ₽.`);
   if (q.category) reasons.push(`Подтверждена категория: ${q.category}.`);
   if (q.zone) reasons.push(`Подтверждена зона: ${q.zone}.`);
   a.match = { eventId: e.id, occurrenceId: o.id, title: e.title, kind: o.kind, from, until, lastEntry,
-    source: { label: e.sourceLabel, url: e.sourceUrl }, reasons, price: e.price,
+    source: { label: e.sourceLabel, url: e.sourceUrl }, reasons, price: e.price, partyPrice: cost,
     eventRetrievedAt: e.retrievedAt, eventObservations: e.observations, venueObservations: venue?.observations ?? [],
     warnings: ['Условия организатором повторно не проверены; получение API сегодня не подтверждает их свежесть.',
       ...(venue?.stub ? ['Редакционная карточка площадки — заглушка; сведения о помещении независимо не проверены.'] : []),
@@ -162,6 +166,7 @@ export function select(snapshotInput: unknown | null, queryInput: unknown, clock
     coverage: 'PROVIDER_CATALOG_ONLY', catalogIncomplete: true, proposal: null as string | null };
   if (snapshotInput === null) return { ...empty, status: 'SOURCE_UNAVAILABLE' };
   const snapshot = validateSnapshot(snapshotInput);
+  if (snapshot.scope.city !== query.city) return { ...empty, status: 'CITY_UNAVAILABLE' };
   if (snapshot.mode === 'SYNTHETIC_FIXTURE' && !allowSynthetic) return { ...empty, status: 'SYNTHETIC_OPT_IN_REQUIRED' };
   if (snapshot.outcome === 'FAILED') return { ...empty, status: 'SOURCE_UNAVAILABLE' };
   if (time < Date.parse(snapshot.retrievedAt)) return { ...empty, status: 'SOURCE_STALE' };

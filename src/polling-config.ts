@@ -48,7 +48,9 @@ export function loadPollingConfig(env: NodeJS.ProcessEnv, pairing = false, optio
 
 export function loadCurrentSynthetic(config: Config, now = Date.now()) {
   const catalog = Catalog.load(config);
-  const age = now - Date.parse(catalog.snapshot?.retrievedAt ?? '');
-  if (catalog.snapshot?.mode !== 'SYNTHETIC_FIXTURE' || !Number.isFinite(age) || age < 0 || age > 3600000) throw Error('FRESH_SYNTHETIC_CURRENT_REQUIRED');
+  if (!catalog.availableCities.length || catalog.availableCities.some(city=>{
+    const snapshot=catalog.forCity(city)!,age=now-Date.parse(snapshot.retrievedAt);
+    return snapshot.mode!=='SYNTHETIC_FIXTURE'||!Number.isFinite(age)||age<0||age>3600000;
+  })) throw Error('FRESH_SYNTHETIC_CURRENT_REQUIRED');
   return catalog;
 }

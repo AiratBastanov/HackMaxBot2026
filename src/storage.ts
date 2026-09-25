@@ -4,6 +4,7 @@ import { dirname } from 'node:path';
 import type { Config } from './config.js';
 import type { AcceptedEvent } from './contracts.js';
 import type { MaxOperation } from './max.js';
+import { normalizeCity, resolveCity } from './data/cities.js';
 
 export type InboxRow = { id: number; payload: string; attempts: number; received_at: number };
 export type ProbeRow = { id: string; actor: string; chat: string; expires_at: number; state: string; question_mid: string | null; created_at: number };
@@ -19,7 +20,7 @@ export class Storage {
     this.db.pragma('synchronous = FULL');
     this.db.pragma('foreign_keys = ON');
     const version = this.db.pragma('user_version', { simple: true });
-    if (![0, 1, 2].includes(Number(version))) { this.db.close(); throw new Error('Версия SQLite не поддерживается'); }
+    if (![0, 1, 2, 3].includes(Number(version))) { this.db.close(); throw new Error('Версия SQLite не поддерживается'); }
     if(Number(version)>0) {
       const recovery=this.getMeta('recovery_state');
       if(recovery==='BACKUP'||recovery==='QUARANTINED') {this.db.close();throw new Error('RECOVERY_QUARANTINED');}
@@ -60,12 +61,22 @@ export class Storage {
         CREATE TABLE bookmarks (actor TEXT NOT NULL, identity TEXT NOT NULL, generation TEXT NOT NULL, saved_at INTEGER NOT NULL, data TEXT NOT NULL, PRIMARY KEY(actor,identity));
         PRAGMA user_version = 2;
       `);
+      if (Number(version) < 3) this.db.exec(`
+        CREATE TABLE flow_screens (actor TEXT PRIMARY KEY, chat TEXT NOT NULL, epoch TEXT NOT NULL, mid TEXT,
+          purpose TEXT NOT NULL, revision INTEGER NOT NULL, force_new INTEGER NOT NULL, updated_at INTEGER NOT NULL);
+        CREATE TABLE ui_messages (mid TEXT PRIMARY KEY, actor TEXT NOT NULL, chat TEXT NOT NULL, epoch TEXT NOT NULL,
+          purpose TEXT NOT NULL, revision INTEGER NOT NULL, status TEXT NOT NULL, body_hash TEXT, updated_at INTEGER NOT NULL, audience TEXT);
+        PRAGMA user_version = 3;
+      `);
       const identity = `${config.ingress === 'test-polling' ? 'test-polling' : config.mode}:${config.botId}`;
       const previous = this.getMeta('identity');
       if (previous && previous !== identity) throw new Error('SQLite принадлежит другому режиму/боту');
       this.setMeta('identity', identity);
       // После crash неизвестно, принял ли MAX запрос. Не отправляем повторно.
-      if (recoverInterrupted) this.db.prepare("UPDATE outbox SET status='UNKNOWN_RESULT', result='RESTART_DURING_SEND', finished_at=? WHERE status='SENDING'").run(Date.now());
+      if (recoverInterrupted) {
+        this.db.prepare("UPDATE outbox SET status='UNKNOWN_RESULT', result='RESTART_DURING_SEND', finished_at=? WHERE status='SENDING'").run(Date.now());
+        this.db.prepare("UPDATE ui_messages SET status='UNCERTAIN' WHERE status='MUTATING'").run();
+      }
     }).immediate(); } catch (error) { this.db.close(); throw error; }
   }
   close() { this.db.close(); }
@@ -91,7 +102,13 @@ export class Storage {
       }
       const backlog = this.db.prepare("SELECT count(*) n FROM inbox WHERE status='PENDING'").get() as { n: number };
       if (backlog.n >= 1000) throw new Error('INBOX_FULL');
-      this.db.prepare('INSERT INTO inbox(delivery_key,kind,payload,received_at) VALUES(?,?,?,?)').run(event.key, event.kind, JSON.stringify(event), now);
+      let accepted=event;
+      if(event.input && /^[\p{L} -]+$/u.test(event.input)) {
+        const state=this.db.prepare('SELECT data FROM flow_states WHERE actor=?').get(event.actor) as {data:string}|undefined;
+        const cityInput=state&&JSON.parse(state.data).stage==='city';
+        accepted={...event,input:cityInput?(resolveCity(event.input).length?normalizeCity(event.input):'?'):undefined};
+      }
+      this.db.prepare('INSERT INTO inbox(delivery_key,kind,payload,received_at) VALUES(?,?,?,?)').run(event.key, event.kind, JSON.stringify(accepted), now);
       return 'accepted' as const;
     }).immediate();
   }
@@ -118,6 +135,8 @@ export class Storage {
       this.db.prepare('DELETE FROM probes WHERE expires_at<?').run(now - 86400000);
       this.db.prepare('DELETE FROM flow_actions WHERE expires_at<=?').run(now);
       this.db.prepare('DELETE FROM flow_states WHERE updated_at<?').run(now - 30 * 86400000);
+      this.db.prepare('DELETE FROM flow_screens WHERE updated_at<?').run(now - 30 * 86400000);
+      this.db.prepare('DELETE FROM ui_messages WHERE updated_at<? AND mid NOT IN (SELECT mid FROM flow_screens WHERE mid IS NOT NULL)').run(now - 86400000);
       this.db.prepare('DELETE FROM contacts WHERE updated_at<? AND actor NOT IN (SELECT actor FROM flow_states) AND actor NOT IN (SELECT actor FROM bookmarks)').run(now - 7 * 86400000);
     }).immediate();
   }

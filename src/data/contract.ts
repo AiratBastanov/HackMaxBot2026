@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { cities, cityKeySchema, timezoneSchema } from './cities.js';
 
 export function safeLink(value: unknown, host?: string): string | null {
   if (typeof value !== 'string' || !value || /[\s<>\\\u0000-\u001f]/u.test(value)) return null;
@@ -7,7 +8,7 @@ export function safeLink(value: unknown, host?: string): string | null {
     if (!['https:', 'http:'].includes(url.protocol) || url.username || url.password || url.port
       || !url.hostname.includes('.') || url.hostname === 'localhost' || /^(?:\d+\.){3}\d+$/.test(url.hostname)
       || url.hostname.endsWith('.local') || (host && url.hostname !== host
-        && !(host === 'kudago.com' && url.hostname === 'kzn.kudago.com'))) return null;
+        && !(host === 'kudago.com' && Object.keys(cities).some(c => url.hostname === `${c}.kudago.com`)))) return null;
     return value; // Сохраняем исходный адрес, не конструируем URL по ID/названию.
   } catch { return null; }
 }
@@ -28,6 +29,17 @@ export const priceSchema = z.object({ kind: z.enum(['FREE', 'EXACT', 'FROM', 'RA
   amount: z.number().nonnegative().nullable(), lowerBound: z.number().nonnegative().nullable(), currency: z.literal('RUB').nullable(),
   applicability: z.enum(['SINGLE_ADULT', 'UNRESOLVED']), evidence: text.nullable(), conditions: z.array(text) }).strict();
 export type Price = z.infer<typeof priceSchema>;
+export const partySchema = z.object({ adults: z.number().int().min(1).max(8),
+  childAges: z.array(z.number().int().min(0).max(17).nullable()).max(7) }).strict()
+  .refine(p => p.adults + p.childAges.length <= 8, 'party_max_8');
+export type Party = z.infer<typeof partySchema>;
+export const tariffSchema = z.object({ audience: z.enum(['ADULT', 'CHILD', 'GROUP']),
+  minAge: z.number().int().min(0).max(17).nullable(), maxAge: z.number().int().min(0).max(17).nullable(),
+  kind: z.enum(['EXACT', 'FREE', 'FROM', 'CONDITIONAL', 'PACKAGE', 'UNKNOWN']),
+  amount: z.number().nonnegative().nullable(), lowerBound: z.number().nonnegative().nullable(),
+  currency: z.literal('RUB'), applicable: z.boolean(), conditions: z.array(text), evidence: text.nullable() }).strict()
+  .refine(t => t.minAge === null || t.maxAge === null || t.minAge <= t.maxAge, 'tariff_age_band')
+  .refine(t => !['EXACT','FREE'].includes(t.kind) || t.amount !== null && (t.kind !== 'FREE' || t.amount === 0), 'tariff_amount');
 export const venueSchema = z.object({ id: namespace, title: text.nullable(), city: z.string().nullable(), zone: z.string().nullable(),
   address: text.nullable(), sourceUrl: link.nullable(), websiteUrl: link.nullable(),
   closed: z.boolean().nullable(), stub: z.boolean().nullable(), physical: z.boolean().nullable(),
@@ -35,7 +47,7 @@ export const venueSchema = z.object({ id: namespace, title: text.nullable(), cit
   coordinates: z.object({ lat: z.number().min(-90).max(90), lon: z.number().min(-180).max(180) }).nullable(),
   timetable: text.nullable(), opening: z.array(interval).nullable() }).strict();
 export const occurrenceSchema = z.object({ id: namespace, venueId: namespace.nullable(),
-  kind: z.enum(['TIMED_SESSION', 'FLEXIBLE_VISIT', 'UNRESOLVED']), timezone: z.literal('Europe/Moscow'),
+  kind: z.enum(['TIMED_SESSION', 'FLEXIBLE_VISIT', 'UNRESOLVED']), timezone: timezoneSchema,
   start: nullableInstant, end: nullableInstant, durationMinutes: z.number().positive().max(1440).nullable(),
   endBasis: z.enum(['PUBLISHED', 'PUBLISHED_DURATION', 'UNKNOWN']),
   activeFrom: date.nullable(), activeThrough: date.nullable(), startless: z.boolean(), endless: z.boolean(),
@@ -45,7 +57,10 @@ export const occurrenceSchema = z.object({ id: namespace, venueId: namespace.nul
   issues: z.array(text) }).strict();
 export const normalizedEventSchema = z.object({ id: namespace, provider: z.enum(['kudago', 'timepad', 'synthetic']),
   title: text.min(1), city: z.string().nullable(), categories: z.array(z.string()), price: priceSchema,
+  tariffs: z.array(tariffSchema).max(30).optional(), providerAgeLabel: text.nullable().optional(),
   admission: z.object({ registration: z.enum(['REQUIRED', 'NOT_REQUIRED', 'UNKNOWN']), conditions: z.array(text),
+    requirements: z.object({ minimumAge: z.number().int().min(0).max(99).nullable(),
+      children: z.enum(['ALLOWED', 'PROHIBITED', 'UNKNOWN']), accompaniedByAdult: z.enum(['REQUIRED', 'NOT_REQUIRED', 'UNKNOWN']) }).strict().optional(),
     ticketAvailability: z.literal('NOT_VERIFIED') }).strict(),
   sourceUrl: link, sourceLabel: text.min(1), organizerUrl: link.nullable(), ticketUrl: link.nullable(),
   publicationAt: nullableInstant, providerUpdatedAt: nullableInstant, retrievedAt: instant,
@@ -58,7 +73,7 @@ const statistics = z.object({ providerCount: z.number().int().nonnegative().null
   normalizedEvents: z.number().int().nonnegative(), occurrences: z.number().int().nonnegative(), venues: z.number().int().nonnegative(),
   omitted: z.record(z.string(), z.number().int().nonnegative()) }).strict();
 export const snapshotSchema = z.object({ version: z.literal(2), mode: z.enum(['LIVE_PUBLIC', 'SYNTHETIC_FIXTURE']),
-  scope: z.object({ city: z.literal('kzn'), timezone: z.literal('Europe/Moscow'), start: instant, end: instant,
+  scope: z.object({ city: cityKeySchema, timezone: timezoneSchema, start: instant, end: instant,
     categories: z.array(z.string()), zone: z.null() }).strict(),
   retrievedAt: instant, freshnessHours: z.literal(24), outcome: z.enum(['COMPLETE', 'PARTIAL', 'FAILED']),
   paginationComplete: z.boolean(), venueCoverageComplete: z.boolean(), enrichedAt: nullableInstant,
@@ -66,6 +81,7 @@ export const snapshotSchema = z.object({ version: z.literal(2), mode: z.enum(['L
   publicDisplay: z.literal('NOT_CLEARED'), issues: z.array(text), stats: statistics,
   events: z.array(normalizedEventSchema).max(5000), venues: z.array(venueSchema).max(5000) }).strict().superRefine((s, ctx) => {
     const fail = (message: string) => ctx.addIssue({ code: 'custom', message });
+    if (cities[s.scope.city].timezone !== s.scope.timezone) fail('city_timezone');
     if (Date.parse(s.scope.end) <= Date.parse(s.scope.start)) fail('scope_interval');
     if (s.outcome === 'COMPLETE' && (!s.paginationComplete || !s.venueCoverageComplete)) fail('completeness');
     if (s.outcome === 'FAILED' && s.events.length) fail('failed_with_events');
@@ -81,6 +97,7 @@ export const snapshotSchema = z.object({ version: z.literal(2), mode: z.enum(['L
       if (['FREE', 'EXACT'].includes(e.price.kind) && (e.price.amount === null || e.price.currency !== 'RUB'
         || e.price.applicability !== 'SINGLE_ADULT' || (e.price.kind === 'FREE' && e.price.amount !== 0))) fail('price_proof');
       for (const o of e.occurrences) {
+        if (o.timezone !== s.scope.timezone) fail('occurrence_timezone');
         if (!o.id.startsWith(`${e.id}:`) || occurrenceIds.has(o.id)) fail('occurrence_identity'); occurrenceIds.add(o.id);
         if (o.venueId !== null && !venueIds.has(o.venueId)) fail('missing_venue');
         if (o.end && (!o.start || Date.parse(o.end) <= Date.parse(o.start))) fail('invalid_session_end');
@@ -115,9 +132,14 @@ export function validateSnapshot(value: unknown): Snapshot {
   return snapshotSchema.parse(value);
 }
 
-export const querySchema = z.object({ city: z.literal('kzn'), start: instant, end: instant,
+export const querySchema = z.object({ version: z.literal(2).optional(), city: cityKeySchema, timezone: timezoneSchema.optional(), start: instant, end: instant,
+  party: partySchema.optional(), budgetBasis: z.enum(['PARTY_TOTAL', 'SINGLE_ADULT']).optional(),
   budgetRub: z.number().nonnegative().nullable(), category: z.string().nullable(), zone: z.string().nullable(),
   kind: z.enum(['ANY', 'TIMED_SESSION', 'FLEXIBLE_VISIT']),
   preferences: z.object({ categories: z.array(z.string()) }).strict() }).strict().refine(q =>
-    Date.parse(q.end) > Date.parse(q.start) && Date.parse(q.end) - Date.parse(q.start) <= 7 * 86400000, 'query_interval');
+    Date.parse(q.end) > Date.parse(q.start) && Date.parse(q.end) - Date.parse(q.start) <= 7 * 86400000, 'query_interval')
+  .refine(q => q.timezone === undefined || q.timezone === cities[q.city].timezone, 'query_timezone')
+  .refine(q => q.version !== 2 || Boolean(q.party && q.timezone && q.budgetBasis === 'PARTY_TOTAL'), 'query_v2_context')
+  .refine(q => q.budgetBasis === 'PARTY_TOTAL' || !q.party || q.party.adults === 1 && !q.party.childAges.length, 'legacy_budget_basis');
 export type Query = z.infer<typeof querySchema>;
+export const queryParty = (q: Query): Party => q.party ?? { adults: 1, childAges: [] };

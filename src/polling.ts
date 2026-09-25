@@ -52,8 +52,9 @@ export function openCampaign(store: Storage, command: 'start' | 'resume' | 'pair
 }
 
 export function observeDelivery(store: Storage, campaign: Campaign, value: object): boolean {
-  const row=value as {operation?:string;errorClass?:string;result?:string};
-  if(row.operation!=='messages'&&row.operation!=='answers') return false;
+  const row=value as {operation?:string;purpose?:string;errorClass?:string;result?:string};
+  if(row.errorClass==='AUTH') {campaign.stopped=true;saveCampaign(store,campaign);return true;}
+  if(!['messages','answers','edit'].includes(row.operation??'')||row.purpose==='culture_retire') return false;
   if(row.errorClass) {
     campaign.sendErrors=row.errorClass===campaign.sendError?Math.min(3,campaign.sendErrors+1):1;
     campaign.sendError=row.errorClass;

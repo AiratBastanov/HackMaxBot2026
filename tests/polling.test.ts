@@ -223,14 +223,30 @@ test('HTTP E2E: updates → decoder/admission/SQLite/worker/renderer → outgoin
   const dir=workspace(t),c=config(resolve(dir,'session.sqlite'));c.requestTimeoutMs=3000;
   let now=Date.now(),seq=0,marker=9007199254740993n;const snapshot=stage4Fixture(new Date(now)),catalog=new Catalog('synthetic-test',snapshot);
   let incoming:unknown[]=[],hold=false,releaseHeld:(()=>void)|undefined;const screens:MessageRequest[]=[],transcript:string[]=[];
+  const remote=new Map<string,{recipient:string;body:MessageRequest}>(),methods:string[]=[];
   const server=createServer(async(req,res)=>{
     try {
       const url=new URL(req.url!,'http://localhost');res.setHeader('Content-Type','application/json');
       if(url.pathname==='/updates') {if(hold)await new Promise<void>(r=>{releaseHeld=r;});const updates=incoming;incoming=[];res.end(encode({updates,marker:marker++}));return;}
       if(url.pathname==='/subscriptions'){res.end('{"subscriptions":[]}');return;}
       if(url.pathname==='/me'){res.end(encode({user_id:777,is_bot:true,first_name:'СИНТЕТИКА'}));return;}
-      let text='';for await(const chunk of req)text+=chunk;const body=JSON.parse(text);
-      if(url.pathname==='/messages') {screens.push(body);transcript.push(body.text);res.end(encode({message:message(url.searchParams.get('user_id')!,`out-${++seq}`)}));return;}
+      let text='';for await(const chunk of req)text+=chunk;const body=text?JSON.parse(text):null;
+      if(url.pathname.startsWith('/messages/')) {
+        methods.push('GET');const mid=decodeURIComponent(url.pathname.slice('/messages/'.length)),known=remote.get(mid);
+        if(!known){res.statusCode=404;res.end('{}');return;}
+        const m=message(known.recipient,mid);res.end(encode({...m,body:{...m.body,...known.body}}));return;
+      }
+      if(url.pathname==='/messages') {
+        methods.push(req.method!);
+        if(req.method==='POST') {
+          const mid=`out-${++seq}`,recipient=url.searchParams.get('user_id')!;remote.set(mid,{recipient,body});screens.push(body);transcript.push(body.text);res.end(encode({message:{...message(recipient,mid),body:{...message(recipient,mid).body,...body}}}));return;
+        }
+        const mid=url.searchParams.get('message_id')!,known=remote.get(mid);
+        if(!known){res.end('{"success":false}');return;}
+        if(req.method==='PUT'){assert(Array.isArray(body.attachments));assert.equal(body.notify,false);known.body=body;screens.push(body);transcript.push(body.text);}
+        else if(req.method==='DELETE')remote.delete(mid);
+        res.end('{"success":true}');return;
+      }
       if(url.pathname==='/answers'){res.end('{"success":true}');return;}
       res.statusCode=404;res.end('{}');
     } catch {res.statusCode=500;res.end('{}');}
@@ -244,14 +260,14 @@ test('HTTP E2E: updates → decoder/admission/SQLite/worker/renderer → outgoin
   const send=async(event:unknown)=>{incoming=[event];commitBatch(s,c,await max.updates(s.pollingMarker(),signal()),now);await drain();};
   await send(reply(undefined,++now,'/start',ACTOR,'start'));
   assert.match(screens.at(-1)!.text,/Культурный план/);
-  const click=async(text:string)=>{const b=screens.at(-1)!.attachments!.flatMap(a=>a.payload.buttons.flat()).find(b=>b.text===text);assert(b&&b.type==='callback',text);const v=callback('',`cb-${++seq}`,ACTOR,++now);v.callback.payload=b.payload;await send(v);};
-  for(const label of ['Подобрать','Завтра','12:00–18:00','До 500 ₽','Театр','Показать результаты'])await click(label);
+  const click=async(text:string)=>{const b=screens.at(-1)!.attachments!.flatMap(a=>a.payload.buttons.flat()).find(b=>b.text===text);assert(b&&b.type==='callback',text);const v=callback('',`cb-${++seq}`,ACTOR,++now);v.callback.payload=b.payload;v.message.body.mid=(s.db.prepare('SELECT mid FROM flow_screens WHERE actor=?').get(ACTOR) as {mid:string}).mid;await send(v);};
+  for(const label of ['Подобрать','Казань','Завтра','12:00–18:00','Продолжить','До 500 ₽','Театр','Показать результаты'])await click(label);
   assert.match(screens.at(-1)!.text,/Совпадает по известным условиям/);assert.doesNotMatch(screens.at(-1)!.text,/мастерская/);
-  await click('Подробнее 1');await click('Все условия');assert.match(screens.at(-1)!.text,/200|регистрац/);
+  await click('Подробнее 1');await click('Условия посещения');assert.match(screens.at(-1)!.text,/200|регистрац/);
   await click('К карточке');await click('Сохранить');assert.equal((s.db.prepare('SELECT count(*) n FROM bookmarks').get() as {n:number}).n,1);
   await click('Мои события');await click('Открыть 1');await click('Удалить закладку');await click('Да, удалить');
   assert.equal((s.db.prepare('SELECT count(*) n FROM bookmarks').get() as {n:number}).n,0);
-  await click('Главная');for(const label of ['Подобрать','Завтра','12:00–18:00','До 500 ₽','Театр','Показать результаты','Показать варианты для проверки'])await click(label);
+  await click('Главная');for(const label of ['Подобрать','Казань','Завтра','12:00–18:00','Продолжить','До 500 ₽','Театр','Показать результаты','Показать варианты для проверки'])await click(label);
   assert.match(screens.at(-1)!.text,/Варианты, где нужно уточнение/);await click('Подробнее 3');assert.match(screens.at(-1)!.text,/Нужно уточнить|тариф/);await click('Сохранить');
   const savedMarker=s.pollingMarker();await worker.stop();s.close();s=storage(t,c);worker=new Worker(s,c,new LiveMax(c,fetcher),()=>now,undefined,catalog);
   assert.equal(s.pollingMarker(),savedMarker);await send(reply(undefined,++now,'/saved',ACTOR,'saved-after-restart'));assert.match(screens.at(-1)!.text,/мастерская/);
@@ -263,7 +279,7 @@ test('HTTP E2E: updates → decoder/admission/SQLite/worker/renderer → outgoin
   assert.equal((s.db.prepare("SELECT count(*) n FROM inbox WHERE status='FAILED'").get() as {n:number}).n,0);
   // Сообщённое в real-client сеансе расхождение: /saved после erasure не должен снова просить подтверждение.
   hold=false;await send(reply(undefined,++now,'/delete_data',ACTOR,'erase-command'));
-  await click('Да, удалить мои данные');
+  await click('Да, удалить');
   for(const client of ['mobile','web']) {
     await send(reply(undefined,++now,'/saved',ACTOR,`saved-after-erase-${client}`));
     assert.match(screens.at(-1)!.text,/Закладок пока нет/);
@@ -272,5 +288,8 @@ test('HTTP E2E: updates → decoder/admission/SQLite/worker/renderer → outgoin
     assert(!labels.includes('Да, удалить мои данные'));assert(!labels.includes('Да, удалить'));
   }
   assert.equal((s.db.prepare('SELECT count(*) n FROM bookmarks').get() as {n:number}).n,0);
-  mkdirSync('.review/first-max-session',{recursive:true});writeFileSync('.review/first-max-session/synthetic-transcript.md','# Локальный polling E2E; реальные клиенты NOT_VERIFIED\n\n'+transcript.map(s=>s.replace(/\b[A-F0-9]{6}\b/g,'<код формы>')).join('\n\n---\n\n'));
+  const current=s.db.prepare('SELECT mid,chat FROM flow_screens WHERE actor=?').get(ACTOR) as {mid:string;chat:string};
+  const read=await new LiveMax(c,fetcher).execute({method:'read',mid:current.mid,chat:current.chat,recipient:ACTOR});assert.match(read.message!.text,/Закладок пока нет/);
+  assert(methods.includes('PUT'));assert(methods.includes('DELETE'));assert(methods.includes('GET'));
+  mkdirSync('.review/compact-ux',{recursive:true});writeFileSync('.review/compact-ux/polling-synthetic-transcript.md','# Локальный polling HTTP E2E; реальные клиенты NOT_VERIFIED\n\n'+transcript.map(s=>s.replace(/\b[A-F0-9]{6}\b/g,'<код формы>')).join('\n\n---\n\n'));
 });

@@ -24,7 +24,7 @@ export async function refreshWalkthrough(output=resolve('docs/evidence/real-refr
     const stored=JSON.parse((before[0] as {data:string}).data);
     await d.reloadCatalog(activePath);await d.say('/saved');await d.click('Открыть 1');capture('Та же закладка после смены снимка и restart');
     assert(deliveryAllowed(d.screen()!,d.config,d.catalog,d.now));
-    assert(d.screen()!.body.text.includes('Сохранённый выбор · текущие условия'));
+    assert(d.screen()!.body.text.includes('Сохранено · Подходит по известным условиям'));
     assert.notEqual(d.screen()!.displayRefs![0]!.snapshotHash,stored.displayRef.snapshotHash);
     assert.deepEqual(d.runtime.store.db.prepare('SELECT * FROM bookmarks').all(),before);
     await d.click('Условия посещения');capture('Текущие условия');await d.click('К карточке');

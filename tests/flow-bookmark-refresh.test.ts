@@ -68,13 +68,25 @@ test('R18 HTTP application: save -> replacement/reload -> current refs -> cancel
     const replacement=fixture(),path=resolve(dir,'snapshot.json'),reviewPath=resolve(dir,'review.json');
     writeFileSync(path,JSON.stringify({snapshots:replacement.values}));writeFileSync(reviewPath,JSON.stringify(replacement.review));
     d.config.reviewPath=reviewPath;await d.reloadCatalog(path);await d.say('/saved');await d.click('Открыть 1');
-    assert(d.screen()!.body.text.includes('Сохранённый выбор · текущие условия'));assert(d.screen()!.body.text.includes('Изменений тарифа, времени и допуска не выявлено'));
+    assert(d.screen()!.body.text.includes('Сохранено · Подходит по известным условиям'));assert(!d.screen()!.body.text.includes('Изменились условия'));
     assert.equal(d.screen()!.body.text.match(/Москва, UTC\+3/g)?.length,1);
     assert.match(d.screen()!.body.text,/Выбрано:.*12:00–18:00/);
     assert(deliveryAllowed(d.screen()!,d.config,d.catalog,d.now));assert.notEqual(d.screen()!.displayRefs![0]!.snapshotHash,JSON.parse(before.data).displayRef.snapshotHash);
     assert.deepEqual(d.runtime.store.db.prepare('SELECT * FROM bookmarks').get(),before);
+    // Предупреждение проверяется в полном сообщении приложения, не только в helper.
+    const savedCard=JSON.parse(before.data),changed=fixture(values=>{
+      const event=values.find(s=>s.scope.city===savedCard.query.city)!.events.find(e=>e.id===savedCard.eventId)!;
+      event.price={...event.price,kind:'EXACT',amount:900,lowerBound:900};event.tariffs=[];event.admission.registration='REQUIRED';
+    });
+    writeFileSync(path,JSON.stringify({snapshots:changed.values}));writeFileSync(reviewPath,JSON.stringify(changed.review));
+    await d.reloadCatalog(path);await d.say('/saved');assert.match(d.screen()!.body.text,/условия изменились/);await d.click('Открыть 1');
+    assert.match(d.screen()!.body.text,/Изменились условия: тариф, допуск/);assert.match(d.screen()!.body.text,/выше бюджета/);
+    assert.match(d.screen()!.body.text,/900 ₽/);assert.match(d.screen()!.body.text,/Регистрация: обязательна/);
+    assert.deepEqual(d.runtime.store.db.prepare('SELECT * FROM bookmarks').get(),before);
+    writeFileSync(path,JSON.stringify({snapshots:replacement.values}));writeFileSync(reviewPath,JSON.stringify(replacement.review));
+    await d.reloadCatalog(path);await d.say('/saved');await d.click('Открыть 1');
     await d.click('Условия посещения');await d.click('К карточке');await d.click('Удалить закладку');
-    assert.deepEqual(d.buttons().map(b=>b.text),['Да, удалить','Отмена']);await d.click('Отмена');assert(d.screen()!.body.text.includes('Сохранённый выбор'));
+    assert.deepEqual(d.buttons().map(b=>b.text),['Да, удалить','Отмена']);await d.click('Отмена');assert(d.screen()!.body.text.includes('Сохранено ·'));
     await d.click('Удалить закладку');const stale=d.payload('Да, удалить');await d.click('Да, удалить');
     assert.equal((d.runtime.store.db.prepare('SELECT count(*) n FROM bookmarks').get() as {n:number}).n,0);
     await d.enter();await chooseDefaults(d);await d.click('Подробнее 1');await d.click('Сохранить');

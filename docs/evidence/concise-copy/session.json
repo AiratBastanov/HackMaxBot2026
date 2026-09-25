@@ -1,0 +1,33 @@
+{
+  "status": "STOPPED",
+  "startedAt": "2026-09-25T18:16:29.074Z",
+  "deadline": "2026-09-25T18:46:29.074Z",
+  "completionOnlyFrom": "2026-09-25T18:41:29.074Z",
+  "stoppedAt": "2026-09-25T18:45:13.736Z",
+  "pollingRequestsReserved": 72,
+  "pollingReceipts": 71,
+  "acceptedUpdates": 26,
+  "transport": {
+    "messages:MAX_ACCEPTED": 1,
+    "delete:MAX_ACCEPTED": 1,
+    "answers:MAX_ACCEPTED": 22,
+    "edit:MAX_ACCEPTED": 24
+  },
+  "exitCode": 1,
+  "ownedPidAbsent": true,
+  "consumerLock": "RELEASED_AND_VERIFIED",
+  "pendingOrSending": 0,
+  "databasePreserved": true,
+  "cursorPresent": true,
+  "admittedTesters": 2,
+  "realCatalog": "536829346bd0a60d3b35",
+  "refreshRequests": 0,
+  "subscriptionMutations": 0,
+  "starts": 1,
+  "restarts": 0,
+  "pairing": false,
+  "clock": "SYSTEM",
+  "deployment": "NOT_RUN",
+  "REAL_APPLICATION_SMOKE": "REQUIRED",
+  "humanEvidence": "human.md"
+}

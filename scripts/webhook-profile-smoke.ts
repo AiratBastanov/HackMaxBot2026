@@ -69,7 +69,7 @@ async function main() {
   const drain=async()=>{for(let i=0;i<250;i++){const rows=dbRead("SELECT (SELECT count(*) FROM inbox WHERE status='PENDING')+(SELECT count(*) FROM outbox WHERE status IN ('PENDING','SENDING')) AS n") as {n:number}[];if(rows[0]!.n===0)return;await delay(40);}throw Error('WORKER_TIMEOUT');};
   const post=async(value:unknown,secret=config.webhookSecret!)=>fetch(url+'/webhooks/max',{method:'POST',headers:{'content-type':'application/json','x-max-bot-api-secret':secret},body:encode(value),signal:AbortSignal.timeout(5000)});
   const say=async(text:string)=>{assert.equal((await post(reply(undefined,Date.now(),text,ACTOR,`offline-input-${runId}-${++seq}`))).status,200);await drain();};
-  const click=async(label:string)=>{const b=buttons().find(b=>b.text===label);assert(b?.type==='callback',`BUTTON: ${label}`);const update=callback('',`offline-cb-${runId}-${++seq}`,ACTOR,Date.now());update.callback.payload=b.payload;update.message.body.mid=active;assert.equal((await post(update)).status,200);await drain();};
+  const click=async(label:string)=>{const b=buttons().find(b=>b.text===label||label==='Завтра'&&b.text.startsWith('Завтра · '));assert(b?.type==='callback',`BUTTON: ${label}`);const update=callback('',`offline-cb-${runId}-${++seq}`,ACTOR,Date.now());update.callback.payload=b.payload;update.message.body.mid=active;assert.equal((await post(update)).status,200);await drain();};
   const preflight=(patch:NodeJS.ProcessEnv={},pass=true)=>{
     const p=spawnSync(process.execPath,['dist/scripts/live-preflight.js'],{env:{...process.env,...patch},encoding:'utf8',timeout:10000});
     assert.equal(p.status===0,pass,'PREFLIGHT_EXPECTATION');return JSON.parse(p.stdout||p.stderr);
@@ -80,7 +80,7 @@ async function main() {
     assert.equal((await (await post(lifecycle('bot_started',Date.now(),OTHER))).json() as any).status,'ignored');
     if(!second) {
       await say('/start');
-      for(const label of ['Подобрать','Казань','Завтра','12:00–18:00','Продолжить','До 500 ₽','Любой','Показать результаты','Подробнее 1'])await click(label);
+      for(const label of ['Подобрать','Казань','Завтра','12:00–18:00','Продолжить','До 500 ₽','Любая тема','Показать результаты','Подробнее 1'])await click(label);
       assert.match(screen().text,/Гелий Коржев|Казанское Поволжье/);assert(buttons().some(b=>b.type==='link'&&b.url.startsWith('https://kazan-kremlin.ru/')));
       await click('Условия посещения');await click('К карточке');await click('Сохранить');
       const rows=dbRead('SELECT * FROM bookmarks');assert.equal(rows.length,1);
@@ -88,8 +88,8 @@ async function main() {
     }else {
       assert.notEqual(catalog.version,previous.catalogVersion,'Atomic pointer update must be visible in the same container');
       assert.equal(snapshotDigest(dbRead('SELECT * FROM bookmarks')),previous.bookmarkHash);
-      await say('/saved');await click('Открыть 1');assert.match(screen().text,/текущие условия/);
-      await click('Удалить закладку');assert.deepEqual(buttons().map(b=>b.text),['Да, удалить','Отмена']);await click('Отмена');assert.match(screen().text,/Сохранённый выбор/);
+      await say('/saved');await click('Открыть 1');assert.match(screen().text,/Сохранено ·/);
+      await click('Удалить закладку');assert.deepEqual(buttons().map(b=>b.text),['Да, удалить','Отмена']);await click('Отмена');assert.match(screen().text,/Сохранено ·/);
       await stop();
       // Производные повреждённые/просроченные fixtures только в disposable runtime.
       const corrupt=resolve(root,'corrupt.json');writeFileSync(corrupt,'{');

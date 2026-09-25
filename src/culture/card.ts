@@ -1,5 +1,4 @@
 import type { NormalizedEvent, Observation, OpeningInterval, Price, Query } from '../data/contract.js';
-import { localDate } from '../data/normalize.js';
 import type { Candidate, Predicate, Recommendation } from '../data/select.js';
 import { Catalog, digest } from './catalog.js';
 import { cities, cityDate, localISO, zoneLabel, type CityKey, type Timezone } from '../data/cities.js';
@@ -55,6 +54,7 @@ export const presentationTitle=(c:Card)=>c.synthetic?c.title.replace(/^СИНТ�
 
 const months=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
 export const displayDate=(s:string)=>Number(s.slice(8,10))+' '+months[Number(s.slice(5,7))-1]+' '+s.slice(0,4)+' г.';
+export const displayDay=(s:string)=>Number(s.slice(8,10))+' '+months[Number(s.slice(5,7))-1]+', '+['вс','пн','вт','ср','чт','пт','сб'][new Date(s.slice(0,10)+'T12:00:00Z').getUTCDay()];
 export const displayInstant=(s:string,zone:Timezone='Europe/Moscow',includeTimezone=true)=>displayDate(localISO(s,zone))+' '+localISO(s,zone).slice(11,16)+(includeTimezone?' ('+zoneLabel(zone)+')':'');
 export function displayInterval(from:string,until:string,zone:Timezone) {
   const start=localISO(from,zone),end=localISO(until,zone);
@@ -67,69 +67,94 @@ const unique=(values:string[])=>[...new Map(values.map(s=>[s.replace(/\s+/g,' ')
 const legacyPrice=(p:Price)=>p.applicability==='SINGLE_ADULT'&&p.amount!==null&&['EXACT','FREE'].includes(p.kind)
   ? p.amount+' ₽ на одного взрослого' : p.kind==='FROM'&&p.lowerBound!==null ? 'от '+p.lowerBound+' ₽; применимый тариф неизвестен' : 'Применимый тариф неизвестен';
 const cost=(c:Card)=>c.visit!.partyPrice?partyPrice(c.visit!.partyPrice!):legacyPrice(c.visit!.price);
-function schedule(c:Card,includeTimezone=true) {
+function schedule(c:Card,includeTimezone=true,includeVisit=true) {
   const v=c.visit!,day=cityDate(v.from??c.query.start,zone(c));
   const suffix=includeTimezone?' ('+zoneLabel(zone(c))+')':'';
-  if(c.occurrence?.kind==='TIMED_SESSION') return '📅 '+displayDate(day)+' · '+(v.from?at(c,v.from):'начало неизвестно')+'–'+(v.until?at(c,v.until):'окончание неизвестно')+suffix;
+  if(c.occurrence?.kind==='TIMED_SESSION') return (includeVisit?'📅 '+displayDate(day)+' · ':'')+'Сеанс: '+(v.from?at(c,v.from):'начало неизвестно')+'–'+(v.until?at(c,v.until):'окончание неизвестно')+suffix;
   if(c.occurrence?.kind!=='FLEXIBLE_VISIT') return '📅 Время посещения неизвестно';
   const weekday=new Date(day+'T12:00:00Z').getUTCDay(),hours=v.opening?.filter(h=>h.weekday===weekday);
-  return '📅 '+displayDate(day)+' · '+(v.from&&v.until?at(c,v.from)+'–'+at(c,v.until):'интервал не подтверждён')+suffix+'\nЧасы работы: '+(hours?.length?unique(hours.map(h=>hh(h.open)+'–'+hh(h.close))).join('; '):'неизвестны');
+  return (includeVisit?'📅 '+displayDate(day)+' · посещение '+(v.from&&v.until?at(c,v.from)+'–'+at(c,v.until):'интервал не подтверждён')+suffix+'\n':'')+'Часы работы: '+(hours?.length?unique(hours.map(h=>hh(h.open)+'–'+hh(h.close))).join('; '):'неизвестны');
 }
 const entry=(c:Card)=>{
   const day=cityDate(c.visit!.from??c.query.start,zone(c)),weekday=new Date(day+'T12:00:00Z').getUTCDay();
   const cutoff=c.visit!.opening?.find(h=>h.weekday===weekday)?.salesCutoff;
-  return 'Последний вход: '+(c.visit!.lastEntry?at(c,c.visit!.lastEntry):'не установлен')+(cutoff!=null?' · касса до '+hh(cutoff):'');
+  return 'Последний вход: '+(c.visit!.lastEntry?at(c,c.visit!.lastEntry):'время не указано')+'.'+(cutoff!=null?' Касса закрывается в '+hh(cutoff)+'.':'');
 };
 function freshness(c:Card,now=Date.now()) {
   if(c.synthetic) return 'Вымышленный набор для проверки интерфейса.';
   const hours=Math.floor((now-Date.parse(c.retrievedAt))/3600000);
   const age=hours<0?'с неизвестным временем получения':hours<1?'получены менее часа назад':hours<24?'получены '+hours+' ч назад':'получены '+Math.floor(hours/24)+' дн. назад';
-  return compact(c.source.label,100)+' · сведения '+age+'.\nУсловия организатором не перепроверены.';
+  return compact(c.source.label,100)+' · сведения '+age+'.';
+}
+// Только известные смысловые эквиваленты, без удаления произвольных ограничений.
+const equivalent:Record<string,string>={
+  'Один взрослый, одна выставка':'Билет на одну выставку.',
+  'Индивидуальное посещение.':'Самостоятельное посещение.',
+  'Семья самостоятельно не приравнивается к организованной группе.':'Самостоятельное посещение.',
+  'Самостоятельное посещение; экскурсия и организованная группа оплачиваются отдельно.':'Самостоятельное посещение. Экскурсия оплачивается отдельно.',
+  'Место вручную сопоставлено с разделом музеев Кремля и страницей площадки; номер здания не установлен. Почтовый а/я учреждения не использован.':'Номер здания не указан.',
+  'CONDITIONS_NOT_REVERIFIED_BY_ORGANIZER':'Условия уточняйте у организатора.',
+  'VENUE_UNKNOWN':'Площадка не установлена.',
+  'END_OR_DURATION_UNKNOWN':'Окончание или длительность сеанса неизвестны.',
+  'UNSUPPORTED_STRUCTURED_SCHEDULE':'Расписание требует уточнения у источника.',
+  'WEEKDAY_CONVENTION_UNVERIFIED':'Дни недели в расписании не подтверждены.',
+  'OPENING_UNKNOWN':'Часы работы неизвестны.',
+};
+const equivalentConditions=(values:string[])=>unique(values.map(s=>equivalent[s]??s));
+function admissionConditions(c:Card) {
+  const v=c.visit!;
+  const registration=v.admission.registration==='REQUIRED'?'Регистрация: обязательна.':v.admission.registration==='UNKNOWN'?'Нужна ли предварительная регистрация — уточните у организатора.':'Регистрация не требуется по данным источника.';
+  const admission=v.admission.conditions.filter(s=>!(v.admission.registration==='REQUIRED'&&['Регистрация обязательна','Регистрация обязательна.','Требуется регистрация','Требуется регистрация.'].includes(s)));
+  return unique([registration,...admission,
+    ...(v.admission.requirements?.minimumAge!=null?['Допуск: с '+v.admission.requirements.minimumAge+' лет.']:[]),
+    ...(v.partyPrice?.admissionNotes??[])]);
 }
 function conditions(c:Card) {
   const v=c.visit!;
-  // Семантическая группировка известных эквивалентов. Исходные поля неизменны.
-  const priceConditions=unique(v.price.conditions.map(s=>s==='Один взрослый, одна выставка'?'Билет на одну выставку.':s));
-  const registration=v.admission.registration==='REQUIRED'?'Регистрация: обязательна.':v.admission.registration==='UNKNOWN'?'Регистрация: требование неизвестно.':'Регистрация не требуется по данным набора.';
-  const admission=v.admission.conditions.filter(s=>!(v.admission.registration==='REQUIRED'&&/^(?:Регистрация обязательна|Требуется регистрация)[.!]?$/i.test(s)));
+  const ages=c.query.party?.childAges??[];
+  // Query описывает самостоятельный вход. GROUP — другая услуга, а не семейный тариф.
+  // При неизвестном возрасте сохраняем все возможные детские условия.
+  const tariffs=(v.tariffs??[]).filter(t=>t.audience==='ADULT'||t.audience==='CHILD'&&ages.some(a=>a===null||a>=(t.minAge??0)&&a<=(t.maxAge??17)));
   const conflicts=unique([...v.eventObservations,...v.venueObservations].flatMap(o=>o.conflicts));
   const names:Record<string,string>={address:'адрес',location:'город',price:'цена',is_free:'бесплатность',dates:'даты',timetable:'расписание',title:'название'};
   const covered=['Условия организатором повторно не проверены; получение API сегодня не подтверждает их свежесть.',
     'Наличие билета и выполнение регистрации пользователем не подтверждены.','Непроверенный вариант; соответствие всем условиям запроса не установлено.',
     'Продолжительность осмотра и дорога не рассчитаны.','Последний вход не указан.'];
-  return unique([registration,...admission,...priceConditions,
-    ...(v.tariffs??[]).flatMap(t=>[
-      `${t.audience==='ADULT'?'Взрослый':t.audience==='CHILD'?`Детский ${t.minAge??0}–${t.maxAge??17} лет`:'Группа / пакет'}: ${['EXACT','FREE'].includes(t.kind)&&t.amount!==null?`${t.amount} ₽`:t.kind==='FROM'&&t.lowerBound!==null?`от ${t.lowerBound} ₽`:t.kind==='PACKAGE'?'пакет, общий расчёт не выполнен':'применимость или цена требует уточнения'}${!t.applicable?' (условия не подтверждены)':''}.`,
+  const duplicatedUnknown=new Set([
+    ...(v.partyPrice?.unresolved.length?['Проверить у источника: Нельзя подтвердить итоговую цену для всех посетителей.']:[]),
+    ...(v.partyPrice?.admissionNotes.length?['Проверить у источника: Допуск выбранного состава посетителей требует уточнения.']:[]),
+  ]);
+  return equivalentConditions([...admissionConditions(c),...v.price.conditions,
+    ...tariffs.flatMap(t=>[
+      // Итог уже вычислил evaluator. Повторная раскладка нужна только при неизвестном итоге.
+      ...(v.partyPrice?.total===null&&(!t.applicable||!['EXACT','FREE'].includes(t.kind)||t.audience==='CHILD')?[
+        `${t.audience==='ADULT'?'Взрослый':`Детский ${t.minAge??0}–${t.maxAge??17} лет`}: ${['EXACT','FREE'].includes(t.kind)&&t.amount!==null?`${t.amount} ₽`:t.kind==='FROM'&&t.lowerBound!==null?`от ${t.lowerBound} ₽`:t.kind==='PACKAGE'?'пакет; расчёт требует уточнения':'цена требует уточнения'}${!t.applicable?' (применимость не подтверждена)':''}.`]:[]),
       ...t.conditions,...(!['EXACT','FREE'].includes(t.kind)&&t.evidence?[t.evidence]:[])]),
-    ...(v.providerAgeLabel?['Маркировка источника: '+v.providerAgeLabel+' (не тариф и не отдельное правило допуска).']:[]),
-    ...(v.admission.requirements?.minimumAge!==null&&v.admission.requirements?.minimumAge!==undefined?['Условие допуска: с '+v.admission.requirements.minimumAge+' лет.']:[]),
-    ...(v.partyPrice?.admissionNotes??[]),
+    ...(v.providerAgeLabel?['Маркировка: '+v.providerAgeLabel+'. Правила допуска уточняйте отдельно.']:[]),
     ...(v.price.kind==='CONFLICT'?['Противоречие цены и признака бесплатного входа.']:[]),
     ...(conflicts.length?['В источнике расходятся сведения: '+conflicts.map(s=>names[s]??'условия посещения').join(', ')+'.']:[]),
-    ...c.unknown.filter(s=>!(v.partyPrice?.unresolved.length&&s.includes('итоговую цену'))),
+    ...c.unknown.filter(s=>!duplicatedUnknown.has(s)),
     ...v.warnings.filter(s=>!covered.includes(s))]);
 }
-export function cardOverview(c:Card,now=Date.now(),includeTimezone=true): string {
+export function cardOverview(c:Card,now=Date.now(),includeTimezone=true,includeVisit=true): string {
   const v=c.visit;
   if(!v) return 'Старая закладка: подробные условия не сохранялись. Выполните новый подбор.\n'+freshness(c,now);
-  const important=conditions(c).filter(s=>!/Билет на одну выставку|Регистрация не требуется/.test(s));
+  const all=conditions(c),admission=admissionConditions(c);
+  const important=all.filter(s=>!admission.includes(s)&&!['Билет на одну выставку.','Самостоятельное посещение.'].includes(s));
   return ['📍 '+cities[c.query.city].name+' · '+(v.venue.title?compact(c.synthetic?v.venue.title.replace(/^СИНТЕТИКА:\s*/u,''):v.venue.title,150):'площадка неизвестна'),
-    v.venue.address?compact(v.venue.address,200):'Адрес неизвестен',schedule(c,includeTimezone),'💳 '+cost(c),entry(c),
-    ...important.slice(0,2).map(s=>compact(s,240)),
-    ...(v.partyPrice?.admission==='UNKNOWN'?['Допуск выбранного состава требует уточнения.']:[]),
-    ...(important.some(s=>/расходятся|Противоречие/.test(s))?['⚠️ Есть противоречие: откройте условия посещения.']:[]),freshness(c,now)].join('\n');
+    v.venue.address?compact(v.venue.address,200):'Адрес неизвестен',schedule(c,includeTimezone,includeVisit),'💳 '+cost(c),entry(c),
+    ...admission.filter(s=>s!=='Регистрация не требуется по данным источника.').slice(0,3).map(s=>compact(s,240)),
+    ...(admission.length>3?['Остальные требования — в «Условия посещения».']:[]),
+    ...important.slice(0,1).map(s=>compact(s,240)),
+    ...(all.some(s=>s.startsWith('В источнике расходятся')||s==='Противоречие цены и признака бесплатного входа.')?['⚠️ Есть противоречие: откройте условия посещения.']:[]),freshness(c,now)].join('\n');
 }
 // Условия посещения, не экспорт БД. Все отличающиеся ограничения доступны страницами.
 // Raw observations, timestamps и URL запросов остаются в Card / локальном evidence.
-export function cardPages(c:Card,now=Date.now(),includeTimezone=true): string[] {
+export function cardPages(c:Card,now=Date.now(),includeTimezone=true,includeVisit=true): string[] {
   const v=c.visit;
-  const fields=v?[`Место: ${v.venue.title??'не указано'}`,`Адрес: ${v.venue.address??'не указан'}`,schedule(c,includeTimezone),entry(c),'Вход: '+cost(c),...conditions(c),
-    ...(!['FREE','EXACT'].includes(v.price.kind)&&v.price.evidence?['Опубликованный тариф: '+v.price.evidence]:[]),
-    'Наличие билетов не проверено. Сохранение не означает регистрацию.',
-    ...(c.occurrence?.kind==='FLEXIBLE_VISIT'?['Дорога и длительность осмотра не рассчитаны.']:[]),
-    ...(c.title.length>160?['Полное название: '+c.title]:[]),freshness(c,now),
-    ...(!c.synthetic?['Дата получения: '+displayInstant(c.retrievedAt,zone(c),includeTimezone),
-      'Изменено источником: '+(v.providerUpdatedAt?displayInstant(v.providerUpdatedAt,zone(c),includeTimezone):'дата неизвестна')]:[])]
+  const fields=v?[`Место: ${v.venue.title??'не указано'}`,`Адрес: ${v.venue.address??'не указан'}`,schedule(c,includeTimezone,includeVisit),entry(c),'Вход: '+cost(c),...conditions(c),
+    ...(v.partyPrice?.total==null&&!['FREE','EXACT'].includes(v.price.kind)&&v.price.evidence?['Опубликованный тариф: '+v.price.evidence]:[]),
+    ...(c.title.length>160?['Полное название: '+c.title]:[]),freshness(c,now)]
     :['Старая закладка: дополнительные условия не сохранялись.',...c.unknown,...c.facts,freshness(c,now)];
   const pages:string[]=[];let page='';
   for(const field of fields) {
@@ -140,5 +165,5 @@ export function cardPages(c:Card,now=Date.now(),includeTimezone=true): string[] 
       if(rest.length||page.length>2300){pages.push(page);page='';}else page+='\n';
     }
   }
-  if(page.trim()) pages.push(page);return pages;
+  if(page.trim()) pages.push(page.trimEnd());return pages;
 }

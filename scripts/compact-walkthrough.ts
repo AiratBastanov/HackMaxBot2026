@@ -17,8 +17,8 @@ async function main() {
     assert.equal((await fetch(d.origin+'/healthz')).status,200);
     await d.enter();const firstMid=activeScreen(d.runtime.store,ACTOR)!.mid;
     await d.click('Подобрать');capture('Город: кнопки и прямой текст');await d.say('  КАЗАНЬ  ');
-    for(const label of ['Завтра','12:00–18:00','Взрослые +','Дети +','Продолжить','Указать возраст'])await d.click(label);
-    await d.say(state().input.token+' 7');await d.click('До 500 ₽');await d.click('Любой');capture('Запрос: два взрослых и ребёнок семи лет');
+    for(const label of ['Завтра','12:00–18:00','Взрослые +','Дети +','Продолжить','Указать возраст'])await d.click(label==='Завтра'?d.dateLabel('Завтра'):label);
+    await d.say(state().input.token+' 7');await d.click('До 500 ₽');await d.click('Любая тема');capture('Запрос: два взрослых и ребёнок семи лет');
     await d.click('Показать результаты');await d.click('Подробнее 1');capture('Карточка: известная сумма на всех');
     assert.match(d.screen()!.body.text,/500 ₽ за всех/);assert.equal(activeScreen(d.runtime.store,ACTOR)!.mid,firstMid);
     await d.click('Условия посещения');capture('Отдельные условия посещения');await d.click('К карточке');await d.click('Сохранить');
@@ -26,7 +26,7 @@ async function main() {
     await d.click('Мои события');await d.click('Открыть 1');await d.click('Удалить закладку');capture('Удаление: ровно два действия');assert.deepEqual(d.buttons().map(b=>b.text),['Да, удалить','Отмена']);
     await d.click('Отмена');assert.equal(state().stage,'bookmark');capture('Отмена: сохранённая карточка');
     await d.click('Главная');await d.click('Подобрать');await d.click('Екатеринбург');
-    for(const label of ['Завтра','12:00–18:00','Продолжить','До 500 ₽','Любой'])await d.click(label);capture('Второй город: местное время UTC+5');
+    for(const label of ['Завтра','12:00–18:00','Продолжить','До 500 ₽','Любая тема'])await d.click(label==='Завтра'?d.dateLabel('Завтра'):label);capture('Второй город: местное время UTC+5');
     await d.click('Показать результаты');assert(state().cards.every((c:{eventId:string})=>c.eventId.includes(':ekb:')));
     await d.restart();await d.say('/saved');await d.click('Открыть 1');assert.match(d.screen()!.body.text,/Казань · 2 взр., 1 дет/);
     await d.click('Удалить закладку');await d.click('Да, удалить');assert.equal((d.runtime.store.db.prepare('SELECT count(*) n FROM bookmarks').get() as {n:number}).n,0);

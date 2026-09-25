@@ -28,7 +28,7 @@ const q=(ages:(number|null)[]=[],adults=1,budget=500)=>makeQuery({city:'kzn',par
 
 test('C16 city: aliases, ambiguity, absent catalog, state-bound text, reply and duplicate fencing',async t=>{
   assert.deepEqual(resolveCity('  ЕКБ  '),['ekb']);assert.deepEqual(resolveCity('Санкт - Петербург'),['spb']);assert.deepEqual(resolveCity('нов'),['nnv','nsk']);assert.deepEqual(resolveCity('Луна'),[]);
-  const d=await setup(t);await d.enter();await d.click('Подобрать');await d.say('Москва');assert.match(text(d),/пригодного снимка сейчас нет/);assert.equal(state(d).stage,'city');
+  const d=await setup(t);await d.enter();await d.click('Подобрать');await d.say('Москва');assert.match(text(d),/данные сейчас недоступны/);assert.equal(state(d).stage,'city');
   await d.say('нов');assert.deepEqual(d.buttons().filter(b=>b.type==='callback').map(b=>b.text).slice(0,2),['Нижний Новгород','Новосибирск']);
   const wrong=reply('old-ui',d.now+1,'Екб',ACTOR,'wrong-city-reply');await d.post(wrong);await d.drain();assert.equal(state(d).draft.city,'kzn');
   await d.say('екб');assert.equal(state(d).draft.city,'ekb');assert.match(text(d),/UTC\+5/);

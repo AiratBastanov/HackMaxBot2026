@@ -30,7 +30,7 @@ const text = (d: Awaited<ReturnType<typeof setup>>) => d.screen()!.body.text;
 test('HTTP: секрет, lossless actor, весь путь strict → детали → save → restart → list → delete', async t => {
   const d = await setup(t); assert.equal((await d.post(lifecycle(),'wrong')).status,401);
   await d.enter(); assert.match(text(d),/Культурный план/); await chooseDefaults(d);
-  assert.match(text(d),/Совпадает по известным условиям/); assert.doesNotMatch(text(d),/мастерская|дорогой/);
+  assert.match(text(d),/Подходит по известным условиям/); assert.doesNotMatch(text(d),/мастерская|дорогой/);
   await d.click('Подробнее 1'); assert.match(text(d),/Вымышленный набор/);
   assert(d.buttons().some(b => b.type === 'link' && b.url === 'https://example.org/synthetic-cultural-option-1'));
   await d.click('Сохранить');
@@ -44,9 +44,9 @@ test('HTTP: секрет, lossless actor, весь путь strict → дета�
 });
 test('Опциональные варианты: отдельная кнопка, UNKNOWN не превращается в строгое совпадение, фильтр сбрасывает opt-in', async t => {
   const d = await setup(t); await d.enter(); await chooseDefaults(d); await d.click('Показать варианты для проверки');
-  assert.match(text(d),/Варианты, где нужно уточнение/); assert.doesNotMatch(text(d),/дорогой зал/);
+  assert.match(text(d),/Нужно уточнить условия/); assert.doesNotMatch(text(d),/дорогой зал/);
   await d.click('Подробнее 2'); assert.match(text(d),/цен|тариф/); await d.click('Сохранить');
-  await d.click('Мои события'); await d.click('Открыть 1'); assert.match(text(d),/Сохранённый контекст: Нужно уточнить условия/);
+  await d.click('Мои события'); await d.click('Открыть 1'); assert.match(text(d),/Сохранено · Нужно уточнить условия/);
   await d.click('Главная'); await chooseDefaults(d); assert.doesNotMatch(text(d),/мастерская/);
   await d.click('Показать варианты для проверки'); const old = d.payload('Подробнее 2');
   await d.click('Бюджет'); await d.click('Бесплатно'); await d.click('Показать результаты'); await d.press(old);
@@ -88,16 +88,16 @@ test('Сохранённые данные: изменение, исчезнов�
   await d.click('Мои события'); await d.click('Открыть 1'); assert.match(text(d),/Данные изменились/);
   const empty = flowFixture(); empty.events = []; empty.stats.normalizedEvents=0; empty.stats.occurrences=0; d.catalog.replace(empty);
   await d.click('Мои события'); await d.click('Открыть 1'); assert.match(text(d),/не подтверждение отмены/);
-  d.catalog.replace(null); await d.click('Мои события'); await d.click('Открыть 1'); assert.match(text(d),/снимок недоступен/);
+  d.catalog.replace(null); await d.click('Мои события'); await d.click('Открыть 1'); assert.match(text(d),/сведения недоступны/);
   d.catalog.replace(flowFixture()); d.advance(86400000); await d.say('/saved'); await d.click('Открыть 1'); assert.match(text(d),/устарели/);
 });
 test('Отложенный экран отбрасывается при новой ревизии и при новой версии снимка', async t => {
-  const d = await setup(t); await d.enter(); await d.click('Подобрать'); await d.click('Казань'); await d.click('Завтра'); await d.click('12:00–18:00'); await d.click('Продолжить'); await d.click('До 500 ₽'); await d.click('Любой');
+  const d = await setup(t); await d.enter(); await d.click('Подобрать'); await d.click('Казань'); await d.click(d.dateLabel('Завтра')); await d.click('12:00–18:00'); await d.click('Продолжить'); await d.click('До 500 ₽'); await d.click('Любая тема');
   await d.press(d.payload('Показать результаты'),ACTOR,'delayed',d.now + 1,false);
   d.advance(1200); await d.runtime.worker.tick(); // callback ACK; экран ещё в outbox
   const next = flowFixture(); next.events[0]!.title += ' изменено'; d.catalog.replace(next); await d.drain();
   assert(d.runtime.store.db.prepare("SELECT 1 FROM outbox WHERE result='FLOW_OR_SNAPSHOT_CHANGED'").get());
-  assert.doesNotMatch(text(d),/Совпадает по известным условиям/);
+  assert.doesNotMatch(text(d),/Подходит по известным условиям/);
   await d.say('/start'); const p = d.payload('Подобрать'); await d.press(p,ACTOR,'queued',d.now + 1,false);
   await d.post(reply(undefined,d.now + 2,'/start',ACTOR,'new-home')); await d.drain(); assert.match(text(d),/Культурный план/);
 });
@@ -107,20 +107,26 @@ test('Пустой, неполный, старый, отсутствующий �
     if (mode === 'empty') { s.events=[]; s.stats.normalizedEvents=0; s.stats.occurrences=0; }
     if (mode === 'partial') { s.outcome='PARTIAL'; s.paginationComplete=false; }
     const d = await setup(t,mode === 'missing' ? null : s); if (mode === 'stale') d.advance(2*86400000); if (mode === 'outside') d.advance(31*86400000);
-    await d.enter(); if(mode==='missing'){await d.click('Подобрать');assert.match(text(d),/Снимков сейчас нет/);continue;} await chooseDefaults(d);
-    assert.match(text(d),mode==='empty' ? /совпадений.*нет/ : mode==='partial' ? /неполное/ : mode==='stale' ? /старше/ : /вне дат/);
+    await d.enter(); if(mode==='missing'){await d.click('Подобрать');assert.match(text(d),/Данные по городам сейчас недоступны/);continue;} await chooseDefaults(d);
+    assert.match(text(d),mode==='empty' ? /событий не найдено/ : mode==='partial' ? /часть афиши/ : mode==='stale' ? /Данные устарели/ : /На выбранную дату.*данных нет/);
     assert(d.buttons().some(b=>b.text==='Дата')); assert.doesNotMatch(text(d),/дорогой зал/);
   }
 });
 test('Ввод ограничен явным форматом и кодом ревизии; невозможные даты/время/числа отвергаются', async t => {
   const d = await setup(t); await d.enter(); await d.click('Подобрать'); await d.click('Казань'); await d.click('Другая дата');
   const token = /([A-F0-9]{6}) ГГГГ/.exec(text(d))![1];
-  for (const value of ['завтра',`${token} 2030-04-31`,`${token} 2040-01-01`]) { await d.say(value); assert.match(text(d),/Ввод не принят/); }
-  await d.say(`${token} 2030-04-06`); assert.match(text(d),/В какое время/); await d.click('Другое время');
-  const tt = /([A-F0-9]{6}) ЧЧ/.exec(text(d))![1]; await d.say(`${tt} 24:00-25:00`); assert.match(text(d),/Ввод не принят/);
-  await d.say(`${tt} 19:00-18:00`); assert.match(text(d),/Ввод не принят/); await d.say(`${tt} 12:00-18:00`);await d.click('Продолжить');
-  await d.click('Другая сумма'); const bt = /([A-F0-9]{6}) СУММА/.exec(text(d))![1]; await d.say(`${token} 500`); assert.match(text(d),/Ввод не принят/);
-  await d.say(`${bt} 500`); assert.match(text(d),/Культурный интерес/);
+  for (const value of ['завтра',`${token} 2030-04-31`,`${token} 2040-01-01`]) { await d.say(value); assert.match(text(d),/код.*ниже|Код ввода устарел|Исправьте ответ/i); }
+  await d.say(`${token} 2030-04-06`); assert.match(text(d),/Во сколько удобно/); await d.click('Другое время');
+  const tt = /([A-F0-9]{6}) ЧЧ/.exec(text(d))![1]; await d.say(`${tt} 24:00-25:00`); assert.match(text(d),/код.*ниже|Код ввода устарел|Исправьте ответ/i);
+  await d.say(`${tt} 19:00-18:00`); assert.match(text(d),/код.*ниже|Код ввода устарел|Исправьте ответ/i); await d.say(`${tt} 12:00-18:00`);await d.click('Продолжить');
+  await d.click('Другая сумма'); const bt = /([A-F0-9]{6}) СУММА/.exec(text(d))![1];
+  const before=JSON.parse(getState(d.runtime.store,ACTOR)!.data).draft;
+  // R20-UX01: HTTP decoder не архивирует отрицательную сумму. Отказ должен объяснять формат, а не выдуманное истечение кода.
+  await d.say(`${bt} -5`); const rejected=JSON.parse(getState(d.runtime.store,ACTOR)!.data);
+  assert.equal(rejected.stage,'input');assert.deepEqual(rejected.draft,before);
+  assert.match(text(d),/Сумма должна быть целым числом от 0 до 99999/);assert.doesNotMatch(text(d),/Код ввода устарел/);
+  await d.say(`${token} 500`); assert.match(text(d),/Код ввода устарел/);assert.deepEqual(JSON.parse(getState(d.runtime.store,ACTOR)!.data).draft,before);
+  await d.say(`${bt} 500`); assert.match(text(d),/Что вам интереснее/);
   const arbitrary = d.runtime.store.db.prepare("SELECT payload FROM inbox WHERE payload LIKE '%завтра%'").get(); assert.equal(arbitrary,undefined);
 });
 test('Истёкшее действие восстанавливается через /start без побочного изменения', async t => {

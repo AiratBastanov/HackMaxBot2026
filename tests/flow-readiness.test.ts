@@ -22,16 +22,16 @@ const projection=()=>{const s=stage4Fixture();return projectCard(new Catalog('sy
 
 test('R10-A: группы разделены, opt-in и identity кнопки кандидата сохраняются после смены заголовков',async t=>{
   const d=await setup(t);await d.enter();await chooseDefaults(d);
-  assert.match(d.screen()!.body.text,/Совпадает по известным условиям/);
-  assert.doesNotMatch(d.screen()!.body.text,/Варианты, где нужно уточнение|мастерская цвета/);
+  assert.match(d.screen()!.body.text,/Подходит по известным условиям/);
+  assert.doesNotMatch(d.screen()!.body.text,/Нужно уточнить условия|мастерская цвета/);
   await d.click('Показать варианты для проверки');const text=d.screen()!.body.text;
-  assert(text.indexOf('Совпадает по известным условиям')<text.indexOf('Варианты, где нужно уточнение'));
-  assert(text.indexOf('Варианты, где нужно уточнение')<text.indexOf('3. мастерская цвета'));
+  assert(text.indexOf('Подходит по известным условиям')<text.indexOf('Нужно уточнить условия'));
+  assert(text.indexOf('Нужно уточнить условия')<text.indexOf('3. мастерская цвета'));
   const cards=JSON.parse(getState(d.runtime.store,ACTOR)!.data).cards;
   await d.click('Подробнее 3');assert.equal(JSON.parse(getState(d.runtime.store,ACTOR)!.data).selected,cards[2].identity);
   assert.match(d.screen()!.body.text,/Нужно уточнить условия/);
   await d.click('К результатам');await d.click('Бюджет');await d.click('До 500 ₽');await d.click('Показать результаты');
-  assert.doesNotMatch(d.screen()!.body.text,/Варианты, где нужно уточнение|мастерская цвета/);
+  assert.doesNotMatch(d.screen()!.body.text,/Нужно уточнить условия|мастерская цвета/);
 });
 
 test('R10-B: обзор компактен, существенные условия и русская дата видимы без повторов предупреждений',()=>{
@@ -78,7 +78,7 @@ test('R10-D: evaluator time=MATCH при price=UNKNOWN сохраняется в
   assert.equal(candidate.predicates.find(p=>p.name==='time')!.state,'MATCH');
   assert.equal(candidate.predicates.find(p=>p.name==='price')!.state,'UNKNOWN');
   const d=await setup(t,s);await d.enter();await chooseDefaults(d);await d.click('Показать варианты для проверки');await d.click('Подробнее 3');
-  const check=()=>{const text=d.screen()!.body.text;assert.match(text,/Нужно уточнить условия/);assert.match(text,/📅.*12:00.*18:00/);assert.match(text,/Взросл.*тариф.*не установлен|итоговую цену/);assert.doesNotMatch(text,/Пересечение с запросом: не подтверждено/);};
+  const check=()=>{const text=d.screen()!.body.text;assert.match(text,/Нужно уточнить условия/);assert.match(text,/(?:📅|Выбрано:).*12:00.*18:00/);assert.match(text,/Взросл.*тариф.*не установлен|итоговую цену/);assert.doesNotMatch(text,/Пересечение с запросом: не подтверждено/);};
   check();await d.click('Сохранить');await d.restart();await d.say('/saved');await d.click('Открыть 1');check();
 });
 

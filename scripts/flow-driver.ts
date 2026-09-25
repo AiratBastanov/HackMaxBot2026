@@ -37,10 +37,16 @@ export async function flowDriver(databasePath: string, input: unknown = flowFixt
   const screen = (actor = ACTOR) => operations.filter(op => (op.method === 'messages'||op.method==='edit') && op.recipient === actor && op.screen).at(-1) as Extract<MaxOperation,{method:'messages'|'edit'}> | undefined;
   const buttons = (actor = ACTOR): Button[] => screen(actor)?.body.attachments?.flatMap(a => a.payload.buttons.flat()) ?? [];
   const payload = (text: string, actor = ACTOR) => { const b = buttons(actor).find(b => b.text === text); if (!b || b.type !== 'callback') throw Error(`BUTTON_NOT_FOUND: ${text}`); return b.payload; };
+  // Сценарии могут выбирать относительную дату, но нажимают реальную видимую кнопку.
+  // Отдельные регрессии проверяют её полный текст и сохранённый ISO-аргумент.
+  const dateLabel=(relative:'Сегодня'|'Завтра',actor=ACTOR)=>{
+    const b=buttons(actor).find(b=>b.text.startsWith(relative+' · '));
+    if(!b)throw Error(`DATE_BUTTON_NOT_FOUND: ${relative}`);return b.text;
+  };
   const press = async (p: string, actor = ACTOR, id = `flow-${++seq}`, timestamp = ++now, flush = true) => {
     const v = callback('', id, actor, timestamp); v.callback.payload = p;v.message.body.mid=activeScreen(runtime.store,actor)?.mid??v.message.body.mid; const r = await post(v); if (!r.ok) throw Error(`HTTP_${r.status}`); if (flush) await drain(); return r.json();
   };
-  return { config, get catalog(){return catalog;}, operations, transcript, post, drain, payload, buttons, screen, press,
+  return { config, get catalog(){return catalog;}, operations, transcript, post, drain, payload, buttons, screen, press, dateLabel,
     get runtime() { return runtime; }, get now() { return now; }, get origin() { return origin; }, advance(ms: number) { now += ms; },
     async enter(actor = ACTOR) { transcript.push('Пользователь: /start'); const v = lifecycle('bot_started', ++now, actor); delete (v as { payload?: string }).payload; await post(v); await drain(); },
     async click(text: string, actor = ACTOR) { transcript.push(`Пользователь: ${text}`); return press(payload(text, actor), actor); },
@@ -51,5 +57,5 @@ export async function flowDriver(databasePath: string, input: unknown = flowFixt
   };
 }
 export async function chooseDefaults(d: Awaited<ReturnType<typeof flowDriver>>) {
-  for (const text of ['Подобрать', 'Казань','Завтра', '12:00–18:00', 'Продолжить','До 500 ₽', 'Любой', 'Показать результаты']) await d.click(text);
+  for (const text of ['Подобрать', 'Казань','Завтра', '12:00–18:00', 'Продолжить','До 500 ₽', 'Любая тема', 'Показать результаты']) await d.click(text==='Завтра'?d.dateLabel(text):text);
 }

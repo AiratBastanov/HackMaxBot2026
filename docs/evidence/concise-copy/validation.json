@@ -1,0 +1,796 @@
+{
+  "status": "MAXBOT_COPY_AND_DATE_UX_LOCAL_PASS",
+  "node": "22.23.2",
+  "baseline": "de7ce2d2a7c83428f2d6bd79f61e8f74f921c4c6",
+  "uniqueTestsPassed": 98,
+  "runs": [
+    {
+      "suite": "affected",
+      "started": "2026-09-25T18:12:26.309Z",
+      "tests": 28,
+      "pass": 27,
+      "fail": 1
+    },
+    {
+      "suite": "delta",
+      "started": "2026-09-25T18:13:55.908Z",
+      "tests": 26,
+      "pass": 26,
+      "fail": 0
+    },
+    {
+      "suite": "focused",
+      "started": "2026-09-25T18:14:40.414Z",
+      "tests": 4,
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "suite": "flow",
+      "started": "2026-09-25T18:56:22.482Z",
+      "tests": 70,
+      "pass": 70,
+      "fail": 0
+    },
+    {
+      "name": "build",
+      "started": "2026-09-25T18:56:11.271Z",
+      "elapsedMs": 608,
+      "timeoutMs": 180000,
+      "exitCode": 0
+    },
+    {
+      "name": "typecheck",
+      "started": "2026-09-25T18:56:10.615Z",
+      "elapsedMs": 585,
+      "timeoutMs": 180000,
+      "exitCode": 0
+    }
+  ],
+  "diagnostics": {
+    "initialFlowObsoleteExpectations": 5,
+    "initialPollingObsoleteExpectations": 1,
+    "correctedBy": "flow/delta; финальный flow повторён после R20-UX01/02 и включает Today, дату при редактировании, причину отказа суммы, различие кассы/последнего входа и платности/регистрации",
+    "humanCopyFindings": [
+      "R20-UX01",
+      "R20-UX02"
+    ],
+    "humanVerificationAfterCorrection": "NOT_RUN"
+  },
+  "rendering": {
+    "mode": "OFFLINE_ARCHIVED_REAL_FIXTURE",
+    "LOCAL_INTEGRATION_SMOKE": "PASS",
+    "REAL_APPLICATION_SMOKE": "REQUIRED",
+    "pairs": 47,
+    "inputHash": "352a65e4eeefca889fede420e45a3225469a4107ab11859c106b4b8b2d64a4c1",
+    "factsQueriesClocksEqual": true
+  },
+  "measurements": [
+    {
+      "id": "home",
+      "beforeCharacters": 122,
+      "afterCharacters": 72,
+      "beforeLines": 2,
+      "afterLines": 2
+    },
+    {
+      "id": "about",
+      "beforeCharacters": 390,
+      "afterCharacters": 390,
+      "beforeLines": 4,
+      "afterLines": 5
+    },
+    {
+      "id": "city",
+      "beforeCharacters": 143,
+      "afterCharacters": 68,
+      "beforeLines": 3,
+      "afterLines": 2
+    },
+    {
+      "id": "kzn-date",
+      "beforeCharacters": 41,
+      "afterCharacters": 48,
+      "beforeLines": 1,
+      "afterLines": 2
+    },
+    {
+      "id": "kzn-today-time",
+      "beforeCharacters": 103,
+      "afterCharacters": 68,
+      "beforeLines": 1,
+      "afterLines": 3
+    },
+    {
+      "id": "kzn-tomorrow-time",
+      "beforeCharacters": 103,
+      "afterCharacters": 68,
+      "beforeLines": 1,
+      "afterLines": 3
+    },
+    {
+      "id": "kzn-custom-time",
+      "beforeCharacters": 145,
+      "afterCharacters": 156,
+      "beforeLines": 4,
+      "afterLines": 5
+    },
+    {
+      "id": "kzn-back-time",
+      "beforeCharacters": 103,
+      "afterCharacters": 68,
+      "beforeLines": 1,
+      "afterLines": 3
+    },
+    {
+      "id": "ekb-date",
+      "beforeCharacters": 53,
+      "afterCharacters": 54,
+      "beforeLines": 1,
+      "afterLines": 2
+    },
+    {
+      "id": "ekb-today-time",
+      "beforeCharacters": 103,
+      "afterCharacters": 74,
+      "beforeLines": 1,
+      "afterLines": 3
+    },
+    {
+      "id": "ekb-tomorrow-time",
+      "beforeCharacters": 103,
+      "afterCharacters": 74,
+      "beforeLines": 1,
+      "afterLines": 3
+    },
+    {
+      "id": "ekb-custom-time",
+      "beforeCharacters": 145,
+      "afterCharacters": 162,
+      "beforeLines": 4,
+      "afterLines": 5
+    },
+    {
+      "id": "ekb-back-time",
+      "beforeCharacters": 103,
+      "afterCharacters": 74,
+      "beforeLines": 1,
+      "afterLines": 3
+    },
+    {
+      "id": "party",
+      "beforeCharacters": 105,
+      "afterCharacters": 123,
+      "beforeLines": 2,
+      "afterLines": 3
+    },
+    {
+      "id": "budget",
+      "beforeCharacters": 70,
+      "afterCharacters": 70,
+      "beforeLines": 2,
+      "afterLines": 2
+    },
+    {
+      "id": "custom-budget",
+      "beforeCharacters": 125,
+      "afterCharacters": 86,
+      "beforeLines": 4,
+      "afterLines": 3
+    },
+    {
+      "id": "invalid-budget",
+      "beforeCharacters": 226,
+      "afterCharacters": 163,
+      "beforeLines": 6,
+      "afterLines": 5
+    },
+    {
+      "id": "interest",
+      "beforeCharacters": 92,
+      "afterCharacters": 44,
+      "beforeLines": 1,
+      "afterLines": 2
+    },
+    {
+      "id": "summary",
+      "beforeCharacters": 182,
+      "afterCharacters": 157,
+      "beforeLines": 6,
+      "afterLines": 6
+    },
+    {
+      "id": "summary-any-topic",
+      "beforeCharacters": 179,
+      "afterCharacters": 154,
+      "beforeLines": 6,
+      "afterLines": 6
+    },
+    {
+      "id": "results",
+      "beforeCharacters": 390,
+      "afterCharacters": 274,
+      "beforeLines": 10,
+      "afterLines": 10
+    },
+    {
+      "id": "adult-card",
+      "beforeCharacters": 511,
+      "afterCharacters": 473,
+      "beforeLines": 12,
+      "afterLines": 11
+    },
+    {
+      "id": "adult-conditions",
+      "beforeCharacters": 1100,
+      "afterCharacters": 531,
+      "beforeLines": 22,
+      "afterLines": 13
+    },
+    {
+      "id": "save-confirmed",
+      "beforeCharacters": 586,
+      "afterCharacters": 552,
+      "beforeLines": 15,
+      "afterLines": 14
+    },
+    {
+      "id": "saved-list",
+      "beforeCharacters": 108,
+      "afterCharacters": 73,
+      "beforeLines": 2,
+      "afterLines": 3
+    },
+    {
+      "id": "saved-open",
+      "beforeCharacters": 792,
+      "afterCharacters": 531,
+      "beforeLines": 17,
+      "afterLines": 12
+    },
+    {
+      "id": "saved-conditions",
+      "beforeCharacters": 1365,
+      "afterCharacters": 589,
+      "beforeLines": 27,
+      "afterLines": 14
+    },
+    {
+      "id": "delete-confirm",
+      "beforeCharacters": 52,
+      "afterCharacters": 52,
+      "beforeLines": 1,
+      "afterLines": 1
+    },
+    {
+      "id": "delete-cancel",
+      "beforeCharacters": 1365,
+      "afterCharacters": 589,
+      "beforeLines": 27,
+      "afterLines": 14
+    },
+    {
+      "id": "erase-confirm",
+      "beforeCharacters": 146,
+      "afterCharacters": 123,
+      "beforeLines": 1,
+      "afterLines": 2
+    },
+    {
+      "id": "erase-cancel",
+      "beforeCharacters": 1365,
+      "afterCharacters": 589,
+      "beforeLines": 27,
+      "afterLines": 14
+    },
+    {
+      "id": "party-family",
+      "beforeCharacters": 153,
+      "afterCharacters": 171,
+      "beforeLines": 4,
+      "afterLines": 5
+    },
+    {
+      "id": "ages",
+      "beforeCharacters": 160,
+      "afterCharacters": 120,
+      "beforeLines": 2,
+      "afterLines": 2
+    },
+    {
+      "id": "custom-ages",
+      "beforeCharacters": 165,
+      "afterCharacters": 126,
+      "beforeLines": 4,
+      "afterLines": 3
+    },
+    {
+      "id": "family-summary",
+      "beforeCharacters": 193,
+      "afterCharacters": 182,
+      "beforeLines": 6,
+      "afterLines": 6
+    },
+    {
+      "id": "family-no-strict",
+      "beforeCharacters": 383,
+      "afterCharacters": 274,
+      "beforeLines": 8,
+      "afterLines": 8
+    },
+    {
+      "id": "family-results",
+      "beforeCharacters": 747,
+      "afterCharacters": 631,
+      "beforeLines": 16,
+      "afterLines": 16
+    },
+    {
+      "id": "family-card",
+      "beforeCharacters": 621,
+      "afterCharacters": 576,
+      "beforeLines": 13,
+      "afterLines": 12
+    },
+    {
+      "id": "family-conditions",
+      "beforeCharacters": 1273,
+      "afterCharacters": 634,
+      "beforeLines": 24,
+      "afterLines": 14
+    },
+    {
+      "id": "custom-date",
+      "beforeCharacters": 133,
+      "afterCharacters": 132,
+      "beforeLines": 4,
+      "afterLines": 5
+    },
+    {
+      "id": "back-date",
+      "beforeCharacters": 41,
+      "afterCharacters": 77,
+      "beforeLines": 1,
+      "afterLines": 3
+    },
+    {
+      "id": "edited-date-summary",
+      "beforeCharacters": 193,
+      "afterCharacters": 182,
+      "beforeLines": 6,
+      "afterLines": 6
+    },
+    {
+      "id": "unavailable-list",
+      "beforeCharacters": 112,
+      "afterCharacters": 62,
+      "beforeLines": 2,
+      "afterLines": 2
+    },
+    {
+      "id": "unavailable-source",
+      "beforeCharacters": 72,
+      "afterCharacters": 95,
+      "beforeLines": 1,
+      "afterLines": 1
+    },
+    {
+      "id": "unavailable-delete",
+      "beforeCharacters": 21,
+      "afterCharacters": 21,
+      "beforeLines": 1,
+      "afterLines": 1
+    },
+    {
+      "id": "unavailable-cancel",
+      "beforeCharacters": 72,
+      "afterCharacters": 95,
+      "beforeLines": 1,
+      "afterLines": 1
+    },
+    {
+      "id": "erased",
+      "beforeCharacters": 165,
+      "afterCharacters": 115,
+      "beforeLines": 4,
+      "afterLines": 4
+    }
+  ],
+  "sourceRequests": 0,
+  "dependencyInstall": false,
+  "dockerOrWebhookRecertification": false,
+  "tests": [
+    {
+      "name": "C16 controlled fetch uses only validated city IDs, city window and separate resume scope; no network",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 normalization retains provider age label without inventing admission or child tariff",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 supported per-adult FROM lower bound adds to known child subtotal",
+      "result": "PASS"
+    },
+    {
+      "name": "Marker выше MAX_SAFE_INTEGER проходит HTTP query и SQLite без округления; limit/types/timeout явные",
+      "result": "PASS"
+    },
+    {
+      "name": "Nullable/absent cursor означает latest; непустой batch или сброс закреплённого cursor не проглатывается",
+      "result": "PASS"
+    },
+    {
+      "name": "Batch атомарен: duplicate/empty; crash после commit сохраняет marker и дедупликацию",
+      "result": "PASS"
+    },
+    {
+      "name": "Ошибка commit откатывает ВСЕ события и marker; restart оставляет предыдущую границу",
+      "result": "PASS"
+    },
+    {
+      "name": "Невалидный relevant event ломает batch; корректный non-tester/неизвестный тип игнорируются безопасно",
+      "result": "PASS"
+    },
+    {
+      "name": "Сеанс сохраняет deadline, число запросов, retry delay и snapshot через restart",
+      "result": "PASS"
+    },
+    {
+      "name": "Wrong identity, webhook и неподтверждённый exclusive consumer запрещают вход",
+      "result": "PASS"
+    },
+    {
+      "name": "Явный start на 30 минут сохраняет предел 120 запросов; resume не продлевает deadline",
+      "result": "PASS"
+    },
+    {
+      "name": "OS mutex отвергает второй процесс и освобождается после остановки владельца",
+      "result": "PASS"
+    },
+    {
+      "name": "Медленный GET проходит при коротком POST deadline; отмена и body limit ограничены",
+      "result": "PASS"
+    },
+    {
+      "name": "Test-only конфигурация без public origin/secret, с dedicated DB; обычный webhook сохраняет требования",
+      "result": "PASS"
+    },
+    {
+      "name": "Только свежая синтетика; чужая DB identity и recovery quarantine сохраняют блокировки",
+      "result": "PASS"
+    },
+    {
+      "name": "Проверенное username создаёт ссылку; конфликт pin не меняет ни один config",
+      "result": "PASS"
+    },
+    {
+      "name": "Pairing: только exact code, actor из decoder, expiration/replay и отдельное подтверждение",
+      "result": "PASS"
+    },
+    {
+      "name": "Pairing не связывает actor до commit; два actor с одним кодом отвергаются",
+      "result": "PASS"
+    },
+    {
+      "name": "Три ошибки останавливают polling; Retry-After и частота сохраняются",
+      "result": "PASS"
+    },
+    {
+      "name": "AUTH/webhook/malformed не повторяются и не двигают cursor",
+      "result": "PASS"
+    },
+    {
+      "name": "120 запросов / deadline / отмена не сбрасывают campaign или cursor",
+      "result": "PASS"
+    },
+    {
+      "name": "Реальный transport сохраняет provider guard и не позволяет subscribe из polling",
+      "result": "PASS"
+    },
+    {
+      "name": "Исходящая AUTH немедленно останавливает campaign; повторяющиеся send errors переживают restart",
+      "result": "PASS"
+    },
+    {
+      "name": "HTTP E2E: updates → decoder/admission/SQLite/worker/renderer → outgoing MAX; worker отвечает во время long poll",
+      "result": "PASS"
+    },
+    {
+      "name": "Consistent backup с активным WAL: schema/identity/time/integrity, новый путь и карантин",
+      "result": "PASS"
+    },
+    {
+      "name": "Повреждение, другой бот/режим и неподдерживаемая schema отвергаются до публикации restore",
+      "result": "PASS"
+    },
+    {
+      "name": "Backup → удаление закладки/данных → loss: старое состояние недоступно, очередь подавлена, discard явный",
+      "result": "PASS"
+    },
+    {
+      "name": "Обычный restart целого тома сохраняет данные; прерванный send не повторяется",
+      "result": "PASS"
+    },
+    {
+      "name": "R18 bookmark: только новое получение не означает изменения условий; legacy venue сопоставляется явно",
+      "result": "PASS"
+    },
+    {
+      "name": "R18 bookmark: тариф, часы и допуск переоцениваются, прежний STRICT не наследуется",
+      "result": "PASS"
+    },
+    {
+      "name": "R18 bookmark: отсутствие, identity/venue/session конфликт и expired review дают нейтральный отказ",
+      "result": "PASS"
+    },
+    {
+      "name": "R18 bookmark: истёкший выбор остаётся истёкшим, новые текущие сведения не переносят дату",
+      "result": "PASS"
+    },
+    {
+      "name": "R18 HTTP application: save -> replacement/reload -> current refs -> cancel/delete/re-save; generation не переписывается",
+      "result": "PASS"
+    },
+    {
+      "name": "R20 даты: реальные action-аргументы, обе зоны, разные местные дни, смена месяца и года → экран → summary → query",
+      "result": "PASS"
+    },
+    {
+      "name": "R20 полночь: отложенное «Завтра» сохраняет дату; вчерашнее «Сегодня» отклоняется внутри TTL",
+      "result": "PASS"
+    },
+    {
+      "name": "R20 Back и edit: дата остаётся на custom-time, возврат не пропускает состав, прошедшее время не принимается",
+      "result": "PASS"
+    },
+    {
+      "name": "R20 полный renderer: применимость тарифов, различные ограничения, конфликты и страницы без потери фактов",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 city: aliases, ambiguity, absent catalog, state-bound text, reply and duplicate fencing",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 cities: canonical timezone, per-city catalogs and cache cannot leak",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 prices: adult+child exact, unknown child and ages, lower bounds, conditional/package preserved",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 admission: labeling is separate; known incompatibility excluded; missing age uncertain",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 renderer: concise overview, meaningful conditions, original evidence unchanged, bounded pages",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 HTTP/SQLite: same active mid, party summary/reset, city reset, bookmarks survive and two-button cancel restores conditions",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 actual wrong message ownership and bot-origin input never mutate the flow",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 legacy SQLite v2 and single-adult bookmark keep exact historical query, generation, provenance after migration",
+      "result": "PASS"
+    },
+    {
+      "name": "R10-A: группы разделены, opt-in и identity кнопки кандидата сохраняются после смены заголовков",
+      "result": "PASS"
+    },
+    {
+      "name": "R10-B: обзор компактен, существенные условия и русская дата видимы без повторов предупреждений",
+      "result": "PASS"
+    },
+    {
+      "name": "R10-B: provenance объединяет только одну сущность, время, URL и конфликты; поля и неизвестные сохранены",
+      "result": "PASS"
+    },
+    {
+      "name": "R10-C: fixed/current fixtures показывают только явно примерные ссылки; provider URL contract остаётся строгим",
+      "result": "PASS"
+    },
+    {
+      "name": "R10-D: evaluator time=MATCH при price=UNKNOWN сохраняется в карточке/закладке после restart",
+      "result": "PASS"
+    },
+    {
+      "name": "R10-D: известные часы не скрывают UNKNOWN границ периода или отсутствующего расписания",
+      "result": "PASS"
+    },
+    {
+      "name": "R17 policy binds source, snapshot, expiry, admission; basic navigation remains available",
+      "result": "PASS"
+    },
+    {
+      "name": "R17 MAX messages, edit and callback payload reject unreviewed/expired refs before HTTP",
+      "result": "PASS"
+    },
+    {
+      "name": "R17 real preflight uses observed validity, not one-hour synthetic generation; no reading-based renewal",
+      "result": "PASS"
+    },
+    {
+      "name": "R17 worker denies pending provider edits and callback updates with mismatched policy",
+      "result": "PASS"
+    },
+    {
+      "name": "R17 real journey: source, save/restart, expired saved card hidden; neutral remove/cancel remains",
+      "result": "PASS"
+    },
+    {
+      "name": "HTTP: секрет, lossless actor, весь путь strict → детали → save → restart → list → delete",
+      "result": "PASS"
+    },
+    {
+      "name": "Опциональные варианты: отдельная кнопка, UNKNOWN не превращается в строгое совпадение, фильтр сбрасывает opt-in",
+      "result": "PASS"
+    },
+    {
+      "name": "Пользователь B не открывает/сохраняет чужую карточку и не удаляет чужую закладку",
+      "result": "PASS"
+    },
+    {
+      "name": "Дубликат доставки и новая доставка старой кнопки не повторяют переход",
+      "result": "PASS"
+    },
+    {
+      "name": "Из двух клиентов принимается один переход данной ревизии; поздний timestamp не возвращает старый экран",
+      "result": "PASS"
+    },
+    {
+      "name": "Delete → save again: поколение закладки и старая кнопка удаления защищают новую запись",
+      "result": "PASS"
+    },
+    {
+      "name": "Замена снимка между выбором, деталями и save не перепривязывает карточку",
+      "result": "PASS"
+    },
+    {
+      "name": "Сохранённые данные: изменение, исчезновение, недоступность и давность отображаются без отмены/подмены",
+      "result": "PASS"
+    },
+    {
+      "name": "Отложенный экран отбрасывается при новой ревизии и при новой версии снимка",
+      "result": "PASS"
+    },
+    {
+      "name": "Пустой, неполный, старый, отсутствующий и вне области снимок имеют восстановление",
+      "result": "PASS"
+    },
+    {
+      "name": "Ввод ограничен явным форматом и кодом ревизии; невозможные даты/время/числа отвергаются",
+      "result": "PASS"
+    },
+    {
+      "name": "Истёкшее действие восстанавливается через /start без побочного изменения",
+      "result": "PASS"
+    },
+    {
+      "name": "Удаление личных данных и probe cleanup не удаляют активные закладки",
+      "result": "PASS"
+    },
+    {
+      "name": "Лимит/страницы: 5 из 50, личная изоляция, запись не превращается в регистрацию",
+      "result": "PASS"
+    },
+    {
+      "name": "SQLite v1 мигрирует без потери очереди; повторный startup сохраняет v3/закладки",
+      "result": "PASS"
+    },
+    {
+      "name": "Публичная граница LiveMax отклоняет provider и немаркированную синтетику до HTTP; preview выключен",
+      "result": "PASS"
+    },
+    {
+      "name": "Snapshot boundary валидирует/замораживает данные, не смешивает режимы и не обновляет timestamps",
+      "result": "PASS"
+    },
+    {
+      "name": "Безопасные ссылки и ограничения сообщений/клавиатур",
+      "result": "PASS"
+    },
+    {
+      "name": "Общий реестр карантина исключает противоречивую идентичность из strict и uncertain без изменения фактов",
+      "result": "PASS"
+    },
+    {
+      "name": "Worker запрещает provider-карточку у транспорта live; semantic false не подтверждает callback",
+      "result": "PASS"
+    },
+    {
+      "name": "Отложенный ответ транспорта не привязывается к новой ревизии; overlapping tick не запускает вторую отправку",
+      "result": "PASS"
+    },
+    {
+      "name": "Живой режим не принимает test clock без явного synthetic-test; нет автоматического fallback",
+      "result": "PASS"
+    },
+    {
+      "name": "Свежая синтетика для клиентского smoke создаётся отдельно и работает с действительными часами MAX",
+      "result": "PASS"
+    },
+    {
+      "name": "Запоздалый /probe не сбрасывает более новый продуктовый экран",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 MAX PUT/DELETE semantic false; exact payload replaces keyboard, notify=false; read verifies sender/chat/actor",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 worker refuses untracked/wrong actor mutation, no external target from callback",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 semantic edit failure creates one replacement; creation must confirm before adoption",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 replacement cleanup permission failure retires only tracked obsolete keyboard once; failure leaves selection working",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 ambiguous edit is read/reconciled before the next write; no blind retry",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 unresolved read blocks old target; subsequent screen uses one new creation",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 in-flight late edit cannot roll state back; one writer; superseded queued views discarded",
+      "result": "PASS"
+    },
+    {
+      "name": "C16 worker display guard covers pending edit and saved payload before transport",
+      "result": "PASS"
+    },
+    {
+      "name": "R08-01: projection → render → save → restart сохраняет существенные условия посещения",
+      "result": "PASS"
+    },
+    {
+      "name": "R08-02: Назад из custom при первичном вводе не превращает его в редактирование",
+      "result": "PASS"
+    },
+    {
+      "name": "R08-02: Назад при редактировании даты/времени/бюджета сохраняет возврат к сводке и binding ввода",
+      "result": "PASS"
+    },
+    {
+      "name": "R08-03: интерес ранжирует несколько категорий при одинаковых обязательных условиях",
+      "result": "PASS"
+    },
+    {
+      "name": "R08-04: текущее подтверждение стирания доходит через worker один раз, прежние payload очищены",
+      "result": "PASS"
+    },
+    {
+      "name": "R08-04: semantic false у текущего erasure ACK не становится успешной отправкой",
+      "result": "PASS"
+    },
+    {
+      "name": "R08-01: отсутствующий адрес явно неизвестен и остаётся таким после сохранения",
+      "result": "PASS"
+    },
+    {
+      "name": "R08-01: длинные допустимые поля полностью доступны постранично и сохраняются без обрезки",
+      "result": "PASS"
+    },
+    {
+      "name": "R08-01: прежняя закладка не получает выдуманных полей из текущего каталога",
+      "result": "PASS"
+    },
+    {
+      "name": "R08-01: сеанс отображается как сеанс с точным окончанием, не как часы открытия",
+      "result": "PASS"
+    }
+  ]
+}

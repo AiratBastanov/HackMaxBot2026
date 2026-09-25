@@ -11,13 +11,13 @@ async function main() {
   const d=await flowDriver(resolve(run,'synthetic.sqlite'),stage4Fixture());
   try {
     await d.enter();
-    for(const label of ['Подобрать','Казань','Другая дата','Назад','Завтра','Другое время','Назад','12:00–18:00','Продолжить','Другая сумма','Назад','До 500 ₽','Театр','Показать результаты']) await d.click(label);
+    for(const label of ['Подобрать','Казань','Другая дата','Назад','Завтра','Другое время','Назад','12:00–18:00','Продолжить','Другая сумма','Назад','До 500 ₽','Театр','Показать результаты']) await d.click(label==='Завтра'?d.dateLabel('Завтра'):label);
     const cards=JSON.parse(getState(d.runtime.store,ACTOR)!.data).cards;
     assert.equal(cards.length,2);assert.equal(cards[0].eventId,'synthetic:stage4:theater');
     await d.click('Подробнее 1');for(const re of [/17:30/,/200 ₽/,/Регистрация: обязательна/,/Вымышленная улица/]) assert.match(d.screen()!.body.text,re);
     await d.click('Условия посещения');await d.click('К карточке');await d.click('Сохранить');await d.restart();await d.say('/saved');await d.click('Открыть 1');assert.match(d.screen()!.body.text,/17:30/);
     await d.click('Удалить закладку');await d.click('Да, удалить');assert.match(d.screen()!.body.text,/Закладок пока нет/);
-    await d.click('Главная');for(const label of ['Подобрать','Казань','Завтра','12:00–18:00','Продолжить','До 500 ₽','Любой','Показать результаты','Показать варианты для проверки','Подробнее 3','Сохранить']) await d.click(label);
+    await d.click('Главная');for(const label of ['Подобрать','Казань','Завтра','12:00–18:00','Продолжить','До 500 ₽','Любая тема','Показать результаты','Показать варианты для проверки','Подробнее 3','Сохранить']) await d.click(label==='Завтра'?d.dateLabel('Завтра'):label);
     await d.say('/delete_data');await d.click('Да, удалить');await d.restart();await d.say('/saved');assert.match(d.screen()!.body.text,/Закладок пока нет/);
     const text='СИНТЕТИЧЕСКИЙ HTTP/SQLite ПРОГОН; MAX симулирован; часы 2030-04-05.\n\n'+d.transcript.join('\n\n').replace(/[A-F0-9]{6}(?= (?:ГГГГ|ЧЧ|СУММА))/g,'<код формы>');
     writeFileSync(resolve(root,'synthetic-journey.txt'),text);

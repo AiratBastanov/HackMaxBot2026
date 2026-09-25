@@ -43,7 +43,7 @@ test('R08-01: projection → render → save → restart сохраняет су
 test('R08-02: Назад из custom при первичном вводе не превращает его в редактирование',async t=>{
   const d=await setup(t);await d.enter();await d.click('Подобрать'); await d.click('Казань');
   for(const [custom,choice,next] of [['Другая дата','Завтра','time'],['Другое время','12:00–18:00','party'],['Другая сумма','До 500 ₽','interest']]) {
-    await d.click(custom!); const old=d.payload('Назад');await d.click('Назад');await d.click(choice!);
+    await d.click(custom!); const old=d.payload('Назад');await d.click('Назад');await d.click(choice==='Завтра'?d.dateLabel('Завтра'):choice!);
     assert.equal(state(d).stage,next); assert.equal(state(d).editing,false);await d.press(old);assert.equal(state(d).stage,next);if(next==='party')await d.click('Продолжить');
   }
 });
@@ -52,8 +52,8 @@ test('R08-02: Назад при редактировании даты/време
   const d=await setup(t);await d.enter();await chooseDefaults(d);await d.click('Показать варианты для проверки');
   for(const [field,custom,choice] of [['Дата','Другая дата','Завтра'],['Время','Другое время','12:00–18:00'],['Бюджет','Другая сумма','До 500 ₽']]) {
     await d.click(field!);await d.click(custom!);const token=state(d).input.token;await d.click('Назад');await d.click(custom!);
-    await d.say(`${token} 500`);assert.equal(state(d).stage,'input');assert.match(screen(d),/Ввод не принят/);
-    await d.click('Назад');await d.click(choice!);assert.equal(state(d).stage,'summary');assert.equal(state(d).optIn,false);
+    await d.say(`${token} 500`);assert.equal(state(d).stage,'input');assert.match(screen(d),/код.*ниже|Код ввода устарел|Исправьте ответ/i);
+    await d.click('Назад');await d.click(choice==='Завтра'?d.dateLabel('Завтра'):choice!);assert.equal(state(d).stage,'summary');assert.equal(state(d).optIn,false);
   }
 });
 
@@ -61,14 +61,21 @@ test('R08-03: интерес ранжирует несколько катего�
   const s=visit(), first=s.events[0]!, other=structuredClone(first);
   first.categories=['exhibition'];other.id='synthetic:flow:theater';other.title='СИНТЕТИКА: театр';other.categories=['theater'];
   other.occurrences.forEach((o,i)=>{o.id=`${other.id}:${i}`;});s.events=[first,other];s.stats.normalizedEvents=2;s.stats.occurrences=2;
-  const d=await setup(t,s);await d.enter();await chooseDefaults(d);await d.click('Интерес');await d.click('Театр');await d.click('Показать результаты');
+  const d=await setup(t,s);await d.enter();await chooseDefaults(d);await d.click('Тема');await d.click('Театр');await d.click('Показать результаты');
   assert.deepEqual(state(d).cards.map((c:any)=>c.eventId),[other.id,first.id]);
   assert.equal(state(d).cards[0].query.category,null);assert.deepEqual(state(d).cards[0].query.preferences.categories,['theater']);
+  const before=structuredClone(state(d).cards[0].query);
+  await d.click('Показать варианты для проверки');await d.click('Тема');await d.click('Любая тема');
+  assert.equal(state(d).draft.category,null);assert.equal(state(d).optIn,false);
+  await d.click('Показать результаты');const after=state(d).cards[0].query;
+  assert.equal(after.category,null);assert.deepEqual(after.preferences.categories,[]);
+  for(const key of ['start','end','budgetRub','party','city'])assert.deepEqual(after[key],before[key]);
+  assert.deepEqual(new Set(state(d).cards.map((c:any)=>c.eventId)),new Set([first.id,other.id]));
 });
 
 test('R08-04: текущее подтверждение стирания доходит через worker один раз, прежние payload очищены',async t=>{
   const d=await setup(t);await d.enter();await chooseDefaults(d);await d.click('Подробнее 1');const oldSave=d.payload('Сохранить');await d.click('Сохранить');
-  await d.enter(OTHER);for(const label of ['Подобрать','Казань','Завтра','12:00–18:00','Продолжить','До 500 ₽','Любой','Показать результаты','Подробнее 1','Сохранить','Мои события']) await d.click(label,OTHER);
+  await d.enter(OTHER);for(const label of ['Подобрать','Казань','Завтра','12:00–18:00','Продолжить','До 500 ₽','Любая тема','Показать результаты','Подробнее 1','Сохранить','Мои события']) await d.click(label==='Завтра'?d.dateLabel('Завтра',OTHER):label,OTHER);
   const otherState=getState(d.runtime.store,OTHER)!.data;
   await d.say('/delete_data');const confirm=d.payload('Да, удалить');
   const previous=(d.runtime.store.db.prepare('SELECT max(id) n FROM outbox').get() as any).n;

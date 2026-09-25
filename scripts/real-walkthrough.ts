@@ -42,7 +42,7 @@ export async function realWalkthrough(snapshotPath=resolve('catalog/real/active.
   const capture=(title:string)=>frames.push({title,text:d.screen()!.body.text,links:d.buttons().flatMap(b=>b.type==='link'?[b.url]:[])});
   try {
     for(const city of ['Казань','Екатеринбург']) {
-      await d.enter();for(const label of ['Подобрать',city,'Завтра','12:00–18:00','Продолжить','До 500 ₽','Любой','Показать результаты','Подробнее 1'])await d.click(label);
+      await d.enter();for(const label of ['Подобрать',city,'Завтра','12:00–18:00','Продолжить','До 500 ₽','Любая тема','Показать результаты','Подробнее 1'])await d.click(label==='Завтра'?d.dateLabel('Завтра'):label);
       assert(d.catalog.permits(d.screen()!.displayRefs,d.now));assert(!d.screen()!.body.text.includes('Демо'));capture(city+': реальная карточка');
       assert(frames.at(-1)!.links.some(u=>u.startsWith(city==='Казань'?'https://kazan-kremlin.ru/':'https://m-i-e.ru/')));
       await d.click('Условия посещения');capture(city+': условия');await d.click('К карточке');await d.click('Сохранить');

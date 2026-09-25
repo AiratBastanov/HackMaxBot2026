@@ -2,7 +2,9 @@
 
 Пользователь выбрал реальные события. Бот подбирает культурное посещение в Казани или Екатеринбурге по дате, времени, составу и общему бюджету, показывает условия и источник, сохраняет личную закладку. Synthetic используется в тестах.
 
-**MAXBOT_REAL_MAX_AND_WEBHOOK_PREPARATION_PARTIAL · 25.09.2026.** [Квитанция 19](docs/pivot/19_REAL_MAX_AND_WEBHOOK_PREPARATION.md): реальная карточка и edit наблюдены в MAX mobile/web; точный остаток U16 сохранён. Существующий Compose переведён в live/webhook/real и прошёл закрытый контейнерный путь с simulated MAX, persistent SQLite/journal, атомарной сменой pointer и restart. **REAL_WEBHOOK_PROFILE_LOCAL=PASS; REAL_APPLICATION_SMOKE=REQUIRED; DEPLOYMENT=NOT_RUN.** Каталог R18 сохранён: 26 событий / 32 посещения, два города. Functional refresh и тарифный PASS перенесены; исторические 1999 мс остаются отклонением, исправление темпа имеет только локальное evidence.
+**MAXBOT_COPY_AND_DATE_UX_LOCAL_PASS · 25.09.2026.** [Квитанция 20](docs/pivot/20_CONCISE_COPY_AND_EXPLICIT_DATES.md): конкретные даты на кнопках и экранах времени, понятный выбор темы, сокращённые вопросы, карточки, условия и закладки. [47 пар полных сообщений](docs/evidence/concise-copy/screens.md) получены приложением на одинаковых офлайн фактах и часах; 98 уникальных локальных тестов PASS с исправленными ожиданиями. MOBILE подтвердил даты/зону, семейную сводку, неизвестный итог и отмену удаления; WEB — источник и заметное сохранение. Клиентский U16 **PARTIAL**: замечания к ошибке и условиям исправлены после остановки, повторного HUMAN не было; точный остаток в ledger. **REAL_APPLICATION_SMOKE=REQUIRED; DEPLOYMENT=NOT_RUN.**
+
+Из [R19](docs/pivot/19_REAL_MAX_AND_WEBHOOK_PREPARATION.md) перенесены REAL_EDIT и REAL_WEBHOOK_PROFILE_LOCAL=PASS. Упаковка, startup и ingress не менялись. Каталог R18 сохранён: 26 событий / 32 посещения, два города; functional refresh и тарифный PASS перенесены. Исторические 1999 мс остаются отклонением, исправление темпа имеет только локальное evidence.
 
 ## Реальные данные и ограничения
 
@@ -52,7 +54,7 @@
 .\.tools\node-v22.23.2\node.exe --env-file=.env.polling dist/scripts/real-preflight.js
 ```
 
-Окно 19 завершено; нового READY/разрешения на второе окно нет. Ниже шаблон для отдельно разрешённой будущей кампании, после проверки свежести и готовности допущенного тестировщика:
+Окна 19 и 20 завершены. R20: 18:16:29–18:45:13 UTC, 72/120 requests; процесс остановлен, lock свободен, DB/cursor сохранены. [Журнал 20](docs/evidence/concise-copy/human.md). Следующие команды — шаблон отдельно разрешённой будущей кампании, не разрешение на повтор или resume:
 
 ```powershell
 $env:FLOW_DATA_MODE='real'
@@ -60,7 +62,7 @@ $env:DATA_SNAPSHOT_PATH=(Resolve-Path 'catalog/real/active.json').Path
 .\.tools\node-v22.23.2\node.exe --env-file=.env.polling dist/scripts/live-poll.js start --minutes 30
 ```
 
-Сеанс ограничен 30 минутами / 120 polling requests; последние пять минут — завершение и остановка. `resume` не продлевает срок. Один consumer, сохранённые DB/cursor и отсутствие webhook проверяются прежним runner; FLOW_TEST_CLOCK запрещён. Точный остаток — [U16-A/B/C](docs/EXPLORATORY_MAX_RUNBOOK.md#c-текущий-assertion-ledger-и-ограниченная-delta), без повторов historical PASS/A/B isolation. В 19 один A прошёл часть mobile/web пути; после 65 запросов runner остановлен, PID отсутствует, lock свободен. Замечания к заметности сохранения и повтору зоны исправлены после окна и пока проверены только локально.
+Сеанс ограничен 30 минутами / 120 polling requests; последние пять минут — завершение и остановка. `resume` не продлевает срок. Один consumer, сохранённые DB/cursor и отсутствие webhook проверяются прежним runner; FLOW_TEST_CLOCK запрещён. Точный остаток — [U16-A/B/C](docs/EXPLORATORY_MAX_RUNBOOK.md#c-текущий-assertion-ledger-и-ограниченная-delta), без повторов historical PASS/A/B isolation. R20 проверяет изменённые тексты и совместимые оставшиеся подшаги, а не прежние успешные меню.
 
 ## Устройство, история и выпуск
 

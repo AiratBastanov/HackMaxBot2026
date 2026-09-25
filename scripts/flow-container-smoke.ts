@@ -16,8 +16,8 @@ async function main() {
   const wait = async (previous: number) => { const end=Date.now()+10000; while(Date.now()<end) { const row=latest(); if(row && row.id>previous) {const op=JSON.parse(row.payload) as Extract<MaxOperation,{method:'messages'}>;transcript.push(`Бот: ${op.body.text}`);return op;} await new Promise(r=>setTimeout(r,150)); } throw Error('SCREEN_TIMEOUT'); };
   let screen: Extract<MaxOperation,{method:'messages'}>;
   const click = async (text: string) => {
-    const b=screen.body.attachments?.flatMap(a=>a.payload.buttons.flat()).find(b=>b.text===text); if(!b||b.type!=='callback')throw Error(`BUTTON_${text}`);
-    transcript.push(`Пользователь: ${text}`); const previous=latest()?.id??0;const v=callback('',randomUUID(),ACTOR,clock());v.callback.payload=b.payload;
+    const b=screen.body.attachments?.flatMap(a=>a.payload.buttons.flat()).find(b=>b.text===text||text==='Завтра'&&b.text.startsWith('Завтра · ')); if(!b||b.type!=='callback')throw Error(`BUTTON_${text}`);
+    transcript.push(`Пользователь: ${b.text}`); const previous=latest()?.id??0;const v=callback('',randomUUID(),ACTOR,clock());v.callback.payload=b.payload;
     v.message.body.mid=(db.prepare('SELECT mid FROM flow_screens WHERE actor=?').get(ACTOR) as {mid:string}).mid;await post(v);screen=await wait(previous);
   };
   try {
@@ -31,9 +31,9 @@ async function main() {
       const previous=latest()?.id??0;const v=lifecycle('bot_started',clock(),ACTOR);delete (v as {payload?:string}).payload;await post(v);screen=await wait(previous);
       for (const label of ['Подобрать','Казань','Другая дата','Назад','Завтра','Другое время','Назад','12:00–18:00','Продолжить','Другая сумма','Назад','До 500 ₽','Театр','Показать результаты']) await click(label);
       if(!screen.body.text.includes('выставка света')||!screen.body.text.includes('театральная экспозиция')||screen.body.text.indexOf('театральная экспозиция')>screen.body.text.indexOf('выставка света')) throw Error('INTEREST_NOT_PREFERENCE');
-      if(!screen.body.text.includes('Совпадает по известным условиям')||screen.body.text.includes('Варианты, где нужно уточнение')) throw Error('STRICT_GROUP');
+      if(!screen.body.text.includes('Подходит по известным условиям')||screen.body.text.includes('Нужно уточнить условия')) throw Error('STRICT_GROUP');
       await click('Показать варианты для проверки');
-      if(!screen.body.text.includes('Варианты, где нужно уточнение:\n3. мастерская цвета')) throw Error('CANDIDATE_GROUP');
+      if(!screen.body.text.includes('Нужно уточнить условия:\n3. мастерская цвета')) throw Error('CANDIDATE_GROUP');
       await click('Подробнее 3');
       if(!screen.body.text.includes('Нужно уточнить')) throw Error('UNCERTAINTY_LOST');
       if(!/📅.*12:00.*18:00/.test(screen.body.text)) throw Error('KNOWN_TIME_LOST');

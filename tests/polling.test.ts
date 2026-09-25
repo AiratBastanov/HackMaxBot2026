@@ -261,15 +261,15 @@ test('HTTP E2E: updates → decoder/admission/SQLite/worker/renderer → outgoin
   const send=async(event:unknown)=>{incoming=[event];commitBatch(s,c,await max.updates(s.pollingMarker(),signal()),now);await drain();};
   await send(reply(undefined,++now,'/start',ACTOR,'start'));
   assert.match(screens.at(-1)!.text,/Культурный план/);
-  const click=async(text:string)=>{const b=screens.at(-1)!.attachments!.flatMap(a=>a.payload.buttons.flat()).find(b=>b.text===text);assert(b&&b.type==='callback',text);const v=callback('',`cb-${++seq}`,ACTOR,++now);v.callback.payload=b.payload;v.message.body.mid=(s.db.prepare('SELECT mid FROM flow_screens WHERE actor=?').get(ACTOR) as {mid:string}).mid;await send(v);};
+  const click=async(text:string)=>{const b=screens.at(-1)!.attachments!.flatMap(a=>a.payload.buttons.flat()).find(b=>b.text===text||text==='Завтра'&&b.text.startsWith('Завтра · '));assert(b&&b.type==='callback',text);const v=callback('',`cb-${++seq}`,ACTOR,++now);v.callback.payload=b.payload;v.message.body.mid=(s.db.prepare('SELECT mid FROM flow_screens WHERE actor=?').get(ACTOR) as {mid:string}).mid;await send(v);};
   for(const label of ['Подобрать','Казань','Завтра','12:00–18:00','Продолжить','До 500 ₽','Театр','Показать результаты'])await click(label);
-  assert.match(screens.at(-1)!.text,/Совпадает по известным условиям/);assert.doesNotMatch(screens.at(-1)!.text,/мастерская/);
+  assert.match(screens.at(-1)!.text,/Подходит по известным условиям/);assert.doesNotMatch(screens.at(-1)!.text,/мастерская/);
   await click('Подробнее 1');await click('Условия посещения');assert.match(screens.at(-1)!.text,/200|регистрац/);
   await click('К карточке');await click('Сохранить');assert.equal((s.db.prepare('SELECT count(*) n FROM bookmarks').get() as {n:number}).n,1);
   await click('Мои события');await click('Открыть 1');await click('Удалить закладку');await click('Да, удалить');
   assert.equal((s.db.prepare('SELECT count(*) n FROM bookmarks').get() as {n:number}).n,0);
   await click('Главная');for(const label of ['Подобрать','Казань','Завтра','12:00–18:00','Продолжить','До 500 ₽','Театр','Показать результаты','Показать варианты для проверки'])await click(label);
-  assert.match(screens.at(-1)!.text,/Варианты, где нужно уточнение/);await click('Подробнее 3');assert.match(screens.at(-1)!.text,/Нужно уточнить|тариф/);await click('Сохранить');
+  assert.match(screens.at(-1)!.text,/Нужно уточнить условия/);await click('Подробнее 3');assert.match(screens.at(-1)!.text,/Нужно уточнить|тариф/);await click('Сохранить');
   const savedMarker=s.pollingMarker();await worker.stop();s.close();s=storage(t,c);worker=new Worker(s,c,new LiveMax(c,fetcher),()=>now,undefined,catalog);
   assert.equal(s.pollingMarker(),savedMarker);await send(reply(undefined,++now,'/saved',ACTOR,'saved-after-restart'));assert.match(screens.at(-1)!.text,/мастерская/);
   // Второй GET ждёт; worker уже может доставить ответ на ранее committed input.

@@ -41,7 +41,7 @@ export function projectCard(catalog: Catalog, query: Query, r: Recommendation | 
       price:r.price,partyPrice:r.partyPrice,tariffs:e.tariffs,providerAgeLabel:e.providerAgeLabel,admission:e.admission,warnings:[...r.warnings,...e.issues,...(o?.issues??[])],providerUpdatedAt:e.providerUpdatedAt,
       eventObservations:r.eventObservations,venueObservations:r.venueObservations,
       links:[...(e.organizerUrl?[{label:catalog.snapshot!.mode==='SYNTHETIC_FIXTURE'?'Пример ссылки организатора':'Организатор',url:e.organizerUrl}]:[]),
-        ...(e.ticketUrl?[{label:catalog.snapshot!.mode==='SYNTHETIC_FIXTURE'?'Пример ссылки билетов':'Билеты',url:e.ticketUrl}]:[]),
+        ...((o?.ticketUrl??e.ticketUrl)?[{label:catalog.snapshot!.mode==='SYNTHETIC_FIXTURE'?'Пример ссылки билетов':'Билеты',url:(o?.ticketUrl??e.ticketUrl)!}]:[]),
         ...(venue?.sourceUrl?[{label:catalog.snapshot!.mode==='SYNTHETIC_FIXTURE'?'Пример ссылки площадки':'Площадка',url:venue.sourceUrl}]:[])]} };
 }
 

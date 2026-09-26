@@ -18,11 +18,11 @@ export class Catalog {
   private values = new Map<CityKey, Snapshot>();
   private hash = digest(null);
   readonly review:Review|null;
-  constructor(readonly mode: Config['flowDataMode'], input: unknown = null, review:unknown = null) {
+  constructor(readonly mode: Config['flowDataMode'], input: unknown = null, review:unknown = null,private readonly publicOnly=false) {
     this.review=review===null?null:reviewSchema.parse(review); this.replace(input);
   }
-  permits(refs:DisplayRef[]|undefined,now:number) {return permittedRefs([...this.values.values()],this.review,refs,now);}
-  usableCities(now:number) {return [...this.values].filter(([,s])=>s.mode!=='REAL_CATALOG'||reviewedSnapshot(s,this.review,now)).map(([city])=>city);}
+  permits(refs:DisplayRef[]|undefined,now:number,publicOnly=this.publicOnly) {return permittedRefs([...this.values.values()],this.review,refs,now,publicOnly);}
+  usableCities(now:number) {return [...this.values].filter(([,s])=>s.mode!=='REAL_CATALOG'||reviewedSnapshot(s,this.review,now,this.publicOnly)).map(([city])=>city);}
   get snapshot() { return this.value; }
   get version() { return this.hash; }
   forCity(city: CityKey) { return this.values.get(city) ?? null; }
@@ -49,7 +49,7 @@ export class Catalog {
       }
       if(reviewPath&&statSync(reviewPath).size>65536)throw Error('CATALOG_REVIEW_SIZE');
       const review=reviewPath?JSON.parse(readFileSync(reviewPath,'utf8')):null;
-      return new Catalog(config.flowDataMode,input,review);
+      return new Catalog(config.flowDataMode,input,review,config.admissionMode==='PUBLIC');
     } catch (e) {
       if (e instanceof Error && e.message === 'CATALOG_MODE_MISMATCH') throw e;
       return new Catalog(config.flowDataMode); // Ошибка/отсутствие — недоступность, никогда не synthetic fallback.

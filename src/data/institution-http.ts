@@ -6,7 +6,7 @@ import { bodyHash, type Page } from './institutions.js';
 
 export function institutionUrl(value:string) {
   const u=new URL(value);
-  if(!Object.values(sources).some(s=>s.origin===u.origin)||u.protocol!=='https:'||u.username||u.password||u.port||u.hash||u.search)throw Error('SOURCE_URL_DENIED');
+  if(!Object.values(sources).some(s=>s.origin===u.origin)||u.protocol!=='https:'||u.username||u.password||u.port||u.hash||u.search.length>1000)throw Error('SOURCE_URL_DENIED');
   return u;
 }
 // Robots rules are collection policy only. Longest applicable rule wins; no XML entities or scripts execute.
@@ -24,7 +24,7 @@ export function robotsAllows(body:string,path:string) {
   applicable.sort((a,b)=>b.path.length-a.path.length||Number(b.allow)-Number(a.allow));return applicable[0]?.allow??true;
 }
 export type FetchRow={url:string;startedAt:string;finishedAt?:string;status?:number;outcome:string;bytes:number;hash?:string;file?:string;type?:string|null;modified?:string|null;location?:string|null};
-export type Acquisition={startedAt:string;bytes:number;requests:FetchRow[]};
+export type Acquisition={startedAt:string;bytes:number;requests:FetchRow[];networkMs?:number};
 export function atomicJson(path:string,value:unknown) {mkdirSync(resolve(path,'..'),{recursive:true});const temp=path+'.tmp';writeFileSync(temp,JSON.stringify(value,null,2)+'\n');renameSync(temp,path);}
 export class InstitutionClient {
   readonly ledger:Acquisition;
@@ -46,16 +46,16 @@ export class InstitutionClient {
     if(this.ledger.requests.some(r=>new URL(r.url).origin===url.origin&&['HTTP_401','HTTP_403','HTTP_429','NETWORK_FAILURE','401','403','429'].includes(r.outcome)))throw Error('SOURCE_ROUTE_STOPPED');
     if(url.pathname!=='/robots.txt') {
       const robots=this.cached(url.origin+'/robots.txt');
-      if(!robots||!robotsAllows(robots.body,url.pathname))throw Error('ROBOTS_DENIED_OR_UNKNOWN');
+      if(!robots||!robotsAllows(robots.body,url.pathname+url.search))throw Error('ROBOTS_DENIED_OR_UNKNOWN');
     }
     const last=this.ledger.requests.filter(r=>new URL(r.url).origin===url.origin).at(-1);
     const earliest=Date.parse(last?.startedAt??'1970-01-01')+2000;
     // Таймер может проснуться раньше срока: проверяем clock перед реальным стартом.
     for(;;) {
       const wait=Math.max(0,earliest-this.clock());
-      if(this.ledger.requests.length>=80||this.ledger.bytes>=40*1024*1024||this.clock()+wait+20000>Date.parse(this.ledger.startedAt)+900000)throw Error('ACQUISITION_BUDGET');
+      if(this.ledger.requests.length>=300||this.ledger.bytes>=150*1024*1024||(this.ledger.networkMs??0)+wait+20000>1800000)throw Error('ACQUISITION_BUDGET');
       if(!wait)break;
-      await this.sleep(wait);
+      const before=this.clock();await this.sleep(wait);this.ledger.networkMs=(this.ledger.networkMs??0)+Math.max(0,this.clock()-before);this.persist();
     }
     const row:FetchRow={url:value,startedAt:new Date(this.clock()).toISOString(),outcome:'STARTED',bytes:0};this.ledger.requests.push(row);this.persist();
     let redirect:string|undefined;
@@ -67,15 +67,16 @@ export class InstitutionClient {
         redirect=institutionUrl(new URL(row.location,value).href).href;row.outcome='REDIRECT';
       } else {
         if(response.status!==200){await response.body?.cancel();throw Error('HTTP_'+response.status);}
-        if(!/^(text\/(html|plain)|application\/(xml|json))(?:;|$)/i.test(row.type??'')){await response.body?.cancel();throw Error('CONTENT_TYPE');}
+        if(!/^(text\/(html|plain|javascript)|application\/(xml|json|javascript|pdf))(?:;|$)/i.test(row.type??'')){await response.body?.cancel();throw Error('CONTENT_TYPE');}
         const chunks:Uint8Array[]=[];const reader=response.body?.getReader();if(!reader)throw Error('EMPTY_BODY');
         try {while(true){const part=await reader.read();if(part.done)break;row.bytes+=part.value.byteLength;this.ledger.bytes+=part.value.byteLength;
-          if(row.bytes>4*1024*1024||this.ledger.bytes>40*1024*1024){await reader.cancel();throw Error('BODY_BUDGET');}chunks.push(part.value);}}
+          if(row.bytes>8*1024*1024||this.ledger.bytes>150*1024*1024){await reader.cancel();throw Error('BODY_BUDGET');}chunks.push(part.value);}}
         finally{reader.releaseLock();}
-        const body=Buffer.concat(chunks).toString('utf8');row.hash=bodyHash(body);row.file='raw/'+row.hash+'.html';writeFileSync(resolve(this.root,row.file),body);row.outcome='OK';
+        // PDF применяется только при обзоре условий, хранится base64 в private cache.
+        const body=Buffer.concat(chunks).toString(row.type?.startsWith('application/pdf')?'base64':'utf8');row.hash=bodyHash(body);row.file='raw/'+row.hash+'.html';writeFileSync(resolve(this.root,row.file),body);row.outcome='OK';
       }
     }catch(e){row.outcome=e instanceof Error&&/^[A-Z_0-9]+$/.test(e.message)?e.message:'NETWORK_FAILURE';throw Error(row.outcome);}
-    finally{row.finishedAt=new Date(this.clock()).toISOString();this.persist();}
+    finally{row.finishedAt=new Date(this.clock()).toISOString();this.ledger.networkMs=(this.ledger.networkMs??0)+Math.max(0,this.clock()-Date.parse(row.startedAt));this.persist();}
     return redirect?this.fetchPage(redirect,redirects+1):this.cached(value)!;
   }
   private persist(){atomicJson(resolve(this.root,'acquisition.json'),this.ledger);}

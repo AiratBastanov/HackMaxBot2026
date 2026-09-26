@@ -1,0 +1,130 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.77kB done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/node:22.23.2-bookworm@sha256:dd5847a04b0deee391fa145f1f4c6d214196668b
+6bcc7988ebed67249f226844
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/node:22.23.2-bookworm-slim@sha256:48e4b67d85f87bd551df43704e24d252f56
+cc5f8e9718841aace50f19948f0f9
+#3 DONE 0.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 785B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [runtime  1/10] FROM docker.io/library/node:22.23.2-bookworm-slim@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e97
+18841aace50f19948f0f9
+#6 resolve docker.io/library/node:22.23.2-bookworm-slim@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f1
+9948f0f9 0.0s done
+#6 DONE 0.0s
+
+#7 [build  1/12] FROM docker.io/library/node:22.23.2-bookworm@sha256:dd5847a04b0deee391fa145f1f4c6d214196668b6bcc7988eb
+ed67249f226844
+#7 resolve docker.io/library/node:22.23.2-bookworm@sha256:dd5847a04b0deee391fa145f1f4c6d214196668b6bcc7988ebed67249f226
+844 0.0s done
+#7 DONE 0.1s
+
+#8 [build  2/12] WORKDIR /app
+#8 CACHED
+
+#9 [runtime  2/10] WORKDIR /app
+#9 CACHED
+
+#5 [internal] load build context
+#5 transferring context: 1.15MB 0.1s done
+#5 DONE 0.1s
+
+#10 [build  3/12] COPY package.json package-lock.json .npmrc ./
+#10 DONE 0.1s
+
+#11 [build  4/12] RUN npm ci --no-audit --no-fund
+#11 ...
+
+#12 [runtime  3/10] RUN mkdir -p /app/runtime && chown node:node /app/runtime
+#12 DONE 0.3s
+
+#11 [build  4/12] RUN npm ci --no-audit --no-fund
+#11 11.81
+#11 11.81 added 60 packages in 11s
+#11 11.81 npm notice
+#11 11.81 npm notice New major version of npm available! 10.9.8 -> 12.1.0
+#11 11.81 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.1.0
+#11 11.81 npm notice To update run: npm install -g npm@12.1.0
+#11 11.81 npm notice
+#11 DONE 12.1s
+
+#13 [build  5/12] COPY tsconfig.json ./
+#13 DONE 0.1s
+
+#14 [build  6/12] COPY src ./src
+#14 DONE 0.1s
+
+#15 [build  7/12] COPY tests ./tests
+#15 DONE 0.1s
+
+#16 [build  8/12] COPY scripts ./scripts
+#16 DONE 0.1s
+
+#17 [build  9/12] COPY catalog/real ./catalog/real
+#17 DONE 0.1s
+
+#18 [build 10/12] RUN npm run typecheck && npm run build
+#18 0.370
+#18 0.370 > maxbot-g1-technical-probe@0.1.0 typecheck
+#18 0.370 > tsc --noEmit
+#18 0.370
+#18 1.178
+#18 1.178 > maxbot-g1-technical-probe@0.1.0 build
+#18 1.178 > tsc
+#18 1.178
+#18 DONE 1.9s
+
+#19 [build 11/12] RUN node --input-type=module -e "import {stage4Fixture} from './dist/src/culture/stage4-fixture.js';
+import {writeFileSync} from 'node:fs'; writeFileSync('/app/synthetic-catalog.json',JSON.stringify(stage4Fixture()));"
+#19 DONE 0.4s
+
+#20 [build 12/12] RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
+#20 0.723
+#20 0.723 up to date in 360ms
+#20 DONE 0.8s
+
+#21 [runtime  4/10] COPY --from=build /app/node_modules ./node_modules
+#21 DONE 0.8s
+
+#22 [runtime  5/10] COPY --from=build /app/package.json ./package.json
+#22 DONE 0.1s
+
+#23 [runtime  6/10] COPY --from=build /app/dist/src ./dist/src
+#23 DONE 0.1s
+
+#24 [runtime  7/10] COPY --from=build /app/dist/scripts ./dist/scripts
+#24 DONE 0.1s
+
+#25 [runtime  8/10] COPY --from=build /app/dist/tests/fixtures.js ./dist/tests/fixtures.js
+#25 DONE 0.1s
+
+#26 [runtime  9/10] COPY --from=build /app/synthetic-catalog.json ./synthetic-catalog.json
+#26 DONE 0.1s
+
+#27 [runtime 10/10] COPY --from=build /app/catalog/real ./catalog/real
+#27 DONE 0.1s
+
+#28 exporting to image
+#28 exporting layers
+#28 exporting layers 1.8s done
+#28 exporting manifest sha256:2f761f83d71dd9f331e8ef39663795bc604a061d6e27a713fcfb8aa1e1353ed6 0.0s done
+#28 exporting config sha256:dcb8c85349c8758fac3bfb8acd84c9ac74b5fae6d530de356c5eb542cb7663b4 0.0s done
+#28 exporting attestation manifest sha256:1ce5e2f5617711cc507b8e57f6a7d885a7cd688bf2e779f463951483628b71a6 0.0s done
+#28 exporting manifest list sha256:2e468747e88954f562764f801e038524996e54102f7a7e506c6fe08d40956862
+#28 exporting manifest list sha256:2e468747e88954f562764f801e038524996e54102f7a7e506c6fe08d40956862 0.0s done
+#28 naming to docker.io/library/cultural-plan:local done
+#28 unpacking to docker.io/library/cultural-plan:local
+#28 unpacking to docker.io/library/cultural-plan:local 1.1s done
+#28 DONE 3.1s

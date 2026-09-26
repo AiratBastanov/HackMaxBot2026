@@ -9,7 +9,7 @@ import { Worker } from './worker.js';
 import { Catalog } from './culture/catalog.js';
 
 export function createApp(config: Config, options: { store?: Storage; transport?: MaxTransport; clock?: () => number; catalog?: Catalog; report?: (value: object) => void } = {}) {
-  if (config.ingress === 'test-polling' || !config.webhookSecret) throw Error('WEBHOOK_INGRESS_REQUIRED');
+  if (config.ingress && config.ingress !== 'webhook' || !config.webhookSecret) throw Error('WEBHOOK_INGRESS_REQUIRED');
   if (config.mode === 'live' && (options.clock||config.flowTestClock)) throw new Error('LIVE_CLOCK_INJECTION_FORBIDDEN');
   const catalog = options.catalog ?? Catalog.load(config);
   if (catalog.mode !== config.flowDataMode) throw new Error('CATALOG_MODE_MISMATCH');
@@ -18,7 +18,7 @@ export function createApp(config: Config, options: { store?: Storage; transport?
   const clock = options.clock ?? (config.flowTestClock ? () => Date.parse(config.flowTestClock!) + Date.now() - started : Date.now);
   const store = options.store ?? new Storage(config.databasePath, config);
   const app = Fastify({ logger: false, bodyLimit: 65536, requestTimeout: 5000, connectionTimeout: 5000 });
-  const worker = new Worker(store, config, options.transport ?? createTransport(config), clock, options.report, catalog);
+  const worker = new Worker(store, config, options.transport ?? createTransport(config,store), clock, options.report, catalog);
   app.removeContentTypeParser('application/json');
   app.addContentTypeParser('application/json', { parseAs: 'string' }, (_request, body, done) => {
     try { done(null, parseJson(body as string)); } catch { const e = Object.assign(new Error('Некорректный JSON'), { statusCode: 400 }); done(e); }

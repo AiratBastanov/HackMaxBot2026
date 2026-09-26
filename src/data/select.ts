@@ -96,7 +96,7 @@ export function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Ven
       const first = Date.parse(cityInstant(localDate(q.start), '00:00', zone));
       for (let day = first; day < upper && !from; day += 86400000) {
         const date = localDate(new Date(day).toISOString());
-        if ((o.activeFrom && date < o.activeFrom) || (o.activeThrough && date > o.activeThrough)) continue;
+        if ((o.activeFrom && date < o.activeFrom) || (o.activeThrough && date > o.activeThrough) || o.closedDates?.includes(date)) continue;
         const weekday = new Date(`${date}T12:00:00Z`).getUTCDay();
         for (const hours of o.opening.filter(h => h.weekday === weekday).sort((a, b) => a.open - b.open)) {
           const begin = Math.max(lower, day + hours.open * 60000), finish = Math.min(upper, day + hours.close * 60000);
@@ -132,7 +132,7 @@ export function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Ven
   if (checks.some(t => !fresh(t))) a.unknown.push('FACTS_STALE');
   predicate('freshness', ['FACTS_STALE'], `Применимые факты получены не более ${freshnessHours} часов назад; источник не сообщает дату изменения условий.`);
   // Просмотр текущих фактов закладки доступен и при mismatch; подбор их не рекомендует.
-  a.view = { eventId: e.id, occurrenceId: o?.id ?? null, title: e.title, source: { label: e.sourceLabel, url: e.sourceUrl },
+  a.view = { eventId: e.id, occurrenceId: o?.id ?? null, title: e.title, source: { label: e.sourceLabel, url: o?.sourceUrl??e.sourceUrl },
       predicates: a.predicates, factsMatched: a.predicates.filter(p => p.state === 'MATCH').map(p => p.detail), usefulFacts: a.facts,
       reasons: [...new Set([...a.hard,...a.unknown])].map(c => reasonText[c]!),
       checkAtSource: a.predicates.filter(p => p.state !== 'MATCH').map(p => `${p.state==='MISMATCH'?'Не соответствует':'Проверить у источника'}: ${p.detail}`),
@@ -150,7 +150,7 @@ export function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Ven
   if (q.category) reasons.push(`Подтверждена категория: ${q.category}.`);
   if (q.zone) reasons.push(`Подтверждена зона: ${q.zone}.`);
   a.match = { eventId: e.id, occurrenceId: o.id, title: e.title, kind: o.kind, from, until, lastEntry,
-    source: { label: e.sourceLabel, url: e.sourceUrl }, reasons, price: e.price, partyPrice: cost,
+    source: { label: e.sourceLabel, url: o?.sourceUrl??e.sourceUrl }, reasons, price: e.price, partyPrice: cost,
     eventRetrievedAt: e.retrievedAt, eventObservations: e.observations, venueObservations: venue?.observations ?? [],
     warnings: ['Условия организатором повторно не проверены; получение API сегодня не подтверждает их свежесть.',
       ...(venue?.stub ? ['Редакционная карточка площадки — заглушка; сведения о помещении независимо не проверены.'] : []),

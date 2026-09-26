@@ -1,0 +1,483 @@
+{
+  "verdict": "AUTOMATED_APPLICATION_REPLAY",
+  "at": "2026-09-26T15:28:55.261Z",
+  "counts": {
+    "events": 62,
+    "occurrences": 93,
+    "timedSessions": 75,
+    "exhibitionPeriods": 18,
+    "cities": 2,
+    "sources": 5
+  },
+  "byCity": {
+    "kzn": 25,
+    "ekb": 37
+  },
+  "bySource": {
+    "kazan-kremlin": {
+      "events": 20,
+      "occurrences": 29
+    },
+    "tatmuseum": {
+      "events": 5,
+      "occurrences": 5
+    },
+    "mie": {
+      "events": 9,
+      "occurrences": 9
+    },
+    "sgaf": {
+      "events": 9,
+      "occurrences": 23
+    },
+    "uralopera": {
+      "events": 19,
+      "occurrences": 27
+    }
+  },
+  "queries": [
+    {
+      "query": {
+        "version": 2,
+        "city": "kzn",
+        "timezone": "Europe/Moscow",
+        "start": "2026-09-27T09:00:00.000Z",
+        "end": "2026-09-27T15:00:00.000Z",
+        "budgetRub": 500,
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 2,
+      "candidates": 16,
+      "titles": [
+        {
+          "title": "Гелий Коржев. Свет и тень",
+          "source": "https://kazan-kremlin.ru/exhibitions/gelij-korzhev-svet-i-ten"
+        },
+        {
+          "title": "Казанское Поволжье: образы народной культуры",
+          "source": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2"
+        },
+        {
+          "title": "Губернаторский дворец: 175 лет в центре исторических событий",
+          "source": "https://kazan-kremlin.ru/exhibitions/gubernatorskij-dvorecz-175-let-v-czentre-istoricheskih-sobytij"
+        },
+        {
+          "title": "Рождение света",
+          "source": "https://kazan-kremlin.ru/exhibitions/rozhdenie-sveta"
+        },
+        {
+          "title": "Гастрономическая летопись Казани",
+          "source": "https://tatmuseum.ru/events/gastronomicheskaya-letopis-kazani/"
+        }
+      ],
+      "excluded": {
+        "VENUE_UNKNOWN": 11,
+        "PRICE_UNKNOWN": 21,
+        "TIME_UNKNOWN": 16,
+        "OUTSIDE_WINDOW": 8,
+        "FACTS_STALE": 11
+      }
+    },
+    {
+      "query": {
+        "version": 2,
+        "city": "kzn",
+        "timezone": "Europe/Moscow",
+        "start": "2026-09-27T09:00:00.000Z",
+        "end": "2026-09-27T15:00:00.000Z",
+        "budgetRub": 1500,
+        "party": {
+          "adults": 2,
+          "childAges": [
+            7
+          ]
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 0,
+      "candidates": 18,
+      "titles": [
+        {
+          "title": "Казанское Поволжье: образы народной культуры",
+          "source": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2"
+        },
+        {
+          "title": "Рождение света",
+          "source": "https://kazan-kremlin.ru/exhibitions/rozhdenie-sveta"
+        },
+        {
+          "title": "Гелий Коржев. Свет и тень",
+          "source": "https://kazan-kremlin.ru/exhibitions/gelij-korzhev-svet-i-ten"
+        }
+      ],
+      "excluded": {
+        "PRICE_UNKNOWN": 23,
+        "ADMISSION_UNKNOWN": 24,
+        "VENUE_UNKNOWN": 11,
+        "TIME_UNKNOWN": 16,
+        "OUTSIDE_WINDOW": 8,
+        "FACTS_STALE": 11
+      }
+    },
+    {
+      "query": {
+        "version": 2,
+        "city": "kzn",
+        "timezone": "Europe/Moscow",
+        "start": "2026-10-03T15:00:00.000Z",
+        "end": "2026-10-03T20:00:00.000Z",
+        "budgetRub": null,
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 0,
+      "candidates": 4,
+      "titles": [
+        {
+          "title": "Гастрономическая летопись Казани",
+          "source": "https://tatmuseum.ru/events/gastronomicheskaya-letopis-kazani/"
+        },
+        {
+          "title": "История Татарстана с древнейших времен до наших дней",
+          "source": "https://tatmuseum.ru/events/istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney/"
+        },
+        {
+          "title": "Кабинет редкостей",
+          "source": "https://tatmuseum.ru/events/kabinet-redkostey/"
+        }
+      ],
+      "excluded": {
+        "OUTSIDE_WINDOW": 21,
+        "VENUE_UNKNOWN": 11,
+        "TIME_UNKNOWN": 16,
+        "FACTS_STALE": 11
+      }
+    },
+    {
+      "query": {
+        "version": 2,
+        "city": "kzn",
+        "timezone": "Europe/Moscow",
+        "start": "2026-10-23T07:00:00.000Z",
+        "end": "2026-10-23T15:00:00.000Z",
+        "budgetRub": null,
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 1,
+      "candidates": 7,
+      "titles": [
+        {
+          "title": "Казанское Поволжье: образы народной культуры",
+          "source": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2"
+        },
+        {
+          "title": "Гастрономическая летопись Казани",
+          "source": "https://tatmuseum.ru/events/gastronomicheskaya-letopis-kazani/"
+        },
+        {
+          "title": "История Татарстана с древнейших времен до наших дней",
+          "source": "https://tatmuseum.ru/events/istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney/"
+        },
+        {
+          "title": "Кабинет редкостей",
+          "source": "https://tatmuseum.ru/events/kabinet-redkostey/"
+        }
+      ],
+      "excluded": {
+        "OUTSIDE_WINDOW": 17,
+        "VENUE_UNKNOWN": 11,
+        "TIME_UNKNOWN": 16,
+        "FACTS_STALE": 11
+      }
+    },
+    {
+      "query": {
+        "version": 2,
+        "city": "kzn",
+        "timezone": "Europe/Moscow",
+        "start": "2026-09-26T23:00:00.000Z",
+        "end": "2026-09-27T00:00:00.000Z",
+        "budgetRub": 0,
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 0,
+      "candidates": 0,
+      "titles": [],
+      "excluded": {
+        "OVER_BUDGET": 3,
+        "OUTSIDE_WINDOW": 25,
+        "VENUE_UNKNOWN": 11,
+        "PRICE_UNKNOWN": 21,
+        "TIME_UNKNOWN": 16,
+        "FACTS_STALE": 11
+      }
+    },
+    {
+      "query": {
+        "version": 2,
+        "city": "ekb",
+        "timezone": "Asia/Yekaterinburg",
+        "start": "2026-09-27T07:00:00.000Z",
+        "end": "2026-09-27T13:00:00.000Z",
+        "budgetRub": 500,
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 1,
+      "candidates": 9,
+      "titles": [
+        {
+          "title": "«Азины. Магия имени»",
+          "source": "https://m-i-e.ru/azins_magic_of_name"
+        },
+        {
+          "title": "«Роковый корпус»",
+          "source": "https://m-i-e.ru/casing_of_rock"
+        },
+        {
+          "title": "«БУМ! Рождение креативных индустрий в Екатеринбурге в 1990–2000-е»",
+          "source": "https://m-i-e.ru/creative_industry"
+        },
+        {
+          "title": "«Хроники ресторанного Екатеринбурга: городские фудкорты XIX века»",
+          "source": "https://m-i-e.ru/ekb_fastfood"
+        }
+      ],
+      "excluded": {
+        "PRICE_UNKNOWN": 32,
+        "VENUE_UNKNOWN": 1,
+        "OUTSIDE_WINDOW": 27,
+        "FACTS_STALE": 28,
+        "OVER_BUDGET": 4
+      }
+    },
+    {
+      "query": {
+        "version": 2,
+        "city": "ekb",
+        "timezone": "Asia/Yekaterinburg",
+        "start": "2026-09-27T07:00:00.000Z",
+        "end": "2026-09-27T13:00:00.000Z",
+        "budgetRub": 1500,
+        "party": {
+          "adults": 2,
+          "childAges": [
+            7
+          ]
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 0,
+      "candidates": 11,
+      "titles": [
+        {
+          "title": "«Азины. Магия имени»",
+          "source": "https://m-i-e.ru/azins_magic_of_name"
+        },
+        {
+          "title": "«Роковый корпус»",
+          "source": "https://m-i-e.ru/casing_of_rock"
+        },
+        {
+          "title": "«БУМ! Рождение креативных индустрий в Екатеринбурге в 1990–2000-е»",
+          "source": "https://m-i-e.ru/creative_industry"
+        }
+      ],
+      "excluded": {
+        "ADMISSION_UNKNOWN": 37,
+        "PRICE_UNKNOWN": 35,
+        "VENUE_UNKNOWN": 1,
+        "OUTSIDE_WINDOW": 27,
+        "FACTS_STALE": 28,
+        "OVER_BUDGET": 1
+      }
+    },
+    {
+      "query": {
+        "version": 2,
+        "city": "ekb",
+        "timezone": "Asia/Yekaterinburg",
+        "start": "2026-10-03T13:00:00.000Z",
+        "end": "2026-10-03T18:00:00.000Z",
+        "budgetRub": null,
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 3,
+      "candidates": 1,
+      "titles": [
+        {
+          "title": "«Роковый корпус»",
+          "source": "https://m-i-e.ru/casing_of_rock"
+        },
+        {
+          "title": "«БУМ! Рождение креативных индустрий в Екатеринбурге в 1990–2000-е»",
+          "source": "https://m-i-e.ru/creative_industry"
+        },
+        {
+          "title": "«Дворцовый переворот»",
+          "source": "https://m-i-e.ru/palace__coup"
+        },
+        {
+          "title": "Алиса в Зазеркалье",
+          "source": "https://uralopera.ru/events/alisa-v-zazerkale?date=2439"
+        }
+      ],
+      "excluded": {
+        "OUTSIDE_WINDOW": 34,
+        "VENUE_UNKNOWN": 1,
+        "FACTS_STALE": 28
+      }
+    },
+    {
+      "query": {
+        "version": 2,
+        "city": "ekb",
+        "timezone": "Asia/Yekaterinburg",
+        "start": "2026-10-23T05:00:00.000Z",
+        "end": "2026-10-23T13:00:00.000Z",
+        "budgetRub": null,
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 5,
+      "candidates": 1,
+      "titles": [
+        {
+          "title": "«Азины. Магия имени»",
+          "source": "https://m-i-e.ru/azins_magic_of_name"
+        },
+        {
+          "title": "«Каменный город»",
+          "source": "https://m-i-e.ru/stone_city"
+        },
+        {
+          "title": "«Чемоданное настроение»",
+          "source": "https://m-i-e.ru/suitcase_mood"
+        },
+        {
+          "title": "Постоянная экспозиция",
+          "source": "https://m-i-e.ru/postoyannaya"
+        }
+      ],
+      "excluded": {
+        "OUTSIDE_WINDOW": 31,
+        "VENUE_UNKNOWN": 1,
+        "FACTS_STALE": 28
+      }
+    },
+    {
+      "query": {
+        "version": 2,
+        "city": "ekb",
+        "timezone": "Asia/Yekaterinburg",
+        "start": "2026-09-26T21:00:00.000Z",
+        "end": "2026-09-26T22:00:00.000Z",
+        "budgetRub": 0,
+        "party": {
+          "adults": 1,
+          "childAges": []
+        },
+        "budgetBasis": "PARTY_TOTAL",
+        "category": null,
+        "zone": null,
+        "kind": "ANY",
+        "preferences": {
+          "categories": []
+        }
+      },
+      "strict": 0,
+      "candidates": 0,
+      "titles": [],
+      "excluded": {
+        "OUTSIDE_WINDOW": 37,
+        "PRICE_UNKNOWN": 32,
+        "VENUE_UNKNOWN": 1,
+        "FACTS_STALE": 28,
+        "OVER_BUDGET": 4
+      }
+    }
+  ],
+  "human": {
+    "mobile": "DEFERRED_BY_USER / NOT_RUN",
+    "web": "DEFERRED_BY_USER / NOT_RUN"
+  }
+}

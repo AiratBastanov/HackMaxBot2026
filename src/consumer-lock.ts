@@ -5,6 +5,7 @@ import { createServer } from 'node:net';
 // Коллизия порта безопасно отказывает; сторонний код обязан участвовать в этом протоколе.
 export async function acquireConsumerLock(botId: string): Promise<() => Promise<void>> {
   const port = 30000 + createHash('sha256').update(`maxbot-consumer:${botId}`).digest().readUInt32BE() % 20000;
+  if(process.env.MAX_CONSUMER_PORT&&Number(process.env.MAX_CONSUMER_PORT)!==port)throw Error('CONSUMER_PORT_IDENTITY_MISMATCH');
   const server = createServer(socket => socket.destroy());
   await new Promise<void>((resolve, reject) => {
     server.once('error', () => reject(Error('SECOND_LOCAL_CONSUMER_OR_PORT_BUSY')));

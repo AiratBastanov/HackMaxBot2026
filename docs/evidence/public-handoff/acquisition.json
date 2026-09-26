@@ -1,0 +1,26 @@
+{
+  "at": "2026-09-26T15:28:00.570Z",
+  "requests": 257,
+  "decodedBytes": 64889578,
+  "networkAndPacingMs": 461547,
+  "limits": {
+    "requests": 300,
+    "decodedBytes": 157286400,
+    "networkMs": 1800000,
+    "requestDeadlineMs": 20000,
+    "sameHostStartSpacingMs": 2000
+  },
+  "byHost": {
+    "tatmuseum.ru": 14,
+    "kamalteatr.ru": 62,
+    "uralopera.ru": 35,
+    "sgaf.ru": 88,
+    "kazan-kremlin.ru": 32,
+    "m-i-e.ru": 26
+  },
+  "outcomes": {
+    "OK": 254,
+    "REDIRECT": 3
+  },
+  "rawCacheIncluded": false
+}

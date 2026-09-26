@@ -1,0 +1,157 @@
+{
+  "status": "MAXBOT_PUBLIC_ACCESS_CATALOG_HANDOFF_LOCAL_PASS",
+  "typecheckBuild": {
+    "commands": [
+      "npm run typecheck",
+      "npm run build"
+    ],
+    "nativeNode": "22.23.2",
+    "dockerNode": "22.23.2",
+    "exitCodes": [
+      0,
+      0
+    ]
+  },
+  "tests": {
+    "full": {
+      "selection": "Current tests/**/*.test.ts mapped to dist; no obsolete dist-only test files",
+      "passed": 257,
+      "failed": 0,
+      "exitCode": 0
+    },
+    "afterCatalogCorrection": {
+      "command": "node --test --test-timeout=20000 dist/tests/public-access.test.js dist/tests/public-data.test.js dist/tests/data-real.test.js dist/tests/flow-real.test.js",
+      "passed": 29,
+      "failed": 0,
+      "exitCode": 0
+    }
+  },
+  "docker": {
+    "cleanCopy": ".review/organizer-final-clean-21",
+    "privateRuntimeOrFixtureCopied": false,
+    "isolatedEnvironment": {
+      "DEMO_PORT": "33021",
+      "COMPOSE_PROJECT_NAME": "maxbot-public-final-21"
+    },
+    "reasonForPortOverride": "Existing user container occupies 3000; it was preserved",
+    "commands": [
+      {
+        "command": "docker compose up --build -d",
+        "exitCode": 0
+      },
+      {
+        "command": "docker compose exec app node dist/scripts/organizer-check.js",
+        "exitCode": 0,
+        "result": "PASS / SIMULATED_MAX"
+      },
+      {
+        "command": "docker compose restart",
+        "exitCode": 0
+      },
+      {
+        "command": "docker compose exec app node dist/scripts/organizer-check.js --restart",
+        "exitCode": 0,
+        "result": "PASS"
+      },
+      {
+        "command": "docker compose down",
+        "exitCode": 0
+      },
+      {
+        "command": "docker compose ps --all",
+        "exitCode": 0,
+        "containers": 0
+      }
+    ],
+    "finalCleanBuild": {
+      "command": "docker build --no-cache --progress=plain --target runtime -t cultural-plan:local .",
+      "exitCode": 0,
+      "elapsedSeconds": 21.621,
+      "baseImagesPreloaded": true,
+      "cachePruned": false,
+      "cachedMetadataOnly": [
+        "WORKDIR /app (build)",
+        "WORKDIR /app (runtime)"
+      ],
+      "executedWithoutLayerCache": [
+        "npm ci",
+        "npm run typecheck && npm run build",
+        "fixture generation",
+        "npm prune",
+        "all COPY operations"
+      ]
+    },
+    "buildLog": "docker-build.txt",
+    "buildLogSha256": "d95f37005eec552b5672faba3ef6bd7aad1db600d8e558b10e553de49c09f439",
+    "dockerVersion": "29.7.2",
+    "composeVersion": "5.5.1",
+    "platform": "Docker Desktop / Linux amd64 on Windows",
+    "earlierSelfcheckIssue": "Synthetic timestamp wrapped; self-check now derives a monotonic timestamp from the current disposable flow state. Fixed before final clean run.",
+    "buildLogExport": "PowerShell UTF-16 source decoded to UTF-8; shell diagnostic wrapper removed, BuildKit output retained."
+  },
+  "normalPolling": {
+    "entrypoint": "node --import /proof.mjs dist/scripts/start-polling.js",
+    "fixture": "normal-polling-proof.mjs",
+    "network": "docker --network none",
+    "credentials": "synthetic-isolated-no-live-token (fixture only)",
+    "result": "PUBLIC polling_started → seed unchanged → durable lossless cursor → SIGTERM → polling_stopped",
+    "exitCode": 0,
+    "campaignBoundTest": {
+      "polls": 125,
+      "virtualMinutesGreaterThan": 30,
+      "exitCode": 0
+    }
+  },
+  "refresh": {
+    "command": "node dist/scripts/real-catalog.js refresh .cache/real-catalog/public-20260926",
+    "exitCode": 0,
+    "reusedSuccessfulResponses": true,
+    "manuallyEditedHashesOrTimestamps": false,
+    "removedElapsedSessions": 2,
+    "activeSnapshot": "e9f43ed9d1fd3c408584.json"
+  },
+  "api": {
+    "command": "node docs/evidence/public-handoff/validate-api.mjs",
+    "exitCode": 0,
+    "openapi": "3.1.0",
+    "officialStructureSchema": "https://spec.openapis.org/oas/3.1/schema/2022-10-07",
+    "schemaObjectsAndLocalRefs": "PASS",
+    "DATA_API_nine_groups": "PASS",
+    "organizerSchemaVersionAndDeployment": "UNRESOLVED",
+    "validationNotes": "Ajv static binding of the official #meta anchor to $defs/schema; no custom dialect. Python/PyYAML parses DATA-API."
+  },
+  "presentation": {
+    "command": "python presentation/render.py",
+    "exitCode": 0,
+    "pages": 10,
+    "cyrillic": "PASS",
+    "overflow": "PASS",
+    "renderedAndVisuallyInspected": [
+      1,
+      4,
+      8,
+      10
+    ],
+    "privateCredentials": "EXCLUDED"
+  },
+  "human": {
+    "MAX_mobile": "DEFERRED_BY_USER / NOT_RUN",
+    "MAX_web": "DEFERRED_BY_USER / NOT_RUN",
+    "sessionRequested": false
+  },
+  "externalActions": {
+    "MAX_authenticatedRealCalls": false,
+    "livePollerStarted": false,
+    "subscriptionChanged": false,
+    "hostedServiceDeployed": false,
+    "organizerSubmissionSent": false
+  },
+  "unresolved": [
+    "team/operator/contact",
+    "HTTPS host and domain/access",
+    "evaluation dates",
+    "private handoff",
+    "organizer DATA-API schema_version if supplied",
+    "new real mobile/web observations"
+  ]
+}

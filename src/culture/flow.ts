@@ -249,7 +249,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     text = '💳 Бюджет на вход для всех?\nДорога и дополнительные услуги не включены.';
     rows = [[button('Бесплатно', 'budget', '0'), button('До 500 ₽', 'budget', '500'), button('До 1000 ₽', 'budget', '1000')], [button('Без лимита', 'budget', 'none'), button('Другая сумма', 'custom', 'budget')], home()];
   } else if (s.stage === 'interest') {
-    text = 'Что вам интереснее?\nНачнём с выбранной темы.'; rows = [[button('Любая тема', 'interest'), button('Выставки', 'interest', 'exhibition'), button('Театр', 'interest', 'theater')], home()];
+    text = 'Что вам интереснее?\nНачнём с выбранной темы.'; rows = [[button('Любая тема', 'interest'), button('Выставки', 'interest', 'exhibition'), button('Театр', 'interest', 'theater')],[button('Концерты','interest','concert'),button('Занятия','interest','workshop'),button('Экскурсии','interest','tour')], home()];
   } else if (s.stage === 'input') {
     const i = s.input!;
     const formats:Record<InputField,string> = { date: `${i.token} ГГГГ-ММ-ДД\nДата: сегодня или ближайшие 30 дней.`, time: `${i.token} ЧЧ:ММ-ЧЧ:ММ\nОдин день, 00:00–23:59; окончание позже начала.`, budget: `${i.token} СУММА\nЦелое число от 0 до 99999 рублей.`,
@@ -329,7 +329,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
   } else if (s.stage === 'erase') {
     text = 'Удалить все ваши закладки и параметры, включая состав и возраст детей?\nИстория чата MAX и старые резервные копии останутся.'; rows = [[button('Да, удалить', 'confirmErase'),button('Отмена', 'cancel')]];
   } else {
-    text = config.flowDataMode==='synthetic-test'?'О данных\nЗдесь вымышленные события для проверки интерфейса.':'О данных\nЗдесь часть афиши Казанского Кремля и Музея истории Екатеринбурга. Показ доступен участникам закрытого теста.';
+    text = config.flowDataMode==='synthetic-test'?'О данных\nЗдесь вымышленные события для проверки интерфейса.':`О данных\nЗдесь часть афиши учреждений Казани и Екатеринбурга. Минимальные факты, дата получения и ссылка на источник — в карточке.${config.admissionMode==='PUBLIC'?'':' Доступ ограничен тестовым режимом.'}`;
     text+='\nСведения могут измениться. Билеты и допуск уточняйте у источника; неизвестная цена не означает бесплатный вход.\nДо 50 закладок хранятся до удаления, параметры и возраст детей — 30 дней без активности. Кнопки действуют 15 минут.\nУдалить закладки и параметры: /delete_data.';
     rows = [home()];
   }
@@ -339,11 +339,13 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
   }
   if (config.flowDataMode === 'synthetic-test') {text = `🧪 Демо · событие вымышленное\n${text}`;audience??='SYNTHETIC';}
   if (s.notice) text = `${s.notice}\n\n${text}`;
+  const forgetAfterSend=purpose==='confirmErase'&&config.admissionMode==='PUBLIC';
+  if(forgetAfterSend){text='Ваши данные удалены. Для нового подбора отправьте /start.';rows=[];audience=undefined;catalogVersion=undefined;}
   store.db.prepare('INSERT INTO flow_states(actor,revision,event_ts,updated_at,data) VALUES(?,?,?,?,?) ON CONFLICT(actor) DO UPDATE SET revision=excluded.revision,event_ts=excluded.event_ts,updated_at=excluded.updated_at,data=excluded.data')
     .run(event.actor, revision, event.timestamp, now, JSON.stringify(s));
   if(text.length>3950) throw new Error('FLOW_SCREEN_LENGTH');
   const screen=desireScreen(store,event.actor,store.contact(event.actor)!.chat,revision,s.stage,event.kind!=='message_callback'&&purpose!=='cityText'&&purpose!=='typed',now);
-  store.enqueue(`${event.key}:screen`, event.actor, null, 'culture_screen', { method: 'messages', recipient: event.actor, audience,displayRefs,screen,
+  store.enqueue(`${event.key}:screen`, event.actor, null, 'culture_screen', { method: 'messages', recipient: event.actor, audience,displayRefs,screen,forgetAfterSend,
     body: { text, notify: false, attachments: [{ type: 'inline_keyboard', payload: { buttons: rows.filter(row=>row.length) } }] } }, now, now + 60000, { revision, catalogVersion });
   return valid ? 'FLOW_ACCEPTED' : 'FLOW_INVALID_INPUT';
 }

@@ -6,6 +6,7 @@ import { canSend, processProbe } from './probe.js';
 import { Catalog } from './culture/catalog.js';
 import { getState, processCulture, enterProbeRoute } from './culture/flow.js';
 import { queueReconciliation, prepareScreenOperation, completeScreenOperation, failedScreenOperation } from './screens.js';
+import { actorAllowed } from './admission.js';
 
 export class Worker {
   private timer?: NodeJS.Timeout;
@@ -34,6 +35,7 @@ export class Worker {
     try { await this.runTick(); } finally { this.ticking = false; }
   }
   private async runTick(): Promise<void> {
+    this.store.db.transaction(()=>this.store.finishErasureRequests(this.clock())).immediate();
     // Один process/tick; транзакции только синхронные. Сеть идёт после commit.
     for (const row of this.store.pendingInbox(20)) {
       try {
@@ -42,7 +44,8 @@ export class Worker {
           const event = JSON.parse(row.payload) as AcceptedEvent;
           const flowState = getState(this.store,event.actor);
           const probeRoute = !flowState || JSON.parse(flowState.data).route === 'probe';
-          const probe = event.probeEntry || event.commandId || (event.kind === 'message_created' && !event.homeEntry && !['/saved','/delete_data'].includes(event.input??'') && probeRoute && this.store.latestProbe(event.actor));
+          if(!actorAllowed(this.config,event.actor)){this.store.finishInbox(row.id,'NOT_ADMITTED',now);return;}
+          const probe = this.config.admissionMode!=='PUBLIC'&&(event.probeEntry || event.commandId || (event.kind === 'message_created' && !event.homeEntry && !['/saved','/delete_data'].includes(event.input??'') && probeRoute && this.store.latestProbe(event.actor)));
           const olderRoute = event.probeEntry && flowState && event.timestamp < flowState.event_ts;
           const result = olderRoute ? 'FLOW_OLDER_EVENT' : probe ? processProbe(this.store, this.config, event, now) : processCulture(this.store, this.config, event, now, this.catalog);
           // Менять владельца диалога можно только ПОСЛЕ принятия нового входа.
@@ -63,7 +66,8 @@ export class Worker {
       }
     }
     // Не отправлять экран, пока более новые уже принятые события ещё ждут обработки.
-    if (this.store.pendingInbox(1).length) return;
+    // Проверка ожидающего ввода ниже относится к конкретному адресату: чужая
+    // очередь не должна останавливать доставку всем остальным пользователям.
     const now = this.clock();
     queueReconciliation(this.store,now);
     this.store.db.prepare("UPDATE outbox SET status='STALE',result='EXPIRED',finished_at=? WHERE status='PENDING' AND expires_at<=?").run(now, now);
@@ -76,7 +80,7 @@ export class Worker {
         this.store.finishOutbox(row.id, 'STALE', 'FLOW_OR_SNAPSHOT_CHANGED', now);
       } else if (row.probe_id && (!probe || probe.expires_at <= now || probe.state === 'SUPERSEDED')) {
         this.store.finishOutbox(row.id, 'STALE', 'PROBE_EXPIRED_OR_REPLACED', now);
-      } else if (this.config.ingress === 'test-polling' && !this.config.testers.has(row.actor)) {
+      } else if (!actorAllowed(this.config,row.actor)) {
         this.store.finishOutbox(row.id, 'SUPPRESSED_TESTER', 'NOT_ADMITTED', now);
       } else if (this.store.getMeta('auth_blocked') === 'true') {
         this.store.finishOutbox(row.id, 'FAILED_AUTH', 'AUTH_BLOCKED', now);
@@ -84,12 +88,18 @@ export class Worker {
         this.store.finishOutbox(row.id, 'SUPPRESSED_CONTACT', 'CONTACT_UNAVAILABLE', now);
       } else {
         let operation = JSON.parse(row.payload) as MaxOperation;
+        if(this.config.admissionMode==='PUBLIC'&&(!row.purpose.startsWith('culture')||row.probe_id)) {
+          this.store.finishOutbox(row.id,'SUPPRESSED_TESTER','PUBLIC_TEST_FUNCTION_DISABLED',now);return;
+        }
+        if(operation.method!=='answers'&&operation.recipient!==row.actor) {
+          this.store.finishOutbox(row.id,'SUPPRESSED_CONTACT','RECIPIENT_MISMATCH',now);return;
+        }
         if ((this.config.mode === 'live'||this.catalog.requiresReview) && !deliveryAllowed(operation,this.config,this.catalog,now)) {
           this.store.finishOutbox(row.id, 'SUPPRESSED_DISPLAY', 'SOURCE_DISPLAY_NOT_CLEARED', now); return;
         }
         const prepared=prepareScreenOperation(this.store,row,operation,now);
         if(!prepared) return;
-        operation=prepared;
+        operation={...prepared,actor:row.actor};
         if (row.purpose.startsWith('culture')) this.nextFlowSend = now + 1100;
         this.store.db.prepare("UPDATE outbox SET status='SENDING',attempts=attempts+1 WHERE id=?").run(row.id);
         try {
@@ -97,12 +107,13 @@ export class Worker {
           this.store.db.transaction(() => {
             const finished = this.clock();
             const superseded = row.flow_revision !== null && (getState(this.store,row.actor)?.revision !== row.flow_revision
-              || (row.catalog_version !== null && row.catalog_version !== this.catalog.version) || this.store.pendingInbox(1).length > 0);
+              || (row.catalog_version !== null && row.catalog_version !== this.catalog.version) || this.store.hasPending(row.actor));
             completeScreenOperation(this.store,row,operation,result,finished,superseded);
             this.store.finishOutbox(row.id, result.simulated ? 'SIMULATED' : 'ACKNOWLEDGED', superseded ? 'SENT_BEFORE_NEW_INPUT_OR_SNAPSHOT' : result.simulated ? 'LOCAL_ONLY' : 'MAX_ACCEPTED', finished, 200, result.mid);
             if (row.purpose === 'question' && result.mid && probe && finished < probe.expires_at) {
               this.store.db.prepare("UPDATE probes SET question_mid=?,state='WAITING_REPLY' WHERE id=? AND state='QUESTION_PENDING'").run(result.mid, probe.id);
             }
+            if(operation.forgetAfterSend)this.store.erasePersonal(row.actor,finished);
           }).immediate();
           this.report({ operation: operation.method, purpose:row.purpose,result: result.simulated ? 'SIMULATED' : 'MAX_ACCEPTED', attempts: row.attempts + 1 });
         } catch (error) {
@@ -121,6 +132,7 @@ export class Worker {
             }
           }).immediate();
           this.report({ operation: operation.method, purpose:row.purpose,errorClass: e.kind, status: e.status, attempts: row.attempts + 1 });
+          if(operation.forgetAfterSend)this.store.db.transaction(()=>this.store.erasePersonal(row.actor,finished)).immediate();
         }
       }
     }

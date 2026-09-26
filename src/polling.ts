@@ -76,17 +76,23 @@ export function commitBatch(store: Storage, config: Config, batch: PollBatch, no
 }
 
 export async function runPolling(options: {
-  max: Pick<PollingMax,'updates'|'subscriptions'>; store: Storage; config: Config; campaign: Campaign; signal: AbortSignal;
+  max: Pick<PollingMax,'updates'|'subscriptions'>; store: Storage; config: Config; campaign?: Campaign; signal: AbortSignal;
   report?: (value: object) => void; ready?: () => void; pairing?: PairingWindow;
   clock?: () => number; wait?: (ms:number, signal:AbortSignal) => Promise<void>;
 }) {
-  const {max,store,config,campaign,signal,pairing} = options;
+  const {max,store,config,signal,pairing} = options;
+  if(pairing&&!options.campaign)throw Error('PAIRING_REQUIRES_TEST_CAMPAIGN');
   const clock = options.clock ?? Date.now, report = options.report ?? (() => {});
+  const durable=store.getMeta('poll_runtime');
+  const previous=durable?z.object({lastRequestAt:z.number(),notBefore:z.number()}).parse(JSON.parse(durable)):undefined;
+  const campaign:Campaign=options.campaign??{id:randomUUID(),kind:'session',startedAt:clock(),deadline:Infinity,
+    requests:0,lastRequestAt:previous?.lastRequestAt??0,notBefore:previous?.notBefore??0,errors:0,snapshotVersion:'runtime',stopped:false,sendError:null,sendErrors:0};
+  const save=()=>options.campaign?saveCampaign(store,campaign):store.setMeta('poll_runtime',JSON.stringify({lastRequestAt:campaign.lastRequestAt,notBefore:campaign.notBefore}));
   const wait = options.wait ?? ((ms, signal) => delay(ms, undefined, {signal}));
   let ready = false;
   const announce = () => { if (!ready) { ready = true; options.ready?.(); } };
   if (store.getMeta('poll_marker') !== undefined) announce();
-  while (!signal.aborted && clock() < campaign.deadline && campaign.requests < 120 && !campaign.stopped) {
+  while (!signal.aborted && clock() < campaign.deadline && campaign.requests < (options.campaign?120:Infinity) && !campaign.stopped) {
     try {
       const waitMs = Math.max(0, campaign.lastRequestAt + 1000 - clock(), campaign.notBefore - clock());
       if (clock() + waitMs >= campaign.deadline) break;
@@ -97,12 +103,12 @@ export async function runPolling(options: {
       if (signal.aborted || clock() >= campaign.deadline) break;
       campaign.requests++; campaign.lastRequestAt = clock();
       // Резервировать попытку ДО сети: crash не восстанавливает израсходованный бюджет.
-      saveCampaign(store, campaign);
+      save();
       const batch = await max.updates(store.pollingMarker(), signal, !ready);
       report({operation:'poll_api_receipt',result:'SUCCESS',events:batch.updates.length,request:campaign.requests});
       if (signal.aborted) break;
       const result = commitBatch(store, config, batch, clock(), pairing);
-      campaign.errors = 0; campaign.notBefore = 0; saveCampaign(store, campaign);
+      campaign.errors = 0; campaign.notBefore = 0; save();
       report({operation:'poll_commit',accepted:result.accepted,duplicate:result.duplicate,ignored:result.ignored});
       announce();
       if (result.candidate) return result.candidate;
@@ -112,7 +118,7 @@ export async function runPolling(options: {
       const retryable = error instanceof MaxError && ['SERVER','RATE_LIMIT','TIMEOUT_AMBIGUOUS','TRANSPORT_AMBIGUOUS'].includes(error.kind);
       campaign.stopped = !retryable || campaign.errors >= 3;
       campaign.notBefore = clock() + Math.max(error instanceof MaxError ? error.retryAfterMs ?? 0 : 0, 2000 * 2 ** (campaign.errors - 1));
-      saveCampaign(store, campaign);
+      save();
       report({operation:'poll_error',errorClass:error instanceof MaxError ? error.kind : 'BATCH_OR_CONSUMER_FAILURE',attempts:campaign.errors});
       if (campaign.stopped) throw error;
     }

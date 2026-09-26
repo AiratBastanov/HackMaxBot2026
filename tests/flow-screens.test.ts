@@ -38,7 +38,8 @@ test('C16 MAX PUT/DELETE semantic false; exact payload replaces keyboard, notify
 });
 test('C16 worker refuses untracked/wrong actor mutation, no external target from callback',async t=>{
   const h=await harness(t),current=activeScreen(h.store,ACTOR)!,start=h.ops.length;
-  for(const [id,recipient] of [['untracked',ACTOR],[current.mid!,OTHER]])h.store.enqueue(`wrong-${id}-${recipient}`,ACTOR,null,'culture_screen',{method:'edit',mid:id!,recipient:recipient!,chat:CHAT,screen:{...current},body:{text:'wrong',attachments:[]}},h.now,h.now+60000,{revision:current.revision});
+  h.store.enqueue('wrong-untracked',ACTOR,null,'culture_screen',{method:'edit',mid:'untracked',recipient:ACTOR,chat:CHAT,screen:{...current},body:{text:'wrong',attachments:[]}},h.now,h.now+60000,{revision:current.revision});
+  assert.throws(()=>h.store.enqueue('wrong-actor',ACTOR,null,'culture_screen',{method:'edit',mid:current.mid!,recipient:OTHER,chat:CHAT,screen:{...current},body:{text:'wrong',attachments:[]}},h.now,h.now+60000,{revision:current.revision}),/ACTOR_MISMATCH/);
   await h.drain();assert.equal(h.ops.length,start);assert.equal(activeScreen(h.store,ACTOR)!.mid,current.mid);
 });
 test('C16 semantic edit failure creates one replacement; creation must confirm before adoption',async t=>{

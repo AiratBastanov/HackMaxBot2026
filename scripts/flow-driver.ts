@@ -7,11 +7,13 @@ import { ACTOR, OTHER, SECRET, encode, lifecycle, callback, reply } from '../tes
 import { activeScreen } from '../src/screens.js';
 
 // Локальный драйвер вызывает реальный HTTP webhook; транспорт MAX явно симулирован.
-export async function flowDriver(databasePath: string, input: unknown = flowFixture(), clock = syntheticClock.getTime(), real = false, review:unknown=null) {
+export async function flowDriver(databasePath: string, input: unknown = flowFixture(), clock = syntheticClock.getTime(), real = false, review:unknown=null,publicAdmission=false) {
   let now = clock, seq = 0;
   const config = loadConfig({ APP_MODE: 'local', DATABASE_PATH: databasePath, MAX_WEBHOOK_SECRET: SECRET,
+    ADMISSION_MODE:publicAdmission?'PUBLIC':'RESTRICTED',
     PROBE_TESTER_IDS: `${ACTOR},${OTHER}`, FLOW_DATA_MODE: real ? 'real' : 'synthetic-test' });
-  let catalog = new Catalog(config.flowDataMode, input,review);
+  if(publicAdmission)config.testers=new Set();
+  let catalog = new Catalog(config.flowDataMode, input,review,publicAdmission);
   const operations: MaxOperation[] = [], transcript: string[] = [];
   const simulated = new LocalMax();
   const transport = { async execute(op: MaxOperation) {

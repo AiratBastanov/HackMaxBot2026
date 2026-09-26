@@ -12,8 +12,9 @@ export function observeContact(store: Storage, event: AcceptedEvent, now: number
   let bit = 0;
   if (event.kind === 'bot_started') bit = 1;
   if (event.kind === 'bot_stopped' || event.kind === 'dialog_removed') bit = 2;
-  // Первое явное /probe из личного диалога позволяет ответить. Stop/UNKNOWN не снимаются текстом.
-  if (!existing && event.kind === 'message_created' && (event.probeEntry || event.homeEntry)) bit = 1;
+  // Первое личное сообщение разрешает ответ; Stop/UNKNOWN не снимаются текстом.
+  if (!existing && event.kind === 'message_created') bit = 1;
+  if (!existing && !['bot_started','message_created'].includes(event.kind)) return;
   if (bit && event.timestamp >= c.access_ts) {
     c.access_mask = event.timestamp === c.access_ts ? c.access_mask | bit : bit;
     c.access_ts = event.timestamp;

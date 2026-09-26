@@ -5,6 +5,7 @@ import type { Config } from './config.js';
 import type { AcceptedEvent } from './contracts.js';
 import type { MaxOperation } from './max.js';
 import { normalizeCity, resolveCity } from './data/cities.js';
+import { observeContact } from './probe.js';
 
 export type InboxRow = { id: number; payload: string; attempts: number; received_at: number };
 export type ProbeRow = { id: string; actor: string; chat: string; expires_at: number; state: string; question_mid: string | null; created_at: number };
@@ -13,7 +14,9 @@ export type OutboxRow = { id: number; actor: string; probe_id: string | null; pu
 
 export class Storage {
   readonly db: Database.Database;
-  constructor(path: string, config: Pick<Config, 'mode' | 'botId' | 'ingress'>, recoverInterrupted = true) {
+  private readonly publicAdmission:boolean;
+  constructor(path: string, config: Pick<Config, 'mode' | 'botId' | 'ingress' | 'admissionMode'>, recoverInterrupted = true) {
+    this.publicAdmission=config.admissionMode==='PUBLIC';
     if (path !== ':memory:') mkdirSync(dirname(path), { recursive: true });
     this.db = new Database(path, { timeout: 1000 });
     this.db.pragma('journal_mode = WAL');
@@ -34,6 +37,7 @@ export class Storage {
           result TEXT, attempts INTEGER NOT NULL DEFAULT 0, finished_at INTEGER
         );
         CREATE INDEX IF NOT EXISTS inbox_pending ON inbox(status, id);
+        CREATE TABLE IF NOT EXISTS ingress_limits (actor TEXT PRIMARY KEY, window_start INTEGER NOT NULL, count INTEGER NOT NULL);
         CREATE TABLE IF NOT EXISTS contacts (
           actor TEXT PRIMARY KEY, chat TEXT NOT NULL, access_ts INTEGER NOT NULL DEFAULT -1,
           access_mask INTEGER NOT NULL DEFAULT 0, mute_ts INTEGER NOT NULL DEFAULT -1,
@@ -70,7 +74,7 @@ export class Storage {
       `);
       const identity = `${config.ingress === 'test-polling' ? 'test-polling' : config.mode}:${config.botId}`;
       const previous = this.getMeta('identity');
-      if (previous && previous !== identity) throw new Error('SQLite принадлежит другому режиму/боту');
+      if (previous && previous !== identity && !(this.publicAdmission&&config.mode==='live'&&previous===`test-polling:${config.botId}`)) throw new Error('SQLite принадлежит другому режиму/боту');
       this.setMeta('identity', identity);
       // После crash неизвестно, принял ли MAX запрос. Не отправляем повторно.
       if (recoverInterrupted) {
@@ -92,9 +96,19 @@ export class Storage {
       return { accepted, duplicate };
     }).immediate();
   }
-  accept(event: AcceptedEvent, now: number): 'accepted' | 'duplicate' {
+  accept(event: AcceptedEvent, now: number): 'accepted' | 'duplicate' | 'rate_limited' {
     return this.db.transaction(() => {
       if (this.db.prepare('SELECT 1 FROM inbox WHERE delivery_key=?').get(event.key)) return 'duplicate' as const;
+      if(this.publicAdmission) {
+        const limit=this.db.prepare('SELECT window_start,count FROM ingress_limits WHERE actor=?').get(event.actor) as {window_start:number;count:number}|undefined;
+        const pending=this.db.prepare("SELECT count(*) n FROM inbox WHERE status='PENDING' AND json_extract(payload,'$.actor')=?").get(event.actor) as {n:number};
+        // Stop/removal применяется даже при переполнении, но не создаёт новую очередь.
+        if(['bot_stopped','dialog_removed','dialog_muted','dialog_cleared'].includes(event.kind))observeContact(this,event,now);
+        if(pending.n>=8||limit&&now-limit.window_start<60000&&limit.count>=30)return 'rate_limited' as const;
+        this.db.prepare(`INSERT INTO ingress_limits(actor,window_start,count) VALUES(?,?,1) ON CONFLICT(actor) DO UPDATE SET
+          count=CASE WHEN ?-window_start>=60000 THEN 1 ELSE count+1 END, window_start=CASE WHEN ?-window_start>=60000 THEN ? ELSE window_start END`)
+          .run(event.actor,now,now,now,now);
+      }
       const cutoff=Number(this.getMeta('recovery_cutoff')??0);
       if(event.timestamp<=cutoff) {
         this.db.prepare("INSERT INTO inbox(delivery_key,kind,received_at,status,result,finished_at) VALUES(?,?,?,'PROCESSED','PRE_RECOVERY_EVENT',?)").run(event.key,event.kind,now,now);
@@ -119,15 +133,33 @@ export class Storage {
   latestProbe(actor: string) { return this.db.prepare('SELECT * FROM probes WHERE actor=? ORDER BY created_at DESC, rowid DESC LIMIT 1').get(actor) as ProbeRow | undefined; }
   enqueue(key: string, actor: string, probeId: string | null, purpose: string, operation: MaxOperation, now: number, expires: number,
     fence?: { revision: number; catalogVersion?: string }) {
+    if(operation.method!=='answers'&&operation.recipient!==actor)throw Error('OUTGOING_ACTOR_MISMATCH');
+    if(this.publicAdmission) {
+      const pending=this.db.prepare("SELECT count(*) n FROM outbox WHERE actor=? AND status IN ('PENDING','SENDING')").get(actor) as {n:number};
+      if(pending.n>=16)return;
+    }
     this.db.prepare('INSERT OR IGNORE INTO outbox(action_key,actor,probe_id,purpose,payload,created_at,expires_at,next_at,flow_revision,catalog_version) VALUES(?,?,?,?,?,?,?,?,?,?)')
-      .run(key, actor, probeId, purpose, JSON.stringify(operation), now, Math.min(now + 60000, expires), now, fence?.revision ?? null, fence?.catalogVersion ?? null);
+      .run(key, actor, probeId, purpose, JSON.stringify({...operation,actor}), now, Math.min(now + 60000, expires), now, fence?.revision ?? null, fence?.catalogVersion ?? null);
   }
-  pendingOutbox(now: number) { return this.db.prepare("SELECT * FROM outbox WHERE status='PENDING' AND next_at<=? ORDER BY id LIMIT 1").get(now) as OutboxRow | undefined; }
+  hasPending(actor:string) {return !!this.db.prepare("SELECT 1 FROM inbox WHERE status='PENDING' AND json_extract(payload,'$.actor')=? LIMIT 1").get(actor);}
+  pendingOutbox(now: number) { return this.db.prepare("SELECT * FROM outbox o WHERE status='PENDING' AND next_at<=? AND NOT EXISTS (SELECT 1 FROM inbox i WHERE i.status='PENDING' AND json_extract(i.payload,'$.actor')=o.actor) ORDER BY id LIMIT 1").get(now) as OutboxRow | undefined; }
   finishOutbox(id: number, status: string, result: string, now: number, httpStatus?: number, mid?: string) {
     this.db.prepare('UPDATE outbox SET status=?,result=?,finished_at=?,http_status=?,message_mid=? WHERE id=?').run(status, result, now, httpStatus ?? null, mid ?? null, id);
   }
+  erasePersonal(actor:string,now:number) {
+    for(const table of ['bookmarks','flow_actions','flow_states','flow_screens','ui_messages','contacts','probes','ingress_limits'])this.db.prepare(`DELETE FROM ${table} WHERE actor=?`).run(actor);
+    this.db.prepare("UPDATE inbox SET payload=NULL,status='PROCESSED',result='PERSONAL_DATA_ERASED',finished_at=? WHERE json_extract(payload,'$.actor')=?").run(now,actor);
+    this.db.prepare("UPDATE outbox SET payload=NULL,actor='',probe_id=NULL,message_mid=NULL,status=CASE WHEN status IN ('PENDING','SENDING') THEN 'STALE' ELSE status END,result='PERSONAL_DATA_ERASED',finished_at=COALESCE(finished_at,?) WHERE actor=?").run(now,actor);
+  }
+  finishErasureRequests(now:number) {
+    const rows=this.db.prepare("SELECT actor,flow_revision FROM outbox WHERE actor<>'' AND payload IS NOT NULL AND json_extract(payload,'$.forgetAfterSend')=1 AND (status NOT IN ('PENDING','SENDING') OR expires_at<=?)").all(now) as {actor:string;flow_revision:number}[];
+    for(const row of rows){const state=this.db.prepare('SELECT revision FROM flow_states WHERE actor=?').get(row.actor) as {revision:number}|undefined;
+      if(state?.revision===row.flow_revision)this.erasePersonal(row.actor,now);
+    }
+  }
   cleanup(now: number) {
     this.db.transaction(() => {
+      this.db.prepare('DELETE FROM ingress_limits WHERE window_start<?').run(now-60000);
       this.db.prepare("UPDATE inbox SET payload=NULL WHERE status<>'PENDING' AND finished_at<?").run(now - 86400000);
       this.db.prepare("UPDATE outbox SET payload=NULL,actor='' WHERE status NOT IN ('PENDING','SENDING') AND finished_at<?").run(now - 86400000);
       this.db.prepare('DELETE FROM inbox WHERE received_at<?').run(now - 7 * 86400000);

@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Культурный план: локальный исследовательский прототип MAX",
+    "title": "Культурный план — MAX webhook",
     "version": "0.1.0",
-    "description": "Один authenticated webhook, worker и SQLite: подбор по снимку, явные кандидаты и личные закладки. /probe сохранён отдельно. HTTP 200 означает durable приём, не доставку MAX. Публичный показ KudaGo закрыт; реальные mobile/web наблюдения не выполнены."
+    "description": "PUBLIC ordinary admission; durable inbox/outbox, личные закладки, source-specific PUBLIC_FACTS. MAX симулируется только в local demo. HTTP-поверхность: health и authenticated webhook; нет административного API."
   },
   "servers": [
     {
@@ -67,8 +67,8 @@
     "/webhooks/max": {
       "post": {
         "operationId": "acceptMaxUpdate",
-        "summary": "Надёжно принять поддерживаемое событие диалога или явного /probe",
-        "description": "Максимум 65536 байт, только application/json и один Update. Секрет проверяется до разбора тела. Live actor должен находиться в согласованном списке тестировщиков. Прочие валидные базовые Update и посторонние акторы безопасно игнорируются. До трёх попыток внутренней обработки; при переполнении inbox 503. Не используется Long Polling envelope.",
+        "summary": "Принять событие личного диалога MAX",
+        "description": "Только application/json, один Update, не более 65536 байт. Secret проверяется до тела. PUBLIC допускает валидного инициатора личного диалога; RESTRICTED проверяет тестовый allowlist. Актор берётся из MAX update, а не callback payload. 8 ожидающих/30 входов в минуту на actor: rate_limited без постановки в очередь. Общий inbox 1000: HTTP 503. 200 не доказывает доставку. /qa, pairing и admin в PUBLIC отсутствуют.",
         "security": [
           {
             "maxWebhookSecret": []
@@ -86,7 +86,7 @@
         },
         "responses": {
           "200": {
-            "description": "accepted после SQLite commit; duplicate после проверки сохранённого ключа; ignored без сохранения тела",
+            "description": "accepted: durable commit; duplicate: повтор; ignored: нерелевантное событие; rate_limited: actor-лимит, событие отброшено без очереди.",
             "content": {
               "application/json": {
                 "schema": {
@@ -96,7 +96,8 @@
                       "enum": [
                         "accepted",
                         "duplicate",
-                        "ignored"
+                        "ignored",
+                        "rate_limited"
                       ]
                     }
                   },

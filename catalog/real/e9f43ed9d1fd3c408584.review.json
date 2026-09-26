@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "scope": "PUBLIC_FACTS",
+  "factualScope": "title-period-session-venue-hours-tariff-admission-source",
+  "reviewedAt": "2026-09-26T15:28:54.261Z",
+  "entries": [
+    {
+      "snapshotHash": "4831555fc3ce07a4298fc76a8cb40356ddb061f73722ec105eb2a3c747396ddc",
+      "sources": [
+        "kazan-kremlin",
+        "tatmuseum"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "kazan-kremlin": "0c2cd2f8ddd6958c4e64ff317c242adf56f773d9b728c4a3379da47c98738ab2",
+        "tatmuseum": "207ff1d9506c4f0ad58f5a7ad3d3fc144b4503f786c6f08a38e4f22ea3f26bfa"
+      },
+      "validUntil": "2026-09-29T14:27:25.105Z"
+    },
+    {
+      "snapshotHash": "d32e00f660e07d12cb32c252b055bb126debb85e6bd658aff56f5b0cfbc62512",
+      "sources": [
+        "mie",
+        "sgaf",
+        "uralopera"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "mie": "82bb3d522c130571c4dff5c0717df14c19dbb1a75e23fa35c2253c145b67b39d",
+        "sgaf": "cf78824d31b5c59bd1e62d560f286cc9bb88f02479136acf2521774e1bc7f415",
+        "uralopera": "a5b5c698c3ddf9dfaf2abe0a5a817e9ad14318da3f6600578588ed72e26b0071"
+      },
+      "validUntil": "2026-09-29T14:23:19.053Z"
+    }
+  ]
+}

@@ -11,18 +11,19 @@ services:
     environment:
       APP_MODE: live
       APP_INGRESS: webhook
+      ADMISSION_MODE: PUBLIC
       HOST: 0.0.0.0
       PORT: "3000"
       DATABASE_PATH: /app/runtime/webhook.sqlite
       FLOW_DATA_MODE: real
       PUBLIC_DISPLAY: NOT_CLEARED
-      DATA_SNAPSHOT_PATH: /app/catalog/real/active.json
+      DATA_SNAPSHOT_PATH: /app/runtime/catalog/active.json
       MAX_EXPECTED_BOT_ID: ${MAX_EXPECTED_BOT_ID:?Сначала закрепите identity через GET /me}
       MAX_BOT_TOKEN_FILE: /run/secrets/max_bot_token
+      MAX_CONSUMER_PORT: ${MAX_CONSUMER_PORT:-45658}
       MAX_WEBHOOK_SECRET_FILE: /run/secrets/max_webhook_secret
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:?Нужен одобренный HTTPS origin}
       PUBLIC_HOST: ${PUBLIC_HOST:?Нужен согласованный HTTPS hostname}
-      PROBE_TESTER_IDS: ${PROBE_TESTER_IDS:?Нужны consenting testers}
       LIVE_SCOPE_CONFIRMED: ${LIVE_SCOPE_CONFIRMED:?Нужна подтверждённая область доступа}
       NODE_EXTRA_CA_CERTS: ${NODE_EXTRA_CA_CERTS_CONTAINER:-}
       LIVE_EXCLUSIVE_CONSUMER_CONFIRMED: ${LIVE_EXCLUSIVE_CONSUMER_CONFIRMED:-false}
@@ -35,13 +36,8 @@ services:
         read_only: true
         bind:
           create_host_path: false
-      - type: bind
-        source: ${REAL_CATALOG_DIR:?Нужен каталог active.json и reviewed версий}
-        target: /app/catalog/real
-        read_only: true
-        bind:
-          create_host_path: false
     read_only: true
+    ports: ["127.0.0.1:${MAX_CONSUMER_PORT:-45658}:${MAX_CONSUMER_PORT:-45658}"]
     user: "1000:1000"
     tmpfs: [/tmp]
     cap_drop: [ALL]

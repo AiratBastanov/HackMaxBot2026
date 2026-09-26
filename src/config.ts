@@ -4,6 +4,7 @@ import { z } from 'zod';
 const id = z.string().regex(/^[1-9][0-9]{0,18}$/).refine(v => BigInt(v) <= 9223372036854775807n);
 const envSchema = z.object({
   APP_MODE: z.enum(['local', 'live']),
+  ADMISSION_MODE: z.enum(['PUBLIC', 'RESTRICTED']).default('RESTRICTED'),
   HOST: z.enum(['127.0.0.1', '0.0.0.0']).default('127.0.0.1'),
   PORT: z.coerce.number().int().min(1).max(65535).default(3000),
   DATABASE_PATH: z.string().min(1),
@@ -12,7 +13,7 @@ const envSchema = z.object({
   MAX_BOT_TOKEN: z.string().optional(),
   MAX_EXPECTED_BOT_ID: id.optional(),
   PUBLIC_BASE_URL: z.string().url().optional(),
-  PROBE_TESTER_IDS: z.string().min(1),
+  PROBE_TESTER_IDS: z.string().default(''),
   PROBE_TTL_SECONDS: z.coerce.number().int().min(60).max(900).default(600),
   MAX_REQUEST_TIMEOUT_MS: z.coerce.number().int().min(100).max(10000).default(5000),
   LIVE_SCOPE_CONFIRMED: z.enum(['true', 'false']).default('false'),
@@ -24,7 +25,8 @@ const envSchema = z.object({
 });
 
 export type Config = {
-  ingress?: 'webhook' | 'test-polling';
+  ingress?: 'webhook' | 'test-polling' | 'polling';
+  admissionMode?: 'PUBLIC' | 'RESTRICTED';
   mode: 'local' | 'live'; host: '127.0.0.1' | '0.0.0.0'; port: number;
   databasePath: string; webhookSecret?: string; apiBaseUrl: string;
   token?: string; botId: string; publicBaseUrl?: string; testers: ReadonlySet<string>;
@@ -33,8 +35,13 @@ export type Config = {
 };
 
 export function loadConfig(env: NodeJS.ProcessEnv): Config {
-  if (env.APP_INGRESS && env.APP_INGRESS !== 'webhook') throw Error('Конфигурация: для test-polling используйте live:poll');
+  if (env.APP_INGRESS && !['webhook','polling'].includes(env.APP_INGRESS)) throw Error('Конфигурация: для test-polling используйте live:poll');
+  const polling = env.APP_INGRESS === 'polling';
   const values = { ...env };
+  if (polling) {
+    if (env.PUBLIC_BASE_URL || env.MAX_WEBHOOK_SECRET || env.MAX_WEBHOOK_SECRET_FILE) throw Error('Конфигурация: polling несовместим с webhook-параметрами');
+    values.MAX_WEBHOOK_SECRET = 'unused-polling-config-validation-00000000';
+  }
   // Secrets могут поступать из отдельного read-only mount, а не из аргументов.
   for (const name of ['MAX_BOT_TOKEN', 'MAX_WEBHOOK_SECRET']) {
     if (env[`${name}_FILE`]) {
@@ -48,23 +55,23 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
   const v = parsed.data;
   if (v.FLOW_TEST_CLOCK && v.FLOW_DATA_MODE !== 'synthetic-test') throw new Error('Конфигурация: FLOW_TEST_CLOCK требует synthetic-test');
   if(v.APP_MODE==='live'&&v.FLOW_TEST_CLOCK) throw new Error('Конфигурация: FLOW_TEST_CLOCK запрещён для реальных клиентов');
-  const testerIds = v.PROBE_TESTER_IDS.split(',').map(s => s.trim());
-  if (testerIds.length > 20 || testerIds.some(s => !id.safeParse(s).success)) throw new Error('Конфигурация: PROBE_TESTER_IDS');
+  const testerIds = v.PROBE_TESTER_IDS.trim() ? v.PROBE_TESTER_IDS.split(',').map(s => s.trim()) : [];
+  if (testerIds.length > 20 || testerIds.some(s => !id.safeParse(s).success) || v.ADMISSION_MODE==='RESTRICTED'&&!testerIds.length) throw new Error('Конфигурация: PROBE_TESTER_IDS');
   if (v.APP_MODE === 'local' && (v.MAX_BOT_TOKEN || v.PUBLIC_BASE_URL || v.LIVE_SCOPE_CONFIRMED === 'true')) {
     throw new Error('Локальный режим несовместим с live-параметрами');
   }
   if (v.APP_MODE === 'live') {
     if (!v.MAX_BOT_TOKEN || v.MAX_BOT_TOKEN.length < 16 || /\s|PLACEHOLDER/.test(v.MAX_BOT_TOKEN)) throw new Error('Конфигурация: MAX_BOT_TOKEN');
-    if (!v.MAX_EXPECTED_BOT_ID || !v.PUBLIC_BASE_URL || v.LIVE_SCOPE_CONFIRMED !== 'true') {
+    if (!v.MAX_EXPECTED_BOT_ID || !polling&&!v.PUBLIC_BASE_URL || v.LIVE_SCOPE_CONFIRMED !== 'true') {
       throw new Error('Live требует MAX_EXPECTED_BOT_ID, PUBLIC_BASE_URL и подтверждённый LIVE_SCOPE_CONFIRMED');
     }
-    const u = new URL(v.PUBLIC_BASE_URL);
-    if (u.protocol !== 'https:' || u.port || u.username || u.password || u.search || u.hash || u.pathname !== '/' || /^(localhost|127\.|\[::1\])/.test(u.hostname) || u.hostname.endsWith('.invalid') || /placeholder/i.test(u.hostname)) {
+    const u = v.PUBLIC_BASE_URL ? new URL(v.PUBLIC_BASE_URL) : null;
+    if (u && (u.protocol !== 'https:' || u.port || u.username || u.password || u.search || u.hash || u.pathname !== '/' || /^(localhost|127\.|\[::1\])/.test(u.hostname) || u.hostname.endsWith('.invalid') || /placeholder/i.test(u.hostname))) {
       throw new Error('Конфигурация: PUBLIC_BASE_URL должен быть согласованным HTTPS origin на порту 443');
     }
   }
-  return { ingress:'webhook', mode: v.APP_MODE, host: v.HOST, port: v.PORT, databasePath: v.DATABASE_PATH,
-    webhookSecret: v.MAX_WEBHOOK_SECRET, apiBaseUrl: v.MAX_API_BASE_URL, token: v.MAX_BOT_TOKEN,
+  return { ingress:polling?'polling':'webhook', admissionMode:v.ADMISSION_MODE, mode: v.APP_MODE, host: v.HOST, port: v.PORT, databasePath: v.DATABASE_PATH,
+    webhookSecret: polling?undefined:v.MAX_WEBHOOK_SECRET, apiBaseUrl: v.MAX_API_BASE_URL, token: v.MAX_BOT_TOKEN,
     botId: v.MAX_EXPECTED_BOT_ID ?? '777', publicBaseUrl: v.PUBLIC_BASE_URL?.replace(/\/$/, ''),
     testers: new Set(testerIds), probeTtlMs: v.PROBE_TTL_SECONDS * 1000, requestTimeoutMs: v.MAX_REQUEST_TIMEOUT_MS,
     flowDataMode: v.FLOW_DATA_MODE, snapshotPath: v.DATA_SNAPSHOT_PATH, reviewPath:v.DATA_REVIEW_PATH, flowTestClock: v.FLOW_TEST_CLOCK };

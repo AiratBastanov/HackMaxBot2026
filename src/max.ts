@@ -4,6 +4,8 @@ import type { Config } from './config.js';
 import { safeLink } from './data/contract.js';
 import { Catalog } from './culture/catalog.js';
 import type { DisplayRef } from './data/source-policy.js';
+import { actorAllowed } from './admission.js';
+import type { Storage } from './storage.js';
 
 export type FailureKind = 'SEMANTIC' | 'MALFORMED' | 'AUTH' | 'PERMISSION' | 'RATE_LIMIT' | 'SERVER' | 'HTTP' | 'TIMEOUT_AMBIGUOUS' | 'TRANSPORT_AMBIGUOUS' | 'CANCELLED';
 export class MaxError extends Error {
@@ -16,13 +18,13 @@ export type MaxOperation = ({ method: 'messages'; recipient: string; body: Messa
   | ({ method: 'edit'; body: MessageRequest } & MessageTarget)
   | ({ method: 'read' } & MessageTarget) | ({ method: 'delete' } & MessageTarget)
   | { method: 'answers'; callbackId: string; body: { notification: string } }) & {
-    audience?: 'SYNTHETIC' | 'PROVIDER'; displayRefs?:DisplayRef[]; screen?: { epoch: string; revision: number; chat: string; purpose: string } };
+    actor?:string; forgetAfterSend?:boolean; audience?: 'SYNTHETIC' | 'PROVIDER'; displayRefs?:DisplayRef[]; screen?: { epoch: string; revision: number; chat: string; purpose: string } };
 export function deliveryAllowed(op:MaxOperation,config:Config,catalog:Catalog,now=Date.now()) {
   if(op.method==='read'||op.method==='delete')return true;
   if(op.audience==='SYNTHETIC')return config.flowDataMode==='synthetic-test';
   if(op.audience!=='PROVIDER')return true;
-  if(op.method==='answers'||config.mode==='live'&&!config.testers.has(op.recipient))return false;
-  return catalog.permits(op.displayRefs,now);
+  if(op.method==='answers'||config.mode==='live'&&!actorAllowed(config,op.recipient))return false;
+  return catalog.permits(op.displayRefs,now,config.admissionMode==='PUBLIC');
 }
 export function validateOperation(op: MaxOperation) {
   if (op.method === 'read' || op.method === 'delete') { if (!op.mid || !op.recipient || !op.chat) throw new MaxError('SEMANTIC'); return; }
@@ -107,7 +109,7 @@ export class ReadOnlyMax {
 }
 export class LiveMax extends ReadOnlyMax implements MaxTransport {
   private readonly catalog:Catalog;
-  constructor(private readonly config:Config,fetcher:typeof fetch=fetch,private readonly signal?:AbortSignal) {
+  constructor(private readonly config:Config,fetcher:typeof fetch=fetch,private readonly signal?:AbortSignal,private readonly authorize?:(op:MaxOperation)=>boolean) {
     super(config,fetcher);
     this.catalog=Catalog.load(config);
     if(config.mode!=='live'||!config.token) throw new Error('LiveMax требует live-конфигурацию');
@@ -115,6 +117,7 @@ export class LiveMax extends ReadOnlyMax implements MaxTransport {
   override async me() {return super.me(this.config.botId);}
   async execute(op: MaxOperation): Promise<MaxResult> {
     validateOperation(op);
+    if(this.config.admissionMode==='PUBLIC'&&!this.authorize?.(op))throw new MaxError('PERMISSION');
     if (!deliveryAllowed(op,this.config,this.catalog)) throw new MaxError('PERMISSION');
     if (op.method === 'messages') {
       const raw = await this.request('POST', `/messages?user_id=${encodeURIComponent(op.recipient)}&disable_link_preview=true`, op.body, {signal:this.signal});
@@ -140,7 +143,7 @@ export class LiveMax extends ReadOnlyMax implements MaxTransport {
     return { simulated: false };
   }
   async subscribe(url: string, types: string[]) {
-    if (this.config.ingress === 'test-polling') throw Error('POLLING_SUBSCRIBE_FORBIDDEN');
+    if (this.config.ingress === 'test-polling'||this.config.ingress==='polling') throw Error('POLLING_SUBSCRIBE_FORBIDDEN');
     const raw = await this.request('POST', '/subscriptions', { url, update_types: types, secret: this.config.webhookSecret });
     this.validate(() => { if (!simpleResultSchema.parse(raw).success) throw new MaxError('SEMANTIC', 200); });
   }
@@ -164,4 +167,16 @@ export class LocalMax implements MaxTransport {
     return {simulated:true,mid:op.mid,chat:op.chat};
   }
 }
-export function createTransport(config: Config): MaxTransport { return config.mode === 'local' ? new LocalMax() : new LiveMax(config); }
+export function outboundAuthorization(config:Config,store:Storage) {
+  return (op:MaxOperation)=> {
+    const actor=op.actor;
+    if(!actor||!actorAllowed(config,actor)||store.contact(actor)?.access_mask!==1)return false;
+    if(op.method!=='answers'&&op.recipient!==actor)return false;
+    if(op.method==='edit'||op.method==='read'||op.method==='delete') {
+      const owned=store.db.prepare('SELECT 1 FROM ui_messages WHERE mid=? AND actor=? AND chat=?').get(op.mid,actor,op.chat);
+      if(!owned)return false;
+    }
+    return true;
+  };
+}
+export function createTransport(config: Config,store?:Storage): MaxTransport { return config.mode === 'local' ? new LocalMax() : new LiveMax(config,fetch,undefined,store?outboundAuthorization(config,store):undefined); }

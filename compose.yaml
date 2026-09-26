@@ -1,22 +1,27 @@
-name: maxbot-g1-local
+name: cultural-plan-demo
 services:
   app:
-    image: maxbot-g1:local
+    image: cultural-plan:local
     build:
       context: .
       target: runtime
       args:
         SOURCE_VERSION: ${SOURCE_VERSION:-local-unreviewed}
-    env_file: .env.local
     environment:
       APP_MODE: local
+      ADMISSION_MODE: PUBLIC
+      APP_INGRESS: webhook
       HOST: 0.0.0.0
       PORT: "3000"
-      DATABASE_PATH: /app/runtime/probe.sqlite
+      DATABASE_PATH: /app/runtime/demo.sqlite
+      FLOW_DATA_MODE: synthetic-test
+      FLOW_TEST_CLOCK: '2030-04-05T06:00:00.000Z'
+      DATA_SNAPSHOT_PATH: /app/synthetic-catalog.json
+      MAX_WEBHOOK_SECRET: synthetic-test-secret-000000000000000000
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:${DEMO_PORT:-3000}:3000"
     volumes:
-      - probe-data:/app/runtime
+      - demo-data:/app/runtime
     read_only: true
     tmpfs:
       - /tmp
@@ -24,6 +29,6 @@ services:
     security_opt: [no-new-privileges:true]
     init: true
     stop_grace_period: 20s
-    restart: unless-stopped
+    restart: "no"
 volumes:
-  probe-data:
+  demo-data:

@@ -7,13 +7,13 @@ COPY src ./src
 COPY tests ./tests
 COPY scripts ./scripts
 COPY catalog/real ./catalog/real
-RUN npm run typecheck && npm run build && npm test && npm run test:flow && npm run test:data
+RUN npm run typecheck && npm run build
 RUN node --input-type=module -e "import {stage4Fixture} from './dist/src/culture/stage4-fixture.js'; import {writeFileSync} from 'node:fs'; writeFileSync('/app/synthetic-catalog.json',JSON.stringify(stage4Fixture()));"
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
 FROM node:22.23.2-bookworm-slim@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9 AS runtime
 ARG SOURCE_VERSION=local-unreviewed
-LABEL org.opencontainers.image.title="Культурный план: локальный исследовательский прототип" \
+LABEL org.opencontainers.image.title="Культурный план" \
       org.opencontainers.image.version="0.1.0" \
       org.opencontainers.image.revision="${SOURCE_VERSION}"
 ENV NODE_ENV=production

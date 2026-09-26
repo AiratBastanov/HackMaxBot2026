@@ -16,7 +16,7 @@ const instant = z.string().datetime({ offset: true });
 const date = z.string().date();
 const text = z.string().max(4000);
 const link = z.string().refine(v => safeLink(v) !== null);
-const namespace = z.string().regex(/^(kudago|timepad|synthetic|kazan-kremlin|mie):[a-zA-Z0-9:_-]+$/);
+const namespace = z.string().regex(/^(kudago|timepad|synthetic|kazan-kremlin|mie|tatmuseum|kamal|uralopera|sgaf):[a-zA-Z0-9:_-]+$/);
 const nullableInstant = instant.nullable();
 export const observationSchema = z.object({ retrievedAt: nullableInstant, requestUrl: link.nullable(),
   fields: z.array(z.string()), conflicts: z.array(z.string()),
@@ -50,6 +50,7 @@ export const venueSchema = z.object({ id: namespace, title: text.nullable(), cit
   coordinates: z.object({ lat: z.number().min(-90).max(90), lon: z.number().min(-180).max(180) }).nullable(),
   timetable: text.nullable(), opening: z.array(interval).nullable() }).strict();
 export const occurrenceSchema = z.object({ id: namespace, venueId: namespace.nullable(),
+  sourceUrl:link.optional(),ticketUrl:link.optional(),closedDates:z.array(date).max(40).optional(),
   kind: z.enum(['TIMED_SESSION', 'FLEXIBLE_VISIT', 'UNRESOLVED']), timezone: timezoneSchema,
   start: nullableInstant, end: nullableInstant, durationMinutes: z.number().positive().max(1440).nullable(),
   endBasis: z.enum(['PUBLISHED', 'PUBLISHED_DURATION', 'UNKNOWN']),
@@ -58,7 +59,7 @@ export const occurrenceSchema = z.object({ id: namespace, venueId: namespace.nul
   metadata: z.object({ continuous: z.boolean().nullable(), usePlaceSchedule: z.boolean().nullable(),
     structuredSchedulePresent: z.boolean(), equalEndpoints: z.boolean(), placeholderEnd: z.boolean() }).strict(),
   issues: z.array(text) }).strict();
-export const normalizedEventSchema = z.object({ id: namespace, provider: z.enum(['kudago', 'timepad', 'synthetic', 'kazan-kremlin', 'mie']),
+export const normalizedEventSchema = z.object({ id: namespace, provider: z.enum(['kudago', 'timepad', 'synthetic', 'kazan-kremlin', 'mie','tatmuseum','kamal','uralopera','sgaf']),
   title: text.min(1), city: z.string().nullable(), categories: z.array(z.string()), price: priceSchema,
   tariffs: z.array(tariffSchema).max(30).optional(), providerAgeLabel: text.nullable().optional(),
   admission: z.object({ registration: z.enum(['REQUIRED', 'NOT_REQUIRED', 'UNKNOWN']), conditions: z.array(text),
@@ -96,7 +97,7 @@ export const snapshotSchema = z.object({ version: z.literal(2), mode: z.enum(['L
       if (!e.id.startsWith(`${e.provider}:`)) fail('provider_namespace');
       if (s.mode === 'LIVE_PUBLIC' && (e.provider === 'synthetic' || e.verification !== 'API_FACTS_ONLY')) fail('synthetic_in_live');
       if (s.mode === 'SYNTHETIC_FIXTURE' && e.verification !== 'SYNTHETIC_FIXTURE') fail('unmarked_fixture');
-      if (s.mode === 'REAL_CATALOG' && (!['kazan-kremlin','mie'].includes(e.provider)
+      if (s.mode === 'REAL_CATALOG' && (!['kazan-kremlin','mie','tatmuseum','kamal','uralopera','sgaf'].includes(e.provider)
         || !['EXTRACTED_FACTS','PREPARED_REAL'].includes(e.verification)
         || !e.observations.length || e.observations.some(o => !o.provenance || !o.retrievedAt))) fail('real_provenance');
       if(s.mode==='REAL_CATALOG'&&e.observations.some(o=>o.requestUrl===null||new URL(o.requestUrl).origin!==new URL(e.sourceUrl).origin))fail('real_provenance_origin');

@@ -19,7 +19,7 @@ export type MaxOperation = ({ method: 'messages'; recipient: string; body: Messa
   | ({ method: 'edit'; body: MessageRequest } & MessageTarget)
   | ({ method: 'read' } & MessageTarget) | ({ method: 'delete' } & MessageTarget)
   | { method: 'answers'; callbackId: string; body: { notification: string } }) & {
-    actor?:string; forgetAfterSend?:boolean; audience?: 'SYNTHETIC' | 'PROVIDER'; displayRefs?:DisplayRef[]; screen?: { epoch: string; revision: number; chat: string; purpose: string } };
+    actor?:string; forgetAfterSend?:boolean; audience?: 'SYNTHETIC' | 'PROVIDER'; displayRefs?:DisplayRef[]; screen?: { epoch: string; revision: number; chat: string; purpose: string; previousMid?: string | null } };
 export function deliveryAllowed(op:MaxOperation,config:Config,catalog:Catalog,now=Date.now()) {
   if(op.method==='read'||op.method==='delete')return true;
   if(op.audience==='SYNTHETIC')return config.flowDataMode==='synthetic-test';

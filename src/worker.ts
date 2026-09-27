@@ -108,7 +108,7 @@ export class Worker {
             const finished = this.clock();
             const superseded = row.flow_revision !== null && (getState(this.store,row.actor)?.revision !== row.flow_revision
               || (row.catalog_version !== null && row.catalog_version !== this.catalog.version) || this.store.hasPending(row.actor));
-            completeScreenOperation(this.store,row,operation,result,finished,superseded);
+            completeScreenOperation(this.store,row,operation,result,finished);
             this.store.finishOutbox(row.id, result.simulated ? 'SIMULATED' : 'ACKNOWLEDGED', superseded ? 'SENT_BEFORE_NEW_INPUT_OR_SNAPSHOT' : result.simulated ? 'LOCAL_ONLY' : 'MAX_ACCEPTED', finished, 200, result.mid);
             if (row.purpose === 'question' && result.mid && probe && finished < probe.expires_at) {
               this.store.db.prepare("UPDATE probes SET question_mid=?,state='WAITING_REPLY' WHERE id=? AND state='QUESTION_PENDING'").run(result.mid, probe.id);

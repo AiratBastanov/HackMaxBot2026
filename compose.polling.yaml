@@ -2,7 +2,7 @@
 name: cultural-plan-polling
 services:
   app:
-    image: cultural-plan:local
+    image: ${CULTURAL_PLAN_IMAGE:-cultural-plan:local}
     build: {context: ., target: runtime}
     env_file: .env.public
     environment:

@@ -11,7 +11,11 @@ try {
  const access=loadInspectionConfig({...process.env,MAX_INSPECTION_SCOPE_CONFIRMED:'true'});
  const max=new ReadOnlyMax(access),bot=await max.me(access.expectedBotId),subscriptions=await max.subscriptions();
  const port=30000+createHash('sha256').update(`maxbot-consumer:${bot.user_id}`).digest().readUInt32BE()%20000;
- const template=readFileSync('.env.public.example','utf8').replace(/^MAX_EXPECTED_BOT_ID=.*$/m,`MAX_EXPECTED_BOT_ID=${bot.user_id}`).replace(/^MAX_CONSUMER_PORT=.*$/m,`MAX_CONSUMER_PORT=${port}`);
+ let template=readFileSync('.env.public.example','utf8').replace(/^MAX_EXPECTED_BOT_ID=.*$/m,`MAX_EXPECTED_BOT_ID=${bot.user_id}`).replace(/^MAX_CONSUMER_PORT=.*$/m,`MAX_CONSUMER_PORT=${port}`);
+ if(process.env.NODE_EXTRA_CA_CERTS_CONTAINER) {
+  if(process.env.NODE_EXTRA_CA_CERTS_CONTAINER!=='/run/secrets/max-official-root.pem')throw Error('CA_CONTAINER_PATH');
+  template+='\nNODE_EXTRA_CA_CERTS_CONTAINER=/run/secrets/max-official-root.pem\n';
+ }
  writeFileSync(target,template,{flag:'wx',mode:0o600});
  console.log(JSON.stringify({botId:bot.user_id,username:bot.username??null,webhookExists:subscriptions.length>0,config:target,consumerPort:port,connected:false}));
 }catch{console.error('IDENTITY_INIT_FAILED: проверьте token file, identity, TLS и новый путь .env; значения секретов не выводятся.');process.exitCode=1;}

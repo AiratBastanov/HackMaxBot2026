@@ -487,8 +487,9 @@ def assemble_private(page_path, output_path):
 
 
 def package():
-    names=["cultural-plan.pdf","cultural-plan-submission-preview.pdf","slides.json","render.py",
-           "requirements.txt","README.md","SCREENSHOT_PLAN.md","SPEAKER_NOTES.md","VERIFICATION.md","BUILD_INFO.json"]
+    names=["cultural-plan.pdf","cultural-plan-submission-preview.pdf",
+           "cultural-plan.pptx","cultural-plan-submission-preview.pptx","slides.json","render.py","export_pptx.py",
+           "requirements.txt","requirements-pptx.txt","README.md","SCREENSHOT_PLAN.md","SPEAKER_NOTES.md","VERIFICATION.md","BUILD_INFO.json"]
     files=[ROOT/name for name in names]
     assert all(p.is_file() for p in files)
     # Любые будущие снимки добавляются только как явно перечисленные публичные ассеты.

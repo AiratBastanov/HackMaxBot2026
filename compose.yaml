@@ -1,7 +1,7 @@
 name: cultural-plan-demo
 services:
   app:
-    image: cultural-plan:local
+    image: ${CULTURAL_PLAN_IMAGE:-cultural-plan:local}
     build:
       context: .
       target: runtime

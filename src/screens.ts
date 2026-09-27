@@ -2,16 +2,20 @@ import { randomUUID } from 'node:crypto';
 import { digest } from './culture/catalog.js';
 import { MaxError, type MaxOperation, type MaxResult, type MessageRequest } from './max.js';
 import type { OutboxRow, Storage } from './storage.js';
+import type { AcceptedEvent } from './contracts.js';
 
 type Screen = { actor:string; chat:string; epoch:string; mid:string|null; purpose:string; revision:number; force_new:number };
 type Tracked = { mid:string; actor:string; chat:string; epoch:string; purpose:string; revision:number; status:string; body_hash:string|null; audience:'SYNTHETIC'|'PROVIDER'|null };
 const bodyHash = (body:MessageRequest) => digest({text:body.text,attachments:body.attachments??[]});
 export const activeScreen = (s:Storage,actor:string) => s.db.prepare('SELECT * FROM flow_screens WHERE actor=?').get(actor) as Screen|undefined;
 const tracked = (s:Storage,mid:string) => s.db.prepare('SELECT * FROM ui_messages WHERE mid=?').get(mid) as Tracked|undefined;
-export function desireScreen(s:Storage,actor:string,chat:string,revision:number,purpose:string,fresh:boolean,now:number) {
+export function desireScreen(s:Storage,actor:string,chat:string,revision:number,purpose:string,kind:AcceptedEvent['kind'],now:number) {
+  // Общая политика polling/webhook: пользовательское сообщение создаёт ответ ниже ввода.
+  // Текст внутри callback не меняет нормализованный тип события.
+  const fresh=kind!=='message_callback';
   const old=activeScreen(s,actor),epoch=!old||fresh||old.chat!==chat?randomUUID():old.epoch;
-  s.db.prepare('INSERT INTO flow_screens(actor,chat,epoch,mid,purpose,revision,force_new,updated_at) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(actor) DO UPDATE SET chat=excluded.chat,epoch=excluded.epoch,purpose=excluded.purpose,revision=excluded.revision,force_new=excluded.force_new,updated_at=excluded.updated_at')
-    .run(actor,chat,epoch,old?.mid??null,purpose,revision,Number(fresh||!old||old.force_new===1||old.chat!==chat),now);
+  s.db.prepare('INSERT INTO flow_screens(actor,chat,epoch,mid,purpose,revision,force_new,updated_at) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(actor) DO UPDATE SET chat=excluded.chat,epoch=excluded.epoch,mid=excluded.mid,purpose=excluded.purpose,revision=excluded.revision,force_new=excluded.force_new,updated_at=excluded.updated_at')
+    .run(actor,chat,epoch,old?.chat===chat?old.mid:null,purpose,revision,Number(fresh||!old||old.force_new===1||old.chat!==chat),now);
   return {epoch,revision,chat,purpose};
 }
 function target(t:Tracked) { return {mid:t.mid,recipient:t.actor,chat:t.chat}; }
@@ -27,13 +31,14 @@ function replaceReconciledScreen(s:Storage,mid:string,now:number) {
 export function queueReconciliation(s:Storage,now:number) {
   const rows=s.db.prepare("SELECT * FROM ui_messages WHERE status='UNCERTAIN' LIMIT 20").all() as Tracked[];
   for(const t of rows) {
+    if(activeScreen(s,t.actor)?.mid!==t.mid) {s.db.prepare("UPDATE ui_messages SET status='BLOCKED' WHERE mid=?").run(t.mid);continue;}
     const key=`ui-reconcile:${t.mid}:${t.revision}`;
     const old=s.db.prepare('SELECT status FROM outbox WHERE action_key=?').get(key) as {status:string}|undefined;
     if(old&&!['PENDING','SENDING'].includes(old.status)) {s.db.prepare("UPDATE ui_messages SET status='BLOCKED' WHERE mid=?").run(t.mid);continue;}
     s.enqueue(key,t.actor,null,'culture_reconcile',{method:'read',...target(t)},now,now+60000);
   }
 }
-// Единственный путь изменения UI: PUT. POST /answers только снимает spinner.
+// Решение POST/PUT и проверка владения едины для обоих входящих транспортов.
 export function prepareScreenOperation(s:Storage,row:OutboxRow,operation:MaxOperation,now:number):MaxOperation|null {
   let op=operation;
   if(row.purpose==='culture_screen') {
@@ -46,6 +51,8 @@ export function prepareScreenOperation(s:Storage,row:OutboxRow,operation:MaxOper
       if(t?.status==='UNCERTAIN') {s.db.prepare('UPDATE outbox SET next_at=? WHERE id=?').run(now+1200,row.id);return null;}
       if(t&&t.actor===row.actor&&t.chat===current.chat&&t.status==='ACTIVE') op={...op,method:'edit',...target(t)};
     }
+    // Фиксируем предшественника ДО сети в durable payload. Поздняя очистка не ищет новый active mid.
+    if(op.method==='messages') op={...op,screen:{...op.screen!,previousMid:current.mid}};
   }
   if(op.method==='edit'||op.method==='read'||op.method==='delete') {
     const t=tracked(s,op.mid),current=activeScreen(s,row.actor);
@@ -62,38 +69,50 @@ export function prepareScreenOperation(s:Storage,row:OutboxRow,operation:MaxOper
 function cleanup(s:Storage,t:Tracked,now:number) {
   if(t.status==='UNCERTAIN'||t.status==='BLOCKED') return;
   s.db.prepare("UPDATE ui_messages SET status='OBSOLETE' WHERE mid=?").run(t.mid);
-  s.enqueue(`ui-cleanup:${t.mid}`,t.actor,null,'culture_cleanup',{method:'delete',...target(t)},now,now+60000);
+  s.enqueue(`ui-cleanup:${t.mid}`,t.actor,null,'culture_cleanup',{method:'delete',...target(t),audience:t.audience??undefined},now,now+60000);
 }
-export function completeScreenOperation(s:Storage,row:OutboxRow,op:MaxOperation,result:MaxResult,now:number,superseded:boolean) {
+export function completeScreenOperation(s:Storage,row:OutboxRow,op:MaxOperation,result:MaxResult,now:number) {
   if(row.purpose==='culture_reconcile'&&op.method==='read') {
     const t=tracked(s,op.mid);
+    if(t?.status!=='UNCERTAIN'||activeScreen(s,row.actor)?.mid!==op.mid)return;
     const matches=result.message&&t?.body_hash===bodyHash(result.message);
     // Не совпало/недоступно: этот mid больше не меняем; допускается новый экран.
     s.db.prepare('UPDATE ui_messages SET status=?,updated_at=? WHERE mid=?').run(matches?'ACTIVE':'BLOCKED',now,op.mid);
     if(!matches)replaceReconciledScreen(s,op.mid,now);return;
   }
-  if(row.purpose==='culture_cleanup'&&op.method==='delete') {s.db.prepare("UPDATE ui_messages SET status='DELETED',body_hash=NULL WHERE mid=?").run(op.mid);return;}
-  if(row.purpose==='culture_retire'&&op.method==='edit') {s.db.prepare("UPDATE ui_messages SET status='RETIRED',body_hash=NULL WHERE mid=?").run(op.mid);return;}
+  if((row.purpose==='culture_cleanup'&&op.method==='delete')||(row.purpose==='culture_retire'&&op.method==='edit')) {
+    if(activeScreen(s,row.actor)?.mid!==op.mid) s.db.prepare("UPDATE ui_messages SET status=?,body_hash=NULL WHERE mid=? AND actor=? AND chat=? AND status=?")
+      .run(op.method==='delete'?'DELETED':'RETIRED',op.mid,row.actor,op.chat,op.method==='delete'?'OBSOLETE':'MUTATING');
+    return;
+  }
   if(row.purpose!=='culture_screen'||!op.screen||(op.method!=='messages'&&op.method!=='edit')) return;
   if(!result.mid||result.chat!==op.screen.chat) throw new MaxError('MALFORMED',200);
   const current=activeScreen(s,row.actor);
-  const same=current?.epoch===op.screen.epoch&&current.revision===op.screen.revision;
+  const same=current?.epoch===op.screen.epoch&&current.revision===op.screen.revision&&current.chat===op.screen.chat;
   if(op.method==='messages') {
+    // Повторный/чужой mid в ответе не является подтверждением создания нового экрана.
+    if(tracked(s,result.mid)) throw new MaxError('MALFORMED',200);
     s.db.prepare('INSERT INTO ui_messages(mid,actor,chat,epoch,purpose,revision,status,body_hash,updated_at,audience) VALUES(?,?,?,?,?,?,?,?,?,?)')
       .run(result.mid,row.actor,op.screen.chat,op.screen.epoch,op.screen.purpose,op.screen.revision,'ACTIVE',bodyHash(op.body),now,op.audience??null);
-    if(same&&!superseded) {
-      const old=current.mid?tracked(s,current.mid):undefined;
+    if(same&&current.mid===op.screen.previousMid) {
+      const old=op.screen.previousMid?tracked(s,op.screen.previousMid):undefined;
       s.db.prepare('UPDATE flow_screens SET mid=?,force_new=0,updated_at=? WHERE actor=? AND epoch=? AND revision=?').run(result.mid,now,row.actor,op.screen.epoch,op.screen.revision);
-      if(old&&old.mid!==result.mid) cleanup(s,old,now);
-    } else cleanup(s,tracked(s,result.mid)!,now);
+      // Наличие ещё НЕ обработанного inbox не отменяет подтверждённый экран:
+      // событие может оказаться устаревшим или не требующим ответа.
+      if(old&&old.actor===row.actor&&old.chat===op.screen.chat&&old.mid!==result.mid) cleanup(s,old,now);
+    } else if(current?.mid&&tracked(s,current.mid)?.status==='ACTIVE') cleanup(s,tracked(s,result.mid)!,now);
+    else s.db.prepare("UPDATE ui_messages SET status='BLOCKED' WHERE mid=?").run(result.mid);
   } else {
+    if(result.mid!==op.mid)throw new MaxError('MALFORMED',200);
     // Обновляется только подтверждённый факт доставки, не draft/actions/desired revision.
-    s.db.prepare("UPDATE ui_messages SET status='ACTIVE',purpose=?,updated_at=? WHERE mid=? AND actor=?").run(op.screen.purpose,now,op.mid,row.actor);
+    if(current?.mid===op.mid) s.db.prepare("UPDATE ui_messages SET status='ACTIVE',purpose=?,updated_at=? WHERE mid=? AND actor=? AND status='MUTATING' AND revision=?")
+      .run(op.screen.purpose,now,op.mid,row.actor,op.screen.revision);
   }
 }
 export function failedScreenOperation(s:Storage,row:OutboxRow,op:MaxOperation,error:MaxError,now:number,ambiguous:boolean) {
   if(op.method==='read') {s.db.prepare("UPDATE ui_messages SET status='BLOCKED' WHERE mid=?").run(op.mid);replaceReconciledScreen(s,op.mid,now);return;}
   if(op.method==='delete') {
+    if(error.kind==='RATE_LIMIT')return;
     if(!ambiguous&&['PERMISSION','SEMANTIC'].includes(error.kind)) s.enqueue(`ui-retire:${op.mid}`,row.actor,null,'culture_retire',
       {method:'edit',...target(tracked(s,op.mid)!),body:{text:(op.audience==='SYNTHETIC'?'🧪 Демо · тестовый экран\n':'')+'Экран закрыт. Актуальные действия — в новом сообщении.',notify:false,attachments:[]}},now,now+60000);
     else s.db.prepare("UPDATE ui_messages SET status='BLOCKED' WHERE mid=?").run(op.mid);
@@ -101,7 +120,7 @@ export function failedScreenOperation(s:Storage,row:OutboxRow,op:MaxOperation,er
   }
   if(op.method!=='edit') return;
   if(error.kind==='RATE_LIMIT') {s.db.prepare("UPDATE ui_messages SET status=? WHERE mid=?").run(row.purpose==='culture_retire'?'OBSOLETE':'ACTIVE',op.mid);return;}
-  s.db.prepare('UPDATE ui_messages SET status=?,updated_at=? WHERE mid=?').run(ambiguous?'UNCERTAIN':'BLOCKED',now,op.mid);
+  s.db.prepare('UPDATE ui_messages SET status=?,updated_at=? WHERE mid=?').run(ambiguous&&row.purpose==='culture_screen'?'UNCERTAIN':'BLOCKED',now,op.mid);
   if(row.purpose==='culture_screen'&&op.screen&&!ambiguous&&['SEMANTIC','PERMISSION','HTTP'].includes(error.kind)) {
     const current=activeScreen(s,row.actor);
     if(current?.epoch===op.screen.epoch&&current.revision===op.screen.revision) {

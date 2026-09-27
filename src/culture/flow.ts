@@ -344,7 +344,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
   store.db.prepare('INSERT INTO flow_states(actor,revision,event_ts,updated_at,data) VALUES(?,?,?,?,?) ON CONFLICT(actor) DO UPDATE SET revision=excluded.revision,event_ts=excluded.event_ts,updated_at=excluded.updated_at,data=excluded.data')
     .run(event.actor, revision, event.timestamp, now, JSON.stringify(s));
   if(text.length>3950) throw new Error('FLOW_SCREEN_LENGTH');
-  const screen=desireScreen(store,event.actor,store.contact(event.actor)!.chat,revision,s.stage,event.kind!=='message_callback'&&purpose!=='cityText'&&purpose!=='typed',now);
+  const screen=desireScreen(store,event.actor,store.contact(event.actor)!.chat,revision,s.stage,event.kind,now);
   store.enqueue(`${event.key}:screen`, event.actor, null, 'culture_screen', { method: 'messages', recipient: event.actor, audience,displayRefs,screen,forgetAfterSend,
     body: { text, notify: false, attachments: [{ type: 'inline_keyboard', payload: { buttons: rows.filter(row=>row.length) } }] } }, now, now + 60000, { revision, catalogVersion });
   return valid ? 'FLOW_ACCEPTED' : 'FLOW_INVALID_INPUT';

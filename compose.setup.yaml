@@ -1,0 +1,28 @@
+# Однократное определение identity: только GET /me и GET /subscriptions.
+name: cultural-plan-setup
+services:
+  setup:
+    image: ${CULTURAL_PLAN_IMAGE:-cultural-plan:local}
+    build: {context: ., target: runtime}
+    working_dir: /setup
+    command: [node, /app/dist/scripts/identity-init.js, .env.public]
+    environment:
+      MAX_BOT_TOKEN_FILE: /run/secrets/max_bot_token
+      NODE_EXTRA_CA_CERTS: ${NODE_EXTRA_CA_CERTS_CONTAINER:-}
+      NODE_EXTRA_CA_CERTS_CONTAINER: ${NODE_EXTRA_CA_CERTS_CONTAINER:-}
+    volumes:
+      - type: bind
+        source: .
+        target: /setup
+        bind: {create_host_path: false}
+      - type: bind
+        source: ./secrets
+        target: /run/secrets
+        read_only: true
+        bind: {create_host_path: false}
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    init: true
+    restart: "no"

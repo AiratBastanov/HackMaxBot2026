@@ -2,19 +2,19 @@
 import argparse, hashlib, json, pathlib, shutil, subprocess, zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-FILES = ['README.md','AGENTS.md','THIRD_PARTY_NOTICES.md','Dockerfile','compose.yaml','compose.polling.yaml',
+FILES = ['README.md','AGENTS.md','THIRD_PARTY_NOTICES.md','Dockerfile','compose.yaml','compose.polling.yaml','compose.setup.yaml',
  '.dockerignore','.gitignore','.npmrc','.node-version','.env.example','.env.public.example',
  'package.json','package-lock.json','tsconfig.json','openapi.json','DATA-API.yaml',
  'docs/ORGANIZER_CHECK.md','docs/SOURCE_INVENTORY.md','docs/PRIVACY.md','docs/SUBMISSION_CHECKLIST.md',
  'docs/PRIVATE_HANDOFF_TEMPLATE.md','docs/00_REQUIREMENTS_AND_EVIDENCE.md','docs/SUBMISSION_READINESS.md',
  'docs/pivot/01_PRODUCT_DECISION.md','docs/pivot/02_DATA_FEASIBILITY.md','docs/pivot/03_IMPLEMENTATION_PLAN.md',
- 'docs/pivot/21_PUBLIC_ACCESS_CATALOG_AND_HANDOFF.md']
+ 'docs/pivot/21_PUBLIC_ACCESS_CATALOG_AND_HANDOFF.md','docs/verification/ORGANIZER_SETUP_AND_EDITABLE_PPTX.md']
 
 def files():
     result=set(FILES)
     for folder in ['src','tests','scripts','deploy','presentation','docs/evidence/public-handoff']:
         for p in (ROOT/folder).rglob('*'):
-            if p.is_file() and p.suffix in ['.ts','.mjs','.py','.json','.yaml','.md','.pdf','.txt']:
+            if p.is_file() and p.suffix in ['.ts','.mjs','.py','.ps1','.json','.yaml','.md','.pdf','.pptx','.txt']:
                 result.add(p.relative_to(ROOT).as_posix())
     result.add('deploy/Caddyfile')
     pointer=json.loads((ROOT/'catalog/real/active.json').read_text(encoding='utf8'))

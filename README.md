@@ -28,6 +28,8 @@ docker compose down
 
 Убедитесь, что webhook отсутствует и другая копия нигде не потребляет этого бота. `GET /me` проверяет закреплённую identity; `GET /subscriptions` при наличии webhook останавливает polling. Подписки автоматически не создаются и не удаляются.
 
+Если на машине нужен дополнительный доверенный CA, положите проверенный сертификат в `secrets/max-official-root.pem` и добавьте в `.env.public` строку `NODE_EXTRA_CA_CERTS_CONTAINER=/run/secrets/max-official-root.pem`. Compose передаёт её в `NODE_EXTRA_CA_CERTS` контейнера; существующий read-only mount `./secrets:/run/secrets` включает этот файл. Отдельный override не нужен. Для native-запуска задайте `NODE_EXTRA_CA_CERTS=secrets/max-official-root.pem`. CA необязателен для окружений, где цепочка уже доверенная; сертификат и `.env.public` в Git не добавляются.
+
 ```sh
 docker compose --env-file .env.public -f compose.polling.yaml up --build
 ```
@@ -52,7 +54,7 @@ docker compose --env-file .env.public -f compose.polling.yaml run --rm --no-deps
 
 Нужны отдельно подготовленные постоянный хост, DNS, HTTPS:443 с доверенным сертификатом, оператор и MAX webhook secret. Они не предоставлены этой задачей. [Профиль](deploy/compose.public.yaml) содержит Fastify/worker/SQLite и Caddy; порты 80/443 для Caddy, приложение 3000 внутри сети, mutex на loopback. Файлы `secrets/max_bot_token`, `secrets/max_webhook_secret` монтируются read-only; секреты не передаются через build args. Укажите реальные `PUBLIC_HOST`, `PUBLIC_BASE_URL`, `ACME_EMAIL`, `MAX_EXPECTED_BOT_ID`, `MAX_CONSUMER_PORT`, `SOURCE_VERSION`, `LIVE_SCOPE_CONFIRMED`, `LIVE_EXCLUSIVE_CONSUMER_CONFIRMED`. Не используйте фиктивный домен. Только после подготовки инфраструктуры применяется `docker compose --env-file .env.webhook -f deploy/compose.public.yaml up --build -d`; это не регистрирует webhook. Регистрация — отдельное действие оператора по [контракту MAX](https://dev.max.ru/docs-api/methods/POST/subscriptions).
 
-`MAX_REQUEST_TIMEOUT_MS` ограничивает обычные запросы; long polling имеет отдельный deadline. При необходимом дополнительном доверенном CA используется только `NODE_EXTRA_CA_CERTS` данного процесса: native `secrets/verified-official-ca.pem`, контейнер `/run/secrets/verified-official-ca.pem`. Проверку TLS не отключать. `RESTRICTED` и исторический `live:poll` оставлены для отдельных тестовых кампаний; обычный запуск их не использует.
+`MAX_REQUEST_TIMEOUT_MS` ограничивает обычные запросы (по умолчанию 5000 мс, допустимо 100–10000; 45000 отклоняется). `MAX_POLL_TIMEOUT_SECONDS` задаёт ожидание `/updates` (по умолчанию 30 с, допустимо 0–90 по [контракту MAX](https://dev.max.ru/docs-api/methods/GET/updates)); клиентский deadline вычисляется как ожидание × 1000 + 5000 мс, обычно 35000 мс. Первый запрос без сохранённого cursor использует ожидание 0 с с тем же polling deadline. SIGINT/SIGTERM немедленно отменяют текущий запрос, включая стартовые проверки; намеренная отмена не считается timeout. При сетевом сбое `polling_failure.request` указывает фиксированный путь, deadline и прошедшее время без секретов и marker. Проверку TLS не отключать. `RESTRICTED` и исторический `live:poll` оставлены для отдельных тестовых кампаний; обычный запуск их не использует.
 
 ## Архитектура, проверка и другой бот
 

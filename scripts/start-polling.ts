@@ -2,7 +2,7 @@ import { loadConfig } from '../src/config.js';
 import { acquireConsumerLock } from '../src/consumer-lock.js';
 import { seedCatalog } from '../src/catalog-bootstrap.js';
 import { PollingMax, verifyPolling, runPolling } from '../src/polling.js';
-import { LiveMax, outboundAuthorization } from '../src/max.js';
+import { LiveMax, MaxError, outboundAuthorization } from '../src/max.js';
 import { Storage } from '../src/storage.js';
 import { Worker } from '../src/worker.js';
 import { Catalog } from '../src/culture/catalog.js';
@@ -23,10 +23,12 @@ async function main() {
     await runPolling({max,store,config,signal:controller.signal,ready:()=>{
       worker!.start();console.log(JSON.stringify({operation:'polling_started',admission:config.admissionMode,ingress:'development-polling',stop:'SIGINT/SIGTERM'}));
     }});
+  }catch(error) {
+    if (!(controller.signal.aborted && error instanceof MaxError && error.kind === 'CANCELLED')) throw error;
   }finally {
     controller.abort();await worker?.stop();store?.close();await release();
     process.removeListener('SIGINT',stop);process.removeListener('SIGTERM',stop);
     console.log(JSON.stringify({operation:'polling_stopped'}));
   }
 }
-main().catch(e=>{console.error(JSON.stringify({operation:'polling_failure',errorClass:e instanceof Error&&/^[A-Z_]+$/.test(e.message)?e.message:'CONFIGURATION_OR_RUNTIME'}));process.exitCode=1;});
+main().catch(e=>{console.error(JSON.stringify({operation:'polling_failure',errorClass:e instanceof Error&&/^[A-Z_]+$/.test(e.message)?e.message:'CONFIGURATION_OR_RUNTIME',...(e instanceof MaxError ? {request:e.request} : {})}));process.exitCode=1;});

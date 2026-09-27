@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { z } from 'zod';
+import { pollTimeoutSecondsSchema } from './polling-timeout.js';
 
 const id = z.string().regex(/^[1-9][0-9]{0,18}$/).refine(v => BigInt(v) <= 9223372036854775807n);
 const envSchema = z.object({
@@ -16,6 +17,7 @@ const envSchema = z.object({
   PROBE_TESTER_IDS: z.string().default(''),
   PROBE_TTL_SECONDS: z.coerce.number().int().min(60).max(900).default(600),
   MAX_REQUEST_TIMEOUT_MS: z.coerce.number().int().min(100).max(10000).default(5000),
+  MAX_POLL_TIMEOUT_SECONDS: pollTimeoutSecondsSchema,
   LIVE_SCOPE_CONFIRMED: z.enum(['true', 'false']).default('false'),
   FLOW_DATA_MODE: z.enum(['real', 'synthetic-test']).default('real'),
   DATA_SNAPSHOT_PATH: z.string().min(1).optional(),
@@ -31,6 +33,7 @@ export type Config = {
   databasePath: string; webhookSecret?: string; apiBaseUrl: string;
   token?: string; botId: string; publicBaseUrl?: string; testers: ReadonlySet<string>;
   probeTtlMs: number; requestTimeoutMs: number;
+  pollTimeoutSeconds?: number;
   flowDataMode: 'real' | 'synthetic-test'; snapshotPath?: string; reviewPath?:string; flowTestClock?: string;
 };
 
@@ -74,6 +77,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     webhookSecret: polling?undefined:v.MAX_WEBHOOK_SECRET, apiBaseUrl: v.MAX_API_BASE_URL, token: v.MAX_BOT_TOKEN,
     botId: v.MAX_EXPECTED_BOT_ID ?? '777', publicBaseUrl: v.PUBLIC_BASE_URL?.replace(/\/$/, ''),
     testers: new Set(testerIds), probeTtlMs: v.PROBE_TTL_SECONDS * 1000, requestTimeoutMs: v.MAX_REQUEST_TIMEOUT_MS,
+    pollTimeoutSeconds: v.MAX_POLL_TIMEOUT_SECONDS,
     flowDataMode: v.FLOW_DATA_MODE, snapshotPath: v.DATA_SNAPSHOT_PATH, reviewPath:v.DATA_REVIEW_PATH, flowTestClock: v.FLOW_TEST_CLOCK };
 }
 

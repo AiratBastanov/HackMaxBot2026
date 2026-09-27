@@ -7,19 +7,25 @@ import type { Config } from './config.js';
 import { ReadOnlyMax, MaxError } from './max.js';
 import { Storage } from './storage.js';
 import type { PairingWindow } from './pairing.js';
+import { pollingTiming } from './polling-timeout.js';
 
 export const POLL_LIMIT = 10;
-export const POLL_TIMEOUT_SECONDS = 30;
-export const POLL_DEADLINE_MS = 35000;
+export const { serverTimeoutSeconds: POLL_TIMEOUT_SECONDS, clientDeadlineMs: POLL_DEADLINE_MS } = pollingTiming();
 export const batchSchema = z.object({ updates: z.array(z.unknown()).max(POLL_LIMIT), marker: int64.nullish() });
 export type PollBatch = { updates: unknown[]; marker: string | null };
 
 export class PollingMax extends ReadOnlyMax {
+  private readonly timing: ReturnType<typeof pollingTiming>;
+  constructor(access: Pick<Config, 'token'|'apiBaseUrl'|'requestTimeoutMs'|'pollTimeoutSeconds'>, fetcher: typeof fetch = fetch) {
+    super(access, fetcher);
+    this.timing = pollingTiming(access.pollTimeoutSeconds);
+  }
   async updates(marker: string | null, signal: AbortSignal, initial = false): Promise<PollBatch> {
     if (marker !== null && (!/^-?(0|[1-9][0-9]*)$/.test(marker) || BigInt(marker) < -9223372036854775808n || BigInt(marker) > 9223372036854775807n)) throw Error('INVALID_STORED_MARKER');
-    const query = new URLSearchParams({ limit: String(POLL_LIMIT), timeout: initial ? '0' : String(POLL_TIMEOUT_SECONDS), types: subscribedTypes.join(',') });
+    const timing = this.timing;
+    const query = new URLSearchParams({ limit: String(POLL_LIMIT), timeout: initial ? '0' : String(timing.serverTimeoutSeconds), types: subscribedTypes.join(',') });
     if (marker !== null) query.set('marker', marker);
-    const raw = await this.request('GET', `/updates?${query}`, undefined, { signal, deadlineMs: POLL_DEADLINE_MS });
+    const raw = await this.request('GET', `/updates?${query}`, undefined, { signal, deadlineMs: timing.clientDeadlineMs });
     return this.validate(() => { const batch = batchSchema.parse(raw); return { updates: batch.updates, marker: batch.marker ?? null }; });
   }
 }

@@ -6,6 +6,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { createServer } from 'node:http';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import { pathToFileURL } from 'node:url';
 import { PollingMax, commitBatch, openCampaign, runPolling, verifyPolling, batchSchema, observeDelivery } from '../src/polling.js';
 import { loadPollingConfig, loadCurrentSynthetic, replacementAccess } from '../src/polling-config.js';
 import { publicBot, pinInspectedBot } from '../src/inspection.js';
@@ -128,10 +129,113 @@ test('Медленный GET проходит при коротком POST deadl
   await delay(10);bodyController.abort();await assert.rejects(hanging,{kind:'CANCELLED'});assert(cancelled);
 });
 
+const untilAborted: typeof fetch = async (_url, init) => new Promise((_resolve, reject) => {
+  const requestSignal = init!.signal!;
+  requestSignal.throwIfAborted();
+  requestSignal.addEventListener('abort', () => reject(requestSignal.reason), { once: true });
+});
+
+test('Обычные /me, /subscriptions и отправка сохраняют 5000 мс независимо от polling',async t=>{
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 0 });
+  const c={...config(),requestTimeoutMs:5000,pollTimeoutSeconds:90};
+  const max=new PollingMax(c,untilAborted);
+  const pending=[
+    assert.rejects(max.me(BOT),{kind:'TIMEOUT_AMBIGUOUS',request:{path:'/me',deadlineMs:5000,elapsedMs:5000}}),
+    assert.rejects(max.subscriptions(),{kind:'TIMEOUT_AMBIGUOUS',request:{path:'/subscriptions',deadlineMs:5000,elapsedMs:5000}}),
+    assert.rejects(new LiveMax(c,untilAborted).execute({method:'answers',callbackId:'synthetic',body:{notification:'Тест'}}),{kind:'TIMEOUT_AMBIGUOUS'}),
+  ];
+  t.mock.timers.tick(5000);
+  await Promise.all(pending);
+});
+
+test('/updates успешно ждёт 6000 мс при обычном timeout 5000; marker меняется только после commit',async t=>{
+  const c={...config(),requestTimeoutMs:5000},s=storage(t,c);
+  commitBatch(s,c,batch([],'9007199254740993'),Date.now());
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  let finished=false;
+  const fetcher:typeof fetch=async(url,init)=>{
+    const query=new URL(String(url)).searchParams;
+    assert.equal(query.get('timeout'),'30');assert.equal(query.get('marker'),'9007199254740993');
+    await new Promise<void>((resolve,reject)=>{
+      const timer=setTimeout(resolve,6000);
+      init!.signal!.addEventListener('abort',()=>{clearTimeout(timer);reject(init!.signal!.reason);},{once:true});
+    });
+    return new Response('{"updates":[],"marker":9007199254740995}');
+  };
+  const pending=new PollingMax(c,fetcher).updates(s.pollingMarker(),signal()).then(value=>{finished=true;return value;});
+  t.mock.timers.tick(5001);await Promise.resolve();assert.equal(finished,false);
+  t.mock.timers.tick(999);const received=await pending;
+  assert.equal(received.marker,'9007199254740995');assert.equal(s.pollingMarker(),'9007199254740993');
+  commitBatch(s,c,received,Date.now());assert.equal(s.pollingMarker(),'9007199254740995');
+});
+
+test('Polling deadline 35000 мс ограничивает headers и body; ошибка не раскрывает marker',async t=>{
+  for(const bodyHangs of [false,true]) await t.test(bodyHangs?'body':'headers',async t=>{
+    t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 0 });
+    let requestSignal:AbortSignal|undefined,cancelled=false;
+    const fetcher:typeof fetch=async(url,init)=>{
+      requestSignal=init!.signal!;
+      return bodyHangs ? new Response(new ReadableStream({cancel(){cancelled=true;}})) : untilAborted(url,init);
+    };
+    const pending=new PollingMax({...config(),requestTimeoutMs:5000},fetcher).updates('9007199254740993',signal());
+    const rejected=assert.rejects(pending,error=>{
+      assert(error instanceof MaxError);assert.equal(error.kind,'TIMEOUT_AMBIGUOUS');
+      assert.deepEqual(error.request,{path:'/updates',deadlineMs:35000,elapsedMs:35000});
+      assert(!JSON.stringify(error).includes('9007199254740993'));return true;
+    });
+    await new Promise<void>(resolve=>setImmediate(resolve));
+    t.mock.timers.tick(34999);assert.equal(requestSignal!.aborted,false);
+    t.mock.timers.tick(1);await rejected;
+    if(bodyHangs)assert(cancelled);
+  });
+});
+
+test('Явная отмена текущего long poll завершает цикл без poll_error и без продвижения cursor',async t=>{
+  const c=config(),s=storage(t,c),controller=new AbortController(),reports:object[]=[];
+  commitBatch(s,c,batch([],'9007199254740993'),Date.now());
+  let entered!:()=>void;const started=new Promise<void>(resolve=>{entered=resolve;});
+  const max=new PollingMax(c,async(url,init)=>{
+    if(new URL(String(url)).pathname==='/subscriptions')return new Response('{"subscriptions":[]}');
+    entered();return untilAborted(url,init);
+  });
+  const pending=runPolling({max,store:s,config:c,signal:controller.signal,report:value=>reports.push(value)});
+  await started;controller.abort();await pending;
+  assert.deepEqual(reports,[]);assert.equal(s.pollingMarker(),'9007199254740993');
+});
+
+test('Foreground entry: SIGINT/SIGTERM во время /me, /subscriptions и /updates дают чистую остановку',async t=>{
+  const dir=workspace(t),entry=resolve('dist/scripts/start-polling.js');
+  for(const stopSignal of ['SIGINT','SIGTERM']) for(const route of ['/me','/subscriptions','/updates']) {
+    const preload=resolve(dir,`cancel-${stopSignal}-${route.slice(1)}.mjs`);
+    writeFileSync(preload,`globalThis.fetch=async(url,init)=>{
+      if(init.method!=='GET')throw Error('OUTBOUND_FORBIDDEN');
+      const route=new URL(url).pathname;
+      if(route===${JSON.stringify(route)}) {
+        setImmediate(()=>process.emit(${JSON.stringify(stopSignal)}));
+        return new Promise((_,reject)=>init.signal.addEventListener('abort',()=>reject(init.signal.reason),{once:true}));
+      }
+      if(route==='/me')return new Response('{"user_id":777,"is_bot":true,"first_name":"Synthetic"}');
+      if(route==='/subscriptions')return new Response('{"subscriptions":[]}');
+      throw Error('UNEXPECTED_REQUEST');
+    };`);
+    const result=await promisify(execFile)(process.execPath,['--import',pathToFileURL(preload).href,entry],{
+      windowsHide:true,timeout:5000,env:{PATH:process.env.PATH,SystemRoot:process.env.SystemRoot,
+        APP_MODE:'live',APP_INGRESS:'polling',ADMISSION_MODE:'PUBLIC',FLOW_DATA_MODE:'synthetic-test',
+        DATABASE_PATH:resolve(dir,`${stopSignal}-${route.slice(1)}.sqlite`),MAX_BOT_TOKEN:'synthetic-contract-only',
+        MAX_EXPECTED_BOT_ID:BOT,LIVE_SCOPE_CONFIRMED:'true',LIVE_EXCLUSIVE_CONSUMER_CONFIRMED:'true'},
+    });
+    assert.match(result.stdout,/polling_stopped/);assert.doesNotMatch(result.stdout+result.stderr,/polling_failure|TIMEOUT_AMBIGUOUS/);
+  }
+});
+
 test('Test-only конфигурация без public origin/secret, с dedicated DB; обычный webhook сохраняет требования',t=>{
   const env={APP_MODE:'live',APP_INGRESS:'test-polling',FLOW_DATA_MODE:'synthetic-test',PUBLIC_DISPLAY:'NOT_CLEARED',LIVE_SCOPE_CONFIRMED:'true',MAX_EXPECTED_BOT_ID:BOT,PROBE_TESTER_IDS:ACTOR,DATA_SNAPSHOT_PATH:'runtime/max-test/current.json'};
   const options={testerPath:resolve(workspace(t),'testers.json'),access:()=>({token:'synthetic-contract-only',apiBaseUrl:'https://platform-api2.max.ru',requestTimeoutMs:5000,expectedBotId:BOT})};
   const c=loadPollingConfig(env,false,options);assert.equal(c.webhookSecret,undefined);assert.equal(c.publicBaseUrl,undefined);assert(c.databasePath.endsWith(`${BOT}.sqlite`));
+  assert.equal(c.pollTimeoutSeconds,30);
+  assert.equal(loadPollingConfig({...env,MAX_POLL_TIMEOUT_SECONDS:'90'},false,options).pollTimeoutSeconds,90);
+  assert.throws(()=>loadPollingConfig({...env,MAX_REQUEST_TIMEOUT_MS:'45000'},false,options),/POST_TIMEOUT_INVALID/);
+  for(const value of ['-1','91','NaN'])assert.throws(()=>loadPollingConfig({...env,MAX_POLL_TIMEOUT_SECONDS:value},false,options));
   assert.throws(()=>createApp(c),/WEBHOOK_INGRESS/);assert.throws(()=>loadConfig(env),/live:poll/);
   assert.equal(loadPollingConfig({...env,FLOW_DATA_MODE:'real'},false,options).flowDataMode,'real'); // Сам снимок проверяется отдельным loadCurrentCatalog.
   for(const patch of [{APP_MODE:'local'},{MAX_EXPECTED_BOT_ID:''},{FLOW_DATA_MODE:'unreviewed'},{PUBLIC_DISPLAY:'CLEARED'},{PUBLIC_BASE_URL:'https://example.org'},{MAX_WEBHOOK_SECRET:SECRET},{FLOW_TEST_CLOCK:'2030-01-01T00:00:00Z'},{DATABASE_PATH:'runtime/local.sqlite'},{PROBE_TESTER_IDS:''}]) assert.throws(()=>loadPollingConfig({...env,...patch},false,options));

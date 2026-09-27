@@ -3,6 +3,7 @@ import { resolve, sep } from 'node:path';
 import { z } from 'zod';
 import { loadInspectionConfig, type Config } from './config.js';
 import { Catalog } from './culture/catalog.js';
+import { pollingTiming } from './polling-timeout.js';
 
 export const testerId = z.string().regex(/^[1-9][0-9]{0,18}$/).refine(v => BigInt(v) <= 9223372036854775807n);
 export const testRoot = resolve('runtime/max-test');
@@ -45,7 +46,8 @@ export function loadPollingConfig(env: NodeJS.ProcessEnv, pairing = false, optio
   const access = (options.access ?? replacementAccess)(env);
   return { mode: 'live', ingress: 'test-polling', host: '127.0.0.1', port: 3000, databasePath,
     apiBaseUrl: access.apiBaseUrl, token: access.token, botId, testers, probeTtlMs: 600000,
-    requestTimeoutMs: timeout, flowDataMode: env.FLOW_DATA_MODE as Config['flowDataMode'], snapshotPath,reviewPath };
+    requestTimeoutMs: timeout, pollTimeoutSeconds: pollingTiming(env.MAX_POLL_TIMEOUT_SECONDS).serverTimeoutSeconds,
+    flowDataMode: env.FLOW_DATA_MODE as Config['flowDataMode'], snapshotPath,reviewPath };
 }
 
 export function loadCurrentSynthetic(config: Config, now = Date.now()) {

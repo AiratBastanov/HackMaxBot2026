@@ -9,6 +9,7 @@ import type { Storage } from './storage.js';
 
 export type FailureKind = 'SEMANTIC' | 'MALFORMED' | 'AUTH' | 'PERMISSION' | 'RATE_LIMIT' | 'SERVER' | 'HTTP' | 'TIMEOUT_AMBIGUOUS' | 'TRANSPORT_AMBIGUOUS' | 'CANCELLED';
 export class MaxError extends Error {
+  request?: { path: '/me'|'/subscriptions'|'/updates'; deadlineMs: number; elapsedMs: number };
   constructor(public readonly kind: FailureKind, public readonly status?: number, public readonly retryAfterMs?: number) { super(kind); }
 }
 export type Button = { type: 'callback'; text: string; payload: string } | { type: 'link'; text: string; url: string };
@@ -56,7 +57,8 @@ export class ReadOnlyMax {
   }
   protected async request(method: string, path: string, body?: unknown, options: { deadlineMs?: number; signal?: AbortSignal } = {}): Promise<unknown> {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), options.deadlineMs ?? this.access.requestTimeoutMs);
+    const deadlineMs = options.deadlineMs ?? this.access.requestTimeoutMs, startedAt = Date.now();
+    const timer = setTimeout(() => controller.abort(), deadlineMs);
     const signal = options.signal ? AbortSignal.any([controller.signal, options.signal]) : controller.signal;
     try {
       signal.throwIfAborted();
@@ -91,8 +93,11 @@ export class ReadOnlyMax {
       try { return parseJson(Buffer.concat(chunks).toString('utf8')); }
       catch { throw new MaxError('MALFORMED', 200); }
     } catch (error) {
-      if (error instanceof MaxError) throw error;
-      throw new MaxError(options.signal?.aborted ? 'CANCELLED' : controller.signal.aborted ? 'TIMEOUT_AMBIGUOUS' : 'TRANSPORT_AMBIGUOUS');
+      const failure = error instanceof MaxError ? error : new MaxError(options.signal?.aborted ? 'CANCELLED' : controller.signal.aborted ? 'TIMEOUT_AMBIGUOUS' : 'TRANSPORT_AMBIGUOUS');
+      const route = path.split('?')[0];
+      // Только фиксированные read-only пути; без query, marker, токена и ответа MAX.
+      if (route === '/me' || route === '/subscriptions' || route === '/updates') failure.request = { path: route, deadlineMs, elapsedMs: Date.now() - startedAt };
+      throw failure;
     } finally { clearTimeout(timer); }
   }
   protected validate<T>(fn: () => T): T {

@@ -13,6 +13,7 @@ services:
       DATA_SNAPSHOT_PATH: /app/runtime/catalog/active.json
       MAX_BOT_TOKEN_FILE: /run/secrets/max_bot_token
       MAX_CONSUMER_PORT: ${MAX_CONSUMER_PORT:-45658}
+      NODE_EXTRA_CA_CERTS: ${NODE_EXTRA_CA_CERTS_CONTAINER:-}
     command: [node, dist/scripts/start-polling.js]
     healthcheck: {disable: true}
     volumes:

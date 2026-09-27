@@ -41,9 +41,13 @@ test('50 независимых закладок: общий лимит объя
   const d=await flowDriver(path(),variantsFixture());
   try {
     await search(d);await d.click('Подробнее 1');await d.click('Сохранить');
-    for(let i=1;i<50;i++)await d.click('Сохранить ещё раз');
-    const all=savedRows(d);assert.equal(all.length,50);await d.click('Сохранить ещё раз');
+    const row=savedRows(d)[0]!;
+    // Заполняем лимит fixture-данными, затем проверяем настоящее сохранение нового варианта.
+    for(let i=1;i<50;i++)d.runtime.store.db.prepare('INSERT INTO bookmarks(actor,identity,generation,saved_at,data) VALUES(?,?,?,?,?)').run(ACTOR,'fixture-'+i,'fixture-'+i,d.now,JSON.stringify({...JSON.parse(row.data),eventId:'fixture:'+i}));
+    const all=savedRows(d);assert.equal(all.length,50);
+    await search(d,{time:'14:00-16:00'});await d.click('Подробнее 1');await d.click('Сохранить');
     assert.match(d.screen()!.body.text,/Лимит 50 закладок/);assert.deepEqual(savedRows(d),all);
+    await d.click('Отменить выбор и перейти');assert.equal(state(d).stage,'results');assert.deepEqual(savedRows(d),all);
     await d.say('/delete_data');await d.click('Да, удалить');assert.equal(savedRows(d).length,0);
     assert.equal((d.runtime.store.db.prepare('SELECT count(*) n FROM bookmarks WHERE save_action IS NOT NULL').get() as {n:number}).n,0);
   }finally{await d.close();}

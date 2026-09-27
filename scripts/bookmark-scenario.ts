@@ -72,9 +72,8 @@ export async function bookmarkScenario(path:string) {
     await search(d,{date:'2030-04-07'});await d.click('Подробнее 1');await d.click('Сохранить');
     await search(d,{time:'14:00-16:00'});await d.click('Подробнее 1');await d.click('Сохранить');
     await search(d,{adults:2,childAge:7});await d.click('Подробнее 1');await d.click('Сохранить');
-    const repeatedAction=d.payload('Сохранить ещё раз');await d.click('Сохранить ещё раз');
-    assert.match(d.screen()!.body.text,/Сохранено ещё раз\. Такой вариант уже есть/);
-    await d.press(repeatedAction);assert.equal(savedRows(d).length,7);
+    await d.click('✅ Сохранено');assert.equal(savedRows(d).length,6);
+    await search(d,{time:'13:00-17:00'});await d.click('Подробнее 1');await d.click('Сохранить');assert.equal(savedRows(d).length,7);
     await search(d,{category:'Концерты',time:'15:00-18:00'});await d.click('Подробнее 1');await d.click('Сохранить');
     assert.equal(JSON.parse(savedRows(d)[0]!.data).occurrenceId,'synthetic:variant:concert:session-2');
     await search(d,{actor:OTHER});await d.click('Подробнее 1',OTHER);await d.click('Сохранить',OTHER);
@@ -101,6 +100,6 @@ export async function bookmarkScenario(path:string) {
     await d.restart();assert.deepEqual(savedRows(d),retained);
     return {transport:'SIMULATED_MAX',schema:d.runtime.store.db.pragma('user_version',{simple:true}),before:{actor:8,other:1,total:9},after:{actor:7,other:1,total:8},
       deleted:original.identity,rows:all.map((b,i)=>({alias:'A'+(i+1),identity:b.identity,generation:b.generation,title:presentationTitle(JSON.parse(b.data)),context:bookmarkContext(JSON.parse(b.data)),retained:b.identity!==original.identity})),
-      checks:['ordinary_save_open_cancel_delete','same_first_result','same_title_same_time','two_dates','time_and_party_variants','intentional_repeat','same_action_twice','pagination_numbers','restart','cleanup_preserves_rows','other_actor_unchanged']};
+      checks:['ordinary_save_open_cancel_delete','same_first_result','same_title_same_time','two_dates','time_and_party_variants','already_saved_opens_existing','same_action_twice','pagination_numbers','restart','cleanup_preserves_rows','other_actor_unchanged']};
   }finally{await d.close();}
 }

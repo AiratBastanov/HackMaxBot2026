@@ -34,7 +34,7 @@ test('HTTP: секрет, lossless actor, весь путь strict → дета�
   await d.click('Подробнее 1'); assert.match(text(d),/Вымышленный набор/);
   assert(d.buttons().some(b => b.type === 'link' && b.url === 'https://example.org/synthetic-cultural-option-1'));
   const save=d.payload('Сохранить');await d.click('Сохранить');
-  assert.match(text(d),/^✅ Сохранено\.\n/);assert(d.buttons().some(b=>b.text==='Сохранить ещё раз'));
+  assert.match(text(d),/^✅ Сохранено\.\n/);assert(d.buttons().some(b=>b.text==='✅ Сохранено'));
   assert(!d.buttons().some(b=>b.text==='Сохранить'));
   await d.press(save); assert.equal(count(d),1);
   const saved = d.runtime.store.db.prepare('SELECT data FROM bookmarks').get() as {data:string};
@@ -45,7 +45,7 @@ test('HTTP: секрет, lossless actor, весь путь strict → дета�
 test('Опциональные варианты: отдельная кнопка, UNKNOWN не превращается в строгое совпадение, фильтр сбрасывает opt-in', async t => {
   const d = await setup(t); await d.enter(); await chooseDefaults(d); await d.click('Показать варианты для проверки');
   assert.match(text(d),/Нужно уточнить условия/); assert.doesNotMatch(text(d),/дорогой зал/);
-  await d.click('Подробнее 2'); assert.match(text(d),/цен|тариф/); await d.click('Сохранить');
+  await d.click('Подробнее 2'); assert.match(text(d),/общая стоимость не указана/); await d.click('Сохранить');
   await d.click('Мои события'); await d.click('Открыть 1'); assert.match(text(d),/Сохранено · Нужно уточнить условия/);
   await d.click('Главная'); await chooseDefaults(d); assert.doesNotMatch(text(d),/мастерская/);
   await d.click('Показать варианты для проверки'); const old = d.payload('Подробнее 2');
@@ -80,7 +80,7 @@ test('Delete → save again: поколение закладки и старая
 test('Замена снимка между выбором, деталями и save не перепривязывает карточку', async t => {
   const d = await setup(t); await d.enter(); await chooseDefaults(d); await d.click('Подробнее 1');
   const changed = flowFixture(); changed.events[0]!.title = 'СИНТЕТИКА: изменённая запись'; d.catalog.replace(changed);
-  await d.click('Сохранить'); assert.equal(count(d),0); assert.match(text(d),/устарела/);
+  await d.click('Сохранить'); assert.equal(count(d),0); assert.match(text(d),/недоступно для сохранения/);assert(d.buttons().some(b=>b.text==='Отменить выбор и перейти'));
 });
 test('Сохранённые данные: изменение, исчезновение, недоступность и давность отображаются без отмены/подмены', async t => {
   const d = await setup(t); await d.enter(); await chooseDefaults(d); await d.click('Подробнее 1'); await d.click('Сохранить');
@@ -115,10 +115,10 @@ test('Пустой, неполный, старый, отсутствующий �
 test('Ввод ограничен явным форматом и кодом ревизии; невозможные даты/время/числа отвергаются', async t => {
   const d = await setup(t); await d.enter(); await d.click('Подобрать'); await d.click('Казань'); await d.click('Другая дата');
   const token = /([A-F0-9]{6}) ГГГГ/.exec(text(d))![1];
-  for (const value of ['завтра',`${token} 2030-04-31`,`${token} 2040-01-01`]) { await d.say(value); assert.match(text(d),/код.*ниже|Код ввода устарел|Исправьте ответ/i); }
+  for (const value of ['завтра',`${token} 2030-04-31`,`${token} 2030-13-01`]) { await d.say(value); assert.match(text(d),/код.*ниже|Код ввода устарел|Исправьте ответ/i); }
   await d.say(`${token} 2030-04-06`); assert.match(text(d),/Во сколько удобно/); await d.click('Другое время');
   const tt = /([A-F0-9]{6}) ЧЧ/.exec(text(d))![1]; await d.say(`${tt} 24:00-25:00`); assert.match(text(d),/код.*ниже|Код ввода устарел|Исправьте ответ/i);
-  await d.say(`${tt} 19:00-18:00`); assert.match(text(d),/код.*ниже|Код ввода устарел|Исправьте ответ/i); await d.say(`${tt} 12:00-18:00`);await d.click('Продолжить');
+  await d.say(`${tt} 19:00-19:00`); assert.match(text(d),/код.*ниже|Код ввода устарел|Исправьте ответ/i); await d.say(`${tt} 12:00-18:00`);await d.click('Продолжить');
   await d.click('Другая сумма'); const bt = /([A-F0-9]{6}) СУММА/.exec(text(d))![1];
   const before=JSON.parse(getState(d.runtime.store,ACTOR)!.data).draft;
   // R20-UX01: HTTP decoder не архивирует отрицательную сумму. Отказ должен объяснять формат, а не выдуманное истечение кода.
@@ -138,7 +138,7 @@ test('Удаление личных данных и probe cleanup не удал�
   const d = await setup(t); await d.enter(); await chooseDefaults(d); await d.click('Подробнее 1'); await d.click('Сохранить');
   d.runtime.store.cleanup(d.now+8*86400000); assert.equal(count(d),1);
   await d.say('/delete_data'); await d.click('Да, удалить'); assert.equal(count(d),0);
-  assert.equal(JSON.parse(getState(d.runtime.store,ACTOR)!.data).cards.length,0);
+  assert(!getState(d.runtime.store,ACTOR));
 });
 test('Лимит/страницы: 5 из 50, личная изоляция, запись не превращается в регистрацию', async t => {
   const d = await setup(t); await d.enter(); await chooseDefaults(d); await d.click('Подробнее 1'); await d.click('Сохранить');

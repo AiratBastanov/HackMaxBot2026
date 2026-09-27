@@ -128,7 +128,8 @@ export class Storage {
       let accepted=event;
       if(event.input && /^[\p{L} -]+$/u.test(event.input)) {
         const state=this.db.prepare('SELECT data FROM flow_states WHERE actor=?').get(event.actor) as {data:string}|undefined;
-        const cityInput=state&&JSON.parse(state.data).stage==='city';
+        const flow=state?JSON.parse(state.data):null;
+        const cityInput=flow&&(flow.stage==='city'||flow.stage==='input'&&flow.input?.field==='city');
         accepted={...event,input:cityInput?(resolveCity(event.input).length?normalizeCity(event.input):'?'):undefined};
       }
       this.db.prepare('INSERT INTO inbox(delivery_key,kind,payload,received_at) VALUES(?,?,?,?)').run(event.key, event.kind, JSON.stringify(accepted), now);
@@ -161,10 +162,16 @@ export class Storage {
     this.db.prepare("UPDATE outbox SET payload=NULL,actor='',probe_id=NULL,message_mid=NULL,status=CASE WHEN status IN ('PENDING','SENDING') THEN 'STALE' ELSE status END,result='PERSONAL_DATA_ERASED',finished_at=COALESCE(finished_at,?) WHERE actor=?").run(now,actor);
   }
   finishErasureRequests(now:number) {
-    const rows=this.db.prepare("SELECT actor,flow_revision FROM outbox WHERE actor<>'' AND payload IS NOT NULL AND json_extract(payload,'$.forgetAfterSend')=1 AND (status NOT IN ('PENDING','SENDING') OR expires_at<=?)").all(now) as {actor:string;flow_revision:number}[];
-    for(const row of rows){const state=this.db.prepare('SELECT revision FROM flow_states WHERE actor=?').get(row.actor) as {revision:number}|undefined;
+    const rows=this.db.prepare("SELECT id,actor,purpose,flow_revision FROM outbox WHERE actor<>'' AND payload IS NOT NULL AND json_extract(payload,'$.forgetAfterSend')=1 AND (status NOT IN ('PENDING','SENDING') OR expires_at<=?)").all(now) as {id:number;actor:string;purpose:string;flow_revision:number}[];
+    for(const row of rows){
+      if(row.purpose==='culture_erasure'){this.forgetErasureResponse(row.id,now);continue;}
+      // Завершение уже существовавших запросов старой версии при обновлении.
+      const state=this.db.prepare('SELECT revision FROM flow_states WHERE actor=?').get(row.actor) as {revision:number}|undefined;
       if(state?.revision===row.flow_revision)this.erasePersonal(row.actor,now);
     }
+  }
+  forgetErasureResponse(id:number,now:number) {
+    this.db.prepare("UPDATE outbox SET payload=NULL,actor='',message_mid=NULL,status=CASE WHEN status IN ('PENDING','SENDING') THEN 'STALE' ELSE status END,finished_at=COALESCE(finished_at,?) WHERE id=? AND purpose='culture_erasure'").run(now,id);
   }
   cleanup(now: number) {
     this.db.transaction(() => {

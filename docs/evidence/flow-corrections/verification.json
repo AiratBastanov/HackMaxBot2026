@@ -1,0 +1,268 @@
+{
+  "baseline": "734d4f4e5da793babd7df9689abe64810026d599",
+  "date": "2026-09-27",
+  "mode": "AUTOMATED_LOCAL_SIMULATED_MAX",
+  "humanMobile": "NOT_RUN",
+  "humanWeb": "NOT_RUN",
+  "liveMAXRequests": 0,
+  "liveDatabaseOpened": false,
+  "schemaVersion": 4,
+  "migrationRequired": false,
+  "existingCopiesPreserved": true,
+  "uniqueTestsPassed": 310,
+  "checks": [
+    {
+      "name": "typecheck",
+      "args": [],
+      "started": "2026-09-27T18:46:57.563Z",
+      "elapsedMs": 621,
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "error": null,
+      "log": ".review/flow-corrections/typecheck-1790534817563.log"
+    },
+    {
+      "name": "build",
+      "args": [],
+      "started": "2026-09-27T18:46:58.682Z",
+      "elapsedMs": 665,
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "error": null,
+      "log": ".review/flow-corrections/build-1790534818682.log"
+    },
+    {
+      "name": "walkthrough",
+      "args": [],
+      "started": "2026-09-27T18:29:10.042Z",
+      "elapsedMs": 1158,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "error": null,
+      "log": ".review/flow-corrections/walkthrough-1790533750042.log"
+    },
+    {
+      "name": "container",
+      "args": [],
+      "started": "2026-09-27T18:37:36.334Z",
+      "elapsedMs": 14189,
+      "timeoutMs": 300000,
+      "exitCode": 0,
+      "error": null,
+      "log": ".review/flow-corrections/container-1790534256334.log"
+    },
+    {
+      "name": "focused",
+      "args": [],
+      "started": "2026-09-27T18:27:14.105Z",
+      "elapsedMs": 15008,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "error": null,
+      "log": ".review/flow-corrections/focused-1790533634105.log",
+      "logSha256": "87c22fb592366243902e21c7610a554f123b6653d62a0c8e318733e501fac6e0",
+      "counts": {
+        "tests": 44,
+        "pass": 44,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "shared",
+      "args": [],
+      "started": "2026-09-27T18:28:54.986Z",
+      "elapsedMs": 8596,
+      "timeoutMs": 300000,
+      "exitCode": 1,
+      "error": null,
+      "log": ".review/flow-corrections/shared-1790533734986.log",
+      "logSha256": "e10bed71ed23c0d972635e09943f56e3788f4e080d0c246038292bcdcb9f9925",
+      "counts": {
+        "tests": 265,
+        "pass": 255,
+        "fail": 10,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "delta",
+      "args": [
+        "contracts",
+        "flow-publication",
+        "flow-readiness",
+        "flow-runtime",
+        "flow-stage4"
+      ],
+      "started": "2026-09-27T18:30:18.610Z",
+      "elapsedMs": 7121,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "error": null,
+      "log": ".review/flow-corrections/delta-1790533818610.log",
+      "logSha256": "3bfc53067b1c2b03701841456c6adbcb60de268bbdb51466f0df6511210bee86",
+      "counts": {
+        "tests": 73,
+        "pass": 73,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "delta",
+      "args": [
+        "flow-corrections",
+        "card-title",
+        "flow-bookmark-refresh",
+        "flow-compact",
+        "data-city-party",
+        "flow-copy-date",
+        "flow-stage4",
+        "flow-readiness",
+        "flow-runtime"
+      ],
+      "started": "2026-09-27T18:37:01.864Z",
+      "elapsedMs": 15151,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "error": null,
+      "log": ".review/flow-corrections/delta-1790534221864.log",
+      "logSha256": "00e01640b1389574855ac610a67783eb767263b117559dc9d5a1809e3c3a4192",
+      "counts": {
+        "tests": 76,
+        "pass": 76,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "delta",
+      "args": [
+        "flow-corrections"
+      ],
+      "started": "2026-09-27T18:46:14.059Z",
+      "elapsedMs": 10451,
+      "timeoutMs": 120000,
+      "exitCode": 1,
+      "error": null,
+      "log": ".review/flow-corrections/delta-1790534774059.log",
+      "logSha256": "c6d4069949e44267c8baf931953d6fb36343889670a9b0b2debb5bd29d0403e4",
+      "counts": {
+        "tests": 12,
+        "pass": 11,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "delta",
+      "args": [
+        "flow-corrections",
+        "flow-compact",
+        "flow-runtime",
+        "flow-screens",
+        "flow-stage4"
+      ],
+      "started": "2026-09-27T18:46:59.846Z",
+      "elapsedMs": 14524,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "error": null,
+      "log": ".review/flow-corrections/delta-1790534819846.log",
+      "logSha256": "3d2ccca0d59f1e6a0cd893546cbf7f8d6c9e2aeed377f6a6e9f87a70bfd333ed",
+      "counts": {
+        "tests": 62,
+        "pass": 62,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    }
+  ],
+  "repeatBasis": [
+    "Общие 265 проверок выполнены один раз; 10 ожиданий прежнего поведения обновлены и прошли в целевом запуске 73 проверок. Название проверки HTTP 400 изменено с HTTP на INVALID_REQUEST; в итоговом числе это одна проверка.",
+    "После исправления семейного частичного тарифа и добавления сеанса через полночь выполнены 76 затронутых проверок.",
+    "После smoke обнаружена подмена точки продолжения анкеты разделами saved/about: воспроизведено 11 PASS/1 FAIL; исправлены только переход home и assertion. Финальные typecheck/build и 62 затронутые проверки PASS. Docker/schema/startup входы не менялись; второй контейнерный smoke не выполнялся."
+  ],
+  "container": {
+    "result": "PASS",
+    "project": "maxbot-corrections-1790534256397",
+    "image": "maxbot-corrections-1790534256397:test",
+    "sourceHash": "d3453edf1d8b864e749771d56f1638dea6cdc436dce11fb686a8f086bb26b528",
+    "existingContainersUnchanged": true,
+    "simulatedMAX": true,
+    "network": "none",
+    "cleanBuildBenchmark": false,
+    "results": [
+      {
+        "name": "existing-ids",
+        "exitCode": 0,
+        "elapsedMs": 120,
+        "error": null
+      },
+      {
+        "name": "existing-state-1",
+        "exitCode": 0,
+        "elapsedMs": 53,
+        "error": null
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "elapsedMs": 11282,
+        "error": null
+      },
+      {
+        "name": "smoke",
+        "exitCode": 0,
+        "elapsedMs": 2379,
+        "error": null
+      },
+      {
+        "name": "existing-state-4",
+        "exitCode": 0,
+        "elapsedMs": 55,
+        "error": null
+      },
+      {
+        "name": "remove-disposable",
+        "exitCode": 0,
+        "elapsedMs": 205,
+        "error": null
+      }
+    ]
+  },
+  "finalSourceHash": "4cb23b6f1454523810ebe0e49f1d68020818ab56aa9e0c235f670e7de7631de9",
+  "containerUsesFinalSource": false,
+  "baselineReproduction": {
+    "baseline": "734d4f4e5da793babd7df9689abe64810026d599",
+    "fixture": "SIMULATED_MAX; синтетический PUT HTTP400, оригинальное тело ответа неизвестно",
+    "before": {
+      "replacementPosts": 1,
+      "contactMask": 1
+    },
+    "after": {
+      "replacementPosts": 0,
+      "contactMask": 1
+    },
+    "historical400Cause": "NOT_ESTABLISHED"
+  },
+  "walkthrough": {
+    "frames": 7,
+    "fixture": true,
+    "bookmarksBefore": 2,
+    "bookmarksAfter": 1,
+    "retainedRecordUnchanged": true
+  },
+  "sourceHashMeaning": "SHA-256 путей и содержимого src/scripts/tests (*.ts, *.mjs); сортировка внутри каталога, LF, разделитель NUL после пути. Это не clean-build benchmark.",
+  "constraints": [
+    "Историческая причина HTTP 400 не установлена.",
+    "Каталог, источники, презентации и пользовательский Compose override не изменялись.",
+    "Рабочий бот не обновлялся и не перезапускался."
+  ]
+}

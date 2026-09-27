@@ -80,18 +80,18 @@ test('C16 HTTP/SQLite: same active mid, party summary/reset, city reset, bookmar
   const d=await setup(t);await d.enter();const mid=activeScreen(d.runtime.store,ACTOR)!.mid;await chooseDefaults(d);
   assert.equal(activeScreen(d.runtime.store,ACTOR)!.mid,mid);assert(d.operations.some(o=>o.method==='edit'));assert.equal(d.operations.filter(o=>o.method==='messages').length,1);
   await d.click('Подробнее 1');await d.click('Сохранить');await d.say('/saved');await d.click('Открыть 1');await d.click('Условия посещения');
-  await d.click('Удалить закладку');assert.deepEqual(d.buttons().map(b=>b.text),['Да, удалить','Отмена']);assert.match(text(d),/Удалить «выставка света \(Выставка\)» из сохранённого/);
+  await d.click('Удалить закладку');assert.deepEqual(d.buttons().map(b=>b.text),['Да, удалить','Отмена']);assert.match(text(d),/Удалить «выставка света \(Выставка\)» на .* из сохранённого/);
   const stale=d.payload('Да, удалить');await d.click('Отмена');assert.match(text(d),/Условия посещения ·/);await d.press(stale);assert.equal((d.runtime.store.db.prepare('SELECT count(*) n FROM bookmarks').get() as any).n,1);
   await d.say('/delete_data');assert.deepEqual(d.buttons().map(b=>b.text),['Да, удалить','Отмена']);await d.click('Отмена');assert.match(text(d),/Условия посещения ·/);
   await d.click('Главная');await chooseDefaults(d);await d.click('Показать варианты для проверки');await d.click('Посетители');await d.click('Взрослые +');await d.click('Дети +');await d.click('Продолжить');await d.click('Указать возраст');await d.say(state(d).input.token+' 7');await d.click('До 500 ₽');
   assert.equal(state(d).optIn,false);assert.equal(state(d).draft.budgetBasis,'PARTY_TOTAL');assert.match(text(d),/2 взр., 1 дет/);assert.match(text(d),/Бюджет на вход для всех: до 500/);
   await d.click('Показать результаты');await d.click('Подробнее 1');assert.match(text(d),/500 ₽ за всех/);
-  await d.click('К результатам');await d.click('Показать варианты для проверки');await d.click('Подробнее 3');assert.match(text(d),/Итого неизвестно.*400 ₽/);
-  await d.click('К результатам');await d.click('Город');await d.say('екб');assert.equal(state(d).optIn,false);assert.deepEqual(state(d).cards,[]);assert.match(text(d),/Екатеринбург/);
-  await d.restart();await d.say('/saved');await d.click('Открыть 1');assert.match(text(d),/Казань · 1 взр., 0 дет/);assert.match(text(d),/200 ₽/);
+  await d.click('К результатам');await d.click('Сохранить и перейти');await d.click('Показать варианты для проверки');await d.click('Подробнее 3');assert.match(text(d),/За взрослых 400 ₽; детский тариф неизвестен/);
+  await d.click('К результатам');await d.click('Сохранить и перейти');await d.click('Город');await d.say('екб');assert.equal(state(d).optIn,false);assert.deepEqual(state(d).cards,[]);assert.match(text(d),/Екатеринбург/);
+  await d.restart();await d.say('/saved');await d.click('Открыть 3');assert.match(text(d),/Казань · 1 взр., 0 дет/);assert.match(text(d),/200 ₽/);
   await d.say('/delete_data');await d.click('Да, удалить');assert.equal((d.runtime.store.db.prepare('SELECT count(*) n FROM bookmarks').get() as any).n,0);
   const values=d.runtime.store.db.prepare("SELECT payload FROM outbox WHERE actor=? AND purpose LIKE 'culture%' AND payload IS NOT NULL").all(ACTOR) as {payload:string}[];
-  assert(values.every(v=>!v.payload.includes('возраст: 7')));assert(!JSON.stringify(state(d)).includes('childAges\":[7]'));
+  assert(values.every(v=>!v.payload.includes('возраст: 7')));assert(!getState(d.runtime.store,ACTOR));
 });
 test('C16 actual wrong message ownership and bot-origin input never mutate the flow',async t=>{
   const d=await setup(t);await d.enter();const revision=getState(d.runtime.store,ACTOR)!.revision;

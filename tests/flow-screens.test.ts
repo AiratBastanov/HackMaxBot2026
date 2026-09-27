@@ -42,8 +42,8 @@ test('C16 worker refuses untracked/wrong actor mutation, no external target from
   assert.throws(()=>h.store.enqueue('wrong-actor',ACTOR,null,'culture_screen',{method:'edit',mid:current.mid!,recipient:OTHER,chat:CHAT,screen:{...current},body:{text:'wrong',attachments:[]}},h.now,h.now+60000,{revision:current.revision}),/ACTOR_MISMATCH/);
   await h.drain();assert.equal(h.ops.length,start);assert.equal(activeScreen(h.store,ACTOR)!.mid,current.mid);
 });
-test('C16 semantic edit failure creates one replacement; creation must confirm before adoption',async t=>{
-  let reject=true;const h=await harness(t,async(op,local)=>{if(op.method==='edit'&&reject){reject=false;throw new MaxError('SEMANTIC',200);}return local.execute(op);});
+test('C16 missing message creates one replacement; creation must confirm before adoption',async t=>{
+  let reject=true;const h=await harness(t,async(op,local)=>{if(op.method==='edit'&&reject){reject=false;throw new MaxError('RESOURCE_NOT_FOUND',404);}return local.execute(op);});
   const old=activeScreen(h.store,ACTOR)!.mid;h.click('pick');await h.drain();
   assert.notEqual(activeScreen(h.store,ACTOR)!.mid,old);assert.equal(h.ops.filter(o=>o.method==='messages').length,2);assert.equal(h.ops.filter(o=>o.method==='edit').length,1);
   assert.equal(JSON.parse(getState(h.store,ACTOR)!.data).stage,'city');

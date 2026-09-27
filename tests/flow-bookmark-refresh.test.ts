@@ -82,7 +82,7 @@ test('R18 HTTP application: save -> replacement/reload -> current refs -> cancel
       event.price={...event.price,kind:'EXACT',amount:900,lowerBound:900};event.tariffs=[];event.admission.registration='REQUIRED';
     });
     writeFileSync(path,JSON.stringify({snapshots:changed.values}));writeFileSync(reviewPath,JSON.stringify(changed.review));
-    await d.reloadCatalog(path);await d.say('/saved');assert.match(d.screen()!.body.text,/условия изменились/);await d.click('Открыть 1');
+    await d.reloadCatalog(path);await d.say('/saved');assert.match(d.screen()!.body.text,/условия изменились/);assert.match(d.screen()!.body.text,/💰 900 ₽ за всех/);await d.click('Открыть 1');
     assert.match(d.screen()!.body.text,/Изменились условия: тариф, допуск/);assert.match(d.screen()!.body.text,/выше бюджета/);
     assert.match(d.screen()!.body.text,/900 ₽/);assert.match(d.screen()!.body.text,/Регистрация: обязательна/);
     assert.deepEqual(d.runtime.store.db.prepare('SELECT * FROM bookmarks').get(),before);

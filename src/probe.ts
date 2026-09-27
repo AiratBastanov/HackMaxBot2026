@@ -4,6 +4,9 @@ import type { AcceptedEvent } from './contracts.js';
 import { Storage, type ContactRow } from './storage.js';
 
 export function canSend(contact: ContactRow | undefined): boolean { return contact?.access_mask === 1; }
+export function contactReason(contact:ContactRow|undefined) {
+  return !contact?'NO_CONTACT':contact.access_mask&2?'LIFECYCLE_STOP':contact.access_mask===4?'DELIVERY_DENIED':contact.access_mask===1?'AVAILABLE':'UNKNOWN';
+}
 
 export function observeContact(store: Storage, event: AcceptedEvent, now: number): void {
   if (!event.chat) return;
@@ -12,11 +15,13 @@ export function observeContact(store: Storage, event: AcceptedEvent, now: number
   let bit = 0;
   if (event.kind === 'bot_started') bit = 1;
   if (event.kind === 'bot_stopped' || event.kind === 'dialog_removed') bit = 2;
-  // Первое личное сообщение разрешает ответ; Stop/UNKNOWN не снимаются текстом.
-  if (!existing && event.kind === 'message_created') bit = 1;
-  if (!existing && !['bot_started','message_created'].includes(event.kind)) return;
+  // Свежий личный ввод восстанавливает UNKNOWN/отказ адресату, но не документированный Stop.
+  const fresh=event.timestamp<=now+60000&&now-event.timestamp<15*60000;
+  if(event.kind==='bot_started'&&!fresh)bit=0;
+  if (event.kind === 'message_created' && fresh && !(c.access_mask&2)) bit = 1;
+  if (!existing && !['bot_started','message_created','bot_stopped','dialog_removed'].includes(event.kind)) return;
   if (bit && event.timestamp >= c.access_ts) {
-    c.access_mask = event.timestamp === c.access_ts ? c.access_mask | bit : bit;
+    c.access_mask = bit===1&&c.access_mask===4?1:event.timestamp === c.access_ts ? c.access_mask | bit : bit;
     c.access_ts = event.timestamp;
     c.chat = event.chat;
   }

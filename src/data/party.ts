@@ -3,7 +3,7 @@ import { type NormalizedEvent, type Query, queryParty } from './contract.js';
 export type PartyAssessment = { total: number | null; knownSubtotal: number; lowerBound: number;
   unresolved: string[]; admission: 'MATCH' | 'UNKNOWN' | 'MISMATCH'; admissionNotes: string[] };
 // Общий evaluator. Renderer получает этот результат и не выбирает тариф заново.
-export function assessParty(e: NormalizedEvent, q: Query): PartyAssessment {
+export function assessParty(e: Pick<NormalizedEvent,'price'|'tariffs'|'admission'>, q: Query): PartyAssessment {
   const p = queryParty(q), r: PartyAssessment = { total: null, knownSubtotal: 0, lowerBound: 0, unresolved: [], admission: 'MATCH', admissionNotes: [] };
   const unit = (audience: 'ADULT' | 'CHILD', age: number | null) => {
     const tariffs = e.tariffs?.filter(t => t.audience === audience) ?? [];

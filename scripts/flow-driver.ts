@@ -2,28 +2,29 @@ import { createApp } from '../src/app.js';
 import { loadConfig } from '../src/config.js';
 import { Catalog } from '../src/culture/catalog.js';
 import { flowFixture, syntheticClock } from '../src/culture/fixture.js';
-import { LocalMax, type MaxOperation, type Button } from '../src/max.js';
+import { LocalMax, type MaxOperation, type MaxResult, type Button } from '../src/max.js';
 import { ACTOR, OTHER, SECRET, encode, lifecycle, callback, reply } from '../tests/fixtures.js';
 import { activeScreen } from '../src/screens.js';
 
 // Локальный драйвер вызывает реальный HTTP webhook; транспорт MAX явно симулирован.
-export async function flowDriver(databasePath: string, input: unknown = flowFixture(), clock = syntheticClock.getTime(), real = false, review:unknown=null,publicAdmission=false) {
+export async function flowDriver(databasePath: string, input: unknown = flowFixture(), clock = syntheticClock.getTime(), real = false, review:unknown=null,publicAdmission=false,
+  hook?:(op:MaxOperation,local:LocalMax)=>Promise<MaxResult>) {
   let now = clock, seq = 0;
   const config = loadConfig({ APP_MODE: 'local', DATABASE_PATH: databasePath, MAX_WEBHOOK_SECRET: SECRET,
     ADMISSION_MODE:publicAdmission?'PUBLIC':'RESTRICTED',
     PROBE_TESTER_IDS: `${ACTOR},${OTHER}`, FLOW_DATA_MODE: real ? 'real' : 'synthetic-test' });
   if(publicAdmission)config.testers=new Set();
   let catalog = new Catalog(config.flowDataMode, input,review,publicAdmission);
-  const operations: MaxOperation[] = [], transcript: string[] = [];
+  const operations: MaxOperation[] = [], attempts:MaxOperation[]=[],reports:object[]=[], transcript: string[] = [];
   const simulated = new LocalMax();
   const transport = { async execute(op: MaxOperation) {
-    const result = await simulated.execute(op); operations.push(op);
+    attempts.push(structuredClone(op));const result = await (hook?hook(op,simulated):simulated.execute(op)); operations.push(op);
     if (op.method === 'messages'||op.method==='edit') transcript.push(`Бот (${op.method==='edit'?'изменение экрана':'новое сообщение'}): ${op.body.text}\nКнопки: ${op.body.attachments?.flatMap(a => a.payload.buttons.flat().map(b => b.text)).join(' · ') ?? 'нет'}`);
     else if(op.method==='answers') transcript.push(`Ответ на кнопку: ${op.body.notification}`);
     else transcript.push(`MAX (${op.method}): выполнено в симуляции`);
     return result;
   } };
-  let runtime = createApp(config, { catalog, clock: () => now, transport });
+  let runtime = createApp(config, { catalog, clock: () => now, transport,report:r=>reports.push(r) });
   let origin = '';
   const listen = async () => { await runtime.app.listen({ host: '127.0.0.1', port: 0 }); const a = runtime.app.server.address(); if (!a || typeof a === 'string') throw Error('listen'); origin = `http://127.0.0.1:${a.port}`; };
   await listen();
@@ -48,13 +49,13 @@ export async function flowDriver(databasePath: string, input: unknown = flowFixt
   const press = async (p: string, actor = ACTOR, id = `flow-${++seq}`, timestamp = ++now, flush = true) => {
     const v = callback('', id, actor, timestamp); v.callback.payload = p;v.message.body.mid=activeScreen(runtime.store,actor)?.mid??v.message.body.mid; const r = await post(v); if (!r.ok) throw Error(`HTTP_${r.status}`); if (flush) await drain(); return r.json();
   };
-  return { config, get catalog(){return catalog;}, operations, transcript, post, drain, payload, buttons, screen, press, dateLabel,
+  return { config, get catalog(){return catalog;}, operations, attempts,reports,transcript, post, drain, payload, buttons, screen, press, dateLabel,
     get runtime() { return runtime; }, get now() { return now; }, get origin() { return origin; }, advance(ms: number) { now += ms; },
     async enter(actor = ACTOR) { transcript.push('Пользователь: /start'); const v = lifecycle('bot_started', ++now, actor); delete (v as { payload?: string }).payload; await post(v); await drain(); },
     async click(text: string, actor = ACTOR) { transcript.push(`Пользователь: ${text}`); return press(payload(text, actor), actor); },
     async say(text: string, actor = ACTOR) { transcript.push(`Пользователь: ${text.replace(/^[A-F0-9]{6} /, '<код формы> ')}`); await post(reply(undefined, ++now, text, actor, `flow-text-${++seq}`)); await drain(); },
-    async restart() { await runtime.app.close(); runtime = createApp(config, { catalog, clock: () => now, transport }); await listen(); },
-    async reloadCatalog(snapshotPath:string) { await runtime.app.close();catalog=Catalog.load({...config,snapshotPath});runtime=createApp(config,{catalog,clock:()=>now,transport});await listen(); },
+    async restart() { await runtime.app.close(); runtime = createApp(config, { catalog, clock: () => now, transport,report:r=>reports.push(r) }); await listen(); },
+    async reloadCatalog(snapshotPath:string) { await runtime.app.close();catalog=Catalog.load({...config,snapshotPath});runtime=createApp(config,{catalog,clock:()=>now,transport,report:r=>reports.push(r)});await listen(); },
     close: () => runtime.app.close(),
   };
 }

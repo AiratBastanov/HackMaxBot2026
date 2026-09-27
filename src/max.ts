@@ -7,10 +7,11 @@ import type { DisplayRef } from './data/source-policy.js';
 import { actorAllowed } from './admission.js';
 import type { Storage } from './storage.js';
 
-export type FailureKind = 'SEMANTIC' | 'MALFORMED' | 'AUTH' | 'PERMISSION' | 'RATE_LIMIT' | 'SERVER' | 'HTTP' | 'TIMEOUT_AMBIGUOUS' | 'TRANSPORT_AMBIGUOUS' | 'CANCELLED';
+export type FailureKind = 'SEMANTIC' | 'MALFORMED' | 'AUTH' | 'PERMISSION' | 'INVALID_REQUEST' | 'RESOURCE_NOT_FOUND' | 'RECIPIENT_UNAVAILABLE' | 'RATE_LIMIT' | 'SERVER' | 'HTTP' | 'TIMEOUT_AMBIGUOUS' | 'TRANSPORT_AMBIGUOUS' | 'CANCELLED';
 export class MaxError extends Error {
   request?: { path: '/me'|'/subscriptions'|'/updates'; deadlineMs: number; elapsedMs: number };
-  constructor(public readonly kind: FailureKind, public readonly status?: number, public readonly retryAfterMs?: number) { super(kind); }
+  constructor(public readonly kind: FailureKind, public readonly status?: number, public readonly retryAfterMs?: number,
+    public readonly providerCode?: 'chat.denied') { super(kind); }
 }
 export type Button = { type: 'callback'; text: string; payload: string } | { type: 'link'; text: string; url: string };
 export type MessageRequest = { text: string; notify?: boolean; attachments?: { type: 'inline_keyboard'; payload: { buttons: Button[][] } }[] };
@@ -28,18 +29,40 @@ export function deliveryAllowed(op:MaxOperation,config:Config,catalog:Catalog,no
   return catalog.permits(op.displayRefs,now,config.admissionMode==='PUBLIC');
 }
 export function validateOperation(op: MaxOperation) {
+  if (op.method !== 'answers' && (!/^[1-9][0-9]{0,18}$/.test(op.recipient) || BigInt(op.recipient)>9223372036854775807n)) throw new MaxError('SEMANTIC');
   if (op.method === 'read' || op.method === 'delete') { if (!op.mid || !op.recipient || !op.chat) throw new MaxError('SEMANTIC'); return; }
-  if (op.method === 'answers') { if (op.body.notification.length > 200) throw new MaxError('SEMANTIC'); return; }
+  if (op.method === 'answers') { if (!op.callbackId?.trim() || !op.body.notification || op.body.notification.length > 200) throw new MaxError('SEMANTIC'); return; }
   if (!op.body.text || op.body.text.length > 4000 || (op.body.attachments?.length ?? 0) > 1) throw new MaxError('SEMANTIC');
   if (op.method === 'edit' && (!op.mid || !op.recipient || !op.chat || !Array.isArray(op.body.attachments))) throw new MaxError('SEMANTIC');
   for (const a of op.body.attachments ?? []) {
-    if (a.payload.buttons.length > 30) throw new MaxError('SEMANTIC');
+    if (!a.payload.buttons.length || a.payload.buttons.length > 30) throw new MaxError('SEMANTIC');
     for (const row of a.payload.buttons) {
-      if (row.length > (row.some(b => b.type === 'link') ? 3 : 7)) throw new MaxError('SEMANTIC');
+      if (!row.length || row.length > (row.some(b => b.type === 'link') ? 3 : 7)) throw new MaxError('SEMANTIC');
       for (const b of row) if (!b.text || b.text.length > 80 || (b.type === 'link'
         ? b.url.length > 2048 || !safeLink(b.url) : Buffer.byteLength(b.payload) > 128)) throw new MaxError('SEMANTIC');
     }
   }
+}
+// Только размеры/типы. Ни адресат, ни mid, ни текст/URL/токены не попадают в журнал.
+export function payloadShape(op:MaxOperation) {
+  if(op.method==='answers')return {target:'CALLBACK',notificationLength:op.body.notification.length};
+  if(op.method==='read'||op.method==='delete')return {target:'MESSAGE',messageReference:!!op.mid};
+  const rows=op.body.attachments?.flatMap(a=>a.payload.buttons)??[],buttons=rows.flat();
+  return {target:op.method==='messages'?'USER':'MESSAGE',textLength:op.body.text.length,format:'plain',
+    attachments:op.body.attachments?.length??0,rows:rows.length,buttons:buttons.length,
+    maxRow:Math.max(0,...rows.map(r=>r.length)),maxCallbackBytes:Math.max(0,...buttons.map(b=>b.type==='callback'?Buffer.byteLength(b.payload):0)),
+    maxLinkLength:Math.max(0,...buttons.map(b=>b.type==='link'?b.url.length:0))};
+}
+
+async function safeErrorCode(response:Response,signal:AbortSignal):Promise<'chat.denied'|undefined> {
+  const reader=response.body?.getReader();if(!reader)return;
+  const cancel=()=>{void reader.cancel().catch(()=>{});};signal.addEventListener('abort',cancel,{once:true});
+  try {
+    const chunks:Uint8Array[]=[];let size=0;
+    while(!signal.aborted){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>4096)return;chunks.push(value);}
+    const raw=JSON.parse(Buffer.concat(chunks).toString('utf8')) as {code?:unknown};
+    return raw?.code==='chat.denied'?'chat.denied':undefined;
+  }catch{return undefined;}finally{signal.removeEventListener('abort',cancel);await reader.cancel().catch(()=>{});reader.releaseLock();}
 }
 export type MaxResult = { simulated: boolean; mid?: string; chat?: string; message?: MessageRequest };
 export interface MaxTransport { execute(operation: MaxOperation): Promise<MaxResult> }
@@ -68,9 +91,15 @@ export class ReadOnlyMax {
         ...(body === undefined ? {} : { body: JSON.stringify(body) }),
       });
       if (response.status !== 200) {
-        await response.body?.cancel();
-        const kind: FailureKind = response.status === 401 ? 'AUTH' : response.status === 403 ? 'PERMISSION' : response.status === 429 ? 'RATE_LIMIT' : response.status >= 500 ? 'SERVER' : 'HTTP';
-        throw new MaxError(kind, response.status, retryAfter(response.headers.get('retry-after')));
+        const code=await safeErrorCode(response,signal),route=path.split('?')[0];
+        // chat.denied также бывает запретом пересылки. Только наш обычный private POST
+        // без link свидетельствует о недоступности адресата, но не о lifecycle Stop.
+        const privateSend=method==='POST'&&route==='/messages'&&path.includes('?user_id=')&&body&&typeof body==='object'&&!('link' in body);
+        const kind: FailureKind = response.status === 401 ? 'AUTH' : response.status === 429 ? 'RATE_LIMIT'
+          : response.status>=500?'SERVER':response.status===400?'INVALID_REQUEST'
+          : response.status===403&&code==='chat.denied'&&privateSend?'RECIPIENT_UNAVAILABLE'
+          : response.status===403?'PERMISSION':response.status===404&&['GET','PUT','DELETE'].includes(method)&&route?.startsWith('/messages')?'RESOURCE_NOT_FOUND':'HTTP';
+        throw new MaxError(kind, response.status, retryAfter(response.headers.get('retry-after')),code);
       }
       // Deadline охватывает и чтение тела. Ограничение защищает от бесконечного/большого ответа.
       const reader = response.body?.getReader();
@@ -175,7 +204,9 @@ export class LocalMax implements MaxTransport {
 export function outboundAuthorization(config:Config,store:Storage) {
   return (op:MaxOperation)=> {
     const actor=op.actor;
-    if(!actor||!actorAllowed(config,actor)||store.contact(actor)?.access_mask!==1)return false;
+    if(!actor||!actorAllowed(config,actor))return false;
+    const erasure=['messages','answers'].includes(op.method)&&op.forgetAfterSend&&!store.contact(actor)&&store.db.prepare("SELECT 1 FROM outbox WHERE actor=? AND purpose='culture_erasure' AND status='SENDING' AND json_extract(payload,'$.forgetAfterSend')=1 AND json_extract(payload,'$.method')=?").get(actor,op.method);
+    if(store.contact(actor)?.access_mask!==1&&!erasure)return false;
     if(op.method!=='answers'&&op.recipient!==actor)return false;
     if(op.method==='edit'||op.method==='read'||op.method==='delete') {
       const owned=store.db.prepare('SELECT 1 FROM ui_messages WHERE mid=? AND actor=? AND chat=?').get(op.mid,actor,op.chat);

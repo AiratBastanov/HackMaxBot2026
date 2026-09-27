@@ -121,7 +121,7 @@ export function failedScreenOperation(s:Storage,row:OutboxRow,op:MaxOperation,er
   if(op.method!=='edit') return;
   if(error.kind==='RATE_LIMIT') {s.db.prepare("UPDATE ui_messages SET status=? WHERE mid=?").run(row.purpose==='culture_retire'?'OBSOLETE':'ACTIVE',op.mid);return;}
   s.db.prepare('UPDATE ui_messages SET status=?,updated_at=? WHERE mid=?').run(ambiguous&&row.purpose==='culture_screen'?'UNCERTAIN':'BLOCKED',now,op.mid);
-  if(row.purpose==='culture_screen'&&op.screen&&!ambiguous&&['SEMANTIC','PERMISSION','HTTP'].includes(error.kind)) {
+  if(row.purpose==='culture_screen'&&op.screen&&!ambiguous&&(error.kind==='RESOURCE_NOT_FOUND'||error.kind==='HTTP'&&error.status===404)) {
     const current=activeScreen(s,row.actor);
     if(current?.epoch===op.screen.epoch&&current.revision===op.screen.revision) {
       s.db.prepare('UPDATE flow_screens SET force_new=1 WHERE actor=?').run(row.actor);

@@ -92,7 +92,7 @@ test('R20 полный renderer: применимость тарифов, раз
   const readPages=async()=>{await d.click('Условия посещения');let result=text(d);while(d.buttons().some(b=>b.text==='Далее условия')){await d.click('Далее условия');result+=text(d);}return result;};
   const pages=await readPages();for(const s of ['Билет на одну выставку.','Вход с отдельного двора.','Вход с другой улицы.','УСЛОВИЕ_ЦЕЛИКОМ','расходятся сведения: цена'])assert(pages.includes(s));
   assert.doesNotMatch(pages,/9900|Детский билет/);assert.equal(JSON.stringify(fixture),facts);
-  await d.click('К карточке');await d.click('Сохранить');assert(text(d).startsWith('✅ Сохранено.'));assert(d.buttons().some(b=>b.text==='Сохранить ещё раз'));
+  await d.click('К карточке');await d.click('Сохранить');assert(text(d).startsWith('✅ Сохранено.'));assert(d.buttons().some(b=>b.text==='✅ Сохранено'));
   const saved=d.runtime.store.db.prepare('SELECT * FROM bookmarks').get();await d.click('Мои события');await d.click('Открыть 1');await readPages();
   await d.click('Удалить закладку');assert.deepEqual(d.buttons().map(b=>b.text),['Да, удалить','Отмена']);await d.click('Отмена');assert.match(text(d),/Условия посещения/);
   assert.deepEqual(d.runtime.store.db.prepare('SELECT * FROM bookmarks').get(),saved);

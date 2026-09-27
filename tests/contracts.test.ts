@@ -43,7 +43,7 @@ test('messages проверяет Message/body/mid/seq и точного пол�
     await assert.rejects(client(raw).execute(op), { kind: 'MALFORMED' });
   }
 });
-for (const [status, kind] of [[401, 'AUTH'], [403, 'PERMISSION'], [429, 'RATE_LIMIT'], [503, 'SERVER'], [400, 'HTTP']] as const) {
+for (const [status, kind] of [[401, 'AUTH'], [403, 'PERMISSION'], [429, 'RATE_LIMIT'], [503, 'SERVER'], [400, 'INVALID_REQUEST']] as const) {
   test(`HTTP ${status} сохраняет отдельный класс ${kind}`, async () => {
     await assert.rejects(client({}, status, { 'retry-after': '3' }).execute(operation), e => e instanceof MaxError && e.kind === kind && e.status === status && (status !== 429 || e.retryAfterMs === 3000));
   });

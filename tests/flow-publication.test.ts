@@ -58,7 +58,7 @@ for(const ingress of ['webhook','polling'] as const) test(`${ingress}: текс�
   h.say('Казань');await h.drain();assert.notEqual(h.current().mid,invalidCity);assert.equal(h.state().stage,'date');
   h.click('custom','date');await h.drain();const form=h.current().mid!,token=h.state().input.token;
   h.say(`${token} 2030-02-31`);await h.drain();const invalid=h.current().mid!;
-  assert.notEqual(invalid,form);assert.match(h.local.messages.get(invalid)!.body.text,/Нужна дата/);
+  assert.notEqual(invalid,form);assert.match(h.local.messages.get(invalid)!.body.text,/календарной даты нет/);
   assert.equal(h.state().input.token,token);assert.equal(h.state().stage,'input');
   h.say(`${token} 2030-04-06`);await h.drain();assert.notEqual(h.current().mid,invalid);assert.equal(h.state().stage,'time');
   const before=h.current().mid;h.say('/saved');await h.drain();assert.notEqual(h.current().mid,before);

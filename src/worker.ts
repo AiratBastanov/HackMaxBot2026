@@ -1,8 +1,8 @@
 import type { Config } from './config.js';
 import type { AcceptedEvent } from './contracts.js';
-import { MaxError, deliveryAllowed, type MaxOperation, type MaxTransport } from './max.js';
+import { MaxError, deliveryAllowed, payloadShape, type MaxOperation, type MaxTransport } from './max.js';
 import { Storage } from './storage.js';
-import { canSend, processProbe } from './probe.js';
+import { canSend, contactReason, processProbe } from './probe.js';
 import { Catalog } from './culture/catalog.js';
 import { getState, processCulture, enterProbeRoute } from './culture/flow.js';
 import { queueReconciliation, prepareScreenOperation, completeScreenOperation, failedScreenOperation } from './screens.js';
@@ -53,12 +53,13 @@ export class Worker {
             enterProbeRoute(this.store,event,now);
             this.store.db.prepare('DELETE FROM flow_actions WHERE actor=?').run(event.actor);
             this.store.db.prepare("UPDATE outbox SET status='STALE',result='ROUTE_CHANGED',finished_at=? WHERE actor=? AND status='PENDING' AND flow_revision IS NOT NULL").run(now,event.actor);
-          } else if (result === 'FLOW_ACCEPTED') {
+          } else if (['FLOW_ACCEPTED','FLOW_BOOKMARK_CREATED','FLOW_BOOKMARK_EXISTS'].includes(result)) {
             this.store.db.prepare("UPDATE probes SET state='SUPERSEDED' WHERE actor=? AND state<>'COMPLETE'").run(event.actor);
           }
           this.store.finishInbox(row.id, result, now);
         }).immediate();
-        this.report({ operation: 'inbox_processed', result: (this.store.db.prepare('SELECT result FROM inbox WHERE id=?').get(row.id) as {result:string}).result });
+        const result=(this.store.db.prepare('SELECT result FROM inbox WHERE id=?').get(row.id) as {result:string}).result;
+        this.report({ operation: 'inbox_processed', result,...(result==='CONTACT_UNAVAILABLE'?{contactReason:contactReason(this.store.contact((JSON.parse(row.payload) as AcceptedEvent).actor))}:{}) });
       } catch {
         const attempts = row.attempts + 1;
         this.store.db.prepare("UPDATE inbox SET attempts=?,status=?,result=?,finished_at=? WHERE id=?")
@@ -84,7 +85,7 @@ export class Worker {
         this.store.finishOutbox(row.id, 'SUPPRESSED_TESTER', 'NOT_ADMITTED', now);
       } else if (this.store.getMeta('auth_blocked') === 'true') {
         this.store.finishOutbox(row.id, 'FAILED_AUTH', 'AUTH_BLOCKED', now);
-      } else if (!canSend(this.store.contact(row.actor))) {
+      } else if (!canSend(this.store.contact(row.actor)) && !(row.purpose==='culture_erasure'&&!this.store.contact(row.actor))) {
         this.store.finishOutbox(row.id, 'SUPPRESSED_CONTACT', 'CONTACT_UNAVAILABLE', now);
       } else {
         let operation = JSON.parse(row.payload) as MaxOperation;
@@ -113,7 +114,10 @@ export class Worker {
             if (row.purpose === 'question' && result.mid && probe && finished < probe.expires_at) {
               this.store.db.prepare("UPDATE probes SET question_mid=?,state='WAITING_REPLY' WHERE id=? AND state='QUESTION_PENDING'").run(result.mid, probe.id);
             }
-            if(operation.forgetAfterSend)this.store.erasePersonal(row.actor,finished);
+            if(operation.forgetAfterSend) {
+              if(row.purpose==='culture_erasure')this.store.forgetErasureResponse(row.id,finished);
+              else this.store.erasePersonal(row.actor,finished);
+            }
           }).immediate();
           this.report({ operation: operation.method, purpose:row.purpose,result: result.simulated ? 'SIMULATED' : 'MAX_ACCEPTED', attempts: row.attempts + 1 });
         } catch (error) {
@@ -125,14 +129,20 @@ export class Worker {
             const ambiguous = ['MALFORMED', 'SERVER', 'TIMEOUT_AMBIGUOUS', 'TRANSPORT_AMBIGUOUS', 'CANCELLED'].includes(e.kind);
             failedScreenOperation(this.store,row,operation,e,finished,ambiguous);
             if (e.kind === 'AUTH') this.store.setMeta('auth_blocked', 'true');
+            if(e.kind==='RECIPIENT_UNAVAILABLE')this.store.db.prepare('UPDATE contacts SET access_mask=4,access_ts=?,updated_at=? WHERE actor=? AND access_mask=1 AND access_ts<=?')
+              .run(finished,finished,row.actor,now);
             if (e.kind === 'RATE_LIMIT' && row.attempts + 1 < 3 && nextAt < row.expires_at) {
               this.store.db.prepare("UPDATE outbox SET status='PENDING',result='RATE_LIMIT',http_status=429,next_at=? WHERE id=?").run(nextAt, row.id);
             } else {
               this.store.finishOutbox(row.id, ambiguous ? 'UNKNOWN_RESULT' : `FAILED_${e.kind}`, e.kind, finished, e.status);
             }
           }).immediate();
-          this.report({ operation: operation.method, purpose:row.purpose,errorClass: e.kind, status: e.status, attempts: row.attempts + 1 });
-          if(operation.forgetAfterSend)this.store.db.transaction(()=>this.store.erasePersonal(row.actor,finished)).immediate();
+          this.report({ operation: operation.method, purpose:row.purpose,errorClass: e.kind, status: e.status, attempts: row.attempts + 1,
+            correlation:`outbox-${row.id}`,providerCode:e.providerCode,payload:payloadShape(operation) });
+          if(operation.forgetAfterSend)this.store.db.transaction(()=>{
+            if(row.purpose==='culture_erasure')this.store.forgetErasureResponse(row.id,finished);
+            else this.store.erasePersonal(row.actor,finished);
+          }).immediate();
         }
       }
     }

@@ -54,7 +54,7 @@ test('R08-02: Назад при редактировании даты/време
   for(const [field,custom,choice] of [['Дата','Другая дата','Завтра'],['Время','Другое время','12:00–18:00'],['Бюджет','Другая сумма','До 500 ₽']]) {
     await d.click(field!);await d.click(custom!);const token=state(d).input.token;await d.click('Назад');await d.click(custom!);
     await d.say(`${token} 500`);assert.equal(state(d).stage,'input');assert.match(screen(d),/код.*ниже|Код ввода устарел|Исправьте ответ/i);
-    await d.click('Назад');await d.click(choice==='Завтра'?d.dateLabel('Завтра'):choice!);assert.equal(state(d).stage,'summary');assert.equal(state(d).optIn,false);
+    await d.click('Назад');await d.click(choice==='Завтра'?d.dateLabel('Завтра'):choice!);assert.equal(state(d).stage,'summary');assert.equal(state(d).optIn,true);
   }
 });
 
@@ -82,7 +82,7 @@ test('R08-04: текущее подтверждение стирания дох�
   const previous=(d.runtime.store.db.prepare('SELECT max(id) n FROM outbox').get() as any).n;
   await d.press(confirm,ACTOR,'erase-current');await d.press(confirm,ACTOR,'erase-current');
   assert.equal(d.operations.filter(o=>o.method==='answers'&&o.callbackId==='erase-current').length,1);
-  assert.equal(count(d),0);assert.equal(count(d,OTHER),1);assert.equal(state(d).cards.length,0);assert.equal(getState(d.runtime.store,OTHER)!.data,otherState);
+  assert.equal(count(d),0);assert.equal(count(d,OTHER),1);assert(!getState(d.runtime.store,ACTOR));assert.equal(getState(d.runtime.store,OTHER)!.data,otherState);
   assert.equal((d.runtime.store.db.prepare('SELECT count(*) n FROM outbox WHERE actor=? AND id<=? AND (payload IS NOT NULL OR finished_at IS NULL)').get(ACTOR,previous) as any).n,0);
   await d.press(oldSave);assert.equal(count(d),0);
   await d.say('/start');await chooseDefaults(d);await d.click('Подробнее 1');await d.click('Сохранить');await d.press(confirm);assert.equal(count(d),1);
@@ -96,7 +96,7 @@ test('R08-04: semantic false у текущего erasure ACK не станови
   const max=new LiveMax(config,(async(u:unknown)=>{calls.push(String(u));return new Response('{"success":false}');}) as typeof fetch);
   const worker=new Worker(d.runtime.store,config,max,()=>d.now,undefined,d.catalog);await worker.tick();
   assert.equal(calls.length,1);assert.match(calls[0]!,/answers\?callback_id=erase-semantic/);
-  assert.equal((d.runtime.store.db.prepare("SELECT status FROM outbox WHERE purpose='culture_answer' ORDER BY id DESC LIMIT 1").get() as any).status,'FAILED_SEMANTIC');
+  assert.equal((d.runtime.store.db.prepare("SELECT status FROM outbox WHERE purpose='culture_erasure' AND result='SEMANTIC' ORDER BY id DESC LIMIT 1").get() as any).status,'FAILED_SEMANTIC');
 });
 
 test('R08-01: отсутствующий адрес явно неизвестен и остаётся таким после сохранения',async t=>{

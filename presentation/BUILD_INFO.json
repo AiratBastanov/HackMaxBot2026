@@ -1,0 +1,32 @@
+{
+  "reviewed_application_commit": "32127a01e126658599e0da4d0ca4de59af52752a",
+  "date": "2026-09-27",
+  "python": "3.12",
+  "pymupdf": "1.26.3",
+  "fonts": [
+    {
+      "name": "Segoe UI Regular",
+      "file": "segoeui.ttf",
+      "sha256": "8134dbcd09e7b123c9a7f229d49cffbcb01352cc72ea5e1076b65d0dca9f73cd"
+    },
+    {
+      "name": "Segoe UI Bold",
+      "file": "segoeuib.ttf",
+      "sha256": "aeb9e4a6ec5cc59f4d72df8189032d7dbb28f45161cf1552174818b5465dac4e"
+    }
+  ],
+  "inputs_sha256": {
+    "slides.json": "83b0bf0af6a29a15eba15bea4e341890b11380f91f795fb98eb4cb8371c3fc77",
+    "render.py": "98a7753746fc940c290f3e750092b37d2de95630c78e1d876f13f246e6d2b061",
+    "requirements.txt": "fb5035665776a424414afeb287a25fc96a56a9defdaae3adc69b48c0852cc290"
+  },
+  "outputs_sha256": {
+    "cultural-plan.pdf": "9a07b28211d5be2eff95623e3e16354fedc920f5802105b5029b087b464accc3",
+    "cultural-plan-submission-preview.pdf": "a5a7770457f938557ed1eba50a79e7fbe507b49db9308b99e293b3fb651e68fb"
+  },
+  "pages": {
+    "product": 13,
+    "submission": 14
+  },
+  "identical_product_pages": 13
+}

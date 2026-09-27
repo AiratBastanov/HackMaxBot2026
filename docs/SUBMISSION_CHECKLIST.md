@@ -10,10 +10,10 @@
 | C05: применимая HTTP-поверхность, девять групп DATA-API | [OpenAPI 3.1](../openapi.json), [DATA-API](../DATA-API.yaml); host/schema организатора не выдуманы |
 | Повторяемые входные данные и проверки | [синтетический каталог](../src/culture/stage4-fixture.ts), [MAX fixtures](../tests/fixtures.ts), [public tests](../tests/public-access.test.ts) |
 | Реальные данные/источники | [инвентаризация](SOURCE_INVENTORY.md), [active snapshot](../catalog/real/active.json), [coverage](evidence/public-handoff/coverage.json) |
-| Презентация | [PDF](../presentation/cultural-plan.pdf), [редактируемый источник](../presentation/slides.json), [генератор](../presentation/render.py) |
+| Презентация | [Продуктовый PDF, 13 страниц](../presentation/cultural-plan.pdf), [безопасный предпросмотр сдачи, 14 страниц](../presentation/cultural-plan-submission-preview.pdf), [источник](../presentation/slides.json), [сборка и закрытый первый лист](../presentation/README.md) |
 | Приватность и сторонние компоненты | [уведомление](PRIVACY.md), [notices](../THIRD_PARTY_NOTICES.md) |
 | Закрытый первый слайд/доступ | [отдельный шаблон](PRIVATE_HANDOFF_TEMPLATE.md), НЕ ЗАПОЛНЕНО / НЕ ОТПРАВЛЕНО |
 | Проверенный архив | `scripts/organizer-package.py`, VERSION.json + MANIFEST.sha256 + SHA-256 архива |
 | Результат/границы | [квитанция 21](pivot/21_PUBLIC_ACCESS_CATALOG_AND_HANDOFF.md) |
 
-Открытые поля релиза: команда/оператор и контакт; HTTPS-хост/DNS и доступ; период оценки; закрытая передача доступа; официальный schema_version DATA-API, если организаторы его требуют. Новые наблюдения MAX mobile/web отложены пользователем; это отдельный пробел внешней проверки. Ни размещение, ни регистрация подписки, ни отправка заявки/файлов организаторам в задаче не выполнялись.
+Участники указаны в презентации: Садыков Булат, Бастанов Айрат, Белова Маргарита. Открытые поля релиза: оператор и контакт; HTTPS-хост/DNS и доступ; период оценки; закрытая передача доступа; официальный schema_version DATA-API, если организаторы его требуют. Предпросмотр сохраняет обязательные технические поля, но не завершает закрытую передачу. Новые наблюдения MAX mobile/web отложены пользователем; это отдельный пробел внешней проверки. Ни размещение, ни регистрация подписки, ни отправка заявки/файлов организаторам в задаче не выполнялись.

@@ -1,4 +1,15 @@
 import { cities, cityDate, cityInstant, type CityKey } from '../data/cities.js';
+import type { Party } from '../data/contract.js';
+import type { DatePreference, TimePreference } from '../data/temporal.js';
+
+type CommonDraft={budget:number|null;category:string|null;city?:CityKey;party?:Party;budgetBasis?:'PARTY_TOTAL'};
+export type Draft=CommonDraft & {date:DatePreference;time:TimePreference};
+export type LegacyDraft=CommonDraft & {date:string;from:string;until:string};
+export function migrateDraft(d:Draft|LegacyDraft):Draft {
+  if(typeof d.date!=='string')return d as Draft;
+  const {date,from,until,...rest}=d as LegacyDraft;
+  return {...rest,date:{mode:'SPECIFIC',date},time:{mode:'SPECIFIC',from,until}};
+}
 
 // Единственный словарь предлагаемых тем. Тип события берётся отдельно из фактов.
 export const themeLabels = {exhibition:'Выставки',theater:'Театр',concert:'Концерты',workshop:'Занятия',tour:'Экскурсии'} as const;
@@ -17,9 +28,10 @@ export function visitWindow(d:{date:string;from:string;until:string;city?:CityKe
   const timezone=cities[d.city??'kzn'].timezone,endDate=d.until<d.from?nextDate(d.date):d.date;
   return {start:cityInstant(d.date,d.from,timezone),end:cityInstant(endDate,d.until,timezone),endDate};
 }
-export function timeProblem(value:string,date:string,now:number,city:CityKey):string|null {
+export function timeProblem(value:string,date:string|DatePreference,now:number,city:CityKey):string|null {
   if(!/^([01]\d|2[0-3]):[0-5]\d-([01]\d|2[0-3]):[0-5]\d$/.test(value)||value.slice(0,5)===value.slice(6))
     return 'Нужен интервал ЧЧ:ММ-ЧЧ:ММ с разными началом и концом. Минуты: 00–59, часы: 00–23.';
+  if(typeof date!=='string') {if(date.mode==='ANY')return null;date=date.date;}
   const problem=dateProblem(date,now,city);if(problem)return problem;
   const [from,until]=value.split('-') as [string,string];
   if(until<from&&!calendarDate(nextDate(date)))return 'Дата окончания выходит за формат ГГГГ-ММ-ДД. Выберите окончание в пределах выбранной даты.';

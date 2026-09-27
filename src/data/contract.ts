@@ -142,6 +142,8 @@ export function validateSnapshot(value: unknown): Snapshot {
 }
 
 export const querySchema = z.object({ version: z.literal(2).optional(), city: cityKeySchema, timezone: timezoneSchema.optional(), start: instant, end: instant,
+  // Границы местного дня ограничивают начало сеанса, но не его опубликованное окончание.
+  timeMode: z.literal('ANY').optional(),
   party: partySchema.optional(), budgetBasis: z.enum(['PARTY_TOTAL', 'SINGLE_ADULT']).optional(),
   budgetRub: z.number().nonnegative().nullable(), category: z.string().nullable(), zone: z.string().nullable(),
   kind: z.enum(['ANY', 'TIMED_SESSION', 'FLEXIBLE_VISIT']),

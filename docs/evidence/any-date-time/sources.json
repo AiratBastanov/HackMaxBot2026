@@ -1,0 +1,133 @@
+{
+  "baseline": "a356cfd49d50ccf7889fae1bc45357cc2db2057a",
+  "encoding": "UTF-8, LF",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 25045,
+      "sha256": "4b3779693c6524ef8bb06fe9b98d3cbf55c02344abceed6e89ad27ecbfd64d75",
+      "baselineSha256": "b73c5d6dc40e7da9856c8bdd9245f87ee612faaa5ff29319d7bbb16a93697c18"
+    },
+    {
+      "path": "src/culture/bookmark.ts",
+      "bytes": 8953,
+      "sha256": "9354fb4827c03bce73bdddf3e6846f15c7be8603425035246197c3dfea858a6b",
+      "baselineSha256": "cdb848ff2885893830302913ef09a3d11b265c901c097d72823838f2e494145c"
+    },
+    {
+      "path": "src/culture/card.ts",
+      "bytes": 21360,
+      "sha256": "c754bcda3aa2f6f3a5466683413b63a34da7315a50e9d50673b76e248399d65b",
+      "baselineSha256": "ef50dfaa92b23549ce1237ecdc46dc0be7fd87830085c2d9d43cfd07a80e56fd"
+    },
+    {
+      "path": "src/culture/flow.ts",
+      "bytes": 45514,
+      "sha256": "1b7b76ae8a4a61625789311d7beffcbea28b1e8bb041c6c05c8f48a8beedab41",
+      "baselineSha256": "492bd224e439b459637ad7113a2a1c843b8f8a3d57874fbd3f69bb8435aa46bc"
+    },
+    {
+      "path": "src/culture/preferences.ts",
+      "bytes": 3360,
+      "sha256": "af4e2434efadb601d2ec0c6bbd717869a06383690d7bfdd7481d0a9de93af4c5",
+      "baselineSha256": "97f0be02db4b618d56554a29e8cb5d2cd6edf6131dccfa17ac0e5f8e6b2a7ddc"
+    },
+    {
+      "path": "src/data/contract.ts",
+      "bytes": 13556,
+      "sha256": "f6ca4fbad4388110d80c78a439fc38dfe04c3950cf44cc4f41c5d9303995c001",
+      "baselineSha256": "6d7a009de35b6d9daca2140bb58533080d2099085589e19694f81a145fbf2c83"
+    },
+    {
+      "path": "src/data/select.ts",
+      "bytes": 23815,
+      "sha256": "47f9e925488861328919c85d60bfe581fa9b02885eec2f3ab52dd0c3eec43e18",
+      "baselineSha256": "7155ee1983be9dec0949c0a0e70bb959f83690567d00fd59f2ef3b213ef5b5a4"
+    },
+    {
+      "path": "src/data/temporal.ts",
+      "bytes": 4401,
+      "sha256": "0d9568edaddc1c955c790601aeb18d726c3c90dc699f6a01c307d721b0667627",
+      "baselineSha256": null
+    },
+    {
+      "path": "tests/flow-any-date-time.test.ts",
+      "bytes": 17560,
+      "sha256": "9c7f37b55bab568335acfd076d9aae8a94492f73d82c7dcceb62a6bf6d7b06d6",
+      "baselineSha256": null
+    },
+    {
+      "path": "tests/flow-copy-date.test.ts",
+      "bytes": 11074,
+      "sha256": "071de5777c9f49a3dbcd25c8bcc0385de55fa151a1d3c668a1f7d4a9c2575614",
+      "baselineSha256": "8e5c64a48bd3614174036e7087adf172a6e27fd657f61c632969562a9b6b7741"
+    },
+    {
+      "path": "tests/flow-corrections.test.ts",
+      "bytes": 23734,
+      "sha256": "f90893b280e76945bf870e41f7a4055628ba09bed37d87028e68b0fce749d438",
+      "baselineSha256": "21b47b33163b8f84a129ac8dd0121d8212d41cc20e0e2aa4a5f2fb7d289de924"
+    },
+    {
+      "path": "scripts/any-date-time-checks.mjs",
+      "bytes": 1696,
+      "sha256": "231a96e37b8c75190f6c047245e8ffc9528e375c95854002526423c2eab8fbd1",
+      "baselineSha256": null
+    },
+    {
+      "path": "scripts/any-date-time-container.mjs",
+      "bytes": 3034,
+      "sha256": "a339343f44e3acbcabd1a75a25797845ad61300aae11da7888dc783e0fff86eb",
+      "baselineSha256": null
+    },
+    {
+      "path": "scripts/any-date-time-scenario.ts",
+      "bytes": 4665,
+      "sha256": "01bb3bea25984bcfb254f314f46ecd9ddfba340404302714cfe9630f7146b0cf",
+      "baselineSha256": null
+    },
+    {
+      "path": "scripts/any-date-time-walkthrough.ts",
+      "bytes": 1271,
+      "sha256": "ac504dc01b6e00ffc303a69abf43828acc0398f96a6ceff4efcdd1a7e63a2d4d",
+      "baselineSha256": null
+    },
+    {
+      "path": "scripts/package-any-date-time.py",
+      "bytes": 2905,
+      "sha256": "be0e4d836410bce6b630dd95e55e7492bd7eff6f9d49c2abe4fe70083c87dd7c",
+      "baselineSha256": null
+    },
+    {
+      "path": "docs/verification/ANY_DATE_TIME.md",
+      "bytes": 11319,
+      "sha256": "5524e1e88d6b9d6a24cb91c316e7b22787f7508cc6d3a3c5f765d63b69d0698e",
+      "baselineSha256": null
+    },
+    {
+      "path": "docs/evidence/any-date-time/walkthrough.md",
+      "bytes": 7084,
+      "sha256": "9c1ce28a4d889f3b43326d64880f59dd1d658a1749b08cab342f666308b31501",
+      "baselineSha256": null
+    }
+  ],
+  "excludes": [
+    "secrets",
+    "runtime",
+    "databases",
+    "raw logs",
+    "unrelated user work",
+    "full-project archives"
+  ],
+  "metadataOutsidePayload": [
+    "docs/evidence/any-date-time/sources.json",
+    "docs/evidence/any-date-time/verification.json"
+  ],
+  "delta": {
+    "path": ".review/any-date-time/changed-source-a356cfd.zip",
+    "payloadFiles": 18,
+    "bytes": 81585,
+    "sha256": "865e842bd46a7838eb1611aa1561e16a445e4c980deba47ada09963eb04acf9e",
+    "crc": "PASS"
+  }
+}

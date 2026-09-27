@@ -89,7 +89,18 @@ export function currentBookmark(saved:Card,catalog:Catalog,now:number):BookmarkV
     return unavailable('Событие, сеанс или площадка изменились. Прежнюю закладку нельзя сопоставить с ними. Выполните новый подбор.');
   const q={...saved.query,start:old?.from??saved.query.start,end:old?.until??saved.query.end};
   const checked=assess(e,o,venue,q,now,s.freshnessHours);
+  if(saved.proposedVisit&&checked.match&&old?.from&&old.until&&
+    (Date.parse(checked.match.from)!==Math.max(now,Date.parse(old.from))||Date.parse(checked.match.until)!==Date.parse(old.until))) {
+    checked.hard.push('OUTSIDE_WINDOW');delete checked.match;
+    const predicate=checked.predicates.find(p=>p.name==='time')!;predicate.state='MISMATCH';predicate.detail=reasonText.OUTSIDE_WINDOW!;
+    checked.view!.checkAtSource.push('Не соответствует: '+predicate.detail);
+  }
   const current=projectCard(catalog,saved.query,checked.match??checked.view!);
+  if(saved.proposedVisit) {
+    current.proposedVisit=true;
+    // Обновляются условия, а выбранная дата/интервал остаются историческим выбором.
+    if(current.visit&&old) {current.visit.from=old.from;current.visit.until=old.until;}
+  }
   const before=conditions(saved),after=conditions(current);
   const changed=(Object.keys(before) as (keyof typeof before)[]).filter(k=>digest(before[k])!==digest(after[k]));
   const expired=now>=Date.parse(q.end);

@@ -6,6 +6,7 @@ import { assessParty, type PartyAssessment } from '../data/party.js';
 import { snapshotDigest, type DisplayRef } from '../data/source-policy.js';
 
 export type Card = { identity: string; eventId: string; occurrenceId: string | null; title: string;
+  proposedVisit?:true;
   // Необязательные исходные категории: legacy-закладки читаются без обогащения.
   categories?: string[];
   source: { label: string; url: string }; kind: 'STRICT' | 'UNCERTAIN'; facts: string[]; unknown: string[];
@@ -102,10 +103,12 @@ function schedule(c:Card,includeTimezone=true,includeVisit=true) {
   const v=c.visit!,day=cityDate(v.from??c.query.start,zone(c));
   const suffix=includeTimezone?' ('+zoneLabel(zone(c))+')':'';
   const end=v.until?(cityDate(v.until,zone(c))!==day?displayDate(cityDate(v.until,zone(c)))+' · ':'')+at(c,v.until):'окончание неизвестно';
+  if(c.occurrence?.kind==='TIMED_SESSION'&&!v.from)return '📅 Дата и начало сеанса неизвестны; окончание не подтверждено.';
   if(c.occurrence?.kind==='TIMED_SESSION') return (includeVisit?'📅 '+displayDate(day)+' · ':'')+'Сеанс: '+(v.from?at(c,v.from):'начало неизвестно')+'–'+end+suffix;
   if(c.occurrence?.kind!=='FLEXIBLE_VISIT') return '📅 Время посещения неизвестно';
+  if(c.proposedVisit&&!v.from)return '📅 Посещение требует уточнения: дата и интервал не подтверждены.\nЧасы работы: неизвестны';
   const weekday=new Date(day+'T12:00:00Z').getUTCDay(),hours=v.opening?.filter(h=>h.weekday===weekday);
-  return (includeVisit?'📅 '+displayDate(day)+' · посещение '+(v.from&&v.until?at(c,v.from)+'–'+end:'интервал не подтверждён')+suffix+'\n':'')+'Часы работы: '+(hours?.length?unique(hours.map(h=>hh(h.open)+'–'+hh(h.close))).join('; '):'неизвестны');
+  return (includeVisit?'📅 '+displayDate(day)+(c.proposedVisit?' · предложенное посещение ':' · посещение ')+(v.from&&v.until?at(c,v.from)+'–'+end:'интервал не подтверждён')+suffix+'\n':'')+'Часы работы: '+(hours?.length?unique(hours.map(h=>hh(h.open)+'–'+hh(h.close))).join('; '):'неизвестны');
 }
 const entry=(c:Card)=>{
   const day=cityDate(c.visit!.from??c.query.start,zone(c)),weekday=new Date(day+'T12:00:00Z').getUTCDay();

@@ -1,8 +1,8 @@
-import { type Snapshot, type Query, type NormalizedEvent, type Occurrence, type Venue, type Observation, querySchema, validateSnapshot } from './contract.js';
-import { localDate } from './normalize.js';
+import { type Query, type NormalizedEvent, type Occurrence, type Venue, type Observation, querySchema, validateSnapshot } from './contract.js';
 import { sourceReviews, type SourceReview } from './reviews.js';
 import { cities, cityDate, cityInstant, localISO } from './cities.js';
 import { assessParty, partyPrice, type PartyAssessment } from './party.js';
+import { searchQuerySchema, outsideCoverage, plannedQueries } from './temporal.js';
 
 export const reasonText: Record<string, string> = {
   OTHER_CITY: 'В событии или площадке указан другой город.', VENUE_UNKNOWN: 'Не подтверждена физическая площадка в выбранном городе.',
@@ -20,12 +20,12 @@ export const reasonText: Record<string, string> = {
   CANCELLED: 'Событие отмечено отменённым.', FACTS_STALE: 'Превышен срок годности применимых фактов либо время их получения неизвестно.',
   KIND_UNKNOWN: 'Режим посещения не установлен.', UNUSABLE_RECORD: 'Нет содержательного названия или прямой ссылки на материал.',
 };
-export type Recommendation = { eventId: string; occurrenceId: string; title: string; kind: Occurrence['kind'];
+export type Recommendation = { resolvedQuery?:Query; eventId: string; occurrenceId: string; title: string; kind: Occurrence['kind'];
   from: string; until: string; lastEntry: string | null; source: { label: string; url: string }; reasons: string[];
   price: NormalizedEvent['price']; warnings: string[]; eventRetrievedAt: string;
   eventObservations: Observation[]; venueObservations: Observation[]; partyPrice: PartyAssessment };
 export type Predicate = { name: string; state: 'MATCH' | 'MISMATCH' | 'UNKNOWN'; detail: string };
-export type Candidate = { eventId: string; occurrenceId: string | null; title: string;
+export type Candidate = { resolvedQuery?:Query; eventId: string; occurrenceId: string | null; title: string;
   source: { label: string; url: string }; predicates: Predicate[]; factsMatched: string[]; usefulFacts: string[];
   reasons: string[]; checkAtSource: string[]; price: NormalizedEvent['price'];
   time: { from: string | null; until: string | null; lastEntry: string | null; assessment: Predicate };
@@ -85,7 +85,7 @@ export function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Ven
     if (start !== null && (start < lower || start >= upper)) a.hard.push('OUTSIDE_WINDOW');
     if (o.start) a.facts.push(`Начало: ${localISO(o.start, zone).slice(0,16).replace('T',' ')}; ${end === null ? 'окончание не указано' : `окончание: ${localISO(new Date(end).toISOString(),zone).slice(11,16)}`} (${zone}).`);
     if (start === null || end === null || end <= start) a.unknown.push('TIME_UNKNOWN');
-    else if (end > upper) a.hard.push('OUTSIDE_WINDOW');
+    else if (q.timeMode !== 'ANY' && end > upper) a.hard.push('OUTSIDE_WINDOW');
     else { from = o.start; until = new Date(end).toISOString(); }
   } else if (o?.kind === 'FLEXIBLE_VISIT') {
     if ((!o.activeFrom && !o.startless) || (!o.activeThrough && !o.endless)) a.unknown.push('PERIOD_UNKNOWN');
@@ -111,7 +111,7 @@ export function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Ven
     }
   } else a.unknown.push(o ? 'TIME_UNKNOWN' : 'NO_OCCURRENCES');
   predicate('time', ['TIME_UNKNOWN', 'PERIOD_UNKNOWN', 'OPENING_UNKNOWN', 'OUTSIDE_WINDOW', 'NO_OCCURRENCES'],
-    o?.kind === 'TIMED_SESSION' ? 'Сеанс целиком в заданном окне по опубликованному времени.' : 'Есть пересечение окна с опубликованными часами посещения.');
+    o?.kind === 'TIMED_SESSION' ? q.timeMode==='ANY'?'Сеанс начинается в выбранный местный день; окончание опубликовано.':'Сеанс целиком в заданном окне по опубликованному времени.' : 'Есть пересечение окна с опубликованными часами посещения.');
   if (o?.issues.includes('WEEKDAY_CONVENTION_UNVERIFIED')) a.facts.push('Числовые дни structured schedules сохранены; соглашение о днях недели не подтверждено.');
   const fieldTime = (rows: Observation[], field: string, fallback: string | null) =>
     rows.length ? rows.filter(r => r.fields.includes(field)).at(-1)?.retrievedAt ?? null : fallback;
@@ -144,7 +144,7 @@ export function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Ven
     a.candidate=a.view;
     return a;
   }
-  const reasons = [o.kind === 'TIMED_SESSION' ? 'Сеанс целиком в заданном окне по опубликованному времени.'
+  const reasons = [o.kind === 'TIMED_SESSION' ? a.predicates.find(p=>p.name==='time')!.detail
     : 'Есть пересечение окна с опубликованными часами посещения.', `Площадка с опубликованным адресом; город: ${cities[q.city].name}.`];
   if (q.budgetRub !== null) reasons.push(`${partyPrice(cost)}, в пределах ${q.budgetRub} ₽.`);
   if (q.category) reasons.push(`Подтверждена категория: ${q.category}.`);
@@ -162,7 +162,8 @@ export function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Ven
 // Чистая функция: только snapshot/query/clock. Без сети, БД и неявного Date.now().
 export function select(snapshotInput: unknown | null, queryInput: unknown, clock: Date, allowSynthetic = false, includeUncertain = false,
   reviews: readonly SourceReview[] = sourceReviews) {
-  const query = querySchema.parse(queryInput), time = clock.getTime();
+  const search = queryInput&&typeof queryInput==='object'&&'date' in queryInput?searchQuerySchema.parse(queryInput):null;
+  const concrete = search?null:querySchema.parse(queryInput),query=search??concrete!,time = clock.getTime();
   if (!Number.isFinite(time)) throw new Error('INVALID_CLOCK');
   const empty = { recommendations: [] as Recommendation[], strictTotal: 0,
     uncertain: [] as Candidate[], uncertainTotal: 0, candidateMode: includeUncertain, excluded: {} as Record<string, number>,
@@ -174,7 +175,7 @@ export function select(snapshotInput: unknown | null, queryInput: unknown, clock
   if (snapshot.outcome === 'FAILED') return { ...empty, status: 'SOURCE_UNAVAILABLE' };
   if (time < Date.parse(snapshot.retrievedAt)) return { ...empty, status: 'SOURCE_STALE' };
   const catalogStale = time < Date.parse(snapshot.retrievedAt) || time - Date.parse(snapshot.retrievedAt) > snapshot.freshnessHours * 3600000;
-  if (Date.parse(query.start) < Date.parse(snapshot.scope.start) || Date.parse(query.end) > Date.parse(snapshot.scope.end)
+  if ((search?outsideCoverage(search,snapshot):Date.parse(concrete!.start) < Date.parse(snapshot.scope.start) || Date.parse(concrete!.end) > Date.parse(snapshot.scope.end))
     || (query.category !== null && !snapshot.scope.categories.includes(query.category)))
     return { ...empty, status: 'OUTSIDE_SNAPSHOT_SCOPE' };
   const venues = new Map(snapshot.venues.map(v => [v.id, v]));
@@ -183,8 +184,17 @@ export function select(snapshotInput: unknown | null, queryInput: unknown, clock
     if (reviews.some(r => r.eventId === e.id && r.status === 'QUARANTINED')) {
       excluded.SOURCE_IDENTITY_CONFLICT = (excluded.SOURCE_IDENTITY_CONFLICT ?? 0) + 1; continue;
     }
-    const assessments = e.occurrences.length ? e.occurrences.map(o => assess(e, o, o.venueId ? venues.get(o.venueId) : undefined, query, time,snapshot.freshnessHours))
-      : [assess(e, undefined, undefined, query, time,snapshot.freshnessHours)];
+    const assessments:Assessment[]=[];
+    for(const o of e.occurrences.length?e.occurrences:[undefined]) {
+      for(const q of search?plannedQueries(search,snapshot,o,time):[concrete!]) {
+        const a=assess(e,o,o?.venueId?venues.get(o.venueId):undefined,q,time,snapshot.freshnessHours);
+        if(search)for(const r of [a.match,a.candidate])if(r)r.resolvedQuery=q;
+        assessments.push(a);
+        // Для одного расписания остальные факты не меняются от перебора дней.
+        // Первый пригодный вариант сохраняется до общего ранжирования/лимита.
+        if(a.match||a.candidate)break;
+      }
+    }
     const best = assessments.flatMap(a => a.match ? [a.match] : []).sort(compare)[0];
     if (best) { matches.push(best); continue; } // Одно событие — максимум одна позиция.
     const plausible = assessments.flatMap(a => a.candidate ? [a.candidate] : []).sort(compareCandidates);

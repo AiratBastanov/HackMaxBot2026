@@ -35,7 +35,7 @@ test('R20 даты: реальные action-аргументы, обе зоны,
     const d=await setup(t,row.clock);await toDates(d,city);
     const action=dateAction(d,relative),expected=row[city][index]!;
     assert.equal(action.date,expected);assert.equal(action.label,relative+' · '+expected.slice(8)+'.'+expected.slice(5,7));
-    await d.press(action.payload);assert.equal(state(d).draft.date,expected);
+    await d.press(action.payload);assert.deepEqual(state(d).draft.date,{mode:'SPECIFIC',date:expected});
     const natural=new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',timeZone:'UTC'}).format(new Date(expected+'T12:00:00Z'));
     assert(text(d).includes(natural));assert(text(d).includes(cities[city].name));assert.match(text(d),city==='kzn'?/UTC\+3/:/UTC\+5/);
     const from=relative==='Сегодня'?'23:30':'12:00',until=relative==='Сегодня'?'23:59':'18:00';
@@ -56,7 +56,7 @@ test('R20 полночь: отложенное «Завтра» сохраняе
     const d=await setup(t,clock);await toDates(d,city);const a=dateAction(d,relative),before=state(d).draft;
     d.advance(45000);await d.press(a.payload);
     if(relative==='Завтра') {
-      assert.equal(state(d).stage,'time');assert.equal(state(d).draft.date,'2027-01-01');
+      assert.equal(state(d).stage,'time');assert.deepEqual(state(d).draft.date,{mode:'SPECIFIC',date:'2027-01-01'});
       assert.match(text(d),/1 января, пт/); // прежняя кнопка не превращается во 2 января.
     } else {
       assert.equal(state(d).stage,'date');assert.deepEqual(state(d).draft,before);
@@ -69,7 +69,7 @@ test('R20 Back и edit: дата остаётся на custom-time, возвра
   const d=await setup(t);await toDates(d,'ekb');await d.click(d.dateLabel('Завтра'));
   await d.click('Другое время');assert.match(text(d),/6 апреля, сб.*Екатеринбург/);assert.match(text(d),/UTC\+5/);
   await d.click('Назад');assert.match(text(d),/6 апреля, сб/);
-  await d.click('Другая дата');assert.match(text(d),/Выбрано: 6 апреля 2030/);await d.click(d.dateLabel('Завтра'));assert.equal(state(d).editing,false);assert.equal(state(d).stage,'time');
+  await d.click('Назад');assert.match(text(d),/Выбрано: 6 апреля 2030/);await d.click(d.dateLabel('Завтра'));assert.equal(state(d).editing,false);assert.equal(state(d).stage,'time');
   await d.click('12:00–18:00');assert.equal(state(d).stage,'party');await d.click('Продолжить');await d.click('До 500 ₽');await d.click('Любая тема');
   await d.click('Время');await d.click('Другое время');assert.match(text(d),/6 апреля, сб/);await d.click('Назад');await d.click('18:00–22:00');
   assert.equal(state(d).stage,'summary');assert.equal(makeQuery(state(d).draft).start,'2030-04-06T13:00:00.000Z');

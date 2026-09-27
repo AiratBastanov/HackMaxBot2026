@@ -92,7 +92,7 @@ test('R27 дата/время через decoder: календарь без 30-�
   for(const [value,expected] of [['2030-02-30',/календарной даты нет/],['2030-04-04',/дата прошла/],['2030-13-01',/календарной даты нет/]]) {
     await d.say(token+' '+value);assert.equal(state(d).stage,'input');assert.match(text(d),expected as RegExp);
   }
-  await d.say(token+' 2040-02-29');assert.equal(state(d).draft.date,'2040-02-29');await d.click('Другое время');
+  await d.say(token+' 2040-02-29');assert.deepEqual(state(d).draft.date,{mode:'SPECIFIC',date:'2040-02-29'});await d.click('Другое время');
   await d.say(state(d).input.token+' 25:61-26:00');assert.equal(state(d).stage,'input');assert.match(text(d),/Минуты: 00–59/);
   await d.say(state(d).input.token+' 23:17-01:42');await d.click('Продолжить');await d.click('До 1000 ₽');await d.click('Экскурсии');
   assert.match(text(d),/1 марта 2040 г\. · 01:42/);const q=makeQuery(state(d).draft);assert.equal(q.start,'2040-02-29T18:17:00.000Z');assert.equal(q.end,'2040-02-29T20:42:00.000Z');

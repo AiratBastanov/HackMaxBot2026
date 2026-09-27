@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import type { Config } from '../config.js';
 import type { AcceptedEvent } from '../contracts.js';
-import { type Query, type Party, partySchema, safeLink } from '../data/contract.js';
+import { type Query, partySchema, safeLink } from '../data/contract.js';
 import { select, assess } from '../data/select.js';
 import { sourceReviews } from '../data/reviews.js';
 import { deliveryAllowed, type Button, type MaxOperation } from '../max.js';
@@ -12,12 +12,12 @@ import { type Card, projectCard, fingerprint, compact, presentationTitle, cardOv
 import { cities, cityKeySchema, cityDate, resolveCity, offsetHours, type CityKey } from '../data/cities.js';
 import { activeScreen, desireScreen } from '../screens.js';
 import { currentBookmark, bookmarkContext, alreadySaved, saveBookmark } from './bookmark.js';
-import { themeLabels, themeLabel, dateProblem, timeProblem, visitWindow, nextDate } from './preferences.js';
+import { themeLabels, themeLabel, dateProblem, timeProblem, nextDate, migrateDraft, type Draft, type LegacyDraft } from './preferences.js';
+import { dayQuery, type SearchQuery } from '../data/temporal.js';
 export type { Card } from './card.js';
 export { fingerprint } from './card.js';
 
 type Stage = 'home' | 'city' | 'party' | 'ages' | 'date' | 'time' | 'budget' | 'interest' | 'summary' | 'results' | 'detail' | 'saved' | 'bookmark' | 'input' | 'delete' | 'erase' | 'about' | 'leave';
-type Draft = { date: string; from: string; until: string; budget: number | null; category: string | null; city?: CityKey; party?: Party; budgetBasis?:'PARTY_TOTAL' };
 type InputField = 'city' | 'date' | 'time' | 'budget' | 'adults' | 'children' | 'ages';
 type State = { stage: Stage; draft: Draft; editing: boolean; optIn: boolean; cards: Card[];
   route?: 'probe';
@@ -31,17 +31,21 @@ type Bookmark = { identity: string; generation: string; data: string; saved_at: 
 const TTL = 15 * 60000;
 const label = (c: Card) => c.kind === 'STRICT' ? 'Подходит по известным условиям' : 'Нужно уточнить условия';
 const datePlus = (now: number, days: number, city: CityKey = 'kzn') => cityDate(new Date(now + days * 86400000).toISOString(),cities[city].timezone);
-const dateHeading=(s:State)=>`📅 ${displayDay(s.draft.date)} · ${cities[s.draft.city!].name}`;
+const dateChoice=(d:Draft)=>d.date.mode==='ANY'?'любая':displayDate(d.date.date);
+const dateHeading=(s:State)=>`📅 ${s.draft.date.mode==='ANY'?'Любая дата':displayDay(s.draft.date.date)} · ${cities[s.draft.city!].name}`;
 const localTimeNote=(s:State)=>`Время местное — UTC+${offsetHours(cities[s.draft.city!].timezone)}.`;
 export function getState(store: Storage, actor: string) { return store.db.prepare('SELECT * FROM flow_states WHERE actor=?').get(actor) as StateRow | undefined; }
-export function makeQuery(d: Draft): Query {
+export function makeQuery(d: LegacyDraft): Query;
+export function makeQuery(d: Draft): Query|SearchQuery;
+export function makeQuery(input: Draft|LegacyDraft): Query|SearchQuery {
+  const d=migrateDraft(input);
   const city=d.city??'kzn',timezone=cities[city].timezone;
-  const {start,end}=visitWindow(d);
-  return { version:2,city,timezone,party:partySchema.parse(d.party??{adults:1,childAges:[]}),budgetBasis:'PARTY_TOTAL',start,end,
+  const q:SearchQuery={ version:2,city,timezone,party:partySchema.parse(d.party??{adults:1,childAges:[]}),budgetBasis:'PARTY_TOTAL',date:d.date,time:d.time,
     budgetRub: d.budget, category: null, zone: null, kind: 'ANY', preferences: { categories: d.category ? [d.category] : [] } };
+  return d.date.mode==='SPECIFIC'&&d.time.mode==='SPECIFIC'?dayQuery(q,d.date.date):q;
 }
 function initial(now: number): State {
-  return { stage: 'home', draft: { city:'kzn',party:{adults:1,childAges:[]},budgetBasis:'PARTY_TOTAL',date: datePlus(now, 1), from: '12:00', until: '18:00', budget: 500, category: null }, editing: false, optIn: false, cards: [], page: 0 };
+  return { stage: 'home', draft: { city:'kzn',party:{adults:1,childAges:[]},budgetBasis:'PARTY_TOTAL',date:{mode:'SPECIFIC',date:datePlus(now,1)},time:{mode:'SPECIFIC',from:'12:00',until:'18:00'}, budget: 500, category: null }, editing: false, optIn: false, cards: [], page: 0 };
 }
 export function enterProbeRoute(store: Storage, event: AcceptedEvent, now: number) {
   const previous = getState(store,event.actor);
@@ -51,7 +55,8 @@ export function enterProbeRoute(store: Storage, event: AcceptedEvent, now: numbe
 }
 function summary(s: State) {
   const city=s.draft.city??'kzn',p=s.draft.party??{adults:1,childAges:[]};
-  return `📍 ${cities[city].name} · ${displayDate(s.draft.date)}\n${s.draft.from}–${s.draft.until<s.draft.from?displayDate(nextDate(s.draft.date))+' · ':''}${s.draft.until} (UTC+${offsetHours(cities[city].timezone)})\nПосетители: ${p.adults} взр., ${p.childAges.length} дет.${p.childAges.length?` · возраст (лет): ${p.childAges.map(a=>a===null?'не указан':String(a)).join(', ')}`:''}\nБюджет на вход для всех: ${s.draft.budget === null ? 'без лимита' : `до ${s.draft.budget} ₽`}.\nТема: ${themeLabel(s.draft.category)}.`;
+  const t=s.draft.time,time=t.mode==='ANY'?'любое':`${t.from}–${t.until<t.from?(s.draft.date.mode==='SPECIFIC'?displayDate(nextDate(s.draft.date.date))+' · ':'следующий день · '):''}${t.until}`;
+  return `📍 ${cities[city].name}\nДата: ${dateChoice(s.draft)}\nВремя: ${time} (UTC+${offsetHours(cities[city].timezone)})\nПосетители: ${p.adults} взр., ${p.childAges.length} дет.${p.childAges.length?` · возраст (лет): ${p.childAges.map(a=>a===null?'не указан':String(a)).join(', ')}`:''}\nБюджет на вход для всех: ${s.draft.budget === null ? 'без лимита' : `до ${s.draft.budget} ₽`}.\nТема: ${themeLabel(s.draft.category)}.`;
 }
 export function bookmarkLimitation(c: Card, catalog: Catalog, now: number): string | null {
   if (sourceReviews.some(r => r.eventId === c.eventId)) return 'Сведения о событии противоречат друг другу. Выберите другое событие.';
@@ -60,7 +65,7 @@ export function bookmarkLimitation(c: Card, catalog: Catalog, now: number): stri
   if (!snapshot.events.some(e => e.id === c.eventId && (!c.occurrenceId || e.occurrences.some(o => o.id === c.occurrenceId))))
     return 'События или выбранного посещения сейчас нет в каталоге. Это не подтверждение отмены. Проверьте источник.';
   if (fingerprint(catalog, c.eventId,c.query.city) !== c.fingerprint) return 'Данные изменились. Ниже условия при сохранении. Выполните новый подбор.';
-  if (now - Date.parse(c.retrievedAt) > snapshot.freshnessHours*3600000 || now >= Date.parse(c.query.end)) return 'Сохранённые условия или выбранная дата устарели. Повторите подбор и проверьте источник.';
+  if (now - Date.parse(c.retrievedAt) > snapshot.freshnessHours*3600000 || now >= Date.parse(c.visit?.until??c.query.end)) return 'Сохранённые условия или выбранная дата устарели. Повторите подбор и проверьте источник.';
   return null;
 }
 const statuses: Record<string, string> = {
@@ -80,6 +85,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
   if (event.kind === 'bot_started' && !event.homeEntry) return 'UNKNOWN_ENTRY';
   const old = getState(store, event.actor);
   let s: State = old ? JSON.parse(old.data) : initial(now);
+  s.draft=migrateDraft(s.draft);if(s.editBase)s.editBase=migrateDraft(s.editBase);
   // Прежний flow имел ровно Казань/одного взрослого. Закладки не переписываются.
   s.draft.city??='kzn';s.draft.party??={adults:1,childAges:[]};s.draft.budgetBasis??='PARTY_TOTAL';
   const revision = (old?.revision ?? 0) + 1;
@@ -88,7 +94,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
   let valid = true;
   if (event.kind === 'message_callback') {
     const action = event.flowAction ? store.db.prepare('SELECT * FROM flow_actions WHERE id=?').get(event.flowAction) as Action | undefined : undefined;
-    valid = Boolean(action && old && action.actor === event.actor && action.revision === old.revision && action.expires_at > now
+    valid = Boolean(action && action.purpose!=='dateBack' && old && action.actor === event.actor && action.revision === old.revision && action.expires_at > now
       && (!event.mid || event.mid === activeScreen(store,event.actor)?.mid)
       && (!event.chat || !activeScreen(store,event.actor) || event.chat === activeScreen(store,event.actor)?.chat)
       && event.timestamp >= old.event_ts && event.timestamp <= now + 60000 && now - event.timestamp < TTL && now - old.updated_at < TTL);
@@ -165,7 +171,6 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
       const prior:Partial<Record<Stage,Stage>>={city:'home',date:'city',time:'date',party:'time',ages:'party',budget:s.draft.party!.childAges.length?'ages':'party',interest:'budget',summary:'interest',results:'summary',detail:'results',bookmark:'saved',saved:s.savedReturn??'home',about:'home'};
       s.stage=prior[s.stage]??'home';delete s.conditionPage;break;
     }
-    case 'dateBack': s.stage='date'; break;
     case 'inputBack': s.stage = ['adults','children'].includes(s.input!.field)?'party':s.input!.field as Stage; delete s.input; break;
     case 'cityText': {
       const matches=resolveCity(event.input??'');
@@ -181,10 +186,12 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     case 'date':
       // Сохранённый ISO-аргумент: «Завтра» не пересчитывается при нажатии.
       if(dateProblem(arg,now,s.draft.city!)){s.stage='date';s.notice=dateProblem(arg,now,s.draft.city!)!;valid=false;break;}
-      s.draft.date = arg; changed('time'); break;
+      s.draft.date = {mode:'SPECIFIC',date:arg}; changed('time'); break;
+    case 'anyDate': s.draft.date={mode:'ANY'};changed('time');break;
+    case 'anyTime': s.draft.time={mode:'ANY'};changed('party');break;
     case 'time':
       if(timeProblem(arg,s.draft.date,now,s.draft.city!)){s.notice=timeProblem(arg,s.draft.date,now,s.draft.city!)!;valid=false;break;}
-      [s.draft.from, s.draft.until] = arg.split('-') as [string, string]; changed('party'); break;
+      {const [from,until]=arg.split('-') as [string,string];s.draft.time={mode:'SPECIFIC',from,until};} changed('party'); break;
     case 'partyAdjust': {
       const [field,delta]=arg.split(':'),p=structuredClone(s.draft.party!);
       if(field==='adults') p.adults+=Number(delta);else if(Number(delta)>0)p.childAges.push(null);else p.childAges.pop();
@@ -202,10 +209,10 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
       valid = Boolean(input && token === input.token && value);
       if (valid && input?.field === 'date') {
         const problem=dateProblem(value,now,s.draft.city!);valid=!problem;if(problem)s.notice=problem;
-        if (valid) { s.draft.date = value!; changed('time'); }
+        if (valid) { s.draft.date = {mode:'SPECIFIC',date:value}; changed('time'); }
       } else if (valid && input?.field === 'time') {
         const problem=timeProblem(value,s.draft.date,now,s.draft.city!);valid=!problem;if(problem)s.notice=problem;
-        if (valid) { [s.draft.from, s.draft.until] = value!.split('-') as [string, string]; changed('party'); }
+        if (valid) { const [from,until]=value.split('-') as [string,string];s.draft.time={mode:'SPECIFIC',from,until}; changed('party'); }
       } else if (valid && input?.field === 'budget') {
         valid = /^\d{1,5}$/.test(value!) && Number(value) <= 100000;
         if (valid) { s.draft.budget = Number(value); changed('interest'); }
@@ -285,12 +292,12 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     if(!choices.length)text='Данные по городам сейчас недоступны. Попробуйте позже или откройте «Мои события».';
     rows.push([button('Введите свой город','custom','city')],formNav());
   } else if (s.stage === 'date') {
-    text = `📅 На какую дату? · ${cities[s.draft.city!].name}${s.editing||purpose==='dateBack'?`\nВыбрано: ${displayDate(s.draft.date)}`:''}\n${localTimeNote(s)}`;
+    text = `📅 На какую дату? · ${cities[s.draft.city!].name}\nВыбрано: ${dateChoice(s.draft)}\n${localTimeNote(s)}\n«Любая дата» — доступные будущие и ещё возможные посещения в загруженной части афиши.`;
     const today=datePlus(now,0,s.draft.city),tomorrow=datePlus(now,1,s.draft.city),short=(d:string)=>d.slice(8,10)+'.'+d.slice(5,7);
-    rows = [[button('Сегодня · '+short(today), 'date', today), button('Завтра · '+short(tomorrow), 'date', tomorrow)], [button('Другая дата', 'custom', 'date')], formNav()];
+    rows = [[button('Сегодня · '+short(today), 'date', today), button('Завтра · '+short(tomorrow), 'date', tomorrow)], [button('Любая дата','anyDate'),button('Другая дата', 'custom', 'date')], formNav()];
   } else if (s.stage === 'time') {
     text = `${dateHeading(s)}\nВо сколько удобно?\n${localTimeNote(s)}`;
-    rows = [[button('12:00–18:00', 'time', '12:00-18:00'), button('18:00–22:00', 'time', '18:00-22:00')], [button('Другое время', 'custom', 'time')], [button('Другая дата','dateBack')], formNav()];
+    rows = [[button('12:00–18:00', 'time', '12:00-18:00'), button('18:00–22:00', 'time', '18:00-22:00')], [button('Любое время','anyTime'),button('Другое время', 'custom', 'time')], formNav()];
   } else if (s.stage === 'party') {
     const p=s.draft.party!;
     text=`Кто пойдёт?\nПосетители: ${p.adults} взр., ${p.childAges.length} дет.\nВсего до 8 человек, включая хотя бы одного взрослого. Дети — до 17 лет включительно.`;
@@ -311,14 +318,18 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     const i = s.input!;
     const formats:Record<InputField,string> = { city:'Например: Казань или Екатеринбург.',date: `${i.token} ГГГГ-ММ-ДД\nЛюбая действительная дата сегодня или в будущем. Наличие событий на неё проверим отдельно.`, time: `${i.token} ЧЧ:ММ-ЧЧ:ММ\nНапример: ${i.token} 12:35-18:10. Если конец раньше начала — окончание на следующий день; его дата появится в сводке.`, budget: `${i.token} СУММА\nЦелое число от 0 до 99999 рублей.`,
       adults:`${i.token} ЧИСЛО\nВзрослых от 1 до 8; всего до 8 посетителей.`,children:`${i.token} ЧИСЛО\nДетей от 0 до 7; всего до 8 посетителей.`,ages:`${i.token} ${s.draft.party!.childAges.map(()=>'?').join(', ')}\nЗамените ? возрастом 0–17 либо оставьте неизвестным; один возраст на ребёнка.` };
-    text = i.field==='city'?`📍 Введите название своего города.\n${formats.city}`:`${i.field==='time'?dateHeading(s)+'\n'+localTimeNote(s)+'\n':i.field==='date'?`📍 ${cities[s.draft.city!].name}\nВыбрано: ${displayDate(s.draft.date)}\n`:''}Отправьте одной строкой код и значение:\n${formats[i.field]}`;
+    text = i.field==='city'?`📍 Введите название своего города.\n${formats.city}`:`${i.field==='time'?dateHeading(s)+'\n'+localTimeNote(s)+'\n':i.field==='date'?`📍 ${cities[s.draft.city!].name}\nВыбрано: ${dateChoice(s.draft)}\n`:''}Отправьте одной строкой код и значение:\n${formats[i.field]}`;
     rows = [[button('Назад', 'inputBack'),button('В меню','home')]];
   } else if (s.stage === 'summary') {
     text = `${summary(s)}\nПоказать подходящие события?`; rows = [[button('Показать результаты', 'results')], ...editors(),[button('Назад','back')], home()];
   } else if (s.stage === 'results') {
     const q = makeQuery(s.draft), snapshot=catalog.forCity(q.city),result = select(snapshot, q, new Date(now), config.flowDataMode === 'synthetic-test', s.optIn);
     const denied=snapshot?.mode==='REAL_CATALOG'&&!catalog.usableCities(now).includes(q.city);
-    s.cards = [...result.recommendations, ...result.uncertain].map(r => projectCard(catalog, q, r)).filter(showCard);
+    s.cards = [...result.recommendations, ...result.uncertain].map(r => {
+      const c=projectCard(catalog,r.resolvedQuery??q as Query,r);
+      if('date' in q&&c.occurrence?.kind==='FLEXIBLE_VISIT')c.proposedVisit=true;
+      return c;
+    }).filter(showCard);
     text = summary(s);
     if(denied)text+='\n\nДанные сейчас недоступны: срок проверки истёк или показ не разрешён. Попробуйте позже.';
     else if (!result.recommendations.length) text += `\n\n${statuses[result.status] ?? 'Подходящих событий не найдено. Измените параметры подбора.'}`;

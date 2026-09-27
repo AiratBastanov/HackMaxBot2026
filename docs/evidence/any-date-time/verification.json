@@ -1,0 +1,243 @@
+{
+  "baseline": "a356cfd49d50ccf7889fae1bc45357cc2db2057a",
+  "result": "AUTOMATED_PASS",
+  "uniqueTests": 150,
+  "newScenarios": 8,
+  "checks": [
+    {
+      "name": "typecheck",
+      "args": [],
+      "started": "2026-09-27T19:31:32.331Z",
+      "elapsedMs": 622,
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "error": null,
+      "localLog": ".review/any-date-time/typecheck-1790537492331.log"
+    },
+    {
+      "name": "build",
+      "args": [],
+      "started": "2026-09-27T19:31:38.450Z",
+      "elapsedMs": 641,
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "error": null,
+      "localLog": ".review/any-date-time/build-1790537498450.log"
+    },
+    {
+      "name": "shared",
+      "args": [],
+      "started": "2026-09-27T19:31:44.223Z",
+      "elapsedMs": 12075,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "error": null,
+      "localLog": ".review/any-date-time/shared-1790537504223.log"
+    },
+    {
+      "name": "focused",
+      "args": [],
+      "started": "2026-09-27T19:31:44.200Z",
+      "elapsedMs": 17350,
+      "timeoutMs": 120000,
+      "exitCode": 1,
+      "error": null,
+      "localLog": ".review/any-date-time/focused-1790537504200.log"
+    },
+    {
+      "name": "typecheck",
+      "args": [],
+      "started": "2026-09-27T19:35:38.384Z",
+      "elapsedMs": 643,
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "error": null,
+      "localLog": ".review/any-date-time/typecheck-1790537738384.log"
+    },
+    {
+      "name": "build",
+      "args": [],
+      "started": "2026-09-27T19:35:39.574Z",
+      "elapsedMs": 697,
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "error": null,
+      "localLog": ".review/any-date-time/build-1790537739574.log"
+    },
+    {
+      "name": "walkthrough",
+      "args": [],
+      "started": "2026-09-27T19:35:47.063Z",
+      "elapsedMs": 1941,
+      "timeoutMs": 300000,
+      "exitCode": 0,
+      "error": null,
+      "localLog": ".review/any-date-time/walkthrough-1790537747063.log"
+    },
+    {
+      "name": "delta",
+      "args": [
+        "flow-runtime",
+        "flow-compact",
+        "flow-publication",
+        "flow-screens"
+      ],
+      "started": "2026-09-27T19:35:46.807Z",
+      "elapsedMs": 12333,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "error": null,
+      "localLog": ".review/any-date-time/delta-1790537746807.log"
+    },
+    {
+      "name": "focused",
+      "args": [],
+      "started": "2026-09-27T19:35:46.622Z",
+      "elapsedMs": 17892,
+      "timeoutMs": 120000,
+      "exitCode": 1,
+      "error": null,
+      "localLog": ".review/any-date-time/focused-1790537746622.log"
+    },
+    {
+      "name": "typecheck",
+      "args": [],
+      "started": "2026-09-27T19:36:53.161Z",
+      "elapsedMs": 659,
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "error": null,
+      "localLog": ".review/any-date-time/typecheck-1790537813161.log"
+    },
+    {
+      "name": "build",
+      "args": [],
+      "started": "2026-09-27T19:36:54.349Z",
+      "elapsedMs": 723,
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "error": null,
+      "localLog": ".review/any-date-time/build-1790537814349.log"
+    },
+    {
+      "name": "delta",
+      "args": [
+        "flow-any-date-time"
+      ],
+      "started": "2026-09-27T19:37:00.534Z",
+      "elapsedMs": 5862,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "error": null,
+      "localLog": ".review/any-date-time/delta-1790537820534.log"
+    },
+    {
+      "name": "container",
+      "args": [],
+      "started": "2026-09-27T19:37:22.329Z",
+      "elapsedMs": 13694,
+      "timeoutMs": 300000,
+      "exitCode": 0,
+      "error": null,
+      "localLog": ".review/any-date-time/container-1790537842329.log"
+    }
+  ],
+  "container": {
+    "result": "PASS",
+    "project": "maxbot-any-date-time-1790537842397",
+    "image": "maxbot-any-date-time-1790537842397:test",
+    "sourceHash": "07589779766d07312d84df170a489c24280b8bec52005330f606026c25dc844b",
+    "existingContainersUnchanged": true,
+    "simulatedMAX": true,
+    "network": "none",
+    "cleanBuildBenchmark": false,
+    "results": [
+      {
+        "name": "existing-ids",
+        "exitCode": 0,
+        "elapsedMs": 121,
+        "error": null
+      },
+      {
+        "name": "existing-state-1",
+        "exitCode": 0,
+        "elapsedMs": 60,
+        "error": null
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "elapsedMs": 11002,
+        "error": null
+      },
+      {
+        "name": "smoke",
+        "exitCode": 0,
+        "elapsedMs": 2143,
+        "error": null
+      },
+      {
+        "name": "existing-state-4",
+        "exitCode": 0,
+        "elapsedMs": 57,
+        "error": null
+      },
+      {
+        "name": "remove-disposable",
+        "exitCode": 0,
+        "elapsedMs": 211,
+        "error": null
+      }
+    ]
+  },
+  "walkthrough": {
+    "result": "PASS",
+    "transport": "SIMULATED_MAX",
+    "frames": 9,
+    "restart": true,
+    "concreteSavedVisit": true,
+    "human": "NOT_RUN"
+  },
+  "fixtureCorrections": [
+    "FREE ? ????????? ????? ????????? ?? EXACT",
+    "validUntil ????????? retrievedAt + freshnessHours",
+    "??? ????????? ??????? ????? ?????????? ??????",
+    "Hash review ???????? ????? validateSnapshot"
+  ],
+  "boundaries": {
+    "humanMobile": "NOT_RUN",
+    "humanWeb": "NOT_RUN",
+    "liveMAX": "NOT_RUN",
+    "sourceRefresh": "NOT_RUN",
+    "workingBotDatabase": "UNTOUCHED",
+    "sqliteSchema": 4,
+    "legacyRows": "PRESERVED",
+    "unrelatedCAOverride": "UNTOUCHED"
+  },
+  "review": {
+    "kind": "SELF_REVIEW",
+    "scope": [
+      "typed preferences and legacy read",
+      "per-day planner and shared predicates",
+      "concrete visit and bookmark identity",
+      "Back, edit cancellation and stale actions",
+      "source disclosure and freshness",
+      "explicit file set and isolated container"
+    ],
+    "independentExternalReview": "NOT_RUN"
+  },
+  "workingCompose": {
+    "project": "cultural-plan-polling",
+    "files": [
+      "compose.polling.yaml",
+      "compose.ca.override.yaml"
+    ],
+    "envFile": ".env.public",
+    "image": "cultural-plan:local",
+    "observedRevisionLabel": "local-unreviewed",
+    "installedTaskRevision": "NOT_ESTABLISHED",
+    "updateExecuted": false
+  },
+  "historicalCampaignR27": "NOT_REOPENED",
+  "deltaManifest": "sources.json"
+}

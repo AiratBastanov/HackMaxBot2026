@@ -11,7 +11,7 @@ import { Catalog } from './catalog.js';
 import { type Card, projectCard, fingerprint, compact, presentationTitle, cardOverview, cardPages, displayDate, displayDay, displayInterval } from './card.js';
 import { cities, cityKeySchema, cityDate, cityInstant, resolveCity, offsetHours, type CityKey } from '../data/cities.js';
 import { activeScreen, desireScreen } from '../screens.js';
-import { currentBookmark } from './bookmark.js';
+import { currentBookmark, bookmarkContext, equivalentChoice, overlappingChoice } from './bookmark.js';
 export type { Card } from './card.js';
 export { fingerprint } from './card.js';
 
@@ -93,8 +93,9 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
       && (!event.chat || !activeScreen(store,event.actor) || event.chat === activeScreen(store,event.actor)?.chat)
       && event.timestamp >= old.event_ts && event.timestamp <= now + 60000 && now - event.timestamp < TTL && now - old.updated_at < TTL);
     if (valid) { purpose = action!.purpose; arg = JSON.parse(action!.data) as string; }
+    const processedSave=!valid&&event.flowAction&&store.db.prepare('SELECT 1 FROM bookmarks WHERE actor=? AND save_action=?').get(event.actor,event.flowAction);
     store.enqueue(`${event.key}:answer`, event.actor, null, 'culture_answer', { method: 'answers', callbackId: event.callbackId!, body: {
-      notification: valid ? 'Принято.' : 'Кнопка устарела или принадлежит другому диалогу. Откройте /start.',
+      notification: valid ? 'Принято.' : processedSave?'Это сохранение уже обработано. Новая запись не добавлена.':'Кнопка устарела или принадлежит другому диалогу. Откройте /start.',
     } }, now, now + 60000);
     if (!valid) return 'FLOW_ACTION_EXPIRED_OR_FOREIGN';
   } else if (old && event.timestamp < old.event_ts) return 'FLOW_OLDER_EVENT';
@@ -183,10 +184,18 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     case 'save': {
       const c = s.cards.find(c => c.identity === s.selected);
       if (!c || c.snapshotVersion !== catalog.version || (c.kind === 'UNCERTAIN' && !s.optIn)) { s.stage = 'summary'; s.notice = 'Карточка устарела. Выполните подбор заново.'; break; }
+      if(!c.synthetic&&(config.mode==='live'||catalog.requiresReview)&&!catalog.permits(c.displayRef?[c.displayRef]:undefined,now)) {s.stage='summary';s.notice='Сведения сейчас недоступны для сохранения. Выполните подбор позже.';break;}
       const n = (store.db.prepare('SELECT count(*) n FROM bookmarks WHERE actor=?').get(event.actor) as { n: number }).n;
-      if (n >= 50 && !store.db.prepare('SELECT 1 FROM bookmarks WHERE actor=? AND identity=?').get(event.actor,c.identity)) { s.notice = 'Лимит 50 закладок. Удалите ненужную в «Мои события».'; break; }
-      store.db.prepare('INSERT OR IGNORE INTO bookmarks(actor,identity,generation,saved_at,data) VALUES(?,?,?,?,?)').run(event.actor, c.identity, randomUUID(), now, JSON.stringify(c));
-      s.notice = '✅ СОХРАНЕНО\nЗакладка в «Мои события». Это не покупка билета и не регистрация.'; break;
+      if (n >= 50) { s.notice = 'Лимит 50 закладок. Удалите ненужную в «Мои события».'; break; }
+      const previous=(store.db.prepare('SELECT data FROM bookmarks WHERE actor=?').all(event.actor) as {data:string}[]).map(b=>JSON.parse(b.data) as Card);
+      const repeated=previous.some(b=>equivalentChoice(b,c)),overlap=previous.some(b=>overlappingChoice(b,c));
+      // Запись, результат операции, погашение кнопки и inbox фиксируются одной worker-транзакцией.
+      // Ошибка INSERT откатывает весь переход; успех никогда не сообщается после ignored insert.
+      const inserted=store.db.prepare('INSERT INTO bookmarks(actor,identity,generation,saved_at,data,save_action) VALUES(?,?,?,?,?,?)')
+        .run(event.actor,randomUUID(),randomUUID(),now,JSON.stringify(c),event.flowAction!);
+      if(inserted.changes!==1)throw Error('BOOKMARK_NOT_CREATED');
+      s.notice = (repeated?'✅ Сохранено ещё раз. Такой вариант уже есть в вашем списке.':overlap?'✅ Сохранено. На это время у вас уже есть другое событие.':'✅ Сохранено.')+
+        '\n'+presentationTitle(c)+'\nЗакладка в «Мои события». Это не покупка билета и не регистрация.'; break;
     }
     case 'saved': s.stage = 'saved'; s.page = Number(arg || 0); break;
     case 'bookmark': s.bookmark = JSON.parse(arg); s.stage = 'bookmark'; delete s.conditionPage; break;
@@ -268,7 +277,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     for (const [i,c] of s.cards.entries()) {
       if(c.displayRef)displayRefs.push(c.displayRef);
       if (i === 0 || s.cards[i-1]!.kind !== c.kind) text += `\n\n${label(c)}:`;
-      text += `\n${i + 1}. ${compact(presentationTitle(c))}${c.kind === 'UNCERTAIN' ? `\n${compact(c.unknown[0] ?? 'Уточните условия по источнику.',180)}` : ''}`;
+      text += `\n${i + 1}. ${presentationTitle(c)}${c.kind === 'UNCERTAIN' ? `\n${compact(c.unknown[0] ?? 'Уточните условия по источнику.',180)}` : ''}`;
       rows.push([button(`Подробнее ${i + 1}`, 'detail', c.identity)]);
     }
     if (!denied&&s.optIn && !result.uncertain.length) text += '\nДругих вариантов для уточнения нет.';
@@ -284,20 +293,22 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
     if (!original || (s.stage === 'detail' && (original.snapshotVersion !== catalog.version || (original.kind === 'UNCERTAIN' && !s.optIn)))) {
       text = 'Карточка устарела. Выполните подбор заново.'; rows = [[button('Подобрать', 'pick')], home()];
     } else if (!c||!showCard(c)) {
-      text=s.stage==='delete'?'Удалить эту закладку?':current?.notice??'Сведения сейчас недоступны: срок проверки истёк или данные изменились. Попробуйте новый подбор позже.';
+      text=(s.stage==='delete'?'Удалить эту закладку?':current?.notice??'Сведения сейчас недоступны: срок проверки истёк или данные изменились. Попробуйте новый подбор позже.')+
+        (saved?'\n'+bookmarkContext(original,false):'');
       rows=s.stage==='delete'?[[button('Да, удалить','confirmRemove'),button('Отмена','cancel')]]:
         [...(saved?[[button('Удалить закладку','remove')]]:[]),[button('Подобрать','pick')],home()];
     } else {
       audience = c.synthetic ? 'SYNTHETIC' : 'PROVIDER'; catalogVersion = catalog.version;
       if(c.displayRef)displayRefs.push(c.displayRef);
       if(s.stage==='delete') {
-        text=`Удалить «${compact(presentationTitle(c),500)}» из сохранённого?`;
+        text=`Удалить «${presentationTitle(c,500)}» из сохранённого?\n${bookmarkContext(original)}`;
         rows=[[button('Да, удалить','confirmRemove'),button('Отмена','cancel')]];
       } else {
       const savedView=s.stage==='bookmark',from=original.visit?.from??original.query.start,until=original.visit?.until??original.query.end;
       const repeatVisit=!savedView||c.visit?.from!==from||c.visit?.until!==until;
-      const savedContext=savedView?`${cities[original.query.city].name} · ${original.query.party?.adults??1} взр., ${original.query.party?.childAges.length??0} дет. · бюджет ${original.query.budgetRub===null?'без лимита':original.query.budgetRub+' ₽'} (${original.query.budgetBasis==='PARTY_TOTAL'?'на всех':'на одного взрослого'})\nВыбрано: ${displayInterval(from,until,original.query.timezone??cities[original.query.city].timezone)}\n`:'';
-      text = `${compact(presentationTitle(c))}\n${savedView?'Сохранено · ':''}${label(c)}\n${savedContext}${limitation ? `${limitation}\n` : ''}`;
+      const ages=original.query.party?.childAges??[];
+      const savedContext=savedView?`${cities[original.query.city].name} · ${original.query.party?.adults??1} взр., ${ages.length} дет.${ages.length?' · возраст: '+ages.map(a=>a===null?'?':a).join(', '):''} · бюджет ${original.query.budgetRub===null?'без лимита':original.query.budgetRub+' ₽'} (${original.query.budgetBasis==='PARTY_TOTAL'?'на всех':'на одного взрослого'})\nВыбрано: ${displayInterval(from,until,original.query.timezone??cities[original.query.city].timezone)}\n`:'';
+      text = `${presentationTitle(c)}\n${savedView?'Сохранено · ':''}${label(c)}\n${savedContext}${limitation ? `${limitation}\n` : ''}`;
       if(s.conditionPage!==undefined) {
         const pages=cardPages(c,now,!savedView,repeatVisit), page=Math.max(0,Math.min(s.conditionPage,pages.length-1));
         text+=`Условия посещения · ${page+1}/${pages.length}\n${pages[page]}`;
@@ -305,21 +316,23 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
         rows.push([button('К карточке','conditionOverview')]);
       } else {text+=cardOverview(c,now,!savedView,repeatVisit);rows.push([button('Условия посещения','conditions')]);}
       for(const link of [c.source,...(c.visit?.links??[])]) if (safeLink(link.url) && link.url.length <= 2048) rows.push([{ type: 'link', text: compact(link.label,80), url: link.url }]);
-      const isSaved=s.stage==='detail'&&store.db.prepare('SELECT 1 FROM bookmarks WHERE actor=? AND identity=?').get(event.actor,c.identity);
-      rows.push(s.stage === 'detail' ? [button(isSaved?'✅ Сохранено':'Сохранить', 'save'), button('К результатам', 'results')]
+      const isSaved=s.stage==='detail'&&(store.db.prepare('SELECT data FROM bookmarks WHERE actor=?').all(event.actor) as {data:string}[]).some(b=>equivalentChoice(JSON.parse(b.data),c));
+      rows.push(s.stage === 'detail' ? [button(isSaved?'Сохранить ещё раз':'Сохранить', 'save'), button('К результатам', 'results')]
         : [button('Удалить закладку', 'remove')]);
       rows.push(home());
       }
     }
   } else if (s.stage === 'saved') {
+    const total=(store.db.prepare('SELECT count(*) n FROM bookmarks WHERE actor=?').get(event.actor) as {n:number}).n;
+    s.page=Math.max(0,Math.min(Math.floor(s.page)||0,Math.floor(Math.max(0,total-1)/5)));
     const saved = store.db.prepare('SELECT * FROM bookmarks WHERE actor=? ORDER BY saved_at DESC, identity LIMIT 6 OFFSET ?').all(event.actor, s.page * 5) as Bookmark[];
     text = 'Мои события';
     if (!saved.length) text += '\nЗакладок пока нет.';
     for (const [i,b] of saved.slice(0,5).entries()) {
       const original:Card=JSON.parse(b.data),current=!original.synthetic&&original.displayRef?currentBookmark(original,catalog,now):null;
-      const c=current?current.card:original,visible=Boolean(c&&showCard(c)); text += `\n${s.page * 5 + i + 1}. ${visible?compact(presentationTitle(c!)):'Сохранённая запись · сведения сейчас недоступны'}`;
-      if(visible)text+=`\n${displayDay(cityDate(original.query.start,original.query.timezone??cities[original.query.city].timezone))} · ${original.query.party?.adults??1} взр., ${original.query.party?.childAges.length??0} дет.${current?.changed.length?' · условия изменились':current?.assessment==='EXPIRED'?' · дата прошла':c!.kind==='UNCERTAIN'?' · нужно уточнить условия':''}`;
-      rows.push([button(`Открыть ${i + 1}`, 'bookmark', JSON.stringify({ identity: b.identity, generation: b.generation }))]);
+      const c=current?current.card:original,visible=Boolean(c&&showCard(c)); text += `\n${s.page * 5 + i + 1}. ${visible?presentationTitle(c!):'Сохранённая запись · сведения сейчас недоступны'}`;
+      text+=`\n${bookmarkContext(original,visible)}${visible?(current?.changed.length?' · условия изменились':current?.assessment==='EXPIRED'?' · дата прошла':c!.kind==='UNCERTAIN'?' · нужно уточнить условия':''):''}`;
+      rows.push([button(`Открыть ${s.page * 5 + i + 1}`, 'bookmark', JSON.stringify({ identity: b.identity, generation: b.generation }))]);
       if(visible&&c) {if (!c.synthetic) audience = 'PROVIDER'; else audience ??= 'SYNTHETIC';
       if(c.displayRef)displayRefs.push(c.displayRef);else if(!c.synthetic)displayRefs.push({snapshotHash:'',eventId:c.eventId});}
     }

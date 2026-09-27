@@ -6,6 +6,8 @@ import { partyPrice, type PartyAssessment } from '../data/party.js';
 import { snapshotDigest, type DisplayRef } from '../data/source-policy.js';
 
 export type Card = { identity: string; eventId: string; occurrenceId: string | null; title: string;
+  // Необязательные исходные категории: legacy-закладки читаются без обогащения.
+  categories?: string[];
   source: { label: string; url: string }; kind: 'STRICT' | 'UNCERTAIN'; facts: string[]; unknown: string[];
   snapshotVersion: string; fingerprint: string; retrievedAt: string; synthetic: boolean; query: Query; displayRef?:DisplayRef;
   occurrence: { kind: string; start: string | null; end: string | null } | null;
@@ -28,7 +30,7 @@ export function projectCard(catalog: Catalog, query: Query, r: Recommendation | 
   const o = e.occurrences.find(o => o.id === r.occurrenceId);
   const venue = snapshot.venues.find(v => v.id === o?.venueId);
   const strict = 'from' in r;
-  return { identity: digest([r.eventId,r.occurrenceId]), eventId:r.eventId,occurrenceId:r.occurrenceId,title:r.title,source:r.source,
+  return { identity: digest([r.eventId,r.occurrenceId]), eventId:r.eventId,occurrenceId:r.occurrenceId,title:r.title,categories:[...e.categories],source:r.source,
     kind: strict ? 'STRICT':'UNCERTAIN', facts:strict ? r.reasons : [...r.usefulFacts,...r.factsMatched],
     unknown:strict ? []:r.checkAtSource, snapshotVersion:catalog.version,fingerprint:fingerprint(catalog,e.id,query.city)!,
     retrievedAt:r.eventRetrievedAt,synthetic:snapshot.mode==='SYNTHETIC_FIXTURE',query,
@@ -50,7 +52,18 @@ export const compact = (s: string, limit = 160) => {
   const clean=s.replace(/[\u0000-\u001f]/g,' ');
   return clean.length<=limit ? clean : `${clean.slice(0,limit-1).replace(/[\uD800-\uDBFF]$/,'')}…`;
 };
-export const presentationTitle=(c:Card)=>c.synthetic?c.title.replace(/^СИНТЕТИКА:\s*/u,''):c.title;
+const typeLabels:Record<string,string>={concert:'Концерт',theater:'Театр',exhibition:'Выставка',tour:'Экскурсия',
+  workshop:'Мастер-класс',education:'Образовательное событие',culture:'Культурное событие'};
+// Порядок фактов источника сохраняется. Общие категории уступают конкретным.
+export function eventType(c:Pick<Card,'categories'>) {
+  const known=(c.categories??[]).filter(k=>Object.hasOwn(typeLabels,k));
+  return typeLabels[known.find(k=>!['education','culture'].includes(k))??known.find(k=>k==='education')??known[0]!]??'Тип не указан';
+}
+export function presentationTitle(c:Pick<Card,'title'|'synthetic'|'categories'>,limit=160) {
+  const raw=c.synthetic?c.title.replace(/^СИНТЕТИКА:\s*/u,''):c.title,suffix=' ('+eventType(c)+')';
+  // Сокращаем только заголовок, сохраняя целый суффикс и пары UTF-16.
+  return compact(raw.endsWith(suffix)?raw.slice(0,-suffix.length):raw,Math.max(1,limit-suffix.length))+suffix;
+}
 
 const months=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
 export const displayDate=(s:string)=>Number(s.slice(8,10))+' '+months[Number(s.slice(5,7))-1]+' '+s.slice(0,4)+' г.';
@@ -154,13 +167,18 @@ export function cardPages(c:Card,now=Date.now(),includeTimezone=true,includeVisi
   const v=c.visit;
   const fields=v?[`Место: ${v.venue.title??'не указано'}`,`Адрес: ${v.venue.address??'не указан'}`,schedule(c,includeTimezone,includeVisit),entry(c),'Вход: '+cost(c),...conditions(c),
     ...(v.partyPrice?.total==null&&!['FREE','EXACT'].includes(v.price.kind)&&v.price.evidence?['Опубликованный тариф: '+v.price.evidence]:[]),
-    ...(c.title.length>160?['Полное название: '+c.title]:[]),freshness(c,now)]
+    ...(c.title.length>160?['Полное название: '+presentationTitle(c,Infinity)]:[]),freshness(c,now)]
     :['Старая закладка: дополнительные условия не сохранялись.',...c.unknown,...c.facts,freshness(c,now)];
   const pages:string[]=[];let page='';
   for(const field of fields) {
     let rest=field.replace(/[\u0000-\u0008\u000b-\u001f]/g,' ');
+    const titleSuffix=field.startsWith('Полное название: ')?' ('+eventType(c)+')':null;
     while(rest.length) {
-      let n=Math.min(2400-page.length,rest.length);if(/[\uD800-\uDBFF]/.test(rest[n-1]??'')) n--;
+      let n=Math.min(2400-page.length,rest.length);
+      // Перенос полного названия никогда не разрезает добавленный суффикс типа.
+      if(titleSuffix&&n<rest.length&&n>rest.length-titleSuffix.length)n=rest.length-titleSuffix.length;
+      if(n===0){pages.push(page);page='';continue;}
+      if(/[\uD800-\uDBFF]/.test(rest[n-1]??'')) n--;
       page+=rest.slice(0,n);rest=rest.slice(n);
       if(rest.length||page.length>2300){pages.push(page);page='';}else page+='\n';
     }

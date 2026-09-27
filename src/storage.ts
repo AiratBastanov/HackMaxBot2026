@@ -23,7 +23,7 @@ export class Storage {
     this.db.pragma('synchronous = FULL');
     this.db.pragma('foreign_keys = ON');
     const version = this.db.pragma('user_version', { simple: true });
-    if (![0, 1, 2, 3].includes(Number(version))) { this.db.close(); throw new Error('Версия SQLite не поддерживается'); }
+    if (![0, 1, 2, 3, 4].includes(Number(version))) { this.db.close(); throw new Error('Версия SQLite не поддерживается'); }
     if(Number(version)>0) {
       const recovery=this.getMeta('recovery_state');
       if(recovery==='BACKUP'||recovery==='QUARANTINED') {this.db.close();throw new Error('RECOVERY_QUARANTINED');}
@@ -71,6 +71,15 @@ export class Storage {
         CREATE TABLE ui_messages (mid TEXT PRIMARY KEY, actor TEXT NOT NULL, chat TEXT NOT NULL, epoch TEXT NOT NULL,
           purpose TEXT NOT NULL, revision INTEGER NOT NULL, status TEXT NOT NULL, body_hash TEXT, updated_at INTEGER NOT NULL, audience TEXT);
         PRAGMA user_version = 3;
+      `);
+      // identity теперь ID закладки; event/occurrence остаются внутри исходной Card.
+      // Legacy ID, generation, saved_at и JSON не меняются: старые ссылки однозначны.
+      if (Number(version) < 4) this.db.exec(`
+        ALTER TABLE bookmarks ADD COLUMN save_action TEXT;
+        CREATE UNIQUE INDEX bookmarks_save_action ON bookmarks(actor,save_action);
+        CREATE INDEX bookmarks_order ON bookmarks(actor,saved_at DESC,identity);
+        DELETE FROM flow_actions WHERE purpose='save';
+        PRAGMA user_version = 4;
       `);
       const identity = `${config.ingress === 'test-polling' ? 'test-polling' : config.mode}:${config.botId}`;
       const previous = this.getMeta('identity');

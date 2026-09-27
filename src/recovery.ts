@@ -5,11 +5,11 @@ import { randomUUID } from 'node:crypto';
 import type { Config } from './config.js';
 
 type Identity=Pick<Config,'mode'|'botId'>;
-type Receipt={schema:2|3;identity:string;createdAt:string;integrity:'ok';state:string};
+type Receipt={schema:2|3|4;identity:string;createdAt:string;integrity:'ok';state:string};
 const meta=(db:Database.Database,key:string)=>(db.prepare('SELECT value FROM meta WHERE key=?').get(key) as {value:string}|undefined)?.value;
 const set=(db:Database.Database,key:string,value:string)=>db.prepare('INSERT INTO meta VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run(key,value);
 function inspect(db:Database.Database,expected:Identity) {
-  if(![2,3].includes(Number(db.pragma('user_version',{simple:true})))) throw Error('RECOVERY_UNSUPPORTED_SCHEMA');
+  if(![2,3,4].includes(Number(db.pragma('user_version',{simple:true})))) throw Error('RECOVERY_UNSUPPORTED_SCHEMA');
   if(db.pragma('integrity_check',{simple:true})!=='ok'||(db.pragma('foreign_key_check') as unknown[]).length) throw Error('RECOVERY_INTEGRITY');
   if(meta(db,'identity')!==`${expected.mode}:${expected.botId}`) throw Error('RECOVERY_WRONG_IDENTITY');
 }
@@ -47,7 +47,7 @@ export async function backupDatabase(source:string,target:string,expected:Identi
     if(['BACKUP','QUARANTINED'].includes(meta(db,'recovery_state')??'')) throw Error('RECOVERY_SOURCE_UNRESOLVED');
     return await copy(db,target,output=>{
       inspect(output,expected);
-      const receipt:Receipt={schema:Number(output.pragma('user_version',{simple:true})) as 2|3,identity:meta(output,'identity')!,createdAt:new Date().toISOString(),integrity:'ok',state:'BACKUP'};
+      const receipt:Receipt={schema:Number(output.pragma('user_version',{simple:true})) as 2|3|4,identity:meta(output,'identity')!,createdAt:new Date().toISOString(),integrity:'ok',state:'BACKUP'};
       output.transaction(()=>{set(output,'backup_manifest',JSON.stringify(receipt));set(output,'recovery_state','BACKUP');}).immediate();
       inspect(output,expected);return receipt;
     });
@@ -63,7 +63,7 @@ export async function restoreDatabase(source:string,target:string,expected:Ident
       output.transaction(()=>{
         set(output,'recovery_state','QUARANTINED');set(output,'restored_at',new Date(now).toISOString());
         output.prepare('DELETE FROM flow_actions').run();
-        if(manifest.schema===3) {output.prepare('DELETE FROM flow_screens').run();output.prepare('DELETE FROM ui_messages').run();}
+        if(manifest.schema>=3) {output.prepare('DELETE FROM flow_screens').run();output.prepare('DELETE FROM ui_messages').run();}
         output.prepare("UPDATE outbox SET payload=NULL,status='RECOVERY_SUPPRESSED',result='OLD_SNAPSHOT',finished_at=COALESCE(finished_at,?),message_mid=NULL").run(now);
         output.prepare("UPDATE inbox SET payload=NULL,status='PROCESSED',result='OLD_SNAPSHOT',finished_at=COALESCE(finished_at,?)").run(now);
         output.prepare("UPDATE probes SET state='SUPERSEDED',question_mid=NULL").run();
@@ -82,10 +82,10 @@ export function discardRestoredPersonalization(path:string,expected:Identity,con
     if(meta(db,'recovery_state')!=='QUARANTINED') throw Error('RECOVERY_NOT_QUARANTINED');
     db.transaction(()=>{
       for(const table of ['bookmarks','flow_states','flow_actions','contacts','probes','inbox','outbox']) db.exec(`DELETE FROM ${table}`);
-      if(db.pragma('user_version',{simple:true})===3) {db.prepare('DELETE FROM flow_screens').run();db.prepare('DELETE FROM ui_messages').run();}
+      if(Number(db.pragma('user_version',{simple:true}))>=3) {db.prepare('DELETE FROM flow_screens').run();db.prepare('DELETE FROM ui_messages').run();}
       set(db,'recovery_state','RESOLVED_DISCARDED');set(db,'recovery_cutoff',String(Date.now()));
     }).immediate();
     inspect(db,expected);
-    return {schema:Number(db.pragma('user_version',{simple:true})) as 2|3,identity:meta(db,'identity')!,createdAt:new Date().toISOString(),integrity:'ok',state:'RESOLVED_DISCARDED'};
+    return {schema:Number(db.pragma('user_version',{simple:true})) as 2|3|4,identity:meta(db,'identity')!,createdAt:new Date().toISOString(),integrity:'ok',state:'RESOLVED_DISCARDED'};
   } finally {db.close();}
 }

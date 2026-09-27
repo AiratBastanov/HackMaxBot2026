@@ -17,7 +17,7 @@ test('Consistent backup с активным WAL: schema/identity/time/integrity,
   let store:Storage;
   const root=dir(t,()=>store?.close()),source=resolve(root,'source.sqlite'),backup=resolve(root,'backup.sqlite'),restored=resolve(root,'restored.sqlite');
   store=new Storage(source,identity);store.setMeta('sentinel','committed');
-  const receipt=await backupDatabase(source,backup,identity);assert.equal(receipt.integrity,'ok');assert.equal(receipt.schema,3);assert.equal(receipt.identity,'local:777');assert(Number.isFinite(Date.parse(receipt.createdAt)));
+  const receipt=await backupDatabase(source,backup,identity);assert.equal(receipt.integrity,'ok');assert.equal(receipt.schema,4);assert.equal(receipt.identity,'local:777');assert(Number.isFinite(Date.parse(receipt.createdAt)));
   assert.equal(store.getMeta('recovery_state'),undefined);assert.equal(store.getMeta('sentinel'),'committed');
   await assert.rejects(backupDatabase(source,backup,identity),/DESTINATION_EXISTS/);
   assert.throws(()=>new Storage(backup,identity),/QUARANTINED/);
@@ -38,7 +38,7 @@ test('Backup → удаление закладки/данных → loss: ста
     let d:Awaited<ReturnType<typeof flowDriver>>,restored:Awaited<ReturnType<typeof flowDriver>>;
     const root=dir(t,async()=>{await restored?.close();await d?.close();}),source=resolve(root,'source.sqlite'),backup=resolve(root,'backup.sqlite'),target=resolve(root,'restored.sqlite');
     d=await flowDriver(source);await d.enter();await chooseDefaults(d);await d.click('Подробнее 1');await d.click('Сохранить');
-    const oldSave=d.payload('✅ Сохранено');
+    const oldSave=d.payload('Сохранить ещё раз');
     d.runtime.store.enqueue('interrupted',ACTOR,null,'culture_screen',{method:'messages',recipient:ACTOR,body:{text:'старый личный экран'}},d.now,d.now+60000);
     d.runtime.store.db.prepare("UPDATE outbox SET status='SENDING' WHERE action_key='interrupted'").run();
     await backupDatabase(source,backup,identity);
@@ -62,7 +62,7 @@ test('Backup → удаление закладки/данных → loss: ста
 });
 test('Обычный restart целого тома сохраняет данные; прерванный send не повторяется',t=>{
   const path=resolve(dir(t),'source.sqlite');let store=new Storage(path,identity);
-  store.setMeta('sentinel','keep');store.db.prepare('INSERT INTO bookmarks VALUES(?,?,?,?,?)').run(ACTOR,'synthetic:event','g',Date.now(),'{}');
+  store.setMeta('sentinel','keep');store.db.prepare('INSERT INTO bookmarks(actor,identity,generation,saved_at,data) VALUES(?,?,?,?,?)').run(ACTOR,'synthetic:event','g',Date.now(),'{}');
   store.enqueue('send',ACTOR,null,'culture_answer',{method:'answers',callbackId:'synthetic',body:{notification:'Принято.'}},Date.now(),Date.now()+60000);
   store.db.prepare("UPDATE outbox SET status='SENDING'").run();store.close();store=new Storage(path,identity);
   assert.equal(store.getMeta('sentinel'),'keep');assert.equal((store.db.prepare('SELECT count(*) n FROM bookmarks').get() as any).n,1);

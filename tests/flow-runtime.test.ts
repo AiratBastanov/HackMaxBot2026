@@ -33,14 +33,14 @@ test('HTTP: секрет, lossless actor, весь путь strict → дета�
   assert.match(text(d),/Подходит по известным условиям/); assert.doesNotMatch(text(d),/мастерская|дорогой/);
   await d.click('Подробнее 1'); assert.match(text(d),/Вымышленный набор/);
   assert(d.buttons().some(b => b.type === 'link' && b.url === 'https://example.org/synthetic-cultural-option-1'));
-  await d.click('Сохранить');
-  assert.match(text(d),/^✅ СОХРАНЕНО\n/);assert(d.buttons().some(b=>b.text==='✅ Сохранено'));
+  const save=d.payload('Сохранить');await d.click('Сохранить');
+  assert.match(text(d),/^✅ Сохранено\.\n/);assert(d.buttons().some(b=>b.text==='Сохранить ещё раз'));
   assert(!d.buttons().some(b=>b.text==='Сохранить'));
-  await d.click('✅ Сохранено'); assert.equal(count(d),1);
+  await d.press(save); assert.equal(count(d),1);
   const saved = d.runtime.store.db.prepare('SELECT data FROM bookmarks').get() as {data:string};
   assert.match(saved.data,/FLEXIBLE_VISIT/); assert.equal(JSON.parse(saved.data).occurrence.start,null);
   await d.restart(); await d.click('Мои события'); await d.click('Открыть 1'); await d.click('Удалить закладку'); await d.click('Да, удалить'); assert.equal(count(d),0);
-  assert.equal(d.runtime.store.db.pragma('user_version',{simple:true}),3);
+  assert.equal(d.runtime.store.db.pragma('user_version',{simple:true}),4);
 });
 test('Опциональные варианты: отдельная кнопка, UNKNOWN не превращается в строгое совпадение, фильтр сбрасывает opt-in', async t => {
   const d = await setup(t); await d.enter(); await chooseDefaults(d); await d.click('Показать варианты для проверки');
@@ -143,11 +143,11 @@ test('Удаление личных данных и probe cleanup не удал�
 test('Лимит/страницы: 5 из 50, личная изоляция, запись не превращается в регистрацию', async t => {
   const d = await setup(t); await d.enter(); await chooseDefaults(d); await d.click('Подробнее 1'); await d.click('Сохранить');
   const row = d.runtime.store.db.prepare('SELECT data FROM bookmarks').get() as {data:string};
-  for (let i=1;i<7;i++) d.runtime.store.db.prepare('INSERT INTO bookmarks VALUES(?,?,?,?,?)').run(ACTOR,`synthetic-page-${i}`,`g-${i}`,d.now+i,row.data);
+  for (let i=1;i<7;i++) d.runtime.store.db.prepare('INSERT INTO bookmarks(actor,identity,generation,saved_at,data) VALUES(?,?,?,?,?)').run(ACTOR,`synthetic-page-${i}`,`g-${i}`,d.now+i,row.data);
   await d.click('Мои события'); assert.equal(d.buttons().filter(b=>b.text.startsWith('Открыть')).length,5); await d.click('Следующие'); assert.equal(d.buttons().filter(b=>b.text.startsWith('Открыть')).length,2);
   await d.enter(OTHER); await d.click('Мои события',OTHER); assert.match(d.screen(OTHER)!.body.text,/пока нет/);
 });
-test('SQLite v1 мигрирует без потери очереди; повторный startup сохраняет v3/закладки', async t => {
+test('SQLite v1 мигрирует без потери очереди; повторный startup сохраняет v4/закладки', async t => {
   const d = await setup(t); const path=d.config.databasePath; await d.close();
   const db = new Storage(path,d.config); db.db.exec('DROP TABLE flow_screens; DROP TABLE ui_messages; DROP TABLE flow_actions; DROP TABLE flow_states; DROP TABLE bookmarks; ALTER TABLE outbox DROP COLUMN flow_revision; ALTER TABLE outbox DROP COLUMN catalog_version; PRAGMA user_version=1;');
   db.setMeta('migration_test','keep'); db.close(); await d.restart(); assert.equal(d.runtime.store.getMeta('migration_test'),'keep');

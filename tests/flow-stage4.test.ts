@@ -36,7 +36,8 @@ test('R08-01: projection → render → save → restart сохраняет су
     for(const pattern of [/Вымышленный зал/,/Тестовая улица, 17/,/10:00.*18:00/,/12:00.*18:00/,/Последний вход.*17:30/,/200.*₽/,/Регистрация.*обязательна/,/Запись на сайте/,/Вымышленный набор/]) assert.match(screen(d),pattern);
   };
   check(); const identity=state(d).cards[0].identity;await d.click('Сохранить');await d.restart();await d.say('/saved');await d.click('Открыть 1');check();
-  assert.equal((d.runtime.store.db.prepare('SELECT identity FROM bookmarks').get() as any).identity,identity);
+  const saved=d.runtime.store.db.prepare('SELECT identity,data FROM bookmarks').get() as {identity:string;data:string};
+  assert.notEqual(saved.identity,identity);assert.equal(JSON.parse(saved.data).identity,identity);
   assert.equal(state(d).cards[0].occurrence.start,null);
 });
 

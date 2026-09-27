@@ -12,6 +12,9 @@ import type {Snapshot,Query} from '../src/data/contract.js';
 import {flowDriver,chooseDefaults} from '../scripts/flow-driver.js';
 import {deliveryAllowed} from '../src/max.js';
 import {ACTOR} from './fixtures.js';
+import {getState} from '../src/culture/flow.js';
+import {savedRows,openRow} from '../scripts/bookmark-scenario.js';
+import {presentationTitle} from '../src/culture/card.js';
 
 const active=Catalog.load({flowDataMode:'real',snapshotPath:resolve('catalog/real/active.json')} as any);
 const time=Date.parse(active.review!.reviewedAt)+1000;
@@ -92,5 +95,46 @@ test('R18 HTTP application: save -> replacement/reload -> current refs -> cancel
     await d.enter();await chooseDefaults(d);await d.click('Подробнее 1');await d.click('Сохранить');
     const resaved=d.runtime.store.db.prepare('SELECT * FROM bookmarks').get() as {generation:string};assert.notEqual(resaved.generation,before.generation);
     await d.press(stale,ACTOR);assert.deepEqual(d.runtime.store.db.prepare('SELECT * FROM bookmarks').get(),resaved);
+  }finally{await d.close();}
+});
+
+test('Несколько дат одной закладки: reviewed refresh каждой записи, legacy-категория, отдельное истечение и запрет показа',async()=>{
+  mkdirSync('.tmp/bookmark-refresh',{recursive:true});const dir=mkdtempSync(resolve('.tmp/bookmark-refresh/variants-'));
+  const isolate=(ss:Snapshot[])=>{
+    const s=ss.find(s=>s.scope.city==='ekb')!;s.events=s.events.filter(e=>e.id==='mie:azins_magic_of_name');
+    s.stats.normalizedEvents=s.events.length;s.stats.occurrences=s.events.reduce((n,e)=>n+e.occurrences.length,0);ss.splice(0,ss.length,s);
+  };
+  const initial=fixture(isolate),d=await flowDriver(resolve(dir,'disposable.sqlite'),{snapshots:initial.values},time+2000,true,initial.review);
+  try {
+    await d.enter();
+    for(const label of ['Подобрать','Екатеринбург','Завтра','12:00–18:00','Продолжить','До 500 ₽','Выставки','Показать результаты','Подробнее 1','Сохранить'])await d.click(label==='Завтра'?d.dateLabel('Завтра'):label);
+    const first=savedRows(d)[0]!,c=JSON.parse(first.data);
+    const nextDay=Array.from({length:7},(_,i)=>cityDate(new Date(Date.parse(c.query.start)+(i+1)*86400000).toISOString(),c.query.timezone)).find(day=>{
+      const q={...c.query,start:cityInstant(day,'12:00',c.query.timezone),end:cityInstant(day,'18:00',c.query.timezone)};
+      return select(d.catalog.forCity(q.city),q,new Date(d.now)).recommendations.some(r=>r.eventId===c.eventId&&r.occurrenceId===c.occurrenceId);
+    });assert(nextDay,'В fixture требуется вторая дата того же периода');
+    assert.equal(c.occurrence.kind,'FLEXIBLE_VISIT');
+    await d.click('К результатам');await d.click('Дата');await d.click('Другая дата');
+    await d.say(JSON.parse(getState(d.runtime.store,ACTOR)!.data).input.token+' '+nextDay);await d.click('Показать результаты');await d.click('Подробнее 1');await d.click('Сохранить');
+    assert.equal(savedRows(d).length,2);assert.equal(JSON.parse(savedRows(d)[0]!.data).identity,c.identity);
+    // Старые записи не обязаны иметь categories; enrichment разрешён только после безопасного match.
+    delete c.categories;d.runtime.store.db.prepare('UPDATE bookmarks SET data=? WHERE actor=? AND identity=?').run(JSON.stringify(c),ACTOR,first.identity);
+    const before=savedRows(d),replacement=fixture(ss=>{isolate(ss);ss[0]!.events[0]!.categories=['exhibition','culture'];}),path=resolve(dir,'catalog.json'),reviewPath=resolve(dir,'review.json');
+    writeFileSync(path,JSON.stringify({snapshots:replacement.values}));writeFileSync(reviewPath,JSON.stringify(replacement.review));d.config.reviewPath=reviewPath;await d.reloadCatalog(path);
+    for(const b of before){
+      const original=JSON.parse(b.data),view=currentBookmark(original,d.catalog,d.now);assert(view.card);assert.deepEqual(view.card.query,original.query);
+      await openRow(d,b);assert(d.screen()!.body.text.includes(presentationTitle(view.card)));assert(deliveryAllowed(d.screen()!,d.config,d.catalog,d.now));
+      assert.notEqual(d.screen()!.displayRefs![0]!.snapshotHash,original.displayRef.snapshotHash);
+      assert.deepEqual(savedRows(d),before);
+    }
+    d.advance(Date.parse(c.query.end)+1-d.now);
+    assert.equal(currentBookmark(c,d.catalog,d.now).assessment,'EXPIRED');
+    assert.equal(currentBookmark(JSON.parse(before[0]!.data),d.catalog,d.now).assessment,'STRICT');
+    // Тот же разрешённый snapshot с изменёнными фактами без нового hash-review недоступен.
+    const denied=structuredClone(replacement.values);denied[0]!.events[0]!.categories=['workshop'];d.catalog.replace({snapshots:denied});
+    await openRow(d,before.find(b=>b.identity===first.identity)!);
+    assert.match(d.screen()!.body.text,/недоступны/);assert(!d.screen()!.body.text.includes(c.title));assert.doesNotMatch(d.screen()!.body.text,/\(Мастер-класс\)/);
+    await d.click('Удалить закладку');assert.deepEqual(d.buttons().map(b=>b.text),['Да, удалить','Отмена']);assert.match(d.screen()!.body.text,/2030|2026/);
+    await d.click('Отмена');assert.deepEqual(savedRows(d),before);
   }finally{await d.close();}
 });

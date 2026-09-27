@@ -80,7 +80,7 @@ test('C16 HTTP/SQLite: same active mid, party summary/reset, city reset, bookmar
   const d=await setup(t);await d.enter();const mid=activeScreen(d.runtime.store,ACTOR)!.mid;await chooseDefaults(d);
   assert.equal(activeScreen(d.runtime.store,ACTOR)!.mid,mid);assert(d.operations.some(o=>o.method==='edit'));assert.equal(d.operations.filter(o=>o.method==='messages').length,1);
   await d.click('Подробнее 1');await d.click('Сохранить');await d.say('/saved');await d.click('Открыть 1');await d.click('Условия посещения');
-  await d.click('Удалить закладку');assert.deepEqual(d.buttons().map(b=>b.text),['Да, удалить','Отмена']);assert.match(text(d),/Удалить «выставка света» из сохранённого/);
+  await d.click('Удалить закладку');assert.deepEqual(d.buttons().map(b=>b.text),['Да, удалить','Отмена']);assert.match(text(d),/Удалить «выставка света \(Выставка\)» из сохранённого/);
   const stale=d.payload('Да, удалить');await d.click('Отмена');assert.match(text(d),/Условия посещения ·/);await d.press(stale);assert.equal((d.runtime.store.db.prepare('SELECT count(*) n FROM bookmarks').get() as any).n,1);
   await d.say('/delete_data');assert.deepEqual(d.buttons().map(b=>b.text),['Да, удалить','Отмена']);await d.click('Отмена');assert.match(text(d),/Условия посещения ·/);
   await d.click('Главная');await chooseDefaults(d);await d.click('Показать варианты для проверки');await d.click('Посетители');await d.click('Взрослые +');await d.click('Дети +');await d.click('Продолжить');await d.click('Указать возраст');await d.say(state(d).input.token+' 7');await d.click('До 500 ₽');
@@ -104,8 +104,8 @@ test('C16 legacy SQLite v2 and single-adult bookmark keep exact historical query
   const row=d.runtime.store.db.prepare('SELECT * FROM bookmarks').get() as {data:string;identity:string;generation:string};
   const c=JSON.parse(row.data);delete c.query.version;delete c.query.party;delete c.query.timezone;delete c.query.budgetBasis;delete c.visit.partyPrice;delete c.visit.tariffs;
   const original=JSON.stringify(c);d.runtime.store.db.prepare('UPDATE bookmarks SET data=?').run(original);
-  const path=d.config.databasePath;await d.close();const legacy=new Database(path);legacy.exec('DROP TABLE flow_screens; DROP TABLE ui_messages; PRAGMA user_version=2');legacy.close();
-  await d.restart();assert.equal(d.runtime.store.db.pragma('user_version',{simple:true}),3);await d.say('/start');await d.click('Подобрать');await d.say('екб');await d.say('/saved');await d.click('Открыть 1');
+  const path=d.config.databasePath;await d.close();const legacy=new Database(path);legacy.exec('DROP TABLE flow_screens; DROP TABLE ui_messages; DROP INDEX bookmarks_save_action; DROP INDEX bookmarks_order; ALTER TABLE bookmarks DROP COLUMN save_action; PRAGMA user_version=2');legacy.close();
+  await d.restart();assert.equal(d.runtime.store.db.pragma('user_version',{simple:true}),4);await d.say('/start');await d.click('Подобрать');await d.say('екб');await d.say('/saved');await d.click('Открыть 1');
   assert.match(text(d),/Казань · 1 взр., 0 дет/);assert.match(text(d),/на одного взрослого/);
   const after=d.runtime.store.db.prepare('SELECT * FROM bookmarks').get() as typeof row;assert.equal(after.data,original);assert.equal(after.identity,row.identity);assert.equal(after.generation,row.generation);
 });

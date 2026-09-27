@@ -1,0 +1,215 @@
+{
+  "baseline": "823d51852160c3d1bede1dd1f1abde2769c3ed1e",
+  "evidence": "LOCAL_AUTOMATED_ONLY",
+  "personalData": false,
+  "realMAX": false,
+  "baselineReproduction": {
+    "baseline": "823d51852160c3d1bede1dd1f1abde2769c3ed1e",
+    "transport": "SIMULATED_MAX",
+    "storage": "SQLite",
+    "counts": [
+      1,
+      1,
+      2
+    ],
+    "ignoredFeedback": "✅ СОХРАНЕНО",
+    "firstRowUnchanged": true,
+    "differentEventAlsoFirstResultSaved": true,
+    "sameTitles": true,
+    "messageCleanupKeptRows": true,
+    "schema": 3
+  },
+  "finalChecks": {
+    "typecheck": {
+      "exitCode": 0,
+      "elapsedMs": 593,
+      "watchdogMs": 180000
+    },
+    "build": {
+      "exitCode": 0,
+      "elapsedMs": 640,
+      "watchdogMs": 180000
+    },
+    "focused": {
+      "exitCode": 0,
+      "elapsedMs": 5589,
+      "watchdogMs": 120000
+    },
+    "shared": {
+      "exitCode": 1,
+      "elapsedMs": 10418,
+      "watchdogMs": 300000
+    },
+    "compact": {
+      "exitCode": 0,
+      "elapsedMs": 1458,
+      "watchdogMs": 120000
+    },
+    "title": {
+      "exitCode": 0,
+      "elapsedMs": 5556,
+      "watchdogMs": 120000
+    },
+    "container": {
+      "exitCode": 0,
+      "elapsedMs": 16750,
+      "watchdogMs": 300000
+    }
+  },
+  "tests": {
+    "focused": {
+      "pass": 15,
+      "fail": 0,
+      "basis": "14 целевых + новая проверка границы суффикса в title"
+    },
+    "sharedInitial": {
+      "pass": 276,
+      "fail": 1,
+      "reason": "Прежнее ожидание заголовка удаления без нового типа"
+    },
+    "sharedCorrection": {
+      "pass": 1,
+      "fail": 0,
+      "scope": "C16 HTTP/SQLite"
+    },
+    "rendererDelta": {
+      "pass": 17,
+      "fail": 0,
+      "reason": "Исправление воспроизведённого разрыва суффикса между страницами"
+    },
+    "uniqueVerified": 292
+  },
+  "migration": {
+    "from": 3,
+    "to": 4,
+    "legacyRowsPreserved": "1:1",
+    "rawJSONAndSavedAtUnchanged": true,
+    "legacyOpenAndDeleteBound": true,
+    "transactionRollback": true,
+    "restartSafe": true,
+    "erasureIncludesSaveAction": true
+  },
+  "walkthrough": {
+    "before": {
+      "actorA": 8,
+      "actorB": 1,
+      "total": 9
+    },
+    "afterOneDeletion": {
+      "actorA": 7,
+      "actorB": 1,
+      "total": 8
+    },
+    "opaqueIds": "PRIVATE_IGNORED_ONLY"
+  },
+  "container": {
+    "result": "PASS",
+    "project": "maxbot-bookmarks-1790528957429",
+    "image": "maxbot-bookmarks-1790528957429:test",
+    "sourceHash": "37b180ba76ba1928287b8952d5ab93a13420f8f3300898520ef7cf24352c461b",
+    "existingContainersUnchanged": true,
+    "simulatedMAX": true,
+    "network": "none",
+    "cleanBuildBenchmark": false,
+    "results": [
+      {
+        "name": "existing-ids",
+        "exitCode": 0,
+        "elapsedMs": 125,
+        "error": null
+      },
+      {
+        "name": "existing-state-1",
+        "exitCode": 0,
+        "elapsedMs": 51,
+        "error": null
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "elapsedMs": 10849,
+        "error": null
+      },
+      {
+        "name": "smoke",
+        "exitCode": 0,
+        "elapsedMs": 5366,
+        "error": null
+      },
+      {
+        "name": "existing-state-4",
+        "exitCode": 0,
+        "elapsedMs": 56,
+        "error": null
+      },
+      {
+        "name": "remove-disposable",
+        "exitCode": 0,
+        "elapsedMs": 207,
+        "error": null
+      }
+    ],
+    "previousSmoke": {
+      "result": "PASS",
+      "project": "maxbot-bookmarks-1790528380899",
+      "image": "maxbot-bookmarks-1790528380899:test",
+      "sourceHash": "8c49803719203765149e197978af55e8cea24c5b9bea675219b5f0716c34da9d",
+      "existingContainersUnchanged": true,
+      "simulatedMAX": true,
+      "network": "none",
+      "cleanBuildBenchmark": false,
+      "results": [
+        {
+          "name": "existing-ids",
+          "exitCode": 0,
+          "elapsedMs": 127,
+          "error": null
+        },
+        {
+          "name": "existing-state-1",
+          "exitCode": 0,
+          "elapsedMs": 56,
+          "error": null
+        },
+        {
+          "name": "build",
+          "exitCode": 0,
+          "elapsedMs": 11764,
+          "error": null
+        },
+        {
+          "name": "smoke",
+          "exitCode": 0,
+          "elapsedMs": 5512,
+          "error": null
+        },
+        {
+          "name": "existing-state-4",
+          "exitCode": 0,
+          "elapsedMs": 54,
+          "error": null
+        },
+        {
+          "name": "remove-disposable",
+          "exitCode": 0,
+          "elapsedMs": 205,
+          "error": null
+        }
+      ]
+    },
+    "repeatReason": "Исправление разрыва суффикса между страницами после первого smoke",
+    "changesAfterSmoke": "Документация и санитизированные артефакты; исполняемая логика не менялась"
+  },
+  "runtimeSHA256LF": {
+    "src/culture/card.ts": "7c89d1c5ff70af014d7a05f30e60f6c3f25ea8a862cd2879c49af735eb33092a",
+    "src/culture/bookmark.ts": "a6740c24c775b4195b00fc5277cb780c985fab7d0c4dc1364963ac8ea761335c",
+    "src/culture/flow.ts": "141b0f0450f052e834c1dbe99dc5a788db5cb09ff8750814491c8e63d146ddb4",
+    "src/storage.ts": "ecb2ef4b03f65ee2a2dc9148722045758dc9d28741b76648db77d3f7716e6127",
+    "src/recovery.ts": "b241eab9d6a79f8027f2e2778f2c48ae0c27c8c0e46519d0be59b379fe29d50b"
+  },
+  "node": {
+    "host": "22.20.0",
+    "container": "22.23.2"
+  },
+  "remaining": "Новые наблюдения mobile/web MAX не выполнялись и не запрашивались."
+}

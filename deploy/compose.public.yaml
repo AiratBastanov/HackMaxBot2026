@@ -20,7 +20,7 @@ services:
       DATA_SNAPSHOT_PATH: /app/runtime/catalog/active.json
       MAX_EXPECTED_BOT_ID: ${MAX_EXPECTED_BOT_ID:?Сначала закрепите identity через GET /me}
       MAX_BOT_TOKEN_FILE: /run/secrets/max_bot_token
-      MAX_CONSUMER_PORT: ${MAX_CONSUMER_PORT:-45658}
+      MAX_CONSUMER_PORT: ${MAX_CONSUMER_PORT:?Нужен порт своей identity из identity-init}
       MAX_WEBHOOK_SECRET_FILE: /run/secrets/max_webhook_secret
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:?Нужен одобренный HTTPS origin}
       PUBLIC_HOST: ${PUBLIC_HOST:?Нужен согласованный HTTPS hostname}
@@ -37,7 +37,7 @@ services:
         bind:
           create_host_path: false
     read_only: true
-    ports: ["127.0.0.1:${MAX_CONSUMER_PORT:-45658}:${MAX_CONSUMER_PORT:-45658}"]
+    ports: ["127.0.0.1:${MAX_CONSUMER_PORT:?Нужен порт своей identity}:${MAX_CONSUMER_PORT:?Нужен порт своей identity}"]
     user: "1000:1000"
     tmpfs: [/tmp]
     cap_drop: [ALL]

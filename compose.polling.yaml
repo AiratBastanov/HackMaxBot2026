@@ -12,7 +12,7 @@ services:
       DATABASE_PATH: /app/runtime/public.sqlite
       DATA_SNAPSHOT_PATH: /app/runtime/catalog/active.json
       MAX_BOT_TOKEN_FILE: /run/secrets/max_bot_token
-      MAX_CONSUMER_PORT: ${MAX_CONSUMER_PORT:-45658}
+      MAX_CONSUMER_PORT: ${MAX_CONSUMER_PORT:?Сначала создайте .env.public через compose.setup.yaml}
       NODE_EXTRA_CA_CERTS: ${NODE_EXTRA_CA_CERTS_CONTAINER:-}
     command: [node, dist/scripts/start-polling.js]
     healthcheck: {disable: true}
@@ -23,7 +23,7 @@ services:
         target: /run/secrets
         read_only: true
         bind: {create_host_path: false}
-    ports: ["127.0.0.1:${MAX_CONSUMER_PORT:-45658}:${MAX_CONSUMER_PORT:-45658}"]
+    ports: ["127.0.0.1:${MAX_CONSUMER_PORT:?Нужен порт своей identity}:${MAX_CONSUMER_PORT:?Нужен порт своей identity}"]
     read_only: true
     tmpfs: [/tmp]
     cap_drop: [ALL]

@@ -6,6 +6,8 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {readFileSync,writeFileSync,existsSync} from 'node:fs';
 import {dirname,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {parseEnv} from 'node:util';
+import {createHash} from 'node:crypto';
 import Database from 'better-sqlite3';
 import {loadConfig} from '../src/config.js';
 import {stage4Fixture} from '../src/culture/stage4-fixture.js';
@@ -18,6 +20,10 @@ import {ACTOR,CHAT,BOT,reply,callback,message,encode} from '../tests/fixtures.js
 async function main() {
   if(readFileSync(process.env.MAX_BOT_TOKEN_FILE!,'utf8').trim()!=='offline-webhook-smoke-token')throw Error('Только синтетический секрет');
   const scripts=dirname(fileURLToPath(import.meta.url)),initializing=process.argv.includes('--initialize');
+  const organizer=process.argv.includes('--organizer'),serving=process.argv.includes('--serve');
+  const botId=organizer?'9007199254740997':BOT,username='organizer_synthetic_bot';
+  if(serving&&!organizer)throw Error('Для --serve нужен --organizer');
+  let subscribed=false;
   const messages=new Map<string,MessageRequest>(),updates:unknown[]=[],requests:{method:string;path:string;marker:string|null}[]=[];
   let marker=100,deliveredMarker=0,seq=0,active='',output='',child:ChildProcess|undefined;
   const server=createServer(async(req,res)=>{
@@ -28,9 +34,9 @@ async function main() {
       const chunks:Buffer[]=[];for await(const b of req)chunks.push(Buffer.from(b));
       const body=chunks.length?parseJson(Buffer.concat(chunks).toString()) as MessageRequest:undefined;
       let result:unknown;
-      if(method==='GET'&&u.pathname==='/me')result={user_id:BigInt(BOT),is_bot:true,first_name:'Синтетический бот'};
-      else if(method==='GET'&&u.pathname==='/subscriptions')result={subscriptions:[]};
-      else if(!initializing&&method==='GET'&&u.pathname==='/updates') {const batch=updates.splice(0,10);result={updates:batch,marker:++marker};if(batch.length)deliveredMarker=marker;}
+      if(method==='GET'&&u.pathname==='/me')result={user_id:BigInt(botId),is_bot:true,first_name:'Синтетический бот',...(organizer?{username}:{})};
+      else if(method==='GET'&&u.pathname==='/subscriptions')result={subscriptions:subscribed?[{url:'https://integration.example.org/webhook',time:1,update_types:[]}]:[]};
+      else if(!initializing&&method==='GET'&&u.pathname==='/updates') {const batch=updates.splice(0,10);marker=Math.max(marker,Number(u.searchParams.get('marker')??0))+1;result={updates:batch,marker};if(batch.length)deliveredMarker=marker;}
       else if(!initializing&&method==='POST'&&u.pathname==='/messages') {
         assert.equal(u.searchParams.get('user_id'),ACTOR);active=`setup-message-${++seq}`;messages.set(active,body!);
         result={message:{...message(ACTOR,active,CHAT),body:{mid:active,seq:1,...body}}};
@@ -43,7 +49,7 @@ async function main() {
   });
   await new Promise<void>(r=>server.listen(0,'127.0.0.1',r));
   const address=server.address();assert(address&&typeof address!=='string');
-  const baseEnv={...process.env,MAX_EXPECTED_BOT_ID:BOT,WEBHOOK_SMOKE_ORIGIN:`http://127.0.0.1:${address.port}`};
+  const baseEnv={...process.env,MAX_EXPECTED_BOT_ID:initializing&&organizer?undefined:botId,WEBHOOK_SMOKE_ORIGIN:`http://127.0.0.1:${address.port}`};
   const launch=(script:string,args:string[]=[],env:NodeJS.ProcessEnv=baseEnv,preload=true)=>{
     output='';child=spawn(process.execPath,[...(preload?['--import',resolve(scripts,'webhook-smoke-fetch.js')]:[]),resolve(scripts,script),...args],{env,stdio:['ignore','pipe','pipe']});
     child.stdout!.on('data',b=>{output+=b;});child.stderr!.on('data',b=>{output+=b;});return child;
@@ -55,14 +61,42 @@ async function main() {
     if(initializing) {
       assert(!existsSync('.env.public'),'Нужна чистая копия без .env.public');
       launch('identity-init.js',['.env.public']);await exited();
-      const before=readFileSync('.env.public','utf8');assert.match(before,/MAX_EXPECTED_BOT_ID=777/);assert.match(before,/ADMISSION_MODE=PUBLIC/);
+      const before=readFileSync('.env.public','utf8'),generated=parseEnv(before),result=JSON.parse(output.trim());
+      assert.equal(generated.MAX_EXPECTED_BOT_ID,botId);assert.equal(generated.ADMISSION_MODE,'PUBLIC');
+      assert.equal(generated.COMPOSE_PROJECT_NAME,`cultural-plan-bot-${botId}`);
+      assert.equal(generated.MAX_CONSUMER_PORT,String(30000+createHash('sha256').update(`maxbot-consumer:${botId}`).digest().readUInt32BE()%20000));
+      const loaded=loadConfig(generated);assert.equal(loaded.botId,botId);assert.equal(loaded.testers.size,0);
+      if(organizer){assert.equal(result.botUrl,`https://max.ru/${username}`);assert.equal(result.webhookExists,false);assert(!before.includes('426717762'));assert(!before.includes('t432_hakaton_max_bot'));}
       launch('identity-init.js',['.env.public']);await exited(1);assert.equal(readFileSync('.env.public','utf8'),before);
       assert.deepEqual(requests.map(r=>r.path),['/me','/subscriptions']);
-      console.log(JSON.stringify({result:'PASS',check:'docker-identity-from-example-no-overwrite',transport:'SIMULATED_MAX'}));return;
+      if(organizer){
+        launch('identity-init.js',['.env.identity-mismatch'],{...baseEnv,MAX_EXPECTED_BOT_ID:'777'});await exited(1);
+        assert.match(output,/"code":"AUTH"/);assert(!existsSync('.env.identity-mismatch'));
+        subscribed=true;launch('identity-init.js',['.env.subscription-check']);await exited();
+        assert.equal(JSON.parse(output.trim()).webhookExists,true);assert.equal(readFileSync('.env.public','utf8'),before);
+        assert(requests.every(r=>r.method==='GET'&&['/me','/subscriptions'].includes(r.path)));
+      }
+      console.log(JSON.stringify({result:'PASS',check:'docker-identity-from-example-no-overwrite',botId,exactInt64:true,transport:'SIMULATED_MAX',realMAXRequests:0}));return;
     }
-    const config=loadConfig(process.env);assert.equal(config.botId,BOT);assert.equal(config.admissionMode,'PUBLIC');
+    const config=loadConfig(process.env);assert.equal(config.botId,botId);assert.equal(config.admissionMode,'PUBLIC');
     launch('polling-check.js',[],baseEnv,false);await exited();assert.match(output,/polling_configuration_ready/);
     if(process.env.NODE_EXTRA_CA_CERTS)assert.match(output,/LOADED_BY_NODE/);
+    if(serving){
+      const stopped=new Promise<void>(r=>{process.once('SIGTERM',()=>r());process.once('SIGINT',()=>r());});
+      console.log(output.trim());
+      launch('start-polling.js',[],baseEnv);await until(()=>output.includes('polling_started'));
+      await until(()=>requests.some(r=>r.path==='/updates'));
+      console.log(JSON.stringify({operation:'polling_started',transport:'SIMULATED_MAX',botId,admission:config.admissionMode,firstMarker:requests.find(r=>r.path==='/updates')!.marker}));
+      await stopped;await stop();
+      const db=new Database(config.databasePath,{readonly:true});
+      try {
+        assert.equal((db.prepare("SELECT value FROM meta WHERE key='identity'").get() as {value:string}).value,`live:${botId}`);
+        assert.equal(db.prepare("SELECT value FROM meta WHERE key='poll_campaign'").get(),undefined);
+        const cursor=JSON.parse((db.prepare("SELECT value FROM meta WHERE key='poll_marker'").get() as {value:string}).value);
+        console.log(JSON.stringify({operation:'polling_stopped',transport:'SIMULATED_MAX',cursor,requests:requests.length,realMAXRequests:0}));
+      }finally{db.close();}
+      return;
+    }
     const fixture=resolve(dirname(config.databasePath),'setup-synthetic.json');writeFileSync(fixture,JSON.stringify(stage4Fixture(new Date())));
     const env={...baseEnv,FLOW_DATA_MODE:'synthetic-test',DATA_SNAPSHOT_PATH:fixture};
     const rows=(sql:string)=>{if(!existsSync(config.databasePath))return [];const db=new Database(config.databasePath,{readonly:true});try{return db.prepare(sql).all() as any[];}finally{db.close();}};

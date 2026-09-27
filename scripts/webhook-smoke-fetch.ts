@@ -1,7 +1,7 @@
 // Только test preload. Обычный entrypoint не импортирует этот файл и не принимает API override.
 import { readFileSync } from 'node:fs';
 const origin=new URL(process.env.WEBHOOK_SMOKE_ORIGIN??'');
-if(origin.protocol!=='http:'||origin.hostname!=='127.0.0.1'||process.env.MAX_EXPECTED_BOT_ID!=='777'
+if(origin.protocol!=='http:'||origin.hostname!=='127.0.0.1'||![undefined,'777','9007199254740997'].includes(process.env.MAX_EXPECTED_BOT_ID)
   ||readFileSync(process.env.MAX_BOT_TOKEN_FILE!,'utf8').trim()!=='offline-webhook-smoke-token')throw Error('SMOKE_ONLY');
 const original=globalThis.fetch;
 globalThis.fetch=async(input,init)=>{

@@ -3,6 +3,9 @@ import { z } from 'zod';
 import { pollTimeoutSecondsSchema } from './polling-timeout.js';
 
 const id = z.string().regex(/^[1-9][0-9]{0,18}$/).refine(v => BigInt(v) <= 9223372036854775807n);
+function usableBotToken(token: string | undefined): token is string {
+  return !!token && token.length >= 16 && !/[\s"'<>]|PLACEHOLDER|REPLACE_WITH|PASTE_.*TOKEN|YOUR_.*TOKEN/i.test(token);
+}
 const envSchema = z.object({
   APP_MODE: z.enum(['local', 'live']),
   ADMISSION_MODE: z.enum(['PUBLIC', 'RESTRICTED']).default('RESTRICTED'),
@@ -64,7 +67,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): Config {
     throw new Error('Локальный режим несовместим с live-параметрами');
   }
   if (v.APP_MODE === 'live') {
-    if (!v.MAX_BOT_TOKEN || v.MAX_BOT_TOKEN.length < 16 || /\s|PLACEHOLDER/.test(v.MAX_BOT_TOKEN)) throw new Error('Конфигурация: MAX_BOT_TOKEN');
+    if (!usableBotToken(v.MAX_BOT_TOKEN)) throw new Error('Конфигурация: MAX_BOT_TOKEN — нужен действующий токен бота; пустое значение, пример, кавычки и пробелы недопустимы');
     if (!v.MAX_EXPECTED_BOT_ID || !polling&&!v.PUBLIC_BASE_URL || v.LIVE_SCOPE_CONFIRMED !== 'true') {
       throw new Error('Live требует MAX_EXPECTED_BOT_ID, PUBLIC_BASE_URL и подтверждённый LIVE_SCOPE_CONFIRMED');
     }
@@ -87,7 +90,8 @@ export function loadInspectionConfig(env:NodeJS.ProcessEnv) {
   if(env.MAX_BOT_TOKEN&&env.MAX_BOT_TOKEN_FILE) throw Error('INSPECTION_DUPLICATE_TOKEN');
   let token=env.MAX_BOT_TOKEN;
   if(env.MAX_BOT_TOKEN_FILE) {try {token=readFileSync(env.MAX_BOT_TOKEN_FILE,'utf8').trim();} catch {throw Error('INSPECTION_TOKEN_FILE');}}
-  if(!token||token.length<16||/\s|PLACEHOLDER/.test(token)) throw Error('INSPECTION_TOKEN_REQUIRED');
+  if(!token) throw Error(env.MAX_BOT_TOKEN_FILE?'INSPECTION_TOKEN_EMPTY':'INSPECTION_TOKEN_REQUIRED');
+  if(!usableBotToken(token)) throw Error('INSPECTION_TOKEN_INVALID');
   if(env.MAX_EXPECTED_BOT_ID&&!id.safeParse(env.MAX_EXPECTED_BOT_ID).success) throw Error('INSPECTION_BOT_ID_INVALID');
   return {token,apiBaseUrl:'https://platform-api2.max.ru',requestTimeoutMs:5000,expectedBotId:env.MAX_EXPECTED_BOT_ID};
 }

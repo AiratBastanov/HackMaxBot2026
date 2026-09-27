@@ -3,7 +3,7 @@ import argparse, hashlib, json, pathlib, shutil, subprocess, zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 FILES = ['README.md','AGENTS.md','THIRD_PARTY_NOTICES.md','Dockerfile','compose.yaml','compose.polling.yaml','compose.setup.yaml',
- '.dockerignore','.gitignore','.npmrc','.node-version','.env.example','.env.public.example',
+ '.dockerignore','.gitignore','.npmrc','.node-version','.env.example','.env.public.example','.env.live.example',
  'package.json','package-lock.json','tsconfig.json','openapi.json','DATA-API.yaml',
  'docs/ORGANIZER_CHECK.md','docs/SOURCE_INVENTORY.md','docs/PRIVACY.md','docs/SUBMISSION_CHECKLIST.md',
  'docs/PRIVATE_HANDOFF_TEMPLATE.md','docs/00_REQUIREMENTS_AND_EVIDENCE.md','docs/SUBMISSION_READINESS.md',

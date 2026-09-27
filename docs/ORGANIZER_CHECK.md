@@ -20,12 +20,16 @@
 
 Это Russian Trusted Root CA, действующий до 27.02.2032 21:04:15 UTC. При изменении официального сертификата загрузчик останавливается; новый отпечаток требует сверки с официальным источником. CA не встроен в образ и не добавляется в Windows. Существующий файл не заменяется.
 
+Для своей установки требуется действующий токен управляемого вами бота; репозиторий его не поставляет. Где получить токен и как безопасно создать файл — [README, первая настройка](../README.md#подключение-к-настоящему-max). Пользователь командного бота и локальное демо обходятся без токена.
+
 Из чистой копии:
-- Создайте `secrets`; сохраните токен своего бота в `secrets/max_bot_token` (UTF-8, одна строка, без кавычек).
+
+- Создайте `secrets`; сохраните токен своего бота в `secrets/max_bot_token` (UTF-8, одна строка, без кавычек и расширения `.txt`).
 - Выполните команду получения CA из README. Она собирает образ без использования токена.
 - Задайте `NODE_EXTRA_CA_CERTS_CONTAINER` в текущем PowerShell и выполните `docker compose -f compose.setup.yaml run --rm setup`.
-- Новый `.env.public` создаётся из распределяемого примера. Только `GET /me` и `GET /subscriptions`; пользовательские сообщения и `/updates` на этом шаге не запрашиваются.
-- Для уже настроенной копии используйте существующий `.env.public`. При необходимости добавьте строку `NODE_EXTRA_CA_CERTS_CONTAINER=/run/secrets/max-official-root.pem`. Не заменяйте конфигурацию примером.
+- Новый `.env.public` создаётся из поставляемого примера. Только `GET /me` и `GET /subscriptions`; пользовательские сообщения и `/updates` на этом шаге не запрашиваются. Результат содержит `botId`, `username`, `botUrl`, `webhookExists` и `composeProject`.
+- Откройте `botUrl` своего бота после `polling_started`. ID, ссылка, порт и `COMPOSE_PROJECT_NAME` относятся к ответу `/me`, а не к боту команды.
+- Для уже настроенной копии используйте существующий `.env.public` и прежнее имя проекта. Не заменяйте конфигурацию примером или файлом от другой установки.
 
 `compose.setup.yaml` даёт процессу запись в корень выбранной копии только для нового файла конфигурации. Результат проверяет ID токена; при последующих запусках `/me` обязан вернуть этот же ID. При наличии подписки конфиг может быть создан, но polling откажется запускаться. Подписки автоматически не удаляются.
 
@@ -33,26 +37,28 @@
 |---|---|
 | `secrets/max_bot_token` | `/run/secrets/max_bot_token`, только чтение |
 | `secrets/max-official-root.pem` | `/run/secrets/max-official-root.pem`, только чтение |
-| Именованный том `public-data` | `/app/runtime`: БД, cursor, каталог, кеш обновления |
+| Том `<COMPOSE_PROJECT_NAME>_public-data` | `/app/runtime`: БД, cursor, каталог, кеш обновления своего бота |
 | `.env.public` | Compose читает файл и явно задаёт контейнерные пути |
 
-`--env-file` выполняет интерполяцию Compose; `env_file` сервиса и `environment` формируют окружение контейнера. `polling-check.js` вызывает `loadConfig(process.env)` и проверяет сертификат через `tls.getCACertificates('extra')`: файл действительно прочитан Node при старте. Рабочий локальный `compose.ca.override.yaml`, если он уже есть, можно сохранить; путь CA покрыт основным профилем.
+`--env-file` выполняет интерполяцию Compose; `env_file` сервиса и `environment` формируют окружение контейнера. Профиль передаёт `NODE_EXTRA_CA_CERTS` до запуска Node. `polling-check.js` проверяет настоящим загрузчиком путь токена, ID/порт, режим и CA, уже загруженный Node. Он не обращается к MAX и не выводит токен.
+
+При `identity_init_failed` читайте безопасное поле `reason`: отсутствие файла (`INSPECTION_TOKEN_FILE`), пустой файл (`INSPECTION_TOKEN_EMPTY`) и пример вместо токена (`INSPECTION_TOKEN_INVALID`) отклоняются до сетевого запроса. `AUTH` означает отказ авторизации или несовпадение закреплённого ID. Проверьте токен выбранного бота в кабинете владельца; ID-проверку отключать не нужно. Инициализатор отказывается заменять существующий `.env.public`.
 
 ## Обычный polling
 
 Команда из README — foreground, без лимита тестовой кампании. Порт identity вычисляется из ID и резервируется на localhost; SQLite дополнительно проверяет принадлежность режиму и боту. Между разными компьютерами единственность потребителя обеспечивает оператор.
 
-`MAX_REQUEST_TIMEOUT_MS=5000` ограничивает обычные запросы; диапазон 100–10000 мс. Значение 45000 недопустимо. `MAX_POLL_TIMEOUT_SECONDS=30` задаёт отдельное ожидание `/updates`; deadline клиента = ожидание × 1000 + 5000 мс. Первое получение cursor использует серверное ожидание 0, сохраняя отдельный polling deadline. Медленный стартовый `/me` не является долгим polling.
+`MAX_REQUEST_TIMEOUT_MS=5000` ограничивает обычные запросы; диапазон 100–10000 мс. `MAX_POLL_TIMEOUT_SECONDS=30` задаёт отдельное ожидание `/updates`; deadline клиента — 35000 мс. Стартовые проверки `/me` и `/subscriptions` используют обычный лимит.
 
 `polling_started` подтверждает проверку identity, отсутствие webhook и запуск consumer. `polling_stopped` завершает работу. `SIGINT/SIGTERM` отменяет сетевое ожидание; намеренная остановка не считается timeout. Три последовательные ошибки останавливают consumer. Не запускайте отдельный `/updates` для диагностики работающего бота.
 
-После текста применяется новый POST, затем принятие подтверждённого mid и очистка ровно его предшественника. Callback обычно редактирует текущий экран. Если удаление запрещено, бот пытается снять старую клавиатуру; сервер отвергает устаревшие действия. Неопределённый результат POST не вызывает автоматического повтора или удаления прежнего экрана; восстановление — новый пользовательский ввод, например `/start`. API не предоставляет гарантии exactly-once создания сообщения.
+После текста ответ появляется новым сообщением; кнопка обычно обновляет текущий экран. Если MAX не разрешает удалить старый экран, бот снимает его клавиатуру, где это возможно, и отклоняет устаревшие действия. После неопределённого результата отправки можно продолжить новым вводом, например `/start`.
 
-Контракты: [POST messages](https://dev.max.ru/docs-api/methods/POST/messages), [PUT messages](https://dev.max.ru/docs-api/methods/PUT/messages), [DELETE messages](https://dev.max.ru/docs-api/methods/DELETE/messages), [GET updates](https://dev.max.ru/docs-api/methods/GET/updates). PUT/DELETE проверяют `success`, а не только HTTP 200. Общая очередь с интервалом 1,1 с сохраняет методные ограничения; обычная навигация использует `notify: false`.
+Контракты: [GET me](https://dev.max.ru/docs-api/methods/GET/me), [GET subscriptions](https://dev.max.ru/docs-api/methods/GET/subscriptions), [POST messages](https://dev.max.ru/docs-api/methods/POST/messages), [PUT messages](https://dev.max.ru/docs-api/methods/PUT/messages), [DELETE messages](https://dev.max.ru/docs-api/methods/DELETE/messages), [GET updates](https://dev.max.ru/docs-api/methods/GET/updates).
 
 ## Постоянный webhook
 
-Для постоянной службы нужны подготовленные оператором хост, DNS, доверенный HTTPS:443, MAX webhook secret и действующий каталог. [deploy/compose.public.yaml](../deploy/compose.public.yaml) объединяет приложение и Caddy. В `.env.webhook` задаются `PUBLIC_HOST`, `PUBLIC_BASE_URL`, `ACME_EMAIL`, ID/порт бота, `SOURCE_VERSION`, подтверждения области запуска и единственного consumer; секреты — файлы в `secrets`. Подробные поля — в самом профиле и [OpenAPI](../openapi.json).
+Для постоянной службы нужны подготовленные оператором хост, DNS, доверенный HTTPS:443, MAX webhook secret и действующий каталог. [deploy/compose.public.yaml](../deploy/compose.public.yaml) объединяет приложение и Caddy. Создайте новый `.env.webhook` по [шаблону](../.env.live.example): задайте `PUBLIC_HOST`, `PUBLIC_BASE_URL`, `ACME_EMAIL`, `SOURCE_VERSION` и подтверждения области запуска; перенесите ID, порт и имя проекта из инициализации своего бота. Секреты — файлы в `secrets`. Polling этой identity должен быть остановлен. Подробные поля — в профиле и [OpenAPI](../openapi.json).
 
 Рекомендуемая команда после подготовки инфраструктуры:
 
@@ -62,16 +68,6 @@ docker compose --env-file .env.webhook -f deploy/compose.public.yaml up --build 
 
 Это запускает службу, но не регистрирует webhook. Регистрация — отдельная согласованная операция по [контракту MAX](https://dev.max.ru/docs-api/methods/POST/subscriptions). В этой поставке hosting/deployment не выполнялись.
 
-## Проверки разработчика и комплект
+## Состав полученного комплекта
 
-На Node 22.23.2: `npm ci`, `npm run typecheck`, `npm run build`. Проверки затронутого поведения: `npm run test:flow`, `npm run test:polling`; PUBLIC и конфигурация — соответствующие файлы в `tests`.
-
-`scripts/polling-setup-check.ts` — изолированный симулятор с синтетическим секретом и identity 777. Он запускает фактические `identity-init.js`, `polling-check.js` и `start-polling.js` через явный test preload; production-конфигурация не принимает произвольные API-host. Режим `--initialize` проверяет создание `.env.public` из примера и отказ перезаписи. Обычный режим проверяет ответы на текст/кнопки, ошибку формы, дедупликацию, остановку и cursor после перезапуска. Эти тесты не являются проверкой мобильного или веб-клиента MAX.
-
-Для единого обезличенного комплекта нужен Python 3.12, без сторонних библиотек:
-
-```powershell
-python scripts/organizer-package.py --stage .review/organizer-ready-final --zip
-```
-
-Каталог должен быть новым. Архив включает текущие инструкции, приложение, примеры и обе PPTX; `VERSION.json`, `MANIFEST.sha256` и SHA-256 архива фиксируют версию. Секреты, runtime/БД, шрифты и заполненный закрытый лист исключены. Фактические команды и результаты текущей проверки — [короткая запись](verification/ORGANIZER_SETUP_AND_EDITABLE_PPTX.md); исторические квитанции сохранены отдельно.
+В архиве `VERSION.json` фиксирует commit, `MANIFEST.sha256` — контрольные суммы файлов; SHA-256 архива находится рядом с ним. Комплект содержит исходники, примеры, инструкции и презентации. Токен, рабочие базы и заполненные закрытые материалы передаются отдельно уполномоченным получателям. [Состав сдачи](SUBMISSION_CHECKLIST.md).

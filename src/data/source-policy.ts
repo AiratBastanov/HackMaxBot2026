@@ -19,22 +19,28 @@ export const reviewSchema = z.object({version:z.literal(1), scope:z.enum(['ADMIT
     validUntil:z.string().datetime()}).strict()).min(1).max(institutionIds.length)}).strict();
 export type Review = z.infer<typeof reviewSchema>;
 export type DisplayRef = {snapshotHash:string;eventId:string};
-export function reviewedSnapshot(s:Snapshot, review:Review|null, now:number,publicOnly=false) {
+// Проверка неизменяемых фактов и привязки review отдельно от допуска по часам.
+// Подготовка может сравнивать устаревшие версии, но показ всегда вызывает reviewedSnapshot.
+export function reviewedSnapshotIntegrity(s:Snapshot, review:Review|null,publicOnly=false) {
   if(s.mode!=='REAL_CATALOG'||!s.events.length||s.outcome==='FAILED'||!review)return false;
   if(publicOnly&&review.scope!=='PUBLIC_FACTS')return false;
   const entry=review.entries.find(e=>e.snapshotHash===snapshotDigest(s));
-  if(review.scope==='PUBLIC_FACTS'&&(!entry||now>=Date.parse(publicBasis.validUntil)||entry.sources.some(id=>!publicPolicyHash(id)||entry.publicPolicyHashes?.[id]!==publicPolicyHash(id))))return false;
-  if(!entry||now<Date.parse(review.reviewedAt)||now>=Date.parse(entry.validUntil)
-    ||Date.parse(entry.validUntil)>Date.parse(s.retrievedAt)+s.freshnessHours*3600000
-    ||now>=Date.parse(s.scope.end)||now<Date.parse(s.retrievedAt))return false;
+  if(review.scope==='PUBLIC_FACTS'&&(!entry||entry.sources.some(id=>!publicPolicyHash(id)||entry.publicPolicyHashes?.[id]!==publicPolicyHash(id))))return false;
+  if(!entry||Date.parse(entry.validUntil)>Date.parse(s.retrievedAt)+s.freshnessHours*3600000)return false;
   return s.events.every(e=> {
     const source=sources[e.provider as Institution];
     return source && entry.sources.includes(e.provider as Institution) && s.scope.city===source.city
       && new URL(e.sourceUrl).origin===source.origin && e.sourceLabel===source.label
       && !sourceReviews.some(r=>r.eventId===e.id&&r.status==='QUARANTINED')
-      && e.observations.every(o=>o.provenance&&o.retrievedAt&&now>=Date.parse(o.retrievedAt)
-        && now-Date.parse(o.retrievedAt)<=s.freshnessHours*3600000);
-  })&&s.venues.every(v=>v.observations.every(o=>o.provenance&&o.retrievedAt&&now>=Date.parse(o.retrievedAt)&&now-Date.parse(o.retrievedAt)<=s.freshnessHours*3600000));
+      && e.observations.every(o=>o.provenance&&o.retrievedAt);
+  })&&s.venues.every(v=>v.observations.every(o=>o.provenance&&o.retrievedAt));
+}
+export function reviewedSnapshot(s:Snapshot, review:Review|null, now:number,publicOnly=false) {
+  if(!reviewedSnapshotIntegrity(s,review,publicOnly)||!review)return false;
+  const entry=review.entries.find(e=>e.snapshotHash===snapshotDigest(s))!;
+  if(review.scope==='PUBLIC_FACTS'&&now>=Date.parse(publicBasis.validUntil))return false;
+  if(now<Date.parse(review.reviewedAt)||now>=Date.parse(entry.validUntil)||now>=Date.parse(s.scope.end)||now<Date.parse(s.retrievedAt))return false;
+  return [...s.events,...s.venues].every(v=>v.observations.every(o=>now>=Date.parse(o.retrievedAt!)&&now-Date.parse(o.retrievedAt!)<=s.freshnessHours*3600000));
 }
 export function permittedRefs(snapshots:readonly Snapshot[],review:Review|null,refs:DisplayRef[]|undefined,now:number,publicOnly=false) {
   return Boolean(refs?.length && refs.every(ref=>snapshots.some(s=>snapshotDigest(s)===ref.snapshotHash

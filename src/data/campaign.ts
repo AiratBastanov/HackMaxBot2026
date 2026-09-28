@@ -61,8 +61,10 @@ export class CampaignClient extends InstitutionClient {
   private readonly lock:string;private readonly fd:number;private closed=false;
   private readonly hosts=new Map<string,Promise<unknown>>();private active=0;private waiters:(()=>void)[]=[];
   private readonly forms=new Map<string,string>();
+  private readonly runStarted=Date.now();private readonly initialRequests:number;
   private wave:{startedAt:string;finishedAt?:string;elapsedMs:number}|undefined;
-  constructor(root:string){super(root);this.lock=resolve(root,'campaign.lock');
+  constructor(root:string,private readonly bounds?:{wallMs:number;requests:number;cacheAgeMs:number}){super(root);this.initialRequests=this.ledger.requests.length;this.lock=resolve(root,'campaign.lock');
+    if(bounds&&(!Number.isFinite(bounds.wallMs)||bounds.wallMs<20_000||bounds.wallMs>campaignLimits.waveMs||!Number.isInteger(bounds.requests)||bounds.requests<1||bounds.requests>campaignLimits.requests||!Number.isFinite(bounds.cacheAgeMs)||bounds.cacheAgeMs<=0||bounds.cacheAgeMs>72*3600000))throw Error('BOOTSTRAP_BOUNDS');
     if(this.ledger.version&&this.ledger.version!==2)throw Error('CAMPAIGN_VERSION');
     if(this.ledger.waves?.some(w=>!w.finishedAt))throw Error('INTERRUPTED_WAVE_REVIEW_REQUIRED');
     this.fd=openSync(this.lock,'wx');writeFileSync(this.fd,String(process.pid));
@@ -78,11 +80,12 @@ export class CampaignClient extends InstitutionClient {
   }
   close(){if(this.closed)return;this.closed=true;if(this.wave)this.wave.finishedAt=new Date().toISOString();this.save();closeSync(this.fd);unlinkSync(this.lock);}
   private save(){if(this.wave)this.wave.elapsedMs=Date.now()-Date.parse(this.wave.startedAt);this.ledger.networkMs=this.ledger.waves!.reduce((n,w)=>n+w.elapsedMs,0);atomicJson(resolve(this.root,'acquisition.json'),this.ledger);}
-  override cached(url:string):Page|null {const page=super.cached(url);if(page){const actual=new URL(page.url);if(actual.searchParams.has('_catalog_request')){actual.searchParams.delete('_catalog_request');return {...page,url:actual.href};}return page;}
+  private fresh(page:Page|null){return page&&(!this.bounds||Date.now()-Date.parse(page.fetchedAt)<this.bounds.cacheAgeMs)?page:null;}
+  override cached(url:string):Page|null {const page=this.fresh(super.cached(url));if(page){const actual=new URL(page.url);if(actual.searchParams.has('_catalog_request')){actual.searchParams.delete('_catalog_request');return {...page,url:actual.href};}return page;}
     const r=this.ledger.requests.filter(r=>r.url===url&&r.outcome==='ROBOTS_ABSENT').at(-1);
-    if(r?.finishedAt)return {url,body:'',hash:bodyHash(''),fetchedAt:r.finishedAt,modified:null};
+    if(r?.finishedAt)return this.fresh({url,body:'',hash:bodyHash(''),fetchedAt:r.finishedAt,modified:null});
     const redirect=this.ledger.requests.filter(r=>r.url===url&&r.outcome==='REDIRECT').at(-1);
-    if(redirect?.location&&redirect.location!==url)return super.cached(new URL(redirect.location,url).href);return null;
+    if(redirect?.location&&redirect.location!==url)return this.fresh(super.cached(new URL(redirect.location,url).href));return null;
   }
   override async get(value:string):Promise<Page>{const url=campaignUrl(value),cached=this.cached(value);if(cached)return cached;
     if(url.pathname!=='/robots.txt'){
@@ -107,7 +110,7 @@ export class CampaignClient extends InstitutionClient {
     const robots=this.cached(url.origin+'/robots.txt');
     const spacing=robotsSpacing(robots?.body??'')*1000;
     const wait=Math.max(0,Date.parse(last?.startedAt??'1970-01-01')+spacing-Date.now());
-    if(this.ledger.requests.length>=campaignLimits.requests||this.ledger.bytes+campaignLimits.bodyBytes*campaignLimits.concurrency>campaignLimits.bytes||this.ledger.networkMs!+wait+20_000>campaignLimits.wallMs||this.wave.elapsedMs+wait+20_000>campaignLimits.waveMs)throw Error('ACQUISITION_BOUNDARY');
+    if(this.ledger.requests.length>=campaignLimits.requests||this.ledger.bytes+campaignLimits.bodyBytes*campaignLimits.concurrency>campaignLimits.bytes||this.ledger.networkMs!+wait+20_000>campaignLimits.wallMs||this.wave.elapsedMs+wait+20_000>campaignLimits.waveMs||this.bounds&&(this.ledger.requests.length-this.initialRequests>=this.bounds.requests||Date.now()-this.runStarted+wait+20_000>this.bounds.wallMs))throw Error('ACQUISITION_BOUNDARY');
     if(wait)await delay(wait);
     const actual=new URL(url),form=this.forms.get(url.href);if(actual.searchParams.has('_catalog_request')){if(!form)throw Error('PUBLIC_FORM_CONTEXT_REQUIRED');actual.searchParams.delete('_catalog_request');}
     const row:FetchRow&{method?:string;formHash?:string}={url:url.href,startedAt:new Date().toISOString(),outcome:'STARTED',bytes:0,...(form?{method:'POST',formHash:bodyHash(form)}:{})};this.ledger.requests.push(row);this.save();
@@ -127,7 +130,7 @@ export class CampaignClient extends InstitutionClient {
       if(['HTTP_401','HTTP_403','HTTP_429','ACCESS_CHALLENGE'].includes(row.outcome))this.ledger.blocked![url.hostname]=row.outcome;
       if(!transient||retry||backoff>60000)throw Error(row.outcome);
     }finally{row.finishedAt=new Date().toISOString();this.save();}
-    if(transient){await delay(backoff);return this.fetchOne(url,1,redirects);}
+    if(transient){if(this.bounds&&Date.now()-this.runStarted+backoff+20_000>this.bounds.wallMs)throw Error('ACQUISITION_BOUNDARY');await delay(backoff);return this.fetchOne(url,1,redirects);}
     if(next){const target=campaignUrl(next);if(target.hostname!==url.hostname)throw Error('CROSS_HOST_REDIRECT_REVIEW:'+next);
       if(target.pathname!=='/robots.txt'&&robots&&!robotsAllows(robots.body,target.pathname+target.search,robotsSpacing(robots.body)))throw Error('ROBOTS_DENIED');
       return this.fetchOne(target,0,redirects+1);}

@@ -1,8 +1,28 @@
 # Только на уже согласованном host. Не запускается локальным smoke.
 name: maxbot-real-webhook
 services:
+  catalog-init:
+    image: maxbot-real-webhook:reviewed
+    build:
+      context: ..
+      target: runtime
+      args:
+        SOURCE_VERSION: ${SOURCE_VERSION:?Укажите commit исходного кода}
+    command: [node, dist/scripts/catalog-prepare.js]
+    environment: {FLOW_DATA_MODE: real}
+    volumes: [webhook-data:/app/runtime]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck: {disable: true}
+    user: "1000:1000"
+    init: true
+    restart: "no"
   app:
     image: maxbot-real-webhook:reviewed
+    depends_on:
+      catalog-init: {condition: service_completed_successfully}
     build:
       context: ..
       target: runtime

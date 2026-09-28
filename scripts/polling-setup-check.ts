@@ -14,6 +14,8 @@ import {stage4Fixture} from '../src/culture/stage4-fixture.js';
 import {parseJson} from '../src/contracts.js';
 import type {MessageRequest,Button} from '../src/max.js';
 import {ACTOR,CHAT,BOT,reply,callback,message,encode} from '../tests/fixtures.js';
+import {readReviewedCatalog} from '../src/catalog-prepare.js';
+import {Catalog} from '../src/culture/catalog.js';
 
 // Явно запускаемый изолированный тест. Обычные entrypoints не загружают preload.
 // Отказ с любым настоящим токеном; внешний MAX host в конфиге по-прежнему фиксирован.
@@ -36,10 +38,15 @@ async function main() {
       let result:unknown;
       if(method==='GET'&&u.pathname==='/me')result={user_id:BigInt(botId),is_bot:true,first_name:'Синтетический бот',...(organizer?{username}:{})};
       else if(method==='GET'&&u.pathname==='/subscriptions')result={subscriptions:subscribed?[{url:'https://integration.example.org/webhook',time:1,update_types:[]}]:[]};
-      else if(!initializing&&method==='GET'&&u.pathname==='/updates') {const batch=updates.splice(0,10);marker=Math.max(marker,Number(u.searchParams.get('marker')??0))+1;result={updates:batch,marker};if(batch.length)deliveredMarker=marker;}
+      else if(!initializing&&method==='GET'&&u.pathname==='/updates') {const batch=updates.splice(0,10);
+        // Fixtures адресованы базовой test identity; сценарий own-bot использует
+        // другую точную identity, которую только что вернул симулятор GET /me.
+        if(organizer)for(const update of batch){const u=update as any,m=u.message;if(u.update_type==='message_created'&&m?.recipient?.user_id!==undefined)m.recipient.user_id=BigInt(botId);if(m?.sender?.is_bot)m.sender.user_id=BigInt(botId);}
+        marker=Math.max(marker,Number(u.searchParams.get('marker')??0))+1;result={updates:batch,marker};if(batch.length)deliveredMarker=marker;}
       else if(!initializing&&method==='POST'&&u.pathname==='/messages') {
         assert.equal(u.searchParams.get('user_id'),ACTOR);active=`setup-message-${++seq}`;messages.set(active,body!);
-        result={message:{...message(ACTOR,active,CHAT),body:{mid:active,seq:1,...body}}};
+        const sent=message(ACTOR,active,CHAT);sent.sender.user_id=BigInt(botId);
+        result={message:{...sent,body:{mid:active,seq:1,...body}}};
       }else if(!initializing&&method==='PUT'&&u.pathname==='/messages') {const mid=u.searchParams.get('message_id')!;assert(messages.has(mid));messages.set(mid,body!);result={success:true};}
       else if(!initializing&&method==='DELETE'&&u.pathname==='/messages') {const mid=u.searchParams.get('message_id')!;assert.notEqual(mid,active);messages.delete(mid);result={success:true};}
       else if(!initializing&&method==='POST'&&u.pathname==='/answers')result={success:true};
@@ -97,17 +104,36 @@ async function main() {
       }finally{db.close();}
       return;
     }
-    const fixture=resolve(dirname(config.databasePath),'setup-synthetic.json');writeFileSync(fixture,JSON.stringify(stage4Fixture(new Date())));
-    const env={...baseEnv,FLOW_DATA_MODE:'synthetic-test',DATA_SNAPSHOT_PATH:fixture};
+    const realCatalog=process.argv.includes('--real-catalog');
+    const fixture=resolve(dirname(config.databasePath),'setup-synthetic.json');
+    if(!realCatalog)writeFileSync(fixture,JSON.stringify(stage4Fixture(new Date())));
+    else {const prepared=readReviewedCatalog(dirname(config.snapshotPath!));assert.equal(prepared.pointer.snapshot,'83664734f5fbb931cb19.json');assert.equal(prepared.snapshots.flatMap(s=>s.events).length,858);}
+    const env=realCatalog?baseEnv:{...baseEnv,FLOW_DATA_MODE:'synthetic-test',DATA_SNAPSHOT_PATH:fixture};
     const rows=(sql:string)=>{if(!existsSync(config.databasePath))return [];const db=new Database(config.databasePath,{readonly:true});try{return db.prepare(sql).all() as any[];}finally{db.close();}};
     const drain=async()=>{await until(()=>updates.length===0&&Number(JSON.parse(rows("SELECT value FROM meta WHERE key='poll_marker'")[0]?.value??'null'))>=deliveredMarker&&rows("SELECT (SELECT count(*) FROM inbox WHERE status='PENDING')+(SELECT count(*) FROM outbox WHERE status IN ('PENDING','SENDING')) n")[0]?.n===0);};
     const text=()=>messages.get(active)!.text;
     const say=async(value:string)=>{updates.push(reply(undefined,Date.now(),value,ACTOR,`setup-input-${++seq}`));await drain();};
     const click=async(label:string)=>{
+      if(!messages.has(active))throw Error('SIMULATED_SCREEN_MISSING: '+label+' / '+output.slice(-1500)+' / '+JSON.stringify(rows("SELECT status,count(*) n FROM outbox GROUP BY status")));
       const buttons:Button[]=messages.get(active)!.attachments?.flatMap(a=>a.payload.buttons.flat())??[];
-      const b=buttons.find(b=>b.text===label);assert(b?.type==='callback',label);
+      const b=buttons.find(b=>b.text===label);assert(b?.type==='callback',label+': '+text()+' / '+JSON.stringify(rows('SELECT status,result FROM inbox ORDER BY rowid DESC LIMIT 3')));
       const raw=callback('',`setup-callback-${++seq}`,ACTOR,Date.now());raw.callback.payload=b.payload;raw.message.body.mid=active;updates.push(raw);await drain();
+      const latest=rows('SELECT result,payload FROM inbox ORDER BY rowid DESC LIMIT 1')[0];
+      if(latest?.result==='FLOW_ACTION_EXPIRED_OR_FOREIGN')throw Error('SIMULATED_CALLBACK: '+JSON.stringify({event:JSON.parse(latest.payload),screen:rows('SELECT * FROM flow_screens'),state:rows('SELECT actor,revision,event_ts,updated_at FROM flow_states'),actions:rows('SELECT * FROM flow_actions')}));
     };
+    if(realCatalog){
+      launch('start-polling.js',[],env);await until(()=>output.includes('polling_started'));
+      await say('/start');await click('Подобрать');await say('Екатеринбург');
+      for(const label of ['Любая дата','Любое время','Продолжить','Без лимита','Любая тема','Показать результаты'])await click(label);
+      await click('Подробнее 1');const state=JSON.parse(rows('SELECT data FROM flow_states')[0].data),card=state.cards.find((c:any)=>c.identity===state.selected);
+      assert(card?.displayRef);assert(Catalog.load(config).permits([card.displayRef],Date.now(),true));
+      await click('Сохранить');const saved=rows('SELECT * FROM bookmarks');assert.equal(saved.length,1);await stop();
+      const cursor=rows("SELECT value FROM meta WHERE key='poll_marker'")[0].value,requestIndex=requests.length;
+      launch('start-polling.js',[],env);await until(()=>output.includes('polling_started'));await until(()=>requests.slice(requestIndex).some(r=>r.path==='/updates'));
+      assert.equal(requests.slice(requestIndex).find(r=>r.path==='/updates')!.marker,JSON.parse(cursor));
+      await say('/saved');await click('Открыть 1');assert.match(text(),/Сохранено/);assert.deepEqual(rows('SELECT * FROM bookmarks'),saved);await stop();
+      console.log(JSON.stringify({result:'PASS',check:'FRESH-01/PUBLIC-01/RESTART-01/BOOKMARK-01',dataset:'83664734f5fbb931cb19',events:858,eventId:card.eventId,transport:'SIMULATED_MAX',realMAXRequests:0}));return;
+    }
     launch('start-polling.js',[],env);await until(()=>output.includes('polling_started'));
     await say('/start');let previous=active;await click('Подобрать');assert.equal(active,previous);
     await say('Казань');assert.notEqual(active,previous);assert.match(text(),/На какую дату/);

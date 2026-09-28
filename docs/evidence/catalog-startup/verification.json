@@ -1,0 +1,288 @@
+{
+  "date": "2026-09-28",
+  "scope": "Автоматическая подготовка real-каталога; application/SQLite/renderer и симулятор MAX, изолированные Docker проекты",
+  "result": "PASS",
+  "applicationCommitReference": "docs/DEFENSE_FACTS.json#applicationCommit",
+  "dataset": "83664734f5fbb931cb19",
+  "sourceFilesSha256": {
+    "src/catalog-prepare.ts": "96b6eef3c8633c51441041dd1e27e1703754583c9fe4e0b352cf8e261ccd28f3",
+    "src/data/campaign.ts": "6afe6d52e36439ecd51cfb96175d0f91e96584647359a97829c7eda5da5503b2",
+    "src/data/source-policy.ts": "c013d55b9a9fb64c487ae4fe97288d1d8231837b3c9dc29be7b31bbce02e61a4",
+    "src/index.ts": "4b1c3f05c21e2c76270d5ffa04b1c87af17d2478cd6d9142920e737e856d7dfb",
+    "scripts/catalog-prepare.ts": "9b7972150a667ae942e53af3262b530e4d8d76393c730a31bc85ba97a2d430b7",
+    "scripts/start-polling.ts": "fe7a36e7ad744482b2478212f83a207dcbc0e0941c3e4a7f2054a543a3b7e046",
+    "scripts/polling-setup-check.ts": "be83269561b3f1be8401c60b84bd149631fd12b5dee3941d7efd618f922e094f",
+    "scripts/catalog-startup-scenarios.ts": "50a66b4bd24d9feff992bcea820f00015116bb1e28f068c54426a3cb56f0771c",
+    "scripts/catalog-startup-container.mjs": "92f99bce6dfd24bd85071cb47c7b432ba15f9f9eca6dedb59d8fa0caae57f687",
+    "scripts/multi-city-checks.mjs": "f5f9efb293dbb3c9b9e99adfeaa0a173caf92577e3140e9bfa138f802f082f65",
+    "tests/catalog-startup.test.ts": "12d154d3ab153b698eac0c93c0f3dbe4525c47a3d4616bb185551e4dd085442e",
+    "compose.polling.yaml": "79484883812c4d6e6f864022c3ef0ad6c957753efcf58ebaf63c6f137c146129",
+    "deploy/compose.public.yaml": "b35554e78d46673c8fb73501b9bb1ee033e8fc4756b0a0690e25d51207d69c1c"
+  },
+  "checks": {
+    "typecheck": {
+      "name": "typecheck",
+      "args": [],
+      "started": "2026-09-28T11:45:37.402Z",
+      "elapsedMs": 646,
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "error": null,
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "log": ".review/multi-city/typecheck-1790595937402.log"
+    },
+    "build": {
+      "name": "build",
+      "args": [],
+      "started": "2026-09-28T11:46:11.226Z",
+      "elapsedMs": 729,
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "error": null,
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "log": ".review/multi-city/build-1790595971226.log"
+    },
+    "shared": {
+      "name": "shared",
+      "args": [],
+      "started": "2026-09-28T11:47:13.731Z",
+      "elapsedMs": 25651,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "error": null,
+      "tests": 343,
+      "passed": 343,
+      "failed": 0,
+      "log": ".review/multi-city/shared-1790596033731.log"
+    }
+  },
+  "composePollingAndDemo": {
+    "result": "PASS",
+    "project": "maxbot-catalog-1790595627669",
+    "image": "maxbot-catalog-1790595627669:test",
+    "network": "none",
+    "realMAXRequests": 0,
+    "existingContainersUnchanged": true,
+    "cleanBuildBenchmark": false,
+    "results": [
+      {
+        "name": "existing-ids",
+        "exitCode": 0,
+        "elapsedMs": 116,
+        "error": null
+      },
+      {
+        "name": "existing-before",
+        "exitCode": 0,
+        "elapsedMs": 57,
+        "error": null
+      },
+      {
+        "name": "build-2",
+        "exitCode": 0,
+        "elapsedMs": 6690,
+        "error": null
+      },
+      {
+        "name": "run-3",
+        "exitCode": 0,
+        "elapsedMs": 13284,
+        "error": null
+      },
+      {
+        "name": "documented-real-start",
+        "exitCode": 0,
+        "elapsedMs": 50441,
+        "error": null
+      },
+      {
+        "name": "upgrade-and-faults",
+        "exitCode": 0,
+        "elapsedMs": 20766,
+        "error": null
+      },
+      {
+        "name": "stale-pre-start",
+        "exitCode": 1,
+        "elapsedMs": 12108,
+        "error": null
+      },
+      {
+        "name": "up-7",
+        "exitCode": 0,
+        "elapsedMs": 7394,
+        "error": null
+      },
+      {
+        "name": "exec-8",
+        "exitCode": 0,
+        "elapsedMs": 28334,
+        "error": null
+      },
+      {
+        "name": "restart-9",
+        "exitCode": 0,
+        "elapsedMs": 383,
+        "error": null
+      },
+      {
+        "name": "exec-10",
+        "exitCode": 0,
+        "elapsedMs": 314,
+        "error": null
+      },
+      {
+        "name": "existing-after",
+        "exitCode": 0,
+        "elapsedMs": 55,
+        "error": null
+      },
+      {
+        "name": "cleanup-maxbot-catalog-1790595627669",
+        "exitCode": 0,
+        "elapsedMs": 275,
+        "error": null
+      },
+      {
+        "name": "cleanup-maxbot-catalog-1790595627669-stale",
+        "exitCode": 0,
+        "elapsedMs": 286,
+        "error": null
+      },
+      {
+        "name": "cleanup-maxbot-catalog-1790595627669-demo",
+        "exitCode": 0,
+        "elapsedMs": 383,
+        "error": null
+      }
+    ]
+  },
+  "finalNoDowngradeAndFaults": {
+    "result": "PASS",
+    "image": "maxbot-catalog-final-1790596049391:test",
+    "network": "none",
+    "cases": {
+      "result": "PASS",
+      "transport": "SIMULATED_MAX",
+      "network": "none",
+      "fixtureClock": "2026-09-28T09:02:17.370Z",
+      "dataset": "83664734f5fbb931cb19",
+      "reports": [
+        {
+          "id": "FRESH-01",
+          "result": "PASS"
+        },
+        {
+          "id": "RESTART-01",
+          "result": "PASS"
+        },
+        {
+          "id": "UPGRADE-01",
+          "result": "PASS",
+          "sqliteBytesUnchanged": true
+        },
+        {
+          "id": "BOOKMARK-01",
+          "result": "PASS",
+          "eventId": "mie:azins_magic_of_name"
+        },
+        {
+          "id": "NO-DOWNGRADE-01",
+          "result": "PASS"
+        },
+        {
+          "id": "FAIL-01",
+          "result": "PASS"
+        },
+        {
+          "id": "ATOMIC-01",
+          "result": "PASS"
+        },
+        {
+          "id": "STALE-01",
+          "result": "PASS",
+          "refreshInvoked": true,
+          "consumerStarted": false
+        },
+        {
+          "id": "PARTIAL-REFRESH-01",
+          "result": "PASS",
+          "expiredShardsHidden": true,
+          "independentShardsPreserved": 25
+        },
+        {
+          "id": "OFFLINE-01",
+          "result": "PASS"
+        }
+      ]
+    },
+    "results": [
+      {
+        "name": "final-code-build",
+        "exit": 0,
+        "elapsedMs": 8269
+      },
+      {
+        "name": "final-upgrade-cases",
+        "exit": 0,
+        "elapsedMs": 20154
+      }
+    ]
+  },
+  "composeWebhookInit": {
+    "result": "PASS",
+    "project": "maxbot-catalog-1790595627669-webhook",
+    "network": "none",
+    "servicesStarted": [
+      "catalog-init"
+    ],
+    "caddyOrConsumerStarted": false,
+    "results": [
+      {
+        "step": "config",
+        "exit": 0
+      },
+      {
+        "step": "init",
+        "exit": 0
+      },
+      {
+        "step": "repeat",
+        "exit": 0
+      }
+    ]
+  },
+  "sourcePagesFetched": 0,
+  "liveMAXRequests": 0,
+  "personalDatabaseAccessed": false,
+  "workingContainerUnchanged": true,
+  "humanTesting": "NOT_RUN / DEFERRED_BY_USER",
+  "deployment": "NOT_PERFORMED",
+  "historicalEvidence": {
+    "campaignApplication": "9de3d29ee0dfb9550e7809f8ea371b3f4cb6ce43",
+    "automatedTests": 341,
+    "sourceSamples": 42,
+    "sqliteSimulatedJourneys": 11,
+    "sourceSamplesAndMatrixRerun": false
+  },
+  "bootstrap": {
+    "approvedSources": [
+      "bashopera",
+      "samara-opera",
+      "spb-opera"
+    ],
+    "networkWallMs": 120000,
+    "requestLimit": 24,
+    "freshCacheReparseVerified": true,
+    "allSourcesFreshnessPromised": false
+  },
+  "correctionsDuringVerification": [
+    "Лимит файла новой интеграционной проверки повышен с 20 до 60 секунд при внешнем watchdog 120 секунд.",
+    "Симулятор own-bot теперь адресует входящие события и sender исходящего ответа фактической test identity.",
+    "Более поздний операторский каталог сохраняется целиком, включая намеренное отсутствие источников; проверена уменьшенная fixture-версия."
+  ]
+}

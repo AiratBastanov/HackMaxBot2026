@@ -1,9 +1,24 @@
 # Только development/evaluation, foreground. Не совмещать с webhook или другой копией бота.
 name: cultural-plan-polling
 services:
+  catalog-init:
+    image: ${CULTURAL_PLAN_IMAGE:-cultural-plan:local}
+    build: {context: ., target: runtime}
+    command: [node, dist/scripts/catalog-prepare.js]
+    environment: {FLOW_DATA_MODE: real}
+    volumes: [public-data:/app/runtime]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck: {disable: true}
+    init: true
+    restart: "no"
   app:
     image: ${CULTURAL_PLAN_IMAGE:-cultural-plan:local}
     build: {context: ., target: runtime}
+    depends_on:
+      catalog-init: {condition: service_completed_successfully}
     env_file: .env.public
     environment:
       APP_MODE: live

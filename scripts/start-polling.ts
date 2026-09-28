@@ -1,6 +1,6 @@
 import { loadConfig } from '../src/config.js';
 import { acquireConsumerLock } from '../src/consumer-lock.js';
-import { seedCatalog } from '../src/catalog-bootstrap.js';
+import { requirePreparedCatalog } from '../src/catalog-prepare.js';
 import { PollingMax, verifyPolling, runPolling } from '../src/polling.js';
 import { LiveMax, MaxError, outboundAuthorization } from '../src/max.js';
 import { Storage } from '../src/storage.js';
@@ -9,7 +9,7 @@ import { Catalog } from '../src/culture/catalog.js';
 
 async function main() {
   const config=loadConfig(process.env);
-  seedCatalog(config);
+  requirePreparedCatalog(config);
   if(config.mode!=='live'||config.ingress!=='polling')throw Error('POLLING_PROFILE_REQUIRED');
   const release=await acquireConsumerLock(config.botId),controller=new AbortController();
   const stop=()=>controller.abort();process.once('SIGINT',stop);process.once('SIGTERM',stop);

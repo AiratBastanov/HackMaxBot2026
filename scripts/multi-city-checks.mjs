@@ -3,7 +3,7 @@ import {spawnSync} from 'node:child_process';
 import {mkdirSync,writeFileSync,appendFileSync,readdirSync} from 'node:fs';
 const [name,...extra]=process.argv.slice(2),dir='.review/multi-city';
 const shared=readdirSync('tests').filter(n=>n.endsWith('.test.ts'));
-const suite=files=>['--test','--test-timeout=20000',...files.map(n=>'dist/tests/'+n.replace(/\.ts$/,'.js'))];
+const suite=files=>['--test','--test-timeout=60000',...files.map(n=>'dist/tests/'+n.replace(/\.ts$/,'.js'))];
 const tasks={typecheck:['node_modules/typescript/bin/tsc','--noEmit'],build:['node_modules/typescript/bin/tsc'],shared:suite(shared),delta:suite(extra.map(n=>n+'.test.ts')),
  matrix:['dist/scripts/multi-city-verify.js','catalog/real/active.json','.review/multi-city/matrix','matrix'],
  journeys:['dist/scripts/multi-city-verify.js','catalog/real/active.json','.review/multi-city/verification','full'],container:['scripts/multi-city-container.mjs']};

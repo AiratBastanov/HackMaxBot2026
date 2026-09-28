@@ -2,11 +2,11 @@ import { loadConfig } from './config.js';
 import { createApp } from './app.js';
 import { LiveMax } from './max.js';
 import { acquireConsumerLock } from './consumer-lock.js';
-import { seedCatalog } from './catalog-bootstrap.js';
+import { requirePreparedCatalog } from './catalog-prepare.js';
 
 async function main() {
   const config = loadConfig(process.env);
-  seedCatalog(config);
+  requirePreparedCatalog(config);
   // Только GET. Runtime не регистрирует webhook; identity проверяется до открытия БД/порта.
   if(config.mode==='live') await new LiveMax(config).me();
   const release = config.mode === 'live' ? await acquireConsumerLock(config.botId) : async () => {};

@@ -1,12 +1,12 @@
 # Каталог по городам/источникам: версии и измерение 28.09.2026 — docs/DEFENSE_FACTS.json.
 # Расширение данных не добавляет HTTP endpoint; внешние API-требования условны.
-# DRAFT / NOT_SUBMITTED. Девять групп C05, PDF 10.
+# Применимые технические проверки: девять групп C05, PDF 10.
 # Ключи этого черновика не объявляются официальной схемой организаторов.
-status: DRAFT
-schema_version: null # Не предоставлена; не подменяется версией OpenAPI.
+purpose: Описание технических HTTP-проверок
+schema_version: null # Заполняется по схеме организатора при внешней интеграции.
 solution: Культурный план
-team: null # Команда не указана.
-base_https_url: null # Одобренный действующий origin отсутствует.
+team: [Садыков Булат, Бастанов Айрат, Белова Маргарита]
+base_https_url: null # HTTPS origin выбранной webhook-установки; для polling не применяется.
 openapi: ../../openapi.json
 checks:
   - name: Доступность процесса и SQLite
@@ -51,19 +51,19 @@ checks:
         required: true
         schema_ref: ../../openapi.json#/components/schemas/Update
         max_bytes: 65536
-    role: Сервис MAX с webhook secret; акторы A/B из согласованного allowlist
+    role: Сервис MAX с webhook secret; PUBLIC — валидный инициатор личного диалога, RESTRICTED — allowlist
     expected_responses:
       '200':
         content_type: application/json
         type: object
         required: [status]
         properties:
-          status: {enum: [accepted, duplicate, ignored]}
+          status: {enum: [accepted, duplicate, ignored, rate_limited]}
       '400': {content_type: application/json, type: object, required: [error], schema_ref: '../../openapi.json#/components/schemas/Error'}
       '401': {content_type: application/json, type: object, required: [error], schema_ref: '../../openapi.json#/components/schemas/Error'}
       '413': {content_type: application/json, type: object, required: [error], schema_ref: '../../openapi.json#/components/schemas/Error'}
       '415': {content_type: application/json, type: object, required: [error], schema_ref: '../../openapi.json#/components/schemas/Error'}
       '503': {content_type: application/json, type: object, required: [error], schema_ref: '../../openapi.json#/components/schemas/Error'}
     fixtures: ../../tests/fixtures.ts
-    local_journey: ../../scripts/readiness-walkthrough.ts
+    local_journey: ../../scripts/organizer-check.ts
     limitation: HTTP 200 означает durable приём или безопасное игнорирование; не доказывает видимость в MAX.

@@ -44,8 +44,8 @@ def verify(pptx_dir, pdf_dir, vector_dir, report_dir):
     assert all(x['textAndGroupSavedReopened'] for x in office['decks'])
     report={'renderer':office['renderer'], 'applicationCommit':facts['applicationCommit'],
             'datasetVersion':facts['dataset']['version'], 'measurementDate':facts['measurementDate'],
-            'applicationTests':'RECORDED_ONLY_NOT_RERUN',
-            'REAL_APPLICATION_SMOKE':'NOT_APPLICABLE_WITH_REASON: документы и экспорт; приложение не изменено',
+            'applicationTests':facts.get('currentChecks',facts['recordedChecks']),
+            'scope':'Экспорт и редактируемость; проверки приложения записаны отдельно',
             'decks':{},'officeEditability':office['decks']}
     decks=[]; pdfs=[]; notes=speaker_notes(source)
     for name,count,offset in [('cultural-plan',13,0),('cultural-plan-submission-preview',14,1)]:

@@ -1,27 +1,27 @@
 {
-  "reviewed_application_commit": "9de3d29ee0dfb9550e7809f8ea371b3f4cb6ce43",
+  "reviewed_application_commit": "95f55a036eab757bc8b8909a315a964562ea2161",
   "dataset_version": "83664734f5fbb931cb19",
   "measurement_date": "2026-09-28",
-  "artifact_metadata_updated_at": "2026-09-28T10:30:11.608770+00:00",
+  "artifact_metadata_updated_at": "2026-09-28T11:58:34.428863+00:00",
   "renderer": "Microsoft PowerPoint 16.0",
   "python": "3.12",
   "pymupdf": "1.26.3",
   "inputs_sha256": {
-    "slides.json": "348850bba25388cc6a1e99f41ed3625075c636edda8840b6414d8ab582b061a4",
-    "render.py": "ee31bd10c14263f2777c74e0a4396e5fcead24e5fad45c2a39fd2a16c68b1113",
-    "export_pptx.py": "d3b0ca625b9ff070c8bbe3f50f0836f0729078f7c2665e62876bf60f90892f23",
+    "slides.json": "7aad047ed5042000f49a0c7790200b0c1e54aa6977ffdfbc0982ffe19c3acb23",
+    "render.py": "149d14f1eaf95df89c97ac269e9330879a66be26e9b8a5e9f7700628e88d7793",
+    "export_pptx.py": "8ff690d6067fa592f74038748016d5b88f62a5b598d0a81c53fd7d1fa6d8d20e",
     "export_office.ps1": "35dc606dacf61ca2fad43291e033bee2d9c6108e1182302fb186b316067abc85",
-    "verify_exports.py": "8eaa91d5bb942e8e2c1adf03584d13619ce4b400b181478d22c2316c93a0dd3a",
-    "SPEAKER_NOTES.md": "46367a3f3c1352efe3eab45a63ffb1d236ffdf6abe8bed421b1a05b3630058e2",
+    "verify_exports.py": "a2ec6465e02248df9ceac6c754f5cd25cd4e1679a53317390f0b199a2911e99a",
+    "SPEAKER_NOTES.md": "b447af0e52890538e1269104800d27320fb8935931f4e1f9388df9db73ec967c",
     "requirements.txt": "fb5035665776a424414afeb287a25fc96a56a9defdaae3adc69b48c0852cc290",
     "requirements-pptx.txt": "2cb79163af409b53ef6fca3d371a74251e4a82593874a758fdf54f92f941e829",
-    "../docs/DEFENSE_FACTS.json": "fa37ef83ca7f4d40e6ec2f649b8a97976bf357333f8fe9816a4c1dc2cdf9337a"
+    "../docs/DEFENSE_FACTS.json": "504cca4932ad833d43176f2441beea89891d78d6fe17414a25526ea429b1ee48"
   },
   "outputs_sha256": {
-    "cultural-plan.pptx": "e774c5bb4f2f61c5f015d70153b5eb38a0324a2de7ea277673b82841dfecf7d4",
-    "cultural-plan.pdf": "a7fb5b4f9dbaa131a21d5ead63ac10185fc0d1ac4f5b12f68f130152c045dff4",
-    "cultural-plan-submission-preview.pptx": "aec45183347294dcd6657b577367fa455e327de9fc3886969e66ae4bcee2bcf9",
-    "cultural-plan-submission-preview.pdf": "61339c0dba43443cbd76ad750ba33f8a0ce9472e431182456a8898a75b257bc0"
+    "cultural-plan.pptx": "37bf86ba6f8aa4a37619c9e1c86cc1d41b2e5315bea5afae6d02ddb4522eb9dc",
+    "cultural-plan.pdf": "d4da24f6661534fa764137d72a899953c2703b430865bc9939165f05ad485d9e",
+    "cultural-plan-submission-preview.pptx": "fcfbe01c93ddda18e1bb6245bc4e7f644d60608753285f97c87532c716e2f538",
+    "cultural-plan-submission-preview.pdf": "55e44f9de0e45ef37d3f4c22db3226a3407604d435df5645d95eb9ecbba2db63"
   },
   "pages": {
     "product": 13,

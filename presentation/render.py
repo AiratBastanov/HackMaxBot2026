@@ -51,7 +51,7 @@ def load_source():
               "measurement_date": facts["measurementDate"],
               "application_commit": facts["applicationCommit"],
               "dataset_version": facts["dataset"]["version"],
-              "automated_tests": facts["recordedChecks"]["automatedTests"]}
+              "automated_tests": facts.get("currentChecks", facts["recordedChecks"])["automatedTests"]}
     def resolve(value):
         if isinstance(value, dict): return {k: resolve(v) for k, v in value.items()}
         if isinstance(value, list): return [resolve(v) for v in value]
@@ -474,7 +474,7 @@ def validate_and_preview(source, designer):
     assert all(name in title_text for name in source["meta"]["participants"])
     assert "github" not in title_text and source["meta"]["application_commit"] not in title_text
     tech=docs[1][0].get_text()
-    for field in [source["meta"]["application_commit"],"MAX", "API", "Тестовый доступ", "Основной сценарий","Токен", "PUBLIC_HOST"]:
+    for field in [source["meta"]["application_commit"],"MAX", "API", "Тестовый доступ", "Основной сценарий","Токен", "закрытый канал", "README"]:
         assert field in tech,field
     alltext="\n".join(p.get_text() for doc in docs for p in doc)
     assert "₽" in alltext
@@ -511,8 +511,8 @@ def assemble_private(page_path, output_path):
 def package():
     # Один механизм упаковки; готовые Office PDF здесь не перегенерируются.
     subprocess.run([sys.executable,str(REPO/"scripts/organizer-package.py"),"--defense",
-                    "--stage",".review/defense-20260928/package","--zip",
-                    "--archive","artifacts/defense-20260928/defense-package.zip"],cwd=REPO,check=True)
+                    "--stage",".review/final-organizer/package","--zip",
+                    "--archive","artifacts/defense-final-20260928/defense-package.zip"],cwd=REPO,check=True)
 
 
 def main():

@@ -224,6 +224,7 @@ def speaker_notes(source_data):
         # Относительные ссылки становятся пригодными вне репозитория; текст сохранён.
         text = re.sub(r"\[([^\]]+)\]\(\.\./([^\)]+)\)",
                       lambda m: f"{m[1]} ({source_data['meta']['repository']}/blob/main/{m[2]})", text)
+        text = re.sub(r"\[([^\]]+)\]\((https?://[^\)]+)\)", lambda m: f"{m[1]} ({m[2]})", text)
         notes[match.group(1)] = text
     return notes
 

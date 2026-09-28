@@ -2,7 +2,7 @@
   "version": 1,
   "measurementDate": "2026-09-28",
   "dateLabel": "28.09.2026",
-  "applicationCommit": "9de3d29ee0dfb9550e7809f8ea371b3f4cb6ce43",
+  "applicationCommit": "95f55a036eab757bc8b8909a315a964562ea2161",
   "dataset": {
     "version": "83664734f5fbb931cb19",
     "pointer": "catalog/real/active.json",
@@ -190,8 +190,7 @@
     "sqliteSimulatedMaxJourneys": 11,
     "worstSelectorMs": 39.06,
     "matrixProcessMs": 1438,
-    "measurementScope": "Локальный выбор и отдельный процесс матрицы на этом наборе/окружении; не задержка MAX и не нагрузочный SLA.",
-    "rerunForDefense": false
+    "measurementScope": "Локальный выбор и отдельный процесс матрицы на этом наборе/окружении; не задержка MAX и не нагрузочный SLA."
   },
   "limitations": {
     "familyQuery": "2 взрослых + ребёнок 7 лет, до 3 000 ₽: 0 strict во всех 11 городах.",
@@ -205,38 +204,8 @@
     "retainedExpiryDate": "2026-09-29",
     "newerExpiryDate": "2026-10-01",
     "sourcePolicyReviewDate": "2026-10-26",
-    "refresh": "Оператор запускает автоматическое извлечение; расписания нет.",
-    "runtimePointer": "/app/runtime/catalog/active.json",
-    "runtimeInstalled": false
-  },
-  "targets": {
-    "cities": {
-      "target": 8,
-      "actual": 11,
-      "met": true
-    },
-    "events": {
-      "target": 500,
-      "actual": 858,
-      "displayEligible": 837,
-      "met": true
-    },
-    "sources": {
-      "target": 20,
-      "actual": 26,
-      "met": true
-    },
-    "newCityDepth": {
-      "target": 20,
-      "minimumDisplayEligible": 28,
-      "met": true
-    },
-    "stretchEvents": {
-      "target": 1000,
-      "actual": 858,
-      "shortfall": 142,
-      "met": false
-    }
+    "refresh": "Автоматическая подготовка при запуске Docker; при отсутствии пригодных данных — bounded bootstrap известных источников. Полное обновление и расписание обслуживания задаёт оператор.",
+    "runtimePointer": "/app/runtime/catalog/active.json"
   },
   "references": {
     "coverage": "docs/evidence/multi-city/coverage.json",
@@ -251,5 +220,11 @@
     "docs/evidence/multi-city/query-matrix.json": "b653a972fac914326dd23cd1c4c2ac71a830731f22e612ba49da8ef63899dad2",
     "catalog/real/active.json": "0fdbc1b91ba42f529f0fb047b485e75fe42b46e81041c3b30ee14219bfbecb34"
   },
-  "externalReview": "По сообщению пользователя: 55 файлов + manifest, CRC/пути/размеры/hashes совпали; независимо пересчитаны 858 ID и 1 041 посещение. Тесты, все страницы и remote не проверялись рецензентом."
+  "measurementApplicationCommit": "9de3d29ee0dfb9550e7809f8ea371b3f4cb6ce43",
+  "currentChecks": {
+    "automatedTests": 343,
+    "date": "2026-09-28",
+    "scope": "Общая регрессия приложения, включая автоматическую подготовку каталога; MAX симулирован.",
+    "verification": "docs/verification/CATALOG_STARTUP.md"
+  }
 }

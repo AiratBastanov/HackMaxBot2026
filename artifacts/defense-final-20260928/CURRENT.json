@@ -1,0 +1,21 @@
+{
+  "archive": "artifacts/defense-final-20260928/defense-package.zip",
+  "sha256": "09c471f66c6ab7f3b93694da0e06e58ca962a43b27965a560ab46bd833ef583f",
+  "payloadFiles": 33,
+  "manifest": "MANIFEST.sha256",
+  "bytes": 842067,
+  "packageKind": "DEFENSE_MATERIALS",
+  "applicationSourceIncluded": false,
+  "applicationCommit": "95f55a036eab757bc8b8909a315a964562ea2161",
+  "datasetVersion": "83664734f5fbb931cb19",
+  "datasetSha256": "ae492e075d1f9e72b53c1be1baa58796f254cbd7826c42830cfec17653a2639b",
+  "measurementDate": "2026-09-28",
+  "documentationCommit": "Containing Git commit; intentionally not embedded recursively",
+  "catalogPreparation": "Automatic Docker init; bounded refresh when required",
+  "credentials": "Transferred separately through a private channel",
+  "verification": {
+    "crc": "PASS",
+    "pathsAndMembership": "PASS",
+    "sizesAndSha256": "PASS"
+  }
+}

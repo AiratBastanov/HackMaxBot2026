@@ -3,12 +3,12 @@
   "info": {
     "title": "Культурный план — MAX webhook",
     "version": "0.1.0",
-    "description": "Обычный PUBLIC-доступ, durable inbox/outbox, личные закладки и source-specific PUBLIC_FACTS. Каталог по городам и источникам; версии и датированные измерения описаны в docs/DEFENSE_FACTS.json. MAX симулируется только в local demo. HTTP-поверхность: health и authenticated webhook; бизнес-API каталога и административного API нет. Публичный HTTPS origin не задан."
+    "description": "Обычный PUBLIC-доступ, durable inbox/outbox, личные закладки и source-specific PUBLIC_FACTS. Каталог по городам и источникам; версии и датированные измерения описаны в docs/DEFENSE_FACTS.json. MAX симулируется только в local demo. HTTP-поверхность: health и authenticated webhook; бизнес-API каталога и административного API нет. Для постоянного размещения поддерживается HTTPS webhook; адрес задаётся конфигурацией выбранной установки. Каталог подготавливается автоматически до запуска приложения."
   },
   "servers": [
     {
       "url": "http://127.0.0.1:3000",
-      "description": "Изолированный локальный режим. Live origin согласуется отдельно."
+      "description": "Адрес локального демо; для webhook используется HTTPS origin выбранной установки."
     }
   ],
   "paths": {

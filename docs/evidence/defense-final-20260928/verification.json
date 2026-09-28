@@ -1,0 +1,113 @@
+{
+  "result": "PASS",
+  "scope": "Финальная редактура и экспорт материалов; приложение проверено отдельно",
+  "artifacts": {
+    "renderer": "Microsoft PowerPoint 16.0",
+    "applicationCommit": "95f55a036eab757bc8b8909a315a964562ea2161",
+    "datasetVersion": "83664734f5fbb931cb19",
+    "measurementDate": "2026-09-28",
+    "applicationTests": {
+      "automatedTests": 343,
+      "date": "2026-09-28",
+      "scope": "Общая регрессия приложения, включая автоматическую подготовку каталога; MAX симулирован.",
+      "verification": "docs/verification/CATALOG_STARTUP.md"
+    },
+    "scope": "Экспорт и редактируемость; проверки приложения записаны отдельно",
+    "decks": {
+      "cultural-plan": {
+        "slides": 13,
+        "nativeShapes": {
+          "AUTO_SHAPE (1)": 51,
+          "TEXT_BOX (17)": 247,
+          "GROUP (6)": 46,
+          "LINE (9)": 33,
+          "FREEFORM (5)": 13
+        },
+        "textFrames": 247,
+        "links": 18,
+        "allNotesMatch": true,
+        "pptxPdfTextMatch": true,
+        "vectorPdfTextMatch": true,
+        "maxGlyphOriginDifferencePt": 1.7879,
+        "files": {
+          "cultural-plan.pptx": "37bf86ba6f8aa4a37619c9e1c86cc1d41b2e5315bea5afae6d02ddb4522eb9dc",
+          "cultural-plan.pdf": "d4da24f6661534fa764137d72a899953c2703b430865bc9939165f05ad485d9e"
+        }
+      },
+      "cultural-plan-submission-preview": {
+        "slides": 14,
+        "nativeShapes": {
+          "TEXT_BOX (17)": 264,
+          "AUTO_SHAPE (1)": 52,
+          "GROUP (6)": 46,
+          "LINE (9)": 33,
+          "FREEFORM (5)": 13
+        },
+        "textFrames": 264,
+        "links": 20,
+        "allNotesMatch": true,
+        "pptxPdfTextMatch": true,
+        "vectorPdfTextMatch": true,
+        "maxGlyphOriginDifferencePt": 1.7879,
+        "files": {
+          "cultural-plan-submission-preview.pptx": "fcfbe01c93ddda18e1bb6245bc4e7f644d60608753285f97c87532c716e2f538",
+          "cultural-plan-submission-preview.pdf": "55e44f9de0e45ef37d3f4c22db3226a3407604d435df5645d95eb9ecbba2db63"
+        }
+      }
+    },
+    "officeEditability": [
+      {
+        "file": "cultural-plan.pptx",
+        "slides": 13,
+        "textAndGroupSavedReopened": true
+      },
+      {
+        "file": "cultural-plan-submission-preview.pptx",
+        "slides": 14,
+        "textAndGroupSavedReopened": true
+      }
+    ],
+    "identicalProductPages": 13
+  },
+  "documents": {
+    "localLinksAndAnchors": 114,
+    "externalLinksFormatAndRepositoryTargets": 50,
+    "repositoryFileTargets": 5,
+    "frozenCatalogAndEvidenceHashes": true,
+    "apiPathsSchemasRolesUnchanged": true,
+    "currentApplicationCommit": "95f55a036eab757bc8b8909a315a964562ea2161",
+    "staleOrganizerStatusPhrases": 0,
+    "userOverrideUnchanged": true
+  },
+  "package": {
+    "archive": "artifacts/defense-final-20260928/defense-package.zip",
+    "sha256": "09c471f66c6ab7f3b93694da0e06e58ca962a43b27965a560ab46bd833ef583f",
+    "payloadFiles": 33,
+    "manifest": "MANIFEST.sha256",
+    "bytes": 842067,
+    "packageKind": "DEFENSE_MATERIALS",
+    "applicationSourceIncluded": false,
+    "applicationCommit": "95f55a036eab757bc8b8909a315a964562ea2161",
+    "datasetVersion": "83664734f5fbb931cb19",
+    "datasetSha256": "ae492e075d1f9e72b53c1be1baa58796f254cbd7826c42830cfec17653a2639b",
+    "measurementDate": "2026-09-28",
+    "documentationCommit": "Containing Git commit; intentionally not embedded recursively",
+    "catalogPreparation": "Automatic Docker init; bounded refresh when required",
+    "credentials": "Transferred separately through a private channel",
+    "verification": {
+      "crc": "PASS",
+      "pathsAndMembership": "PASS",
+      "sizesAndSha256": "PASS"
+    }
+  },
+  "visualInspection": {
+    "pages": 27,
+    "allSlidesReviewed": true,
+    "renderer": "Microsoft PowerPoint 16.0",
+    "nativeTextAndGroupsEditedSavedReopened": true
+  },
+  "applicationVerification": "docs/evidence/catalog-startup/verification.json",
+  "humanMAX": "NOT_RUN / DEFERRED_BY_USER",
+  "workingInstallationModified": false,
+  "originalEditableArtifactsMatchedRecordedHashes": true
+}

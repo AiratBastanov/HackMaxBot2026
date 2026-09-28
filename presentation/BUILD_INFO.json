@@ -1,32 +1,33 @@
 {
-  "reviewed_application_commit": "32127a01e126658599e0da4d0ca4de59af52752a",
-  "date": "2026-09-27",
+  "reviewed_application_commit": "9de3d29ee0dfb9550e7809f8ea371b3f4cb6ce43",
+  "dataset_version": "83664734f5fbb931cb19",
+  "measurement_date": "2026-09-28",
+  "artifact_metadata_updated_at": "2026-09-28T10:30:11.608770+00:00",
+  "renderer": "Microsoft PowerPoint 16.0",
   "python": "3.12",
   "pymupdf": "1.26.3",
-  "fonts": [
-    {
-      "name": "Segoe UI Regular",
-      "file": "segoeui.ttf",
-      "sha256": "8134dbcd09e7b123c9a7f229d49cffbcb01352cc72ea5e1076b65d0dca9f73cd"
-    },
-    {
-      "name": "Segoe UI Bold",
-      "file": "segoeuib.ttf",
-      "sha256": "aeb9e4a6ec5cc59f4d72df8189032d7dbb28f45161cf1552174818b5465dac4e"
-    }
-  ],
   "inputs_sha256": {
-    "slides.json": "83b0bf0af6a29a15eba15bea4e341890b11380f91f795fb98eb4cb8371c3fc77",
-    "render.py": "98a7753746fc940c290f3e750092b37d2de95630c78e1d876f13f246e6d2b061",
-    "requirements.txt": "fb5035665776a424414afeb287a25fc96a56a9defdaae3adc69b48c0852cc290"
+    "slides.json": "348850bba25388cc6a1e99f41ed3625075c636edda8840b6414d8ab582b061a4",
+    "render.py": "ee31bd10c14263f2777c74e0a4396e5fcead24e5fad45c2a39fd2a16c68b1113",
+    "export_pptx.py": "d3b0ca625b9ff070c8bbe3f50f0836f0729078f7c2665e62876bf60f90892f23",
+    "export_office.ps1": "35dc606dacf61ca2fad43291e033bee2d9c6108e1182302fb186b316067abc85",
+    "verify_exports.py": "8eaa91d5bb942e8e2c1adf03584d13619ce4b400b181478d22c2316c93a0dd3a",
+    "SPEAKER_NOTES.md": "46367a3f3c1352efe3eab45a63ffb1d236ffdf6abe8bed421b1a05b3630058e2",
+    "requirements.txt": "fb5035665776a424414afeb287a25fc96a56a9defdaae3adc69b48c0852cc290",
+    "requirements-pptx.txt": "2cb79163af409b53ef6fca3d371a74251e4a82593874a758fdf54f92f941e829",
+    "../docs/DEFENSE_FACTS.json": "fa37ef83ca7f4d40e6ec2f649b8a97976bf357333f8fe9816a4c1dc2cdf9337a"
   },
   "outputs_sha256": {
-    "cultural-plan.pdf": "9a07b28211d5be2eff95623e3e16354fedc920f5802105b5029b087b464accc3",
-    "cultural-plan-submission-preview.pdf": "a5a7770457f938557ed1eba50a79e7fbe507b49db9308b99e293b3fb651e68fb"
+    "cultural-plan.pptx": "e774c5bb4f2f61c5f015d70153b5eb38a0324a2de7ea277673b82841dfecf7d4",
+    "cultural-plan.pdf": "a7fb5b4f9dbaa131a21d5ead63ac10185fc0d1ac4f5b12f68f130152c045dff4",
+    "cultural-plan-submission-preview.pptx": "aec45183347294dcd6657b577367fa455e327de9fc3886969e66ae4bcee2bcf9",
+    "cultural-plan-submission-preview.pdf": "61339c0dba43443cbd76ad750ba33f8a0ce9472e431182456a8898a75b257bc0"
   },
   "pages": {
     "product": 13,
     "submission": 14
   },
-  "identical_product_pages": 13
+  "identical_product_pages": 13,
+  "fonts": "Segoe UI Regular/Bold с хоста; font-файлы не включены",
+  "note": "Время генерации не меняет дату измерения или свежесть фактов."
 }

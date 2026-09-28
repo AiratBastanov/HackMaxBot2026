@@ -1,0 +1,12 @@
+{
+  "packageKind": "DEFENSE_MATERIALS_NOT_RUNNABLE_APPLICATION",
+  "applicationCommit": "9de3d29ee0dfb9550e7809f8ea371b3f4cb6ce43",
+  "datasetVersion": "83664734f5fbb931cb19",
+  "datasetSha256": "ae492e075d1f9e72b53c1be1baa58796f254cbd7826c42830cfec17653a2639b",
+  "measurementDate": "2026-09-28",
+  "documentationCommit": "Containing Git commit; intentionally not embedded recursively",
+  "runtimeInstallation": "NOT_PERFORMED",
+  "humanValidation": "DEFERRED_BY_USER / NOT_RUN",
+  "credentials": "EXCLUDED",
+  "deployment": "NOT_PERFORMED"
+}

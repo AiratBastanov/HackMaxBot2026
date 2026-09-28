@@ -1,6 +1,6 @@
 """Векторная презентация 16:9: один источник, два синхронных PDF.
 
-Обычная сборка не читает секреты, БД, каталог и сеть. Шрифты берутся с хоста,
+Обычная сборка читает только слайды и замороженную ведомость фактов, без БД и сети. Шрифты берутся с хоста,
 в PDF встраиваются подмножества; файлы шрифтов не копируются в комплект.
 """
 from __future__ import annotations
@@ -12,13 +12,15 @@ import math
 import os
 from pathlib import Path
 import re
-import zipfile
+import subprocess
+import sys
 
 import fitz
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parent
-REVIEW = REPO / ".review" / "presentation-redesign"
+REVIEW = REPO / ".review" / "defense-20260928" / "vector"
+OUTPUT = ROOT
 W, H = 960, 540
 PALETTE = {
     "ink": "142F3D", "teal": "116E75", "coral": "E47F68",
@@ -39,6 +41,24 @@ def digest(path):
 
 def write_json(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def load_source():
+    """Одна датированная ведомость для обоих форматов; никакого live refresh."""
+    source = json.loads((ROOT / "slides.json").read_text(encoding="utf-8"))
+    facts = json.loads((REPO / "docs/DEFENSE_FACTS.json").read_text(encoding="utf-8"))
+    values = {**facts["counts"], "date": facts["dateLabel"],
+              "measurement_date": facts["measurementDate"],
+              "application_commit": facts["applicationCommit"],
+              "dataset_version": facts["dataset"]["version"],
+              "automated_tests": facts["recordedChecks"]["automatedTests"]}
+    def resolve(value):
+        if isinstance(value, dict): return {k: resolve(v) for k, v in value.items()}
+        if isinstance(value, list): return [resolve(v) for v in value]
+        if isinstance(value, str):
+            return re.sub(r"\{\{(\w+)\}\}", lambda m: str(values[m.group(1)]), value)
+        return value
+    return resolve(source)
 
 
 class Designer:
@@ -183,6 +203,8 @@ class Designer:
         self.rect(628,0,332,H,"mint")
         self.text(48,58,562,s["title"],66,True,"white",maxh=178,leading=1.06)
         self.text(51,242,509,s["promise"],25,shade="pale",maxh=113)
+        self.text(51,325,558,s["headline"],22,True,"white",maxh=33)
+        self.text(51,358,558,s["measurement"],15,shade="pale",maxh=23)
         self.text(51,382,515,s["team_label"],16,shade="pale")
         for i,name in enumerate(self.source["meta"]["participants"]):
             self.text(51,412+i*29,515,name,20,shade="white")
@@ -253,8 +275,8 @@ class Designer:
         self.rect(48,397,864,84,"mint")
         for i,(number,label) in enumerate(s["metrics"]):
             x=66+i*216
-            self.text(x,401,60,number,39,True,"teal",maxh=54)
-            self.text(x+71,416,126,label,16,maxh=48)
+            self.text(x,399,190,number,39,True,"teal",maxh=54)
+            self.text(x,453,190,label,16,maxh=25)
         self.text(48,499,864,s["dataset"],17,shade="pale",maxh=27)
 
     def personal(self,s):
@@ -308,7 +330,7 @@ class Designer:
             self.text(x,207,270,label,24,True,maxh=67)
             self.text(x,286,275,body,19,maxh=82)
         self.rect(0,395,W,94,"ink")
-        self.text(48,413,864,s["dependencies"],19,shade="white",maxh=65)
+        self.text(48,407,864,s["geography"],18,shade="white",maxh=74)
         self.text(48,507,864,s["capacity"],16,maxh=25)
 
     def impact(self,s):
@@ -392,7 +414,7 @@ def metadata(title):
     return {"title":title,"author":"Садыков Булат; Бастанов Айрат; Белова Маргарита",
             "subject":"Культурный план — продукт, сценарий, реализация и развитие",
             "creator":"Векторный генератор презентации", "producer":"PyMuPDF 1.26.3",
-            "creationDate":"D:20260927000000Z","modDate":"D:20260927000000Z"}
+            "creationDate":"D:20260928000000Z","modDate":"D:20260928000000Z"}
 
 
 def save_pdf(doc, path, title):
@@ -407,7 +429,7 @@ def normalized(value):
 
 def validate_and_preview(source, designer):
     REVIEW.mkdir(parents=True,exist_ok=True)
-    paths=[ROOT/"cultural-plan.pdf",ROOT/"cultural-plan-submission-preview.pdf"]
+    paths=[OUTPUT/"cultural-plan.pdf",OUTPUT/"cultural-plan-submission-preview.pdf"]
     report={"pages":{},"identical_product_pages":[],"assets":designer.assets,"fonts":{},"files":{}}
     docs=[fitz.open(p) for p in paths]
     n=len(source["slides"])
@@ -487,46 +509,37 @@ def assemble_private(page_path, output_path):
 
 
 def package():
-    names=["cultural-plan.pdf","cultural-plan-submission-preview.pdf",
-           "cultural-plan.pptx","cultural-plan-submission-preview.pptx","slides.json","render.py","export_pptx.py",
-           "requirements.txt","requirements-pptx.txt","README.md","SCREENSHOT_PLAN.md","SPEAKER_NOTES.md","VERIFICATION.md","BUILD_INFO.json"]
-    files=[ROOT/name for name in names]
-    assert all(p.is_file() for p in files)
-    # Любые будущие снимки добавляются только как явно перечисленные публичные ассеты.
-    data=json.loads((ROOT/"slides.json").read_text(encoding="utf-8"))
-    for asset in data["interfaces"].values():
-        if asset["image"]:
-            p=(ROOT/asset["image"]).resolve()
-            assert p.is_relative_to((ROOT/"assets").resolve())
-            files.append(p)
-    manifest="\n".join(f"{digest(p)}  presentation/{p.relative_to(ROOT).as_posix()}" for p in files)+"\n"
-    path=REVIEW/"cultural-plan-presentation.zip"
-    with zipfile.ZipFile(path,"w",zipfile.ZIP_DEFLATED) as archive:
-        for p in files:
-            info=zipfile.ZipInfo("presentation/"+p.relative_to(ROOT).as_posix(),(2026,9,27,0,0,0))
-            info.compress_type=zipfile.ZIP_DEFLATED
-            archive.writestr(info,p.read_bytes())
-        info=zipfile.ZipInfo("MANIFEST.sha256",(2026,9,27,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED
-        archive.writestr(info,manifest.encode("utf-8"))
-    write_json(REVIEW/"package-checksum.json",{"file":path.name,"sha256":digest(path),"entries":len(files)+1})
+    # Один механизм упаковки; готовые Office PDF здесь не перегенерируются.
+    subprocess.run([sys.executable,str(REPO/"scripts/organizer-package.py"),"--defense",
+                    "--stage",".review/defense-20260928/package","--zip",
+                    "--archive","artifacts/defense-20260928/defense-package.zip"],cwd=REPO,check=True)
 
 
 def main():
+    global OUTPUT, REVIEW
     parser=argparse.ArgumentParser(description=__doc__)
     fonts=Path(os.environ.get("WINDIR","C:/Windows"))/"Fonts"
     parser.add_argument("--font-regular",type=Path,default=fonts/"segoeui.ttf")
     parser.add_argument("--font-bold",type=Path,default=fonts/"segoeuib.ttf")
+    parser.add_argument("--output-dir",type=Path,default=ROOT,help="Каталог векторных PDF для сверки с Office")
+    parser.add_argument("--review-dir",type=Path,default=REVIEW,help="Локальные изображения и проверки")
     parser.add_argument("--package",action="store_true",help="Собрать только презентационный комплект")
     parser.add_argument("--private-page",type=Path,help="Позже: готовый закрытый технический PDF из private/")
     parser.add_argument("--private-output",type=Path,help="Новый закрытый PDF внутри private/")
     args=parser.parse_args()
+    OUTPUT=args.output_dir.resolve(); REVIEW=args.review_dir.resolve()
+    assert OUTPUT.is_relative_to(REPO) and REVIEW.is_relative_to(REPO)
+    OUTPUT.mkdir(parents=True,exist_ok=True)
     if args.private_page:
         assert args.private_output and not args.package, "Укажите закрытый выход; упаковка здесь запрещена"
         assemble_private(args.private_page,args.private_output)
         return
     assert not args.private_output
+    if args.package:
+        package()
+        return
     assert args.font_regular.is_file() and args.font_bold.is_file(), "Укажите доступную пару шрифтов обычный/жирный"
-    source=json.loads((ROOT/"slides.json").read_text(encoding="utf-8"))
+    source=load_source()
     assert source["schema_version"]==2
     d=Designer(args.font_regular,args.font_bold,source)
     product=fitz.open()
@@ -535,14 +548,14 @@ def main():
             "personal":"mint","impact":"mint","roadmap":"coral_tint"}.get(s["layout"],"paper")
         d.page(product,s["id"],bg)
         getattr(d,s["layout"])(s)
-    save_pdf(product,ROOT/"cultural-plan.pdf","Культурный план — продуктовая презентация")
+    save_pdf(product,OUTPUT/"cultural-plan.pdf","Культурный план — продуктовая презентация")
     product.close()
     submission=fitz.open()
     d.page(submission,"T00")
     d.technical(source["technical"])
-    with fitz.open(ROOT/"cultural-plan.pdf") as same_product:
+    with fitz.open(OUTPUT/"cultural-plan.pdf") as same_product:
         submission.insert_pdf(same_product)
-    save_pdf(submission,ROOT/"cultural-plan-submission-preview.pdf","Культурный план — предпросмотр сдачи")
+    save_pdf(submission,OUTPUT/"cultural-plan-submission-preview.pdf","Культурный план — предпросмотр сдачи")
     submission.close()
     report=validate_and_preview(source,d)
     build={"reviewed_application_commit":source["meta"]["application_commit"],
@@ -551,11 +564,10 @@ def main():
            "inputs_sha256":{n:digest(ROOT/n) for n in ["slides.json","render.py","requirements.txt"]},
            "outputs_sha256":report["files"],"pages":report["pages"],
            "identical_product_pages":len(report["identical_product_pages"])}
-    write_json(ROOT/"BUILD_INFO.json",build)
-    if args.package: package()
+    write_json(OUTPUT/"BUILD_INFO.json",build)
     print(json.dumps({"product_pages":len(source["slides"]),"submission_pages":len(source["slides"])+1,
                       "identical_product_pages":len(report["identical_product_pages"]),"text_collisions":0,
-                      "preview_directory":".review/presentation-redesign","package":args.package},ensure_ascii=False))
+                      "preview_directory":str(REVIEW),"package":args.package},ensure_ascii=False))
 
 
 if __name__=="__main__":

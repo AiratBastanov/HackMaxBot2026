@@ -23,7 +23,7 @@ from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
 from pptx.oxml.xmlchemy import OxmlElement
 from pptx.util import Pt
 
-from render import Designer, H, PALETTE, ROOT, W
+from render import Designer, H, PALETTE, ROOT, W, load_source
 
 
 FONT_FAMILY = "Segoe UI"
@@ -216,14 +216,14 @@ class PptxDesigner(Designer):
             assigned.update(item.shape_id for item in items)
 
 
-def speaker_notes():
+def speaker_notes(source_data):
     source = (ROOT / "SPEAKER_NOTES.md").read_text(encoding="utf-8")
     notes = {}
     for match in re.finditer(r"^## ((?:P|T)\d+)\b([^\n]*)\n(.*?)(?=^## |\Z)", source, re.M | re.S):
         text = match.group(3).strip()
         # Относительные ссылки становятся пригодными вне репозитория; текст сохранён.
         text = re.sub(r"\[([^\]]+)\]\(\.\./([^\)]+)\)",
-                      r"\1 (https://github.com/AiratBastanov/HackMaxBot2026/blob/32127a01e126658599e0da4d0ca4de59af52752a/\2)", text)
+                      lambda m: f"{m[1]} ({source_data['meta']['repository']}/blob/main/{m[2]})", text)
         notes[match.group(1)] = text
     return notes
 
@@ -238,20 +238,20 @@ def new_deck(source, edition):
     props.last_modified_by = ""
     props.comments = "Редактируемый экспорт исходной презентации"
     props.keywords = ""
-    props.created = props.modified = datetime(2026, 9, 27)
+    props.created = props.modified = datetime.fromisoformat(source["meta"]["date"])
     props.revision = 1
     return deck
 
 
 def generate(output_dir, regular, bold):
-    source = json.loads((ROOT / "slides.json").read_text(encoding="utf-8"))
+    source = load_source()
     assert source["schema_version"] == 2
     paths = [output_dir / "cultural-plan.pptx", output_dir / "cultural-plan-submission-preview.pptx"]
     if any(p.exists() for p in paths):
         raise FileExistsError("PPTX уже существует. Выберите новый --output-dir; ручные правки не перезаписываются.")
     assert regular.is_file() and bold.is_file(), "Нужны исходные Segoe UI Regular и Bold для измерения текста"
     output_dir.mkdir(parents=True, exist_ok=True)
-    notes = speaker_notes()
+    notes = speaker_notes(source)
     for preview, path in enumerate(paths):
         deck = new_deck(source, "предпросмотр сдачи" if preview else "продуктовая презентация")
         designer = PptxDesigner(regular, bold, source)

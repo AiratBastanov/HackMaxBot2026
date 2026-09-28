@@ -1,0 +1,111 @@
+{
+  "renderer": "Microsoft PowerPoint 16.0",
+  "applicationCommit": "9de3d29ee0dfb9550e7809f8ea371b3f4cb6ce43",
+  "datasetVersion": "83664734f5fbb931cb19",
+  "measurementDate": "2026-09-28",
+  "applicationTests": "RECORDED_ONLY_NOT_RERUN",
+  "REAL_APPLICATION_SMOKE": "NOT_APPLICABLE_WITH_REASON: документы и экспорт; приложение не изменено",
+  "decks": {
+    "cultural-plan": {
+      "slides": 13,
+      "nativeShapes": {
+        "AUTO_SHAPE (1)": 51,
+        "TEXT_BOX (17)": 247,
+        "GROUP (6)": 46,
+        "LINE (9)": 33,
+        "FREEFORM (5)": 13
+      },
+      "textFrames": 247,
+      "links": 18,
+      "allNotesMatch": true,
+      "pptxPdfTextMatch": true,
+      "vectorPdfTextMatch": true,
+      "maxGlyphOriginDifferencePt": 1.7879,
+      "files": {
+        "cultural-plan.pptx": "e774c5bb4f2f61c5f015d70153b5eb38a0324a2de7ea277673b82841dfecf7d4",
+        "cultural-plan.pdf": "a7fb5b4f9dbaa131a21d5ead63ac10185fc0d1ac4f5b12f68f130152c045dff4"
+      }
+    },
+    "cultural-plan-submission-preview": {
+      "slides": 14,
+      "nativeShapes": {
+        "TEXT_BOX (17)": 264,
+        "AUTO_SHAPE (1)": 52,
+        "GROUP (6)": 46,
+        "LINE (9)": 33,
+        "FREEFORM (5)": 13
+      },
+      "textFrames": 264,
+      "links": 20,
+      "allNotesMatch": true,
+      "pptxPdfTextMatch": true,
+      "vectorPdfTextMatch": true,
+      "maxGlyphOriginDifferencePt": 1.7879,
+      "files": {
+        "cultural-plan-submission-preview.pptx": "aec45183347294dcd6657b577367fa455e327de9fc3886969e66ae4bcee2bcf9",
+        "cultural-plan-submission-preview.pdf": "61339c0dba43443cbd76ad750ba33f8a0ce9472e431182456a8898a75b257bc0"
+      }
+    }
+  },
+  "officeEditability": [
+    {
+      "file": "cultural-plan.pptx",
+      "slides": 13,
+      "textAndGroupSavedReopened": true
+    },
+    {
+      "file": "cultural-plan-submission-preview.pptx",
+      "slides": 14,
+      "textAndGroupSavedReopened": true
+    }
+  ],
+  "identicalProductPages": 13,
+  "preflight": {
+    "overrideSha256": "5ef430177057f029f8a60257096751a1ed5be690924d5e5db945ebf92dc5e26d",
+    "pptx": {
+      "cultural-plan.pptx": {
+        "changedParts": [],
+        "newParts": [],
+        "media": [],
+        "beforeSha256": "4589e1abb790f3ab82881fffdfd70208df654d4ad5bab32dffb7e596b6986985"
+      },
+      "cultural-plan-submission-preview.pptx": {
+        "changedParts": [],
+        "newParts": [],
+        "media": [],
+        "beforeSha256": "80cf94a2473e6eb1def4ea6e9de699fcf05e3c229af0b3be0a0d05bb01dec3fa"
+      }
+    }
+  },
+  "visualReview": {
+    "pagesInspected": 27,
+    "contactSheets": 8,
+    "clipping": 0,
+    "unexpectedVisibleFontFallbacks": 0,
+    "cyrillicAndRuble": "PASS",
+    "nativeDiagramsAndLinks": "PASS"
+  },
+  "baselineRecount": {
+    "events": 858,
+    "occurrences": 1041,
+    "timedSessions": 985,
+    "exhibitionPeriods": 56,
+    "cities": 11,
+    "sources": 26,
+    "venues": 107,
+    "executedOnce": true
+  },
+  "remoteBefore": "9de3d29ee0dfb9550e7809f8ea371b3f4cb6ce43",
+  "packaging": "Integrity result and archive checksum are written separately to artifacts/defense-20260928/CURRENT.json after CRC/membership/size/SHA-256 verification.",
+  "documentChecks": {
+    "localLinksAndAnchors": 137,
+    "externalLinksFormatOnly": 56,
+    "applicationBehaviorFilesUnchanged": true,
+    "readmeLaunchCommandsUnchanged": true,
+    "apiContractsUnchangedExceptDescription": true,
+    "recordedEvidenceUnchanged": true,
+    "userOverrideSha256": "5ef430177057f029f8a60257096751a1ed5be690924d5e5db945ebf92dc5e26d",
+    "staleCurrentClaims": 0
+  },
+  "pptxPrivateContentAndExternalRelationships": "PASS"
+}

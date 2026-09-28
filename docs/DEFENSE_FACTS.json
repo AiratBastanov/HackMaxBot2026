@@ -1,0 +1,255 @@
+{
+  "version": 1,
+  "measurementDate": "2026-09-28",
+  "dateLabel": "28.09.2026",
+  "applicationCommit": "9de3d29ee0dfb9550e7809f8ea371b3f4cb6ce43",
+  "dataset": {
+    "version": "83664734f5fbb931cb19",
+    "pointer": "catalog/real/active.json",
+    "snapshot": "catalog/real/83664734f5fbb931cb19.json",
+    "review": "catalog/real/83664734f5fbb931cb19.review.json",
+    "sha256": "ae492e075d1f9e72b53c1be1baa58796f254cbd7826c42830cfec17653a2639b",
+    "reviewSha256": "941f17c4e3249b8e44cbab78a38b236b1f82a46c069d5e0387be66c6e9f96531"
+  },
+  "definitions": {
+    "event": "Уникальный ID программы/выставки после объединения повторных строк источника.",
+    "occurrence": "Конкретный сеанс или выставочный период; период не умножается на дни и не означает непрерывную работу.",
+    "sourceRecords": "Извлечённые строки до объединения, не уникальные события.",
+    "source": "Учреждение/домен с отдельным решением PUBLIC_FACTS; не коммерческое партнёрство.",
+    "strictAny": "Совпадение с ANY_DATE/ANY_TIME для одного взрослого без лимита бюджета. Не доказывает известную цену.",
+    "uncertainAny": "Отдельно открываемый кандидат с неизвестными условиями; не универсальная пригодность."
+  },
+  "counts": {
+    "events": 858,
+    "occurrences": 1041,
+    "timedSessions": 985,
+    "exhibitionPeriods": 56,
+    "venues": 107,
+    "sources": 26,
+    "domains": 26,
+    "cities": 11,
+    "displayEligible": 837,
+    "sourceRecords": 1167,
+    "retainedWithoutRevalidation": 14,
+    "strictAny": 413,
+    "uncertainAny": 424,
+    "first30": 610,
+    "second30": 315
+  },
+  "previous": {
+    "events": 62,
+    "occurrences": 93,
+    "cities": 2,
+    "sources": 5
+  },
+  "windows": {
+    "first30": [
+      "2026-09-28",
+      "2026-10-27"
+    ],
+    "second30": [
+      "2026-10-28",
+      "2026-11-26"
+    ],
+    "timezone": "Местная для каждого города",
+    "overlap": "Выставки и программы с сеансами в обеих половинах учитываются в обеих; суммы не складываются в уникальный итог."
+  },
+  "cities": {
+    "kzn": {
+      "name": "Казань",
+      "events": 14,
+      "occurrences": 22,
+      "sources": 2,
+      "strictAny": 1,
+      "uncertainAny": 11,
+      "displayEligible": 12,
+      "first30": 14,
+      "second30": 5
+    },
+    "ekb": {
+      "name": "Екатеринбург",
+      "events": 48,
+      "occurrences": 82,
+      "sources": 3,
+      "strictAny": 42,
+      "uncertainAny": 6,
+      "displayEligible": 48,
+      "first30": 36,
+      "second30": 23
+    },
+    "spb": {
+      "name": "Санкт-Петербург",
+      "events": 278,
+      "occurrences": 313,
+      "sources": 4,
+      "strictAny": 215,
+      "uncertainAny": 60,
+      "displayEligible": 275,
+      "first30": 197,
+      "second30": 103
+    },
+    "nsk": {
+      "name": "Новосибирск",
+      "events": 54,
+      "occurrences": 79,
+      "sources": 2,
+      "strictAny": 40,
+      "uncertainAny": 14,
+      "displayEligible": 54,
+      "first30": 33,
+      "second30": 28
+    },
+    "nnv": {
+      "name": "Нижний Новгород",
+      "events": 33,
+      "occurrences": 54,
+      "sources": 3,
+      "strictAny": 6,
+      "uncertainAny": 27,
+      "displayEligible": 33,
+      "first30": 25,
+      "second30": 14
+    },
+    "sam": {
+      "name": "Самара",
+      "events": 75,
+      "occurrences": 84,
+      "sources": 3,
+      "strictAny": 33,
+      "uncertainAny": 42,
+      "displayEligible": 75,
+      "first30": 46,
+      "second30": 30
+    },
+    "prm": {
+      "name": "Пермь",
+      "events": 39,
+      "occurrences": 54,
+      "sources": 3,
+      "strictAny": 20,
+      "uncertainAny": 18,
+      "displayEligible": 38,
+      "first30": 26,
+      "second30": 16
+    },
+    "chl": {
+      "name": "Челябинск",
+      "events": 96,
+      "occurrences": 109,
+      "sources": 3,
+      "strictAny": 10,
+      "uncertainAny": 86,
+      "displayEligible": 96,
+      "first30": 92,
+      "second30": 15
+    },
+    "ufa": {
+      "name": "Уфа",
+      "events": 28,
+      "occurrences": 41,
+      "sources": 1,
+      "strictAny": 24,
+      "uncertainAny": 4,
+      "displayEligible": 28,
+      "first30": 16,
+      "second30": 13
+    },
+    "kry": {
+      "name": "Красноярск",
+      "events": 57,
+      "occurrences": 63,
+      "sources": 1,
+      "strictAny": 22,
+      "uncertainAny": 20,
+      "displayEligible": 42,
+      "first30": 57,
+      "second30": 0
+    },
+    "msk": {
+      "name": "Москва",
+      "events": 136,
+      "occurrences": 140,
+      "sources": 1,
+      "strictAny": 0,
+      "uncertainAny": 136,
+      "displayEligible": 136,
+      "first30": 68,
+      "second30": 68
+    }
+  },
+  "quality": {
+    "usableDate": 858,
+    "durationOrHours": 488,
+    "individualPrice": 253,
+    "childPrice": 3,
+    "verifiedAddress": 826
+  },
+  "recordedChecks": {
+    "automatedTests": 341,
+    "sampleChecks": 42,
+    "sqliteSimulatedMaxJourneys": 11,
+    "worstSelectorMs": 39.06,
+    "matrixProcessMs": 1438,
+    "measurementScope": "Локальный выбор и отдельный процесс матрицы на этом наборе/окружении; не задержка MAX и не нагрузочный SLA.",
+    "rerunForDefense": false
+  },
+  "limitations": {
+    "familyQuery": "2 взрослых + ребёнок 7 лет, до 3 000 ₽: 0 strict во всех 11 городах.",
+    "moscow": "136 событий — uncertain candidates в записанном ANY-запросе.",
+    "kazan": "14 событий в каталоге, 12 допустимых в ANY-запросе.",
+    "krasnoyarsk": "0 событий во вторые 30 местных дней.",
+    "unknowns": "Неизвестные тарифы, длительность и условия допуска остаются явными; билеты не подтверждены."
+  },
+  "freshness": {
+    "hoursPerObservation": 72,
+    "retainedExpiryDate": "2026-09-29",
+    "newerExpiryDate": "2026-10-01",
+    "sourcePolicyReviewDate": "2026-10-26",
+    "refresh": "Оператор запускает автоматическое извлечение; расписания нет.",
+    "runtimePointer": "/app/runtime/catalog/active.json",
+    "runtimeInstalled": false
+  },
+  "targets": {
+    "cities": {
+      "target": 8,
+      "actual": 11,
+      "met": true
+    },
+    "events": {
+      "target": 500,
+      "actual": 858,
+      "displayEligible": 837,
+      "met": true
+    },
+    "sources": {
+      "target": 20,
+      "actual": 26,
+      "met": true
+    },
+    "newCityDepth": {
+      "target": 20,
+      "minimumDisplayEligible": 28,
+      "met": true
+    },
+    "stretchEvents": {
+      "target": 1000,
+      "actual": 858,
+      "shortfall": 142,
+      "met": false
+    }
+  },
+  "references": {
+    "coverage": "docs/evidence/multi-city/coverage.json",
+    "verification": "docs/verification/MULTI_CITY_CATALOG.md",
+    "matrix": "docs/evidence/multi-city/query-matrix.json",
+    "samples": "docs/evidence/multi-city/source-samples.json",
+    "journeys": "docs/evidence/multi-city/journeys.md",
+    "inventory": "docs/SOURCE_INVENTORY.md"
+  },
+  "evidenceSha256": {
+    "docs/evidence/multi-city/coverage.json": "b4037ab0b95b9724d6f773a0ea4ffb30144fc7ca04f128c1ed794d43c6513683",
+    "docs/evidence/multi-city/query-matrix.json": "b653a972fac914326dd23cd1c4c2ac71a830731f22e612ba49da8ef63899dad2",
+    "catalog/real/active.json": "0fdbc1b91ba42f529f0fb047b485e75fe42b46e81041c3b30ee14219bfbecb34"
+  },
+  "externalReview": "По сообщению пользователя: 55 файлов + manifest, CRC/пути/размеры/hashes совпали; независимо пересчитаны 858 ID и 1 041 посещение. Тесты, все страницы и remote не проверялись рецензентом."
+}

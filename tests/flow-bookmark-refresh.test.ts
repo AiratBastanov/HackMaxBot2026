@@ -16,7 +16,7 @@ import {getState} from '../src/culture/flow.js';
 import {savedRows,openRow} from '../scripts/bookmark-scenario.js';
 import {presentationTitle} from '../src/culture/card.js';
 
-const active=Catalog.load({flowDataMode:'real',snapshotPath:resolve('catalog/real/active.json')} as any);
+const active=Catalog.load({flowDataMode:'real',snapshotPath:resolve('catalog/real/e9f43ed9d1fd3c408584.json'),reviewPath:resolve('catalog/real/e9f43ed9d1fd3c408584.review.json')} as any);
 const time=Date.parse(active.review!.reviewedAt)+1000;
 const snapshots=active.availableCities.map(c=>active.forCity(c)!);
 const day=cityDate(new Date(time+86400000).toISOString(),'Asia/Yekaterinburg');

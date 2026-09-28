@@ -7,6 +7,7 @@ COPY src ./src
 COPY tests ./tests
 COPY scripts ./scripts
 COPY catalog/real ./catalog/real
+COPY docs/evidence/multi-city/baseline.json docs/evidence/multi-city/query-matrix.json ./docs/evidence/multi-city/
 RUN npm run typecheck && npm run build
 RUN node --input-type=module -e "import {stage4Fixture} from './dist/src/culture/stage4-fixture.js'; import {writeFileSync} from 'node:fs'; writeFileSync('/app/synthetic-catalog.json',JSON.stringify(stage4Fixture()));"
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
@@ -18,6 +19,8 @@ LABEL org.opencontainers.image.title="Культурный план" \
       org.opencontainers.image.revision="${SOURCE_VERSION}"
 ENV NODE_ENV=production
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app/runtime && chown node:node /app/runtime
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/package.json ./package.json
@@ -26,6 +29,7 @@ COPY --from=build /app/dist/scripts ./dist/scripts
 COPY --from=build /app/dist/tests/fixtures.js ./dist/tests/fixtures.js
 COPY --from=build /app/synthetic-catalog.json ./synthetic-catalog.json
 COPY --from=build /app/catalog/real ./catalog/real
+COPY --from=build /app/docs/evidence/multi-city ./docs/evidence/multi-city
 USER node
 EXPOSE 3000
 HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \

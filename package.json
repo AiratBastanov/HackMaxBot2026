@@ -12,7 +12,7 @@
     "organizer:check": "node dist/scripts/organizer-check.js",
     "test:public": "node --test --test-timeout=20000 dist/tests/public-access.test.js dist/tests/public-data.test.js",
     "real:catalog": "node dist/scripts/real-catalog.js",
-    "real:smoke": "node dist/scripts/real-walkthrough.js",
+    "real:smoke": "node dist/scripts/multi-city-verify.js",
     "real:preflight": "node --env-file=.env.polling dist/scripts/real-preflight.js",
     "flow:demo": "node dist/scripts/flow-walkthrough.js --synthetic",
     "flow:replay": "node dist/scripts/flow-walkthrough.js --real-replay",

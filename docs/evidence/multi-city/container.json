@@ -1,0 +1,49 @@
+{
+  "result": "PASS",
+  "project": "maxbot-multi-city-1790586404495",
+  "image": "maxbot-multi-city-1790586404495:test",
+  "sourceHash": "ee3f6098b81e63b434beaee17779e66182e8132b9ad19cdb55c0be5d4378a676",
+  "catalogSha256": "ae492e075d1f9e72b53c1be1baa58796f254cbd7826c42830cfec17653a2639b",
+  "existingContainersUnchanged": true,
+  "simulatedMAX": true,
+  "network": "none",
+  "cleanBuildBenchmark": false,
+  "results": [
+    {
+      "name": "existing-ids",
+      "exitCode": 0,
+      "elapsedMs": 125,
+      "error": null
+    },
+    {
+      "name": "existing-state-1",
+      "exitCode": 0,
+      "elapsedMs": 58,
+      "error": null
+    },
+    {
+      "name": "build",
+      "exitCode": 0,
+      "elapsedMs": 17649,
+      "error": null
+    },
+    {
+      "name": "smoke",
+      "exitCode": 0,
+      "elapsedMs": 2724,
+      "error": null
+    },
+    {
+      "name": "existing-state-4",
+      "exitCode": 0,
+      "elapsedMs": 54,
+      "error": null
+    },
+    {
+      "name": "remove-disposable",
+      "exitCode": 0,
+      "elapsedMs": 232,
+      "error": null
+    }
+  ]
+}

@@ -15,7 +15,8 @@ import {parseJson} from '../src/contracts.js';
 
 const NEW1='9007199254741881',NEW2='9007199254741883';
 const path=()=>{mkdirSync('.tmp/public',{recursive:true});return resolve(mkdtempSync(resolve('.tmp/public/case-')),'state.sqlite');};
-const catalog=Catalog.load({flowDataMode:'real',snapshotPath:'catalog/real/active.json',admissionMode:'PUBLIC'} as Config);
+const historical={snapshotPath:'catalog/real/e9f43ed9d1fd3c408584.json',reviewPath:'catalog/real/e9f43ed9d1fd3c408584.review.json'};
+const catalog=Catalog.load({flowDataMode:'real',...historical,admissionMode:'PUBLIC'} as Config);
 const input={snapshots:catalog.availableCities.map(c=>catalog.forCity(c)!)};
 const start=Date.parse(catalog.review!.reviewedAt)+1000;
 async function choices(d:Awaited<ReturnType<typeof flowDriver>>,actor:string,city='Казань') {
@@ -75,7 +76,7 @@ test('PUBLIC: source hashes and durable actor ownership protect sends, edits, qu
  try {
   await d.enter(NEW1);await choices(d,NEW1);await d.click('Подробнее 1',NEW1);
   const operation=d.operations.filter(op=>op.method==='messages'||op.method==='edit').at(-1)!;
-  const c={...d.config,mode:'live' as const,token:'synthetic-token-never-sent',snapshotPath:'catalog/real/active.json'};
+  const c={...d.config,mode:'live' as const,token:'synthetic-token-never-sent',...historical};
   const authorize=outboundAuthorization(c,d.runtime.store);let calls=0;
   const max=new LiveMax(c,(async()=>{calls++;return new Response('{"success":true}');}) as typeof fetch,undefined,authorize);
   const edit={...operation,method:'edit',mid:d.screen(NEW1)!.method==='edit'?(d.screen(NEW1) as any).mid:'missing',actor:NEW1} as MaxOperation;

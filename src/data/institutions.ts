@@ -101,7 +101,7 @@ function individualAmount(value:string):NormalizedEvent['price'] {
   }
   return price;
 }
-export function extract(p:Page,source:Institution,scopeDate:string,venuePage?:Page) {
+export function extract(p:Page,source:Institution,scopeDate:string,venuePage?:Page,horizonDays=30) {
   if(new URL(p.url).origin!==sources[source].origin||bodyHash(p.body)!==p.hash)throw Error('PAGE_PROVENANCE');
   const dom=document(p),all=clean(domText(parse(p.body)));
   const titleNode=source==='kazan-kremlin'?dom.find(n=>tag(n)==='h1'):dom.find(n=>tag(n)==='title');
@@ -113,7 +113,7 @@ export function extract(p:Page,source:Institution,scopeDate:string,venuePage?:Pa
   const dates=period(timing);
   const permanent=/постоянн.{0,8}экспозици/iu.test(timing+' '+title);
   if(!dates&&!permanent)throw Error('PERIOD_REVIEW');
-  const scopeEnd=new Date(Date.parse(scopeDate+'T00:00Z')+30*86400000).toISOString().slice(0,10);
+  const scopeEnd=new Date(Date.parse(scopeDate+'T00:00Z')+horizonDays*86400000).toISOString().slice(0,10);
   if(dates&&(dates.through<scopeDate||dates.from>=scopeEnd))throw Error('OUTSIDE_SCOPE');
   const id=`${source}:${new URL(p.url).pathname.split('/').filter(Boolean).at(-1)}`;
   const columns=dom.filter(n=>tag(n)==='li'&&cls(n,'t822__col'));
@@ -184,12 +184,12 @@ export function extract(p:Page,source:Institution,scopeDate:string,venuePage?:Pa
       opening:open,scheduleBasis:open?'STRUCTURED':'UNKNOWN',metadata:{continuous:false,usePlaceSchedule:true,structuredSchedulePresent:false,equalEndpoints:false,placeholderEnd:false},issues}],issues};
   return {event,venue};
 }
-export function makeSnapshots(records:ReturnType<typeof extract>[],now:string,freshnessHours=72):Snapshot[] {
+export function makeSnapshots(records:ReturnType<typeof extract>[],now:string,freshnessHours=72,horizonDays=30,additionalVenues:Venue[]=[]):Snapshot[] {
   const result:Snapshot[]=[];
-  for(const city of ['kzn','ekb'] as CityKey[]) {
+  for(const city of Object.keys(cities) as CityKey[]) {
     const rows=records.filter(r=>r.event.city===city);if(!rows.length)continue;
-    const timezone=cities[city].timezone,start=cityInstant(cityDate(now,timezone),'00:00',timezone),end=new Date(Date.parse(start)+30*86400000).toISOString();
-    const events=rows.map(r=>r.event).sort((a,b)=>a.id.localeCompare(b.id)),venues=[...new Map(rows.map(r=>[r.venue.id,r.venue])).values()];
+    const timezone=cities[city].timezone,start=cityInstant(cityDate(now,timezone),'00:00',timezone),end=new Date(Date.parse(start)+horizonDays*86400000).toISOString();
+    const events=rows.map(r=>r.event).sort((a,b)=>a.id.localeCompare(b.id)),venues=[...new Map([...rows.map(r=>r.venue),...additionalVenues.filter(v=>v.city===city)].map(v=>[v.id,v])).values()];
     const retrievedAt=rows.flatMap(r=>[r.event.retrievedAt,...r.event.observations.map(o=>o.retrievedAt),...r.venue.observations.map(o=>o.retrievedAt)]).filter((s):s is string=>s!==null).sort()[0]!;
     result.push(validateSnapshot({version:2,mode:'REAL_CATALOG',scope:{city,timezone,start,end,categories:[...new Set(events.flatMap(e=>e.categories))],zone:null},retrievedAt,freshnessHours,outcome:'PARTIAL',paginationComplete:false,venueCoverageComplete:false,enrichedAt:null,coverage:'PROVIDER_CATALOG_ONLY',publicDisplay:'NOT_CLEARED',issues:['Ограниченный каталог обследованных учреждений; наличие билетов и отмены не гарантируются.'],stats:{providerCount:null,retrievedRows:events.length,uniqueProviderIds:events.length,duplicateIds:0,pages:new Set(events.map(e=>e.sourceUrl)).size,normalizedEvents:events.length,occurrences:events.reduce((n,e)=>n+e.occurrences.length,0),venues:venues.length,omitted:{}},events,venues}));
   }

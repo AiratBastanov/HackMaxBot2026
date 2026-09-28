@@ -1,0 +1,2379 @@
+{
+  "version": 1,
+  "result": "PASS",
+  "checks": 42,
+  "samples": [
+    {
+      "source": "operann",
+      "index": 1,
+      "id": "operann:showbill-1544",
+      "title": "Музыкальные миры Марка Шагала",
+      "sourceUrl": "https://operann.ru/afisha/muzykalnye-miry-marka-shagala",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-29T16:00:00.000Z",
+          "end": "2026-09-29T18:00:00.000Z",
+          "from": "2026-09-29",
+          "through": "2026-09-29",
+          "timezone": "Europe/Moscow",
+          "availability": "UNRESOLVED_SOURCE_STATUS",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Концертный Пакгауз",
+        "address": "г. Нижний Новгород, Стрелка, 21Ж"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://operann.ru/afisha/muzykalnye-miry-marka-shagala",
+          "hash": "e08bb2b1c794689dc233a42a043908cf8f9abb5207bfae13a75aed444c3182b2",
+          "fetchedAt": "2026-09-28T07:07:36.540Z"
+        },
+        {
+          "url": "https://operann.ru/afisha",
+          "hash": "1cafc0012af41072dfeb376c7107353faeb368ae510dd168308134f24a6885e6",
+          "fetchedAt": "2026-09-28T06:58:26.652Z"
+        }
+      ]
+    },
+    {
+      "source": "operann",
+      "index": 2,
+      "id": "operann:showbill-1877",
+      "title": "Жизель",
+      "sourceUrl": "https://operann.ru/afisha/zhizel-1",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-29T15:30:00.000Z",
+          "end": "2026-09-29T17:30:00.000Z",
+          "from": "2026-09-29",
+          "through": "2026-09-29",
+          "timezone": "Europe/Moscow",
+          "availability": "UNRESOLVED_SOURCE_STATUS",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Театр оперы и балета",
+        "address": "г. Нижний Новгород, ул. Белинского, 59"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://operann.ru/afisha/zhizel-1",
+          "hash": "22ab717770b3085be0816c0b142428bbb63a42640d575506f7b69cfda474fd39",
+          "fetchedAt": "2026-09-28T07:07:34.588Z"
+        },
+        {
+          "url": "https://operann.ru/afisha",
+          "hash": "1cafc0012af41072dfeb376c7107353faeb368ae510dd168308134f24a6885e6",
+          "fetchedAt": "2026-09-28T06:58:26.652Z"
+        }
+      ]
+    },
+    {
+      "source": "samara-opera",
+      "index": 1,
+      "id": "samara-opera:-166-concert1299-html",
+      "title": "Единство культур",
+      "sourceUrl": "https://opera-samara.ru/166/concert1299.html",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-28T14:30:00.000Z",
+          "end": "2026-09-28T16:30:00.000Z",
+          "from": "2026-09-28",
+          "through": "2026-09-28",
+          "timezone": "Europe/Samara",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Самарский театр оперы и балета",
+        "address": "Самара, площадь Куйбышева, 1"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://opera-samara.ru/afisha/",
+          "hash": "703f0ef80991210fa35db4e5e07b3fd4390e59de4444ce0540d2d18cfd0bb8ed",
+          "fetchedAt": "2026-09-28T06:58:26.629Z"
+        },
+        {
+          "url": "https://opera-samara.ru/Kontaktnaya_informatsiya/",
+          "hash": "5849e2f1ead1322d62e17a55fee635fbfce4dc15d03f2a68dc43277c5c5814d8",
+          "fetchedAt": "2026-09-28T07:02:43.993Z"
+        }
+      ]
+    },
+    {
+      "source": "samara-opera",
+      "index": 2,
+      "id": "samara-opera:-166-concert1292-html",
+      "title": "FRANK («Фрэнк»)",
+      "sourceUrl": "https://opera-samara.ru/166/concert1292.html",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-11-23T15:00:00.000Z",
+          "end": "2026-11-23T16:30:00.000Z",
+          "from": "2026-11-23",
+          "through": "2026-11-23",
+          "timezone": "Europe/Samara",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Самарский театр оперы и балета",
+        "address": "Самара, площадь Куйбышева, 1"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://opera-samara.ru/afisha/",
+          "hash": "703f0ef80991210fa35db4e5e07b3fd4390e59de4444ce0540d2d18cfd0bb8ed",
+          "fetchedAt": "2026-09-28T06:58:26.629Z"
+        },
+        {
+          "url": "https://opera-samara.ru/Kontaktnaya_informatsiya/",
+          "hash": "5849e2f1ead1322d62e17a55fee635fbfce4dc15d03f2a68dc43277c5c5814d8",
+          "fetchedAt": "2026-09-28T07:02:43.993Z"
+        }
+      ]
+    },
+    {
+      "source": "filarm",
+      "index": 1,
+      "id": "filarm:concert4392",
+      "title": "«Золотой романс»: Ирина Крутова и оркестр",
+      "sourceUrl": "https://filarm.ru/afisha/concert4392.html",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-10-01T14:30:00.000Z",
+          "end": null,
+          "from": "2026-10-01",
+          "through": "2026-10-01",
+          "timezone": "Europe/Samara",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Самарская филармония, Концертный зал",
+        "address": "Самара, улица Фрунзе, 141"
+      },
+      "price": {
+        "kind": "RANGE",
+        "amount": null,
+        "lowerBound": 700,
+        "upperBound": 1500,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "700-1500 руб.",
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://filarm.ru/afisha/",
+          "hash": "888211f525533e599c5aaa1d62640dd874293f4ec8641f19fd59c4763ed1b3e4",
+          "fetchedAt": "2026-09-28T07:02:43.476Z"
+        },
+        {
+          "url": "https://filarm.ru/afisha/concert4392.html",
+          "hash": "9270c8776dbc7ff91b457ecf1e4b1fe593b4ae61fb476e74dd67798d87c1b392",
+          "fetchedAt": "2026-09-28T07:07:40.597Z"
+        },
+        {
+          "url": "https://filarm.ru/contacts/",
+          "hash": "e4e84e58d37e52573f2d98146eef161ef35a4c73c5de6d6c41b9d7c2bfe8cc41",
+          "fetchedAt": "2026-09-28T07:02:45.387Z"
+        }
+      ]
+    },
+    {
+      "source": "filarm",
+      "index": 2,
+      "id": "filarm:concert4483",
+      "title": "Победитель XIV Международного конкурса органистов имени М.Таривердиева (2025) Сунхён Пак (орган, Южная Корея)",
+      "sourceUrl": "https://filarm.ru/afisha/concert4483.html",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-29T14:30:00.000Z",
+          "end": null,
+          "from": "2026-09-29",
+          "through": "2026-09-29",
+          "timezone": "Europe/Samara",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Самарская филармония, Концертный зал",
+        "address": "Самара, улица Фрунзе, 141"
+      },
+      "price": {
+        "kind": "RANGE",
+        "amount": null,
+        "lowerBound": 700,
+        "upperBound": 1500,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "700-1500 руб.",
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://filarm.ru/afisha/",
+          "hash": "888211f525533e599c5aaa1d62640dd874293f4ec8641f19fd59c4763ed1b3e4",
+          "fetchedAt": "2026-09-28T07:02:43.476Z"
+        },
+        {
+          "url": "https://filarm.ru/afisha/concert4483.html",
+          "hash": "98a7fb4377a56b682c703569df4d247bbecaf080ff461c3ea0b68ef6dd0c3d82",
+          "fetchedAt": "2026-09-28T07:07:36.601Z"
+        },
+        {
+          "url": "https://filarm.ru/contacts/",
+          "hash": "e4e84e58d37e52573f2d98146eef161ef35a4c73c5de6d6c41b9d7c2bfe8cc41",
+          "fetchedAt": "2026-09-28T07:02:45.387Z"
+        }
+      ]
+    },
+    {
+      "source": "spb-opera",
+      "index": 1,
+      "id": "spb-opera:-repertuar-spektakli-31-bogema-",
+      "title": "Богема",
+      "sourceUrl": "https://www.spbopera.ru/repertuar/spektakli/31-bogema/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-30T16:00:00.000Z",
+          "end": null,
+          "from": "2026-09-30",
+          "through": "2026-09-30",
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Камерный музыкальный театр «Санктъ-Петербургъ Опера»",
+        "address": "Санкт-Петербург, Галерная улица, 33"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://www.spbopera.ru/afisha/?month=9&YEAR=2026&plays=1&concerts=1&tours=1&lectures=1",
+          "hash": "40dc70be5f8abb432a7b8fe3fc303e516e17fb235d730e32626490e11bc97568",
+          "fetchedAt": "2026-09-28T08:03:07.618Z"
+        },
+        {
+          "url": "https://www.spbopera.ru/repertuar/spektakli/31-bogema/",
+          "hash": "9d887701a2670497134ac35c62cd4777d1392eb8adfdf1114fc35a212bc74283",
+          "fetchedAt": "2026-09-28T07:56:43.529Z"
+        },
+        {
+          "url": "https://www.spbopera.ru/contacts/",
+          "hash": "c5ef6dbca13e10e2ec511556501b5f38fa972f13f928b93ca8a20ce7569c0752",
+          "fetchedAt": "2026-09-28T07:02:43.799Z"
+        }
+      ]
+    },
+    {
+      "source": "spb-opera",
+      "index": 2,
+      "id": "spb-opera:-repertuar-spektakli-8-madam-batterflyaj-chio-chio-san-",
+      "title": "Мадам Баттерфляй",
+      "sourceUrl": "https://www.spbopera.ru/repertuar/spektakli/8-madam-batterflyaj-chio-chio-san/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-11-25T16:00:00.000Z",
+          "end": null,
+          "from": "2026-11-25",
+          "through": "2026-11-25",
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Камерный музыкальный театр «Санктъ-Петербургъ Опера»",
+        "address": "Санкт-Петербург, Галерная улица, 33"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://www.spbopera.ru/afisha/?month=11&YEAR=2026&plays=1&concerts=1&tours=1&lectures=1",
+          "hash": "8a0a306bc5b14af4f19285b3c788b1de4753c228d3dca1e1d0fbca83ec36de7b",
+          "fetchedAt": "2026-09-28T08:05:39.091Z"
+        },
+        {
+          "url": "https://www.spbopera.ru/repertuar/spektakli/8-madam-batterflyaj-chio-chio-san/",
+          "hash": "d8dbd6952386d1c6111836185bc4cf21198f5753c79718b6086f60f7add71a26",
+          "fetchedAt": "2026-09-28T08:06:40.334Z"
+        },
+        {
+          "url": "https://www.spbopera.ru/contacts/",
+          "hash": "c5ef6dbca13e10e2ec511556501b5f38fa972f13f928b93ca8a20ce7569c0752",
+          "fetchedAt": "2026-09-28T07:02:43.799Z"
+        }
+      ]
+    },
+    {
+      "source": "permopera",
+      "index": 1,
+      "id": "permopera:production-6873beb50751dbf3d9e0cdd7",
+      "title": "Локация (Location)",
+      "sourceUrl": "https://permopera.ru/playbills/playbill/2026-09-30-1900-lokacziya-location/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-30T14:00:00.000Z",
+          "end": "2026-09-30T15:45:00.000Z",
+          "from": "2026-09-30",
+          "through": "2026-09-30",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Стартовая точка — площадь перед театром",
+        "address": "Пермь, Петропавловская ул., 25А"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://permopera.ru/playbills/playbill/?month=2026-09-01&json=1",
+          "hash": "c1739fba192d7fb25643d9805966317e4917af8133dd4e1b1950bf57365f3416",
+          "fetchedAt": "2026-09-28T07:56:03.639Z"
+        },
+        {
+          "url": "https://permopera.ru/playbills/playbill/2026-09-30-1900-lokacziya-location/",
+          "hash": "329839b58c1cbe8ebd1e6c4c7feea06661cc620cc83133dbf8de612071c01468",
+          "fetchedAt": "2026-09-28T08:13:17.428Z"
+        }
+      ]
+    },
+    {
+      "source": "permopera",
+      "index": 2,
+      "id": "permopera:production-9874ed10356e7e6512298b18",
+      "title": "Экскурсия по театру",
+      "sourceUrl": "https://permopera.ru/playbills/playbill/2026-10-18-1515-ekskursiya-po-teatru/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-10-18T10:15:00.000Z",
+          "end": "2026-10-18T11:15:00.000Z",
+          "from": "2026-10-18",
+          "through": "2026-10-18",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "OBSERVED_SOLD_OUT",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Пермский театр оперы и балета",
+        "address": "Пермь, ул. Петропавловская, 25А"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://permopera.ru/playbills/playbill/page/3/?month=2026-10-01&json=1",
+          "hash": "3c870f241997a09ece2a8d1d19e3e3012f151c5cadf572a71b2c459caa31dbfe",
+          "fetchedAt": "2026-09-28T08:03:19.293Z"
+        },
+        {
+          "url": "https://permopera.ru/playbills/playbill/2026-10-18-1515-ekskursiya-po-teatru/",
+          "hash": "24eb2ffe0a293e1c629b7106d5ba452e98dd707858af41481412d7f38b5989c8",
+          "fetchedAt": "2026-09-28T08:14:14.348Z"
+        }
+      ]
+    },
+    {
+      "source": "bashopera",
+      "index": 1,
+      "id": "bashopera:production-254",
+      "title": "Риголетто",
+      "sourceUrl": "https://bashopera.ru/repertoire/opera/254/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-29T14:00:00.000Z",
+          "end": "2026-09-29T16:20:00.000Z",
+          "from": "2026-09-29",
+          "through": "2026-09-29",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Большой зал",
+        "address": "Уфа, улица Ленина, 5/1"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://bashopera.ru/repertoire/opera/254/",
+          "hash": "342f2b8ed4739882fac742fc0546c253576f675a81ae8117730c81a8849c396a",
+          "fetchedAt": "2026-09-28T07:07:36.612Z"
+        },
+        {
+          "url": "https://bashopera.ru/affiche/",
+          "hash": "af1ac5d5477f4eed1bcf185c09ddf72d14453ab088f5623dd73ab855dfbe2007",
+          "fetchedAt": "2026-09-28T07:02:43.603Z"
+        },
+        {
+          "url": "https://bashopera.ru/about/contacts/",
+          "hash": "3867c66ddf572c2d1ccc9cc90ea37658a029e3964be143931d1899c3c0545e13",
+          "fetchedAt": "2026-09-28T07:02:45.407Z"
+        }
+      ]
+    },
+    {
+      "source": "bashopera",
+      "index": 2,
+      "id": "bashopera:production-272",
+      "title": "Дон Кихот",
+      "sourceUrl": "https://bashopera.ru/repertoire/ballet/272/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-11-26T14:00:00.000Z",
+          "end": "2026-11-26T16:40:00.000Z",
+          "from": "2026-11-26",
+          "through": "2026-11-26",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Большой зал",
+        "address": "Уфа, улица Ленина, 5/1"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://bashopera.ru/repertoire/ballet/272/",
+          "hash": "13e76bbf65a10d68afdce814e00405b8db18ec10f7faaf4c50b6102bd236b32a",
+          "fetchedAt": "2026-09-28T07:09:50.828Z"
+        },
+        {
+          "url": "https://bashopera.ru/affiche/",
+          "hash": "af1ac5d5477f4eed1bcf185c09ddf72d14453ab088f5623dd73ab855dfbe2007",
+          "fetchedAt": "2026-09-28T07:02:43.603Z"
+        },
+        {
+          "url": "https://bashopera.ru/about/contacts/",
+          "hash": "3867c66ddf572c2d1ccc9cc90ea37658a029e3964be143931d1899c3c0545e13",
+          "fetchedAt": "2026-09-28T07:02:45.407Z"
+        }
+      ]
+    },
+    {
+      "source": "meloman",
+      "index": 1,
+      "id": "meloman:programme-47c7162f3c439786459aa0a8",
+      "title": "К 55-летию хора Госкапеллы России Прокофьев. «Александр Невский», «Ромео и Джульетта»",
+      "sourceUrl": "https://meloman.ru/concert/kzch-2026-09-29/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-29T16:00:00.000Z",
+          "end": null,
+          "from": "2026-09-29",
+          "through": "2026-09-29",
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Концертный зал имени П. И. Чайковского",
+        "address": "Москва, Триумфальная площадь, 4"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://meloman.ru/project/phpfiles/web/ajax.php",
+          "hash": "03f2913ca91f5634a05ddb2b17be0c4d1e878ded0ee3b025f04efb3e67ec9cad",
+          "fetchedAt": "2026-09-28T07:50:01.146Z"
+        },
+        {
+          "url": "https://meloman.ru/concert/kzch-2026-09-29/",
+          "hash": "00dcf3e80b16f7e5953e49e89a638a47ac27db81a0ecce9053e1e79e24fa9987",
+          "fetchedAt": "2026-09-28T07:07:34.974Z"
+        },
+        {
+          "url": "https://meloman.ru/hall/koncertnyj-zal-chajkovskogo/",
+          "hash": "e14ec7566d17bba79000d3bf7c523dece1179496cf4b62de8320d41c43a5955b",
+          "fetchedAt": "2026-09-28T07:39:03.622Z"
+        }
+      ]
+    },
+    {
+      "source": "meloman",
+      "index": 2,
+      "id": "meloman:programme-2d620aec7571b814676d3486",
+      "title": "Сон в летнюю ночь",
+      "sourceUrl": "https://meloman.ru/concert/mzf2-2026-11-26/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-11-26T16:00:00.000Z",
+          "end": null,
+          "from": "2026-11-26",
+          "through": "2026-11-26",
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Ф2. Малый зал",
+        "address": "Москва, Мичуринский проспект, Олимпийская деревня, дом 1"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://meloman.ru/project/phpfiles/web/ajax.php",
+          "hash": "0df40a04cd4489b0f4c10faeb62fb8dcf0d56d4f1a0e5e4600bdabac84f8b6c2",
+          "fetchedAt": "2026-09-28T07:50:05.378Z"
+        },
+        {
+          "url": "https://meloman.ru/hall/filarmoniya-2-malyj-zal/",
+          "hash": "d4a9382d0d0a0fedb200ba271233b2d500c5e485ac913d74614b1b6868b94ac5",
+          "fetchedAt": "2026-09-28T07:39:09.449Z"
+        }
+      ]
+    },
+    {
+      "source": "samara-library",
+      "index": 1,
+      "id": "samara-library:4721",
+      "title": "Встреча с учеными СамГТУ«Шаги дающие свет»",
+      "sourceUrl": "https://libsmr.ru/afisha/num/4721",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-30T09:00:00.000Z",
+          "end": null,
+          "from": "2026-09-30",
+          "through": "2026-09-30",
+          "timezone": "Europe/Samara",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "СОУНБ, Отдел искусств",
+        "address": "Самара, проспект Ленина, 14 А; Отдел искусств"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://libsmr.ru/afisha/num/4721",
+          "hash": "6f58ea1681f00fd22945c95c3215ddfdc53dd4e66ba882ddc28042daf094d087",
+          "fetchedAt": "2026-09-28T07:39:03.939Z"
+        },
+        {
+          "url": "https://libsmr.ru/afisha",
+          "hash": "2bd2b43546dc3d7fa79e389d11008e5d3f3b60a83236896b0609490140dca637",
+          "fetchedAt": "2026-09-28T07:03:46.076Z"
+        }
+      ]
+    },
+    {
+      "source": "samara-library",
+      "index": 2,
+      "id": "samara-library:4708",
+      "title": "Просветительская лекция «Проникновенно-творческое погружение в прошлое Самарской губернии с терапией творческого самовыражения М.Е. Бурно» к 175-летию Самарской губернии",
+      "sourceUrl": "https://libsmr.ru/afisha/num/4708",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-30T14:30:00.000Z",
+          "end": null,
+          "from": "2026-09-30",
+          "through": "2026-09-30",
+          "timezone": "Europe/Samara",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "СОУНБ, Многофункциональный зал",
+        "address": "Самара, проспект Ленина, 14 А; Многофункциональный зал"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://libsmr.ru/afisha/num/4708",
+          "hash": "1017f2986e55665fede7ce524324982c315b2ebdcd6386d3ed5beda576741d7b",
+          "fetchedAt": "2026-09-28T07:39:09.945Z"
+        },
+        {
+          "url": "https://libsmr.ru/afisha",
+          "hash": "2bd2b43546dc3d7fa79e389d11008e5d3f3b60a83236896b0609490140dca637",
+          "fetchedAt": "2026-09-28T07:03:46.076Z"
+        }
+      ]
+    },
+    {
+      "source": "perm-library",
+      "index": 1,
+      "id": "perm-library:angel-moy",
+      "title": "«Ангел мой»",
+      "sourceUrl": "https://www.gorkilib.ru/events/angel-moy",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-10-04T09:00:00.000Z",
+          "end": null,
+          "from": "2026-10-04",
+          "through": "2026-10-04",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Горьковка, конференц-зал (3 этаж, левое крыло)",
+        "address": "Пермь, ул. Ленина, 70; конференц-зал (3 этаж, левое крыло)"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://www.gorkilib.ru/events/angel-moy",
+          "hash": "35172672011ad15a1448e9390e5e272371e218f87c7604e82019a29359674e7e",
+          "fetchedAt": "2026-09-28T07:03:52.647Z"
+        },
+        {
+          "url": "https://www.gorkilib.ru/",
+          "hash": "09a773f621750fb9df652437e6154030698426f8170aca6e8582e73e39e75bfc",
+          "fetchedAt": "2026-09-28T07:00:25.957Z"
+        },
+        {
+          "url": "https://www.gorkilib.ru/about/contacts/",
+          "hash": "6a76e168353c4e7b877fbc8e87884e8e6eb610efdcd026918ed68f6e7624ea97",
+          "fetchedAt": "2026-09-28T07:03:40.568Z"
+        }
+      ]
+    },
+    {
+      "source": "perm-library",
+      "index": 2,
+      "id": "perm-library:schastlivye-mgnoveniya-muzyki",
+      "title": "«Счастливые мгновения Музыки»",
+      "sourceUrl": "https://www.gorkilib.ru/events/schastlivye-mgnoveniya-muzyki",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-10-01T13:30:00.000Z",
+          "end": null,
+          "from": "2026-10-01",
+          "through": "2026-10-01",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Горьковка, конференц-зал Пермской краевой библиотеки им. А. М. Горького (3 этаж, левое крыло)",
+        "address": "Пермь, ул. Ленина, 70; конференц-зал Пермской краевой библиотеки им. А. М. Горького (3 этаж, левое крыло)"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://www.gorkilib.ru/events/schastlivye-mgnoveniya-muzyki",
+          "hash": "3154846f33b9ca41f08393bbf308758ae28911ac21bd2540feca421807abffe8",
+          "fetchedAt": "2026-09-28T07:03:54.642Z"
+        },
+        {
+          "url": "https://www.gorkilib.ru/",
+          "hash": "09a773f621750fb9df652437e6154030698426f8170aca6e8582e73e39e75bfc",
+          "fetchedAt": "2026-09-28T07:00:25.957Z"
+        },
+        {
+          "url": "https://www.gorkilib.ru/about/contacts/",
+          "hash": "6a76e168353c4e7b877fbc8e87884e8e6eb610efdcd026918ed68f6e7624ea97",
+          "fetchedAt": "2026-09-28T07:03:40.568Z"
+        }
+      ]
+    },
+    {
+      "source": "chel-philharmonia",
+      "index": 1,
+      "id": "chel-philharmonia:46612",
+      "title": "Хор мальчиков и юношей CANTUS / КАНТУС",
+      "sourceUrl": "https://philarmonia.ru/afisha/46612-khor-malchikov-i-yunoshey-cantus-kantus/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-28T13:30:00.000Z",
+          "end": "2026-09-28T14:15:00.000Z",
+          "from": "2026-09-28",
+          "through": "2026-09-28",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Детская филармония (Большой зал)",
+        "address": "Челябинск, ул. Солнечная, 5"
+      },
+      "price": {
+        "kind": "EXACT",
+        "amount": 500,
+        "lowerBound": 500,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "500 руб.",
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://philarmonia.ru/afisha/46612-khor-malchikov-i-yunoshey-cantus-kantus/",
+          "hash": "a546429a7255f57aab9d1f9aa834e14f59c34912f860298b1799e8c26fa47477",
+          "fetchedAt": "2026-09-28T07:07:34.641Z"
+        },
+        {
+          "url": "https://philarmonia.ru/afisha/",
+          "hash": "95ef4f12359f2134b3c54024e50b32defc045e214b43dde277c2979855056d17",
+          "fetchedAt": "2026-09-28T06:58:26.943Z"
+        },
+        {
+          "url": "https://philarmonia.ru/viewers/contacts/",
+          "hash": "415fbd9c60ea9e6b91aa9e4ec6e7e310a79cac7325a28afc374b0f79aa6fbd0b",
+          "fetchedAt": "2026-09-28T07:02:44.151Z"
+        }
+      ]
+    },
+    {
+      "source": "chel-philharmonia",
+      "index": 2,
+      "id": "chel-philharmonia:46627",
+      "title": "Сунхен Пак (орган), Южная Корея",
+      "sourceUrl": "https://philarmonia.ru/afisha/46627-sunkhen-pak-organ-yuzhnaya-koreya/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-10-02T13:30:00.000Z",
+          "end": "2026-10-02T14:15:00.000Z",
+          "from": "2026-10-02",
+          "through": "2026-10-02",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "ЗАЛ ОРГАННОЙ И КАМЕРНОЙ МУЗЫКИ «РОДИНА»",
+        "address": "Челябинск, ул. Кирова, 78"
+      },
+      "price": {
+        "kind": "EXACT",
+        "amount": 800,
+        "lowerBound": 800,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "800 руб.",
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://philarmonia.ru/afisha/46627-sunkhen-pak-organ-yuzhnaya-koreya/",
+          "hash": "235ce2a1a3781653e2ea5c5c8e0c20073bfc7f97dca61a59d40ad4176bfeb54b",
+          "fetchedAt": "2026-09-28T07:07:48.944Z"
+        },
+        {
+          "url": "https://philarmonia.ru/afisha/",
+          "hash": "95ef4f12359f2134b3c54024e50b32defc045e214b43dde277c2979855056d17",
+          "fetchedAt": "2026-09-28T06:58:26.943Z"
+        },
+        {
+          "url": "https://philarmonia.ru/viewers/contacts/",
+          "hash": "415fbd9c60ea9e6b91aa9e4ec6e7e310a79cac7325a28afc374b0f79aa6fbd0b",
+          "fetchedAt": "2026-09-28T07:02:44.151Z"
+        }
+      ]
+    },
+    {
+      "source": "krasfil",
+      "index": 1,
+      "id": "krasfil:show-800",
+      "title": "Фестиваль скрипачей Виктора Третьякова. Великий Моцарт. Виктор Третьяков, Наталья Лихопой, Михаил Усов, Андрей Усов, Красноярский камерный оркестр",
+      "sourceUrl": "https://krasfil.ru/events/1542",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-29T12:00:00.000Z",
+          "end": "2026-09-29T13:20:00.000Z",
+          "from": "2026-09-29",
+          "through": "2026-09-29",
+          "timezone": "Asia/Krasnoyarsk",
+          "availability": "OBSERVED_SOLD_OUT",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Малый концертный зал им. И.В.Шпиллера, Красноярск г.",
+        "address": "Красноярск, пр. Мира, 2Б"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://krasfil.ru/events/1542",
+          "hash": "e32eaf63800f06b80266554a94db998dc932b6707da4a122348c4969cc58f4d1",
+          "fetchedAt": "2026-09-28T07:07:37.123Z"
+        },
+        {
+          "url": "https://krasfil.ru/malyj-zal",
+          "hash": "dbcb05846150619a1e09d2d6423e56614aac52ca8c557fc70b7ff835c4860e17",
+          "fetchedAt": "2026-09-28T08:25:23.895Z"
+        }
+      ]
+    },
+    {
+      "source": "krasfil",
+      "index": 2,
+      "id": "krasfil:show-730",
+      "title": "Максим Аверин.Спектакль \"Расправь крылья\"",
+      "sourceUrl": "https://krasfil.ru/events/1415",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-29T12:00:00.000Z",
+          "end": "2026-09-29T14:00:00.000Z",
+          "from": "2026-09-29",
+          "through": "2026-09-29",
+          "timezone": "Asia/Krasnoyarsk",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Большой концертный зал, г Красноярск",
+        "address": "Красноярск, пр. Мира, 2Б"
+      },
+      "price": {
+        "kind": "RANGE",
+        "amount": null,
+        "lowerBound": 2000,
+        "upperBound": 3000,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "2 000 — 3 000 ₽",
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://krasfil.ru/events/1415",
+          "hash": "e104483e144be810dfa90555322b09daac2d572d4d5d272ffec0af48526f14a3",
+          "fetchedAt": "2026-09-28T07:07:34.878Z"
+        },
+        {
+          "url": "https://krasfil.ru/bolsoj-zal",
+          "hash": "cf19379277a7463d43ad937f0813b147492e652ca9c17ee8a90c5cc49e4618e5",
+          "fetchedAt": "2026-09-28T08:25:22.868Z"
+        }
+      ]
+    },
+    {
+      "source": "spb-philharmonia",
+      "index": 1,
+      "id": "spb-philharmonia:programme-80f06ba15407406a8c1291c5",
+      "title": "Владимир Мищук Фортепианный вечер",
+      "sourceUrl": "https://www.philharmonia.spb.ru/afisha/1078335/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-11-16T16:00:00.000Z",
+          "end": "2026-11-16T18:00:00.000Z",
+          "from": "2026-11-16",
+          "through": "2026-11-16",
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Малый зал",
+        "address": "Санкт-Петербург, Невский проспект, 30"
+      },
+      "price": {
+        "kind": "RANGE",
+        "amount": null,
+        "lowerBound": 1500,
+        "upperBound": 2000,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "1500 — 2000 р.",
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://www.philharmonia.spb.ru/afisha/1078335/",
+          "hash": "1a921a4ebf41a049c76941bf559826c26bb9120d3bdcb3df92ad60fac0d83d84",
+          "fetchedAt": "2026-09-28T07:08:06.958Z"
+        },
+        {
+          "url": "https://www.philharmonia.spb.ru/about/roadmap/",
+          "hash": "9d4ff2a60ff1b5c1d990bcba48f272c606e2cdb6994065c5993bb28befc6ee84",
+          "fetchedAt": "2026-09-28T07:02:43.808Z"
+        }
+      ]
+    },
+    {
+      "source": "spb-philharmonia",
+      "index": 2,
+      "id": "spb-philharmonia:programme-89687d1e678f753f2d70e6ad",
+      "title": "Тарас Багинец Органный вечер",
+      "sourceUrl": "https://www.philharmonia.spb.ru/afisha/1108164/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-29T17:00:00.000Z",
+          "end": "2026-09-29T18:50:00.000Z",
+          "from": "2026-09-29",
+          "through": "2026-09-29",
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Большой зал",
+        "address": "Санкт-Петербург, Михайловская улица, 2"
+      },
+      "price": {
+        "kind": "RANGE",
+        "amount": null,
+        "lowerBound": 500,
+        "upperBound": 1400,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "500 — 1400 р.",
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://www.philharmonia.spb.ru/afisha/1108164/",
+          "hash": "c3f69b9645b30cf33693ba06955bab59bc992c29e85420281523ab6868d67384",
+          "fetchedAt": "2026-09-28T07:07:34.935Z"
+        },
+        {
+          "url": "https://www.philharmonia.spb.ru/about/roadmap/",
+          "hash": "9d4ff2a60ff1b5c1d990bcba48f272c606e2cdb6994065c5993bb28befc6ee84",
+          "fetchedAt": "2026-09-28T07:02:43.808Z"
+        }
+      ]
+    },
+    {
+      "source": "spb-museum",
+      "index": 1,
+      "id": "spb-museum:1254",
+      "title": "История тюрьмы Трубецкого бастиона",
+      "sourceUrl": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/1254/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "FLEXIBLE_VISIT",
+          "start": null,
+          "end": null,
+          "from": null,
+          "through": null,
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Петропавловская крепость",
+        "address": "Санкт-Петербург, Петропавловская крепость"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/1254/",
+          "hash": "70c66587629689ed8517743d726df80f0baf62ffc756dd9eba50125a145b1b39",
+          "fetchedAt": "2026-09-28T07:07:38.238Z"
+        },
+        {
+          "url": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/",
+          "hash": "f4c4e87bef2e9a3592a1804165ef6bb7bbce139f359164c5aa96c03438895c8c",
+          "fetchedAt": "2026-09-28T07:03:50.082Z"
+        },
+        {
+          "url": "https://www.spbmuseum.ru/themuseum/kontakty.php",
+          "hash": "9457680e0569e3b45ef2127d21a8914332cdfc983edfda64d0672aabe4ff899c",
+          "fetchedAt": "2026-09-28T07:03:39.998Z"
+        }
+      ]
+    },
+    {
+      "source": "spb-museum",
+      "index": 2,
+      "id": "spb-museum:1316",
+      "title": "Петропавловский собор и Великокняжеская усыпальница",
+      "sourceUrl": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/1316/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "FLEXIBLE_VISIT",
+          "start": null,
+          "end": null,
+          "from": null,
+          "through": null,
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Петропавловская крепость",
+        "address": "Санкт-Петербург, Петропавловская крепость"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/1316/",
+          "hash": "276cea4b57a8ba74c4cdf06c110ed64ddb5801ebc62b49f145fc9d5bdbedabc3",
+          "fetchedAt": "2026-09-28T07:07:34.957Z"
+        },
+        {
+          "url": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/",
+          "hash": "f4c4e87bef2e9a3592a1804165ef6bb7bbce139f359164c5aa96c03438895c8c",
+          "fetchedAt": "2026-09-28T07:03:50.082Z"
+        },
+        {
+          "url": "https://www.spbmuseum.ru/themuseum/kontakty.php",
+          "hash": "9457680e0569e3b45ef2127d21a8914332cdfc983edfda64d0672aabe4ff899c",
+          "fetchedAt": "2026-09-28T07:03:39.998Z"
+        }
+      ]
+    },
+    {
+      "source": "spb-library",
+      "index": 1,
+      "id": "spb-library:programme-c0f4d0595251177e5f93a9b3",
+      "title": "Клуб чтения на английском языке",
+      "sourceUrl": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=301a81fa89b4e6b4d84cc1f8516b023f",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-28T15:00:00.000Z",
+          "end": "2026-09-28T16:00:00.000Z",
+          "from": "2026-09-28",
+          "through": "2026-09-28",
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Библиотека имени В. В. Маяковского",
+        "address": "Санкт-Петербург, наб. р. Фонтанки, 44, Медиатека, цокольный этаж"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=301a81fa89b4e6b4d84cc1f8516b023f",
+          "hash": "0164d738df59157b18f67074ce55cca30dd448fd01c87abf83beae563d68bc0c",
+          "fetchedAt": "2026-09-28T07:07:39.055Z"
+        }
+      ]
+    },
+    {
+      "source": "spb-library",
+      "index": 2,
+      "id": "spb-library:b5f670e1cc54fb9d97955dbfe3c10ab9",
+      "title": "200 лет русской сатиры",
+      "sourceUrl": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=b5f670e1cc54fb9d97955dbfe3c10ab9",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "FLEXIBLE_VISIT",
+          "start": null,
+          "end": null,
+          "from": "2026-06-01",
+          "through": "2026-11-01",
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Библиотека имени В. В. Маяковского",
+        "address": "Санкт-Петербург, наб. р. Фонтанки, 44, Двор библиотеки"
+      },
+      "price": {
+        "kind": "FREE",
+        "amount": 0,
+        "lowerBound": 0,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "Вход свободный",
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=b5f670e1cc54fb9d97955dbfe3c10ab9",
+          "hash": "b3039b20160b56e1f02166a54833b07a84cdb0cf0c468169c6b511396afe1f8a",
+          "fetchedAt": "2026-09-28T07:07:35.052Z"
+        }
+      ]
+    },
+    {
+      "source": "nn-art",
+      "index": 1,
+      "id": "nn-art:-vystavki-4786-",
+      "title": "«ЕДИНЕНИЕ. Дружба народов Поволжья»",
+      "sourceUrl": "https://artmuseumnn.ru/vystavki/4786/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "FLEXIBLE_VISIT",
+          "start": null,
+          "end": null,
+          "from": "2026-08-28",
+          "through": "2026-10-18",
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "ИСКУССТВО XX ВЕКА",
+        "address": "Нижний Новгород, Площадь Минина и Пожарского, 2/2"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://artmuseumnn.ru/vystavki/4786/",
+          "hash": "ad3ae624079cef745d76389a17ca0ed5ca517a8443e664c5acc6ee036ad770f6",
+          "fetchedAt": "2026-09-28T07:07:43.645Z"
+        }
+      ]
+    },
+    {
+      "source": "nn-art",
+      "index": 2,
+      "id": "nn-art:-vystavki-4746-",
+      "title": "«Арзамасская академия»",
+      "sourceUrl": "https://artmuseumnn.ru/vystavki/4746/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "FLEXIBLE_VISIT",
+          "start": null,
+          "end": null,
+          "from": "2026-07-31",
+          "through": "2026-11-15",
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "РУССКОЕ ИСКУССТВО",
+        "address": "Нижний Новгород, Кремль, корпус 3"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://artmuseumnn.ru/vystavki/4746/",
+          "hash": "3e70569f691495f26430fa2eb9e3d97fc88ff1fdb13ea40d41651376387e79c4",
+          "fetchedAt": "2026-09-28T07:07:35.459Z"
+        }
+      ]
+    },
+    {
+      "source": "novat",
+      "index": 1,
+      "id": "novat:production-953248b5433f21433e2005f9",
+      "title": "Щелкунчик",
+      "sourceUrl": "https://novat.ru/afisha/performances/detail/5080650/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-10-01T12:00:00.000Z",
+          "end": "2026-10-01T14:15:00.000Z",
+          "from": "2026-10-01",
+          "through": "2026-10-01",
+          "timezone": "Asia/Novosibirsk",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Большая сцена",
+        "address": "630099, г. Новосибирск, Красный Проспект, 36"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://novat.ru/afisha/performances/detail/5080650/",
+          "hash": "850d830242ec1490aa887d1871fad2beae7fa526c6f0ac17e1663de3e3112224",
+          "fetchedAt": "2026-09-28T07:08:14.958Z"
+        }
+      ]
+    },
+    {
+      "source": "novat",
+      "index": 2,
+      "id": "novat:production-8fee779942c482254ca99c95",
+      "title": "Кармен",
+      "sourceUrl": "https://novat.ru/afisha/performances/detail/5094938/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-11-22T10:00:00.000Z",
+          "end": "2026-11-22T13:20:00.000Z",
+          "from": "2026-11-22",
+          "through": "2026-11-22",
+          "timezone": "Asia/Novosibirsk",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Большая сцена",
+        "address": "630099, г. Новосибирск, Красный Проспект, 36"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://novat.ru/afisha/performances/detail/5094938/",
+          "hash": "10b68d9d51a5147d7b0d3abfe0ede8babb62e97777303ed3acf82abbd12c062b",
+          "fetchedAt": "2026-09-28T07:19:45.850Z"
+        }
+      ]
+    },
+    {
+      "source": "chel-museum",
+      "index": 1,
+      "id": "chel-museum:290-prichin-lyubit-chelyabinsk",
+      "title": "290 причин любить Челябинск",
+      "sourceUrl": "https://chelmuseum.ru/exhibitions/290-prichin-lyubit-chelyabinsk/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "FLEXIBLE_VISIT",
+          "start": null,
+          "end": null,
+          "from": "2026-09-08",
+          "through": "2027-01-31",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Фойе Восточной башни, второй этаж",
+        "address": null
+      },
+      "price": {
+        "kind": "EXACT",
+        "amount": 200,
+        "lowerBound": 200,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "200 ₽",
+        "conditions": []
+      },
+      "tariffs": [
+        {
+          "audience": "CHILD",
+          "minAge": null,
+          "maxAge": null,
+          "kind": "CONDITIONAL",
+          "amount": 200,
+          "lowerBound": 200,
+          "currency": "RUB",
+          "applicable": false,
+          "conditions": [
+            "Возрастная граница детского билета на странице выставки не указана."
+          ],
+          "evidence": "Детский билет: 200 ₽"
+        }
+      ],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://chelmuseum.ru/exhibitions/290-prichin-lyubit-chelyabinsk/",
+          "hash": "cea44d4a9c8eaff7a1bac600dbc9da0ab90856aaa11a193fd1da5e9e23f5ad17",
+          "fetchedAt": "2026-09-28T07:39:05.692Z"
+        },
+        {
+          "url": "https://chelmuseum.ru/contacts/",
+          "hash": "63fd39ae882c075b4134fd952d6aeed42ceb356b12cddf549a8e1859fffd6225",
+          "fetchedAt": "2026-09-28T07:03:42.630Z"
+        }
+      ]
+    },
+    {
+      "source": "chel-museum",
+      "index": 2,
+      "id": "chel-museum:nebesnaya-lazur-simvolika-sinego-tsveta-v-iskusstve",
+      "title": "Небесная лазурь. Символика синего цвета в искусстве",
+      "sourceUrl": "https://chelmuseum.ru/exhibitions/nebesnaya-lazur-simvolika-sinego-tsveta-v-iskusstve/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "FLEXIBLE_VISIT",
+          "start": null,
+          "end": null,
+          "from": "2026-09-23",
+          "through": "2027-01-24",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Большой выставочный зал, Восточная башня",
+        "address": null
+      },
+      "price": {
+        "kind": "EXACT",
+        "amount": 400,
+        "lowerBound": 400,
+        "currency": "RUB",
+        "applicability": "SINGLE_ADULT",
+        "evidence": "400 ₽",
+        "conditions": []
+      },
+      "tariffs": [
+        {
+          "audience": "CHILD",
+          "minAge": null,
+          "maxAge": null,
+          "kind": "CONDITIONAL",
+          "amount": null,
+          "lowerBound": null,
+          "currency": "RUB",
+          "applicable": false,
+          "conditions": [
+            "Возрастная граница детского билета на странице выставки не указана."
+          ],
+          "evidence": "Детский билет:  ₽"
+        }
+      ],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://chelmuseum.ru/exhibitions/nebesnaya-lazur-simvolika-sinego-tsveta-v-iskusstve/",
+          "hash": "67b62b49e60659fffa4eed09918f15a02173ba65e32b4f1ba05848851a924517",
+          "fetchedAt": "2026-09-28T07:39:03.886Z"
+        },
+        {
+          "url": "https://chelmuseum.ru/contacts/",
+          "hash": "63fd39ae882c075b4134fd952d6aeed42ceb356b12cddf549a8e1859fffd6225",
+          "fetchedAt": "2026-09-28T07:03:42.630Z"
+        }
+      ]
+    },
+    {
+      "source": "perm-museum",
+      "index": 1,
+      "id": "perm-museum:3998",
+      "title": "Играем в куклы",
+      "sourceUrl": "https://museumperm.ru/event/3998",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "FLEXIBLE_VISIT",
+          "start": null,
+          "end": null,
+          "from": "2026-06-25",
+          "through": "2026-10-31",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Дом Мешкова",
+        "address": "Пермь, ул. Монастырская, 11"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://museumperm.ru/event/3998",
+          "hash": "01b43bc9cf84c3354191d62f08e37906e2959f9760fef0cb0f881012310ccc2c",
+          "fetchedAt": "2026-09-28T07:39:27.754Z"
+        }
+      ]
+    },
+    {
+      "source": "perm-museum",
+      "index": 2,
+      "id": "perm-museum:3738",
+      "title": "Слушать в отсеках",
+      "sourceUrl": "https://museumperm.ru/event/3738",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "FLEXIBLE_VISIT",
+          "start": null,
+          "end": null,
+          "from": "2026-05-01",
+          "through": "2027-01-11",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "Дом Мешкова",
+        "address": "Пермь, ул. Монастырская, 11"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://museumperm.ru/event/3738",
+          "hash": "55a73f0113d1eee39214dac605c919e11da2034db6186bd89d589c36573696a1",
+          "fetchedAt": "2026-09-28T07:39:20.174Z"
+        }
+      ]
+    },
+    {
+      "source": "nn-library",
+      "index": 1,
+      "id": "nn-library:programme-7a4ac1e598b069fdf1c8caa8",
+      "title": "528-е Краеведческие чтения",
+      "sourceUrl": "https://ngounb.ru/?p=26084",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-30T14:00:00.000Z",
+          "end": null,
+          "from": "2026-09-30",
+          "through": "2026-09-30",
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "НГОУНБ, Белый зал",
+        "address": null
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://ngounb.ru/?p=26084",
+          "hash": "9538804b64a53af041e4f1f63442d839eb53210193fe86239f7feeecaa0004ed",
+          "fetchedAt": "2026-09-28T07:56:32.470Z"
+        },
+        {
+          "url": "https://ngounb.ru/?page_id=84",
+          "hash": "eb8c52550daa6c05e63cb79bc2ad07a525221f4f518e640a017f1f1048d1fae7",
+          "fetchedAt": "2026-09-28T07:56:34.468Z"
+        }
+      ]
+    },
+    {
+      "source": "nn-library",
+      "index": 2,
+      "id": "nn-library:programme-f259c8af7aaaf0cc0db6d175",
+      "title": "Дни открытых дверей",
+      "sourceUrl": "https://ngounb.ru/?p=26084",
+      "classification": "ENDED_PARSER_SAMPLE_NOT_COUNTED",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-02T07:00:00.000Z",
+          "end": null,
+          "from": "2026-09-02",
+          "through": "2026-09-02",
+          "timezone": "Europe/Moscow",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "НГОУНБ, НГОУНБ (Варварская, 3, Варварская 3Д)",
+        "address": null
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://ngounb.ru/?p=26084",
+          "hash": "9538804b64a53af041e4f1f63442d839eb53210193fe86239f7feeecaa0004ed",
+          "fetchedAt": "2026-09-28T07:56:32.470Z"
+        },
+        {
+          "url": "https://ngounb.ru/?page_id=84",
+          "hash": "eb8c52550daa6c05e63cb79bc2ad07a525221f4f518e640a017f1f1048d1fae7",
+          "fetchedAt": "2026-09-28T07:56:34.468Z"
+        }
+      ]
+    },
+    {
+      "source": "nsk-library",
+      "index": 1,
+      "id": "nsk-library:345873",
+      "title": "Говорящие гербы: интерактивная лекция",
+      "sourceUrl": "https://ngonb.ru/afisha/events/345873/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-28T11:00:00.000Z",
+          "end": null,
+          "from": "2026-09-28",
+          "through": "2026-09-28",
+          "timezone": "Asia/Novosibirsk",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "НГОНБ, Конференц-зал (4 этаж)",
+        "address": "Новосибирск, ул. Советская, 6; Конференц-зал (4 этаж)"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://ngonb.ru/afisha/events/345873/",
+          "hash": "8772493194fa081ff99cf2eda07e2917b5091a42ef69cf9e94b25db50fd6b38a",
+          "fetchedAt": "2026-09-28T07:56:43.675Z"
+        },
+        {
+          "url": "https://ngonb.ru/about/contacts/",
+          "hash": "3937975792ad79d6f93d275be1816b3ab0bf8b380b6944bc40e35db0901a7ef0",
+          "fetchedAt": "2026-09-28T07:56:32.511Z"
+        }
+      ]
+    },
+    {
+      "source": "nsk-library",
+      "index": 2,
+      "id": "nsk-library:346238",
+      "title": "Врач в дореволюционной России. Вечер-портрет",
+      "sourceUrl": "https://ngonb.ru/afisha/events/346238/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-09-29T08:00:00.000Z",
+          "end": null,
+          "from": "2026-09-29",
+          "through": "2026-09-29",
+          "timezone": "Asia/Novosibirsk",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "НГОНБ, Лофт «Книжный шкаф»",
+        "address": "Новосибирск, ул. Советская, 6; Лофт «Книжный шкаф»"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://ngonb.ru/afisha/events/346238/",
+          "hash": "189c80ec0d0406778422565ad807cc1c8befa46bde7f06bcfaa0d51eb273b716",
+          "fetchedAt": "2026-09-28T07:56:53.487Z"
+        },
+        {
+          "url": "https://ngonb.ru/about/contacts/",
+          "hash": "3937975792ad79d6f93d275be1816b3ab0bf8b380b6944bc40e35db0901a7ef0",
+          "fetchedAt": "2026-09-28T07:56:32.511Z"
+        }
+      ]
+    },
+    {
+      "source": "chel-library",
+      "index": 1,
+      "id": "chel-library:programme-e7e5632b5cab48bdebed3f94",
+      "title": "Цифровая грамотность — веление времени",
+      "sourceUrl": "https://chelreglib.ru/ru/events/9251/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-10-24T05:00:00.000Z",
+          "end": null,
+          "from": "2026-10-24",
+          "through": "2026-10-24",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "ЧОУНБ, Фиджитал-центр, 3-й этаж",
+        "address": "Челябинск, пр. Ленина, д. 60"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": false
+      },
+      "evidence": [
+        {
+          "url": "https://chelreglib.ru/ru/events/9251/",
+          "hash": "035535426bca60dc4b70c5e20996e9062282351a64cdbede4f6b3070795ebdbd",
+          "fetchedAt": "2026-09-28T08:22:28.327Z"
+        },
+        {
+          "url": "https://chelreglib.ru/ru/pages/about/lib/contacts/",
+          "hash": "3f7b26d07d46337535562d19e424e16028999d7b51c5420ff22c8bc54c5a2084",
+          "fetchedAt": "2026-09-28T07:03:40.680Z"
+        }
+      ]
+    },
+    {
+      "source": "chel-library",
+      "index": 2,
+      "id": "chel-library:programme-c64b7e33a8ca58e9334f1753",
+      "title": "Картографы 2.0: Полина Потапова",
+      "sourceUrl": "https://chelreglib.ru/ru/events/9256/",
+      "classification": "CURRENT_SOURCE_SAMPLE",
+      "dates": [
+        {
+          "kind": "TIMED_SESSION",
+          "start": "2026-10-31T11:00:00.000Z",
+          "end": null,
+          "from": "2026-10-31",
+          "through": "2026-10-31",
+          "timezone": "Asia/Yekaterinburg",
+          "availability": "NOT_VERIFIED",
+          "cancelled": null
+        }
+      ],
+      "venue": {
+        "name": "ЧОУНБ, Главный зал, 3-й этаж",
+        "address": "Челябинск, пр. Ленина, д. 60"
+      },
+      "price": {
+        "kind": "UNKNOWN",
+        "amount": null,
+        "lowerBound": null,
+        "currency": null,
+        "applicability": "UNRESOLVED",
+        "evidence": null,
+        "conditions": []
+      },
+      "tariffs": [],
+      "check": {
+        "cachedContentHashes": true,
+        "titleFound": true,
+        "scopeAndTimezone": true,
+        "difficultCase": true
+      },
+      "evidence": [
+        {
+          "url": "https://chelreglib.ru/ru/events/9256/",
+          "hash": "61d945338ecaf4a6b0f79231b71a3365329539dba0e78298b2e5cc09d95a5292",
+          "fetchedAt": "2026-09-28T08:22:58.493Z"
+        },
+        {
+          "url": "https://chelreglib.ru/ru/pages/about/lib/contacts/",
+          "hash": "3f7b26d07d46337535562d19e424e16028999d7b51c5420ff22c8bc54c5a2084",
+          "fetchedAt": "2026-09-28T07:03:40.680Z"
+        }
+      ]
+    }
+  ],
+  "acquisition": {
+    "httpRequests": 1795,
+    "decodedBytes": 202581283,
+    "decimalMB": 202.581283,
+    "chargedNetworkMs": 3206918,
+    "waves": [
+      {
+        "startedAt": "2026-09-28T06:57:59.511Z",
+        "elapsedMs": 5239,
+        "finishedAt": "2026-09-28T06:58:04.750Z"
+      },
+      {
+        "startedAt": "2026-09-28T06:58:24.321Z",
+        "elapsedMs": 5201,
+        "finishedAt": "2026-09-28T06:58:29.522Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:00:21.371Z",
+        "elapsedMs": 6276,
+        "finishedAt": "2026-09-28T07:00:27.647Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:02:43.110Z",
+        "elapsedMs": 6768,
+        "finishedAt": "2026-09-28T07:02:49.878Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:03:39.645Z",
+        "elapsedMs": 28619,
+        "finishedAt": "2026-09-28T07:04:08.264Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:06:21.206Z",
+        "elapsedMs": 33093,
+        "finishedAt": "2026-09-28T07:06:54.299Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:07:34.264Z",
+        "elapsedMs": 1777781,
+        "finishedAt": "2026-09-28T07:37:12.045Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:39:02.313Z",
+        "elapsedMs": 480607,
+        "finishedAt": "2026-09-28T07:47:02.920Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:50:00.866Z",
+        "elapsedMs": 4521,
+        "finishedAt": "2026-09-28T07:50:05.387Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:55:59.390Z",
+        "elapsedMs": 4256,
+        "finishedAt": "2026-09-28T07:56:03.646Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:56:32.044Z",
+        "elapsedMs": 107198,
+        "finishedAt": "2026-09-28T07:58:19.242Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:03:06.873Z",
+        "elapsedMs": 229512,
+        "finishedAt": "2026-09-28T08:06:56.385Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:13:17.243Z",
+        "elapsedMs": 425471,
+        "finishedAt": "2026-09-28T08:20:22.714Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:21:55.891Z",
+        "elapsedMs": 71234,
+        "finishedAt": "2026-09-28T08:23:07.125Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:25:21.341Z",
+        "elapsedMs": 8497,
+        "finishedAt": "2026-09-28T08:25:29.838Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:31:38.595Z",
+        "elapsedMs": 2380,
+        "finishedAt": "2026-09-28T08:31:40.975Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:32:51.271Z",
+        "elapsedMs": 2437,
+        "finishedAt": "2026-09-28T08:32:53.708Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:53:17.571Z",
+        "elapsedMs": 7828,
+        "finishedAt": "2026-09-28T08:53:25.399Z"
+      }
+    ],
+    "limits": {
+      "requests": 4000,
+      "bytes": 1000000000,
+      "wallMs": 5400000,
+      "waveMs": 1800000,
+      "concurrency": 6,
+      "spacingMs": 2000,
+      "deadlineMs": 20000,
+      "bodyBytes": 8388608
+    },
+    "corrections": [
+      {
+        "at": "2026-09-28T07:50:00.800Z",
+        "url": "https://tatmuseum.ru/robots.txt",
+        "reason": "C01: ошибочный HTML challenge detector для text/plain robots; разрешена повторная проверка исправленным классификатором."
+      },
+      {
+        "at": "2026-09-28T08:20:22.714Z",
+        "url": "https://localhost.invalid/",
+        "reason": "RECOVER_DEAD_OWNER: прерванная волна учтена до восстановления; незавершённые ответы — по верхней границе, без сброса бюджета."
+      }
+    ],
+    "cacheDoesNotRenewFetchedAt": true,
+    "browserRequests": 0,
+    "pdfTextExtraction": {
+      "documents": 2,
+      "textCharacters": 0,
+      "outcome": "IMAGE_ONLY_PDF; tariffs remain unknown"
+    },
+    "stoppedBecause": "PRIMARY_TARGETS_AND_CITY_DEPTH_MET; selected productive public interfaces exhausted; 1000-event stretch not achieved"
+  }
+}

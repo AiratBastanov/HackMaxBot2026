@@ -35,7 +35,7 @@ export function projectCard(catalog: Catalog, query: Query, r: Recommendation | 
     kind: strict ? 'STRICT':'UNCERTAIN', facts:strict ? r.reasons : [...r.usefulFacts,...r.factsMatched],
     unknown:strict ? []:r.checkAtSource, snapshotVersion:catalog.version,fingerprint:fingerprint(catalog,e.id,query.city)!,
     retrievedAt:r.eventRetrievedAt,synthetic:snapshot.mode==='SYNTHETIC_FIXTURE',query,
-    ...(snapshot.mode==='REAL_CATALOG'?{displayRef:{snapshotHash:snapshotDigest(snapshot),eventId:e.id}}:{}),
+    ...(snapshot.mode==='REAL_CATALOG'?{displayRef:catalog.displayRef(e.id)}:{}),
     occurrence:o ? {kind:o.kind,start:o.start,end:o.end}:null,
     visit:{version:1,venue:{id:venue?.id??null,title:venue?.title?.trim()?venue.title:null,address:venue?.address?.trim()?venue.address:null},
       from:strict?r.from:r.time.from??o?.start??null,until:strict?r.until:r.time.until??o?.end??null,
@@ -163,7 +163,7 @@ function conditions(c:Card) {
     ...tariffs.flatMap(t=>[
       // Итог уже вычислил evaluator. Повторная раскладка нужна только при неизвестном итоге.
       ...(v.partyPrice?.total===null&&(!t.applicable||!['EXACT','FREE'].includes(t.kind)||t.audience==='CHILD')?[
-        `${t.audience==='ADULT'?'Взрослый':`Детский ${t.minAge??0}–${t.maxAge??17} лет`}: ${['EXACT','FREE'].includes(t.kind)&&t.amount!==null?`${t.amount} ₽`:t.kind==='FROM'&&t.lowerBound!==null?`от ${t.lowerBound} ₽`:t.kind==='PACKAGE'?'пакет; расчёт требует уточнения':'цена требует уточнения'}${!t.applicable?' (применимость не подтверждена)':''}.`]:[]),
+        `${t.audience==='ADULT'?'Взрослый':t.audience==='GROUP'?'Групповой/семейный пакет':t.minAge!==null&&t.maxAge!==null?`Детский ${t.minAge}–${t.maxAge} лет`:'Детский (возрастные границы не указаны)'}: ${['EXACT','FREE'].includes(t.kind)&&t.amount!==null?`${t.amount} ₽`:t.kind==='FROM'&&t.lowerBound!==null?`от ${t.lowerBound} ₽`:t.kind==='PACKAGE'?'пакет; расчёт требует уточнения':'цена требует уточнения'}${!t.applicable?' (применимость не подтверждена)':''}.`]:[]),
       ...t.conditions,...(!['EXACT','FREE'].includes(t.kind)&&t.evidence?[t.evidence]:[])]),
     ...(v.providerAgeLabel?['Маркировка: '+v.providerAgeLabel+'. Правила допуска уточняйте отдельно.']:[]),
     ...(v.price.kind==='CONFLICT'?['Противоречие цены и признака бесплатного входа.']:[]),

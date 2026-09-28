@@ -14,6 +14,11 @@
 !catalog/
 !catalog/real/
 !catalog/real/*.json
+!docs/
+!docs/evidence/
+!docs/evidence/multi-city/
+!docs/evidence/multi-city/baseline.json
+!docs/evidence/multi-city/query-matrix.json
 # Исключения действуют и внутри разрешённых каталогов.
 **/node_modules/**
 **/.env*

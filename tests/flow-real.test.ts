@@ -14,8 +14,8 @@ import { ACTOR } from './fixtures.js';
 import { getState } from '../src/culture/flow.js';
 import { Worker } from '../src/worker.js';
 
-const snapshotPath=resolve('catalog/real/active.json');
-const config:Config={mode:'live',ingress:'test-polling',host:'127.0.0.1',port:3000,databasePath:':memory:',apiBaseUrl:'https://platform-api2.max.ru',token:'fixture-token-never-sent',botId:'777',testers:new Set([ACTOR]),probeTtlMs:600000,requestTimeoutMs:1000,flowDataMode:'real',snapshotPath};
+const snapshotPath=resolve('catalog/real/e9f43ed9d1fd3c408584.json');
+const config:Config={mode:'live',ingress:'test-polling',host:'127.0.0.1',port:3000,databasePath:':memory:',apiBaseUrl:'https://platform-api2.max.ru',token:'fixture-token-never-sent',botId:'777',testers:new Set([ACTOR]),probeTtlMs:600000,requestTimeoutMs:1000,flowDataMode:'real',snapshotPath,reviewPath:snapshotPath.replace('.json','.review.json')};
 const catalog=Catalog.load(config),snapshots=catalog.availableCities.map(c=>catalog.forCity(c)!);
 const time=Date.parse(catalog.review!.reviewedAt)+1000;
 const ref:DisplayRef={snapshotHash:snapshotDigest(catalog.forCity('kzn')),eventId:catalog.forCity('kzn')!.events[0]!.id};

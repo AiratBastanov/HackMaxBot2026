@@ -288,6 +288,7 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
   } else if (s.stage === 'city') {
     text = '📍 В каком городе?\nНажмите кнопку или сразу напишите название города.';
     const choices=s.cityOptions?.length?s.cityOptions:catalog.usableCities(now);
+    if(choices.length>6)text+='\nЕщё в каталоге: '+choices.slice(6).map(city=>cities[city].name).join(', ')+'. Введите название сообщением.';
     rows=choices.slice(0,6).map(city=>[button(cities[city].name,'city',city)]);
     if(!choices.length)text='Данные по городам сейчас недоступны. Попробуйте позже или откройте «Мои события».';
     rows.push([button('Введите свой город','custom','city')],formNav());
@@ -323,8 +324,8 @@ export function processCulture(store: Storage, config: Config, event: AcceptedEv
   } else if (s.stage === 'summary') {
     text = `${summary(s)}\nПоказать подходящие события?`; rows = [[button('Показать результаты', 'results')], ...editors(),[button('Назад','back')], home()];
   } else if (s.stage === 'results') {
-    const q = makeQuery(s.draft), snapshot=catalog.forCity(q.city),result = select(snapshot, q, new Date(now), config.flowDataMode === 'synthetic-test', s.optIn);
-    const denied=snapshot?.mode==='REAL_CATALOG'&&!catalog.usableCities(now).includes(q.city);
+    const q = makeQuery(s.draft), snapshot=catalog.selectionForCity(q.city,now),result = select(snapshot, q, new Date(now), config.flowDataMode === 'synthetic-test', s.optIn);
+    const denied=catalog.forCity(q.city)?.mode==='REAL_CATALOG'&&!snapshot;
     s.cards = [...result.recommendations, ...result.uncertain].map(r => {
       const c=projectCard(catalog,r.resolvedQuery??q as Query,r);
       if('date' in q&&c.occurrence?.kind==='FLEXIBLE_VISIT')c.proposedVisit=true;

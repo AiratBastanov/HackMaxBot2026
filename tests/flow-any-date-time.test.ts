@@ -155,7 +155,7 @@ test('ANY: равный конкретный вариант не дублиру�
 });
 
 test('ANY: reviewed refresh не переносит предложенный визит; без review факты не показываются',async t=>{
-  const active=Catalog.load({flowDataMode:'real',snapshotPath:resolve('catalog/real/active.json')} as any),now=Date.parse(active.review!.reviewedAt)+1000;
+  const active=Catalog.load({flowDataMode:'real',snapshotPath:resolve('catalog/real/e9f43ed9d1fd3c408584.json'),reviewPath:resolve('catalog/real/e9f43ed9d1fd3c408584.review.json')} as any),now=Date.parse(active.review!.reviewedAt)+1000;
   const snapshots=structuredClone(active.availableCities.map(c=>active.forCity(c)!)),s=snapshots.find(s=>s.scope.city==='ekb')!;
   s.events=s.events.filter(e=>e.id==='mie:azins_magic_of_name');s.stats.normalizedEvents=1;s.stats.occurrences=s.events[0]!.occurrences.length;
   const review=()=>({version:1,scope:'ADMITTED_TESTERS_FACTS',factualScope,reviewedAt:new Date(now).toISOString(),entries:snapshots.map(s=>({snapshotHash:snapshotDigest(validateSnapshot(s)),sources:[...new Set(s.events.map(e=>e.provider))],basis:'institution-facts/1',validUntil:new Date(Date.parse(s.retrievedAt)+s.freshnessHours*3600000).toISOString()}))});

@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "frozenAt": "2026-09-28T07:17:36.550Z",
+  "horizonDays": 60,
+  "halves": [
+    30,
+    30
+  ],
+  "queries": [
+    {
+      "id": "any",
+      "date": "ANY",
+      "time": "ANY",
+      "adults": 1,
+      "childAges": [],
+      "budgetRub": null
+    },
+    {
+      "id": "weekend",
+      "date": [
+        "2026-10-03",
+        "2026-10-04"
+      ],
+      "time": [
+        "12:00",
+        "18:00"
+      ],
+      "adults": 1,
+      "childAges": [],
+      "budgetRub": 1000
+    },
+    {
+      "id": "family",
+      "date": "ANY",
+      "time": "ANY",
+      "adults": 2,
+      "childAges": [
+        7
+      ],
+      "budgetRub": 3000
+    },
+    {
+      "id": "free",
+      "date": "ANY",
+      "time": "ANY",
+      "adults": 1,
+      "childAges": [],
+      "budgetRub": 0
+    },
+    {
+      "id": "evening",
+      "date": "ANY",
+      "time": [
+        "18:00",
+        "23:59"
+      ],
+      "adults": 1,
+      "childAges": [],
+      "budgetRub": null
+    },
+    {
+      "id": "no-match",
+      "date": "2026-09-29",
+      "time": [
+        "02:00",
+        "03:00"
+      ],
+      "adults": 1,
+      "childAges": [],
+      "budgetRub": 0
+    }
+  ],
+  "counting": "Уникальные eventId; выходные объединены по eventId. Strict и uncertain отдельно; экран ограничен 3+3."
+}

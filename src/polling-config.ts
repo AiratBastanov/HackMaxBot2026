@@ -61,6 +61,6 @@ export function loadCurrentSynthetic(config: Config, now = Date.now()) {
 export function loadCurrentCatalog(config:Config,now=Date.now()) {
   if(config.flowDataMode==='synthetic-test')return loadCurrentSynthetic(config,now);
   const catalog=Catalog.load(config);
-  if(!catalog.usableCities(now).length||catalog.availableCities.some(c=>catalog.forCity(c)!.mode!=='REAL_CATALOG'||!catalog.usableCities(now).includes(c)))throw Error('REVIEWED_CURRENT_REAL_CATALOG_REQUIRED');
+  if(!catalog.usableCities(now).length||catalog.snapshots.some(s=>s.mode!=='REAL_CATALOG'))throw Error('REVIEWED_CURRENT_REAL_CATALOG_REQUIRED');
   return catalog;
 }

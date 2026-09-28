@@ -13,9 +13,9 @@ export function russianDate(value:string,year?:string) {
   return `${m[3]??year}-${String(months.indexOf(m[2]!)+1).padStart(2,'0')}-${m[1]!.padStart(2,'0')}`;
 }
 export const listingUrls={kamal:'https://kamalteatr.ru/poster/',uralopera:'https://uralopera.ru/',sgaf:'https://sgaf.ru/',tatmuseum:'https://tatmuseum.ru/events/'} as const;
-export function extendedLinks(p:Page,source:Institution,now:string) {
+export function extendedLinks(p:Page,source:Institution,now:string,horizonDays=30) {
   const dom=document(p),today=cityDate(now,source==='uralopera'||source==='sgaf'?'Asia/Yekaterinburg':'Europe/Moscow');
-  const end=new Date(Date.parse(today+'T00:00Z')+30*86400000).toISOString().slice(0,10);
+  const end=new Date(Date.parse(today+'T00:00Z')+horizonDays*86400000).toISOString().slice(0,10);
   const result:string[]=[];
   for(const n of dom) {
     if(source==='kamal'&&hasClass(n,'afisha-card__content')) {
@@ -70,7 +70,7 @@ function row(source:Institution,p:Page,title:string,id:string,venueTitle:string,
     price:{kind:'UNKNOWN',amount:null,lowerBound:null,currency:null,applicability:'UNRESOLVED',evidence:null,conditions:[]},tariffs:[],providerAgeLabel:null,
     admission:{registration:'UNKNOWN',conditions:[],ticketAvailability:'NOT_VERIFIED',requirements:{minimumAge:null,children:'UNKNOWN',accompaniedByAdult:'UNKNOWN'}},
     sourceUrl:p.url,sourceLabel:sources[source].label,organizerUrl:null,ticketUrl:null,publicationAt:null,providerUpdatedAt:null,retrievedAt:p.fetchedAt,
-    observations:[observation(p,['title','dates','location','price','admission'])],cancelled:null,verification:'EXTRACTED_FACTS',advertisingAssessment:'FACTS_ONLY',occurrences:[],issues:[]};
+    observations:[observation(p,['title','dates','timetable','location','categories','price','admission'])],cancelled:null,verification:'EXTRACTED_FACTS',advertisingAssessment:'FACTS_ONLY',occurrences:[],issues:[]};
   const venue:Venue={id:venueId,title:venueTitle,address,city,zone:null,sourceUrl:p.url,websiteUrl:null,closed:null,stub:false,physical:true,
     observations:[observation(p,['title','address','location'])],coordinates:null,timetable:null,opening:null};
   return {event,venue};
@@ -87,18 +87,18 @@ function duration(value:string):number|null {
   if(!m||!m[0].trim())return null;
   const n=Number(m[1]??0)*60+Number(m[2]??0);return n>0&&n<=1440?n:null;
 }
-const inWindow=(date:string,now:string,source:Institution)=> {
+const inWindow=(date:string,now:string,source:Institution,horizonDays=30)=> {
   const today=cityDate(now,cities[sources[source].city].timezone);
-  return date>=today&&date<new Date(Date.parse(today+'T00:00Z')+30*86400000).toISOString().slice(0,10);
+  return date>=today&&date<new Date(Date.parse(today+'T00:00Z')+horizonDays*86400000).toISOString().slice(0,10);
 };
 
-export function parseOpera(listing:Page,pages:Page[],now:string):Row[] {
+export function parseOpera(listing:Page,pages:Page[],now:string,horizonDays=30):Row[] {
   const rows:Row[]=[];
   const contact=pages.find(p=>p.url==='https://uralopera.ru/contacts');
   if(!contact||!text(document(contact)[0]).includes('Екатеринбург, проспект Ленина, 46А'))throw Error('OPERA_VENUE_REVIEW');
   for(const item of document(listing).filter(n=>hasClass(n,'event-calendar__event'))) {
     const dom=nodes(item),when=dom.find(n=>tag(n)==='time'),stamp=when?attr(when,'datetime'):'';
-    if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00$/.test(stamp)||!inWindow(stamp.slice(0,10),now,'uralopera'))continue;
+    if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00$/.test(stamp)||!inWindow(stamp.slice(0,10),now,'uralopera',horizonDays))continue;
     const a=dom.find(n=>hasClass(n,'event-calendar__event-link')),url=a?new URL(attr(a,'href'),listing.url).href:'';
     const title=field(dom,'event-calendar__event-title-text')||field(dom,'event-calendar__event-title');
     const type=field(dom,'event-calendar__event-type');
@@ -120,7 +120,7 @@ export function parseOpera(listing:Page,pages:Page[],now:string):Row[] {
   return rows;
 }
 
-export function parsePhilharmonic(listing:Page,pages:Page[],now:string):Row[] {
+export function parsePhilharmonic(listing:Page,pages:Page[],now:string,horizonDays=30):Row[] {
   const rows:Row[]=[];const main=document(listing);
   const monthYears=[...new Set(main.map(n=>attr(n,'data-date')).filter(v=>/^\d{2}\.20\d{2}$/.test(v)))];
   for(const p of pages.filter(p=>/^https:\/\/sgaf.ru\/afisha\/\d+$/.test(p.url))) {
@@ -138,7 +138,7 @@ export function parsePhilharmonic(listing:Page,pages:Page[],now:string):Row[] {
     const month=String(months.indexOf(match[2]!.toLowerCase())+1).padStart(2,'0');
     const year=monthYears.filter(v=>v.startsWith(month+'.'));
     if(year.length!==1)throw Error('SGAF_YEAR_REVIEW');
-    const date=russianDate(match[0],year[0]!.slice(3));if(!date||!inWindow(date,now,'sgaf'))continue;
+    const date=russianDate(match[0],year[0]!.slice(3));if(!date||!inWindow(date,now,'sgaf',horizonDays))continue;
     // Group repeated performances of the same published programme; keep each exact occurrence URL.
     const program=full.split('Программа ')[1]?.split('Участники')[0]??title;
     const id='program-'+bodyHash(title+'|'+venueTitle+'|'+program).slice(0,20);
@@ -163,7 +163,7 @@ export function parsePhilharmonic(listing:Page,pages:Page[],now:string):Row[] {
   return rows;
 }
 
-export function parseTatmuseum(p:Page,pages:Page[],now:string):Row|null {
+export function parseTatmuseum(p:Page,pages:Page[],now:string,horizonDays=30):Row|null {
   const d=document(p),title=text(d.find(n=>tag(n)==='h1')),dateText=field(d,'info__date');
   const published=d.filter(n=>hasClass(n,'info__date-small')).map(text).join(' ').match(/20\d{2}/)?.[0];
   const all=text(d[0]),permanent=/Постоянная экспозиция/u.test(dateText);
@@ -171,7 +171,7 @@ export function parseTatmuseum(p:Page,pages:Page[],now:string):Row|null {
   const parts=dateText.split(/[—–-]/);const from=russianDate(parts[0]??'',published),through=russianDate(parts[1]??'',published);
   if(!permanent&&(!from||!through))throw Error('TATMUSEUM_YEAR_OR_PERIOD_REVIEW');
   const today=cityDate(now,'Europe/Moscow');
-  if(from&&through&&(through<today||from>=new Date(Date.parse(today+'T00:00Z')+30*86400000).toISOString().slice(0,10)))return null;
+  if(from&&through&&(through<today||from>=new Date(Date.parse(today+'T00:00Z')+horizonDays*86400000).toISOString().slice(0,10)))return null;
   const included=permanent||/по (?:входному )?билету в музей/iu.test(all);
   if(!included&&!/Национальн.{0,12}музе[йя] (?:Республики Татарстан|РТ)/iu.test(all))return null;
   const contact=pages.find(p=>p.url==='https://tatmuseum.ru/visitors/'),tariff=pages.find(p=>p.url==='https://tatmuseum.ru/visitors/tickets/');
@@ -194,7 +194,7 @@ export function parseTatmuseum(p:Page,pages:Page[],now:string):Row|null {
   return r;
 }
 
-export function parseHermitageProgramme(p:Page,now:string):Row[] {
+export function parseHermitageProgramme(p:Page,now:string,horizonDays=30):Row[] {
   const d=document(p),heading=text(d.find(n=>tag(n)==='h1')),year=heading.match(/Дни Эрмитажа[—–-](20\d{2})/)?.[1];
   if(!year)return [];
   const full=text(d[0]);
@@ -203,7 +203,7 @@ export function parseHermitageProgramme(p:Page,now:string):Row[] {
   let date='';
   const tokens=content.matchAll(/(\d{1,2}\s+октября)|((\d{2}:\d{2})\s*[-—–]\s*(.*?))(?=\d{2}:\d{2}\s*[-—–]|\d{1,2}\s+октября|$)/gu);
   for(const m of tokens){if(m[1]){date=russianDate(m[1],year)??'';continue;}
-    if(!date||!inWindow(date,now,'kazan-kremlin'))continue;
+    if(!date||!inWindow(date,now,'kazan-kremlin',horizonDays))continue;
     const description=m[4]!,lecture=description.startsWith('лекция'),family=description.startsWith('премьера программы'),curator=description.startsWith('кураторская');
     const named=description.match(/«([^»]+)»/)?.[1];if(!named)throw Error('HERMITAGE_PROGRAMME_TITLE');
     const title=lecture?`Лекция «${named}»`:family?`Программа для детей и родителей: «${named}»`:`${curator?'Кураторская экскурсия':'Экскурсия'}: «${named}»`;
@@ -216,16 +216,16 @@ export function parseHermitageProgramme(p:Page,now:string):Row[] {
   return rows;
 }
 
-export function parseExtended(pages:Page[],now:string) {
+export function parseExtended(pages:Page[],now:string,horizonDays=30) {
   const rows:Row[]=[],queue:{url:string;reason:string}[]=[];
-  for(const p of pages.filter(p=>/^https:\/\/kazan-kremlin.ru\/news\/dni-ermitazha-20\d{2}$/.test(p.url)))try{rows.push(...parseHermitageProgramme(p,now));}catch(e){queue.push({url:p.url,reason:e instanceof Error?e.message:'PARSER_FAILED'});}
+  for(const p of pages.filter(p=>/^https:\/\/kazan-kremlin.ru\/news\/dni-ermitazha-20\d{2}$/.test(p.url)))try{rows.push(...parseHermitageProgramme(p,now,horizonDays));}catch(e){queue.push({url:p.url,reason:e instanceof Error?e.message:'PARSER_FAILED'});}
   for(const source of ['uralopera','sgaf'] as const) {
     const listing=pages.find(p=>p.url===listingUrls[source]);if(!listing)continue;
-    try{rows.push(...(source==='uralopera'?parseOpera(listing,pages,now):parsePhilharmonic(listing,pages,now)));}
+    try{rows.push(...(source==='uralopera'?parseOpera(listing,pages,now,horizonDays):parsePhilharmonic(listing,pages,now,horizonDays)));}
     catch(e){queue.push({url:listing.url,reason:e instanceof Error?e.message:'PARSER_FAILED'});}
   }
   for(const p of pages.filter(p=>/^https:\/\/tatmuseum.ru\/events\/[^/]+\/$/.test(p.url)))try{
-    const r=parseTatmuseum(p,pages,now);if(r)rows.push(r);
+    const r=parseTatmuseum(p,pages,now,horizonDays);if(r)rows.push(r);
   }catch(e){queue.push({url:p.url,reason:e instanceof Error?e.message:'PARSER_FAILED'});}
   const grouped=new Map<string,Row>();
   for(const r of rows) {

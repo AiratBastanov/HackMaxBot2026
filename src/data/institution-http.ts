@@ -10,14 +10,14 @@ export function institutionUrl(value:string) {
   return u;
 }
 // Robots rules are collection policy only. Longest applicable rule wins; no XML entities or scripts execute.
-export function robotsAllows(body:string,path:string) {
+export function robotsAllows(body:string,path:string,observedSpacingSeconds=2) {
   let agents:string[]=[],rules:{agents:string[];allow:boolean;path:string}[]=[],hadRule=false;
   for(const line of body.split(/\r?\n/)) {
     const m=line.replace(/#.*/,'').trim().match(/^([\w-]+)\s*:\s*(.*)$/);if(!m)continue;
     const key=m[1]!.toLowerCase(),value=m[2]!.trim();
     if(key==='user-agent'){if(hadRule){agents=[];hadRule=false;}agents.push(value.toLowerCase());}
     else if(key==='allow'||key==='disallow'){hadRule=true;if(value)rules.push({agents:[...agents],allow:key==='allow',path:value});}
-    else if(key==='crawl-delay'&&agents.some(a=>a==='*'||a==='culturalplan-research')&&Number(value)>2)throw Error('STRICTER_ROBOTS_DELAY_REVIEW');
+    else if(key==='crawl-delay'&&agents.some(a=>a==='*'||a==='culturalplan-research')&&Number(value)>observedSpacingSeconds)throw Error('STRICTER_ROBOTS_DELAY_REVIEW');
   }
   const specific=rules.some(r=>r.agents.includes('culturalplan-research'));
   const applicable=rules.filter(r=>r.agents.includes(specific?'culturalplan-research':'*')&&new RegExp('^'+r.path.split('*').map(s=>s.replace(/[.+?^{}()|[\]\\]/g,'\\$&')).join('.*')).test(path));

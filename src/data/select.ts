@@ -5,6 +5,8 @@ import { assessParty, partyPrice, type PartyAssessment } from './party.js';
 import { searchQuerySchema, outsideCoverage, plannedQueries } from './temporal.js';
 
 export const reasonText: Record<string, string> = {
+  LOCATION_CONTEXT_MISSING:'В источнике не установлена площадка посещения; запись исключена из обычного подбора.',
+  AVAILABILITY_UNRESOLVED:'В HTML источника показано «Билеты распроданы», но ссылка покупки не заполнена; актуальный статус требует уточнения у учреждения.',
   OTHER_CITY: 'В событии или площадке указан другой город.', VENUE_UNKNOWN: 'Не подтверждена физическая площадка в выбранном городе.',
   CLOSED: 'Площадка отмечена закрытой.', ZONE_UNKNOWN: 'Нет проверенного соответствия площадки выбранной зоне.',
   WRONG_ZONE: 'Площадка вне выбранной зоны.', WRONG_CATEGORY: 'Категория не соответствует запросу.',
@@ -17,7 +19,7 @@ export const reasonText: Record<string, string> = {
   NO_OCCURRENCES: 'Нет сведений о конкретных датах посещения.',
   CITY_UNKNOWN: 'Город указан только областью запроса провайдера; город события и площадки не подтверждён.',
   VENUE_CONFLICT: 'В наблюдениях расходятся город или адрес площадки; нужен актуальный адрес у источника.',
-  CANCELLED: 'Событие отмечено отменённым.', FACTS_STALE: 'Превышен срок годности применимых фактов либо время их получения неизвестно.',
+  CANCELLED: 'Событие отмечено отменённым.', SOLD_OUT:'На полученной странице билеты отмечены распроданными.', FACTS_STALE: 'Превышен срок годности применимых фактов либо время их получения неизвестно.',
   KIND_UNKNOWN: 'Режим посещения не установлен.', UNUSABLE_RECORD: 'Нет содержательного названия или прямой ссылки на материал.',
 };
 export type Recommendation = { resolvedQuery?:Query; eventId: string; occurrenceId: string; title: string; kind: Occurrence['kind'];
@@ -39,16 +41,20 @@ export function assess(e: NormalizedEvent, o: Occurrence | undefined, venue: Ven
     a.predicates.push({ name, state: hard.length ? 'MISMATCH' : unknown.length ? 'UNKNOWN' : 'MATCH',
       detail: [...hard, ...unknown].map(c => reasonText[c]).join(' ') || success });
   };
-  if (!/\p{L}{2}/u.test(e.title.trim()) || new URL(e.sourceUrl).pathname === '/') a.hard.push('UNUSABLE_RECORD');
+  const sourceUrl=new URL(e.sourceUrl);
+  if (!/\p{L}{2}/u.test(e.title.trim()) || sourceUrl.pathname === '/'&&!/^\?p=\d+$/.test(sourceUrl.search)) a.hard.push('UNUSABLE_RECORD');
   if (!venue || venue.physical !== true || !venue.address?.trim()) a.unknown.push('VENUE_UNKNOWN');
+  if(e.verification==='EXTRACTED_FACTS'&&(!venue||!venue.title?.trim()&&!venue.address?.trim()))a.hard.push('LOCATION_CONTEXT_MISSING');
   if ((e.city && e.city !== q.city) || (venue?.city && venue.city !== q.city)) a.hard.push('OTHER_CITY');
   if (e.city !== q.city && venue?.city !== q.city) a.unknown.push('CITY_UNKNOWN');
   if (venue?.observations.some(o => o.conflicts.some(f => ['location', 'address'].includes(f)))) a.unknown.push('VENUE_CONFLICT');
   predicate('city', ['OTHER_CITY', 'CITY_UNKNOWN', 'VENUE_CONFLICT'], `Город: ${cities[q.city].name}.`);
   predicate('destination', ['VENUE_UNKNOWN', 'VENUE_CONFLICT'], `Опубликован адрес: ${venue?.address}.`);
   if (venue?.closed === true) a.hard.push('CLOSED');
-  if (e.cancelled === true) a.hard.push('CANCELLED');
-  predicate('availability', ['CLOSED', 'CANCELLED'], 'В полученных полях нет отметки закрытия или отмены; наличие билетов не проверено.');
+  if (e.cancelled === true||o?.cancelled===true) a.hard.push('CANCELLED');
+  if (e.admission.ticketAvailability === 'OBSERVED_SOLD_OUT'||o?.availability==='OBSERVED_SOLD_OUT') a.hard.push('SOLD_OUT');
+  if(o?.availability==='UNRESOLVED_SOURCE_STATUS')a.unknown.push('AVAILABILITY_UNRESOLVED');
+  predicate('availability', ['CLOSED', 'CANCELLED','SOLD_OUT','AVAILABILITY_UNRESOLVED'], 'В полученных полях нет отметки закрытия, отмены или распроданных билетов; наличие билетов не проверено.');
   if (q.zone) {
     if (!venue?.zone) a.unknown.push('ZONE_UNKNOWN'); else if (venue.zone !== q.zone) a.hard.push('WRONG_ZONE');
     predicate('zone', ['ZONE_UNKNOWN', 'WRONG_ZONE'], `Подтверждена зона: ${q.zone}.`);
@@ -202,10 +208,10 @@ export function select(snapshotInput: unknown | null, queryInput: unknown, clock
     for (const code of new Set(assessments.flatMap(a => [...a.hard, ...a.unknown]))) excluded[code] = (excluded[code] ?? 0) + 1;
   }
   // Предпочтения влияют только на порядок уже строгих совпадений; затем время и ID.
-  const preferred = (r: Recommendation) => snapshot.events.find(e => e.id === r.eventId)!.categories.some(c => query.preferences.categories.includes(c));
+  const eventById=new Map(snapshot.events.map(e=>[e.id,e]));
+  const preferred = (r: Recommendation|Candidate) => eventById.get(r.eventId)!.categories.some(c => query.preferences.categories.includes(c));
   matches.sort((a, b) => Number(preferred(b)) - Number(preferred(a)) || compare(a, b));
-  uncertain.sort((a, b) => Number(snapshot.events.find(e => e.id === b.eventId)!.categories.some(c => query.preferences.categories.includes(c)))
-    - Number(snapshot.events.find(e => e.id === a.eventId)!.categories.some(c => query.preferences.categories.includes(c))) || compareCandidates(a, b));
+  uncertain.sort((a, b) => Number(preferred(b))-Number(preferred(a)) || compareCandidates(a, b));
   const catalogIncomplete = snapshot.outcome !== 'COMPLETE';
   const insufficientOmissions = Boolean(snapshot.stats.omitted.UNSAFE_OR_MISSING_SOURCE || snapshot.stats.omitted.CATEGORY_UNKNOWN_OR_OUTSIDE_SCOPE);
   const status = matches.length ? (catalogIncomplete ? 'MATCHES_IN_INCOMPLETE_CATALOG' : 'MATCHES')

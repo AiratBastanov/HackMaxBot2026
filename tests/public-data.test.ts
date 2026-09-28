@@ -10,7 +10,8 @@ import {snapshotDigest,publicPolicyHash} from '../src/data/source-policy.js';
 import {seedCatalog} from '../src/catalog-bootstrap.js';
 import type {Config} from '../src/config.js';
 
-const c=Catalog.load({flowDataMode:'real',snapshotPath:'catalog/real/active.json',admissionMode:'PUBLIC'} as Config);
+// Исторический PUBLIC checkpoint проверяется независимо от следующего обновления афиши.
+const c=Catalog.load({flowDataMode:'real',snapshotPath:'catalog/real/e9f43ed9d1fd3c408584.json',reviewPath:'catalog/real/e9f43ed9d1fd3c408584.review.json',admissionMode:'PUBLIC'} as Config);
 test('Public real catalog materially expanded, five reviewed sources, exact sessions distinct from exhibition periods',()=>{
  const events=c.availableCities.flatMap(city=>c.forCity(city)!.events);
  assert(events.length>=50);assert.equal(new Set(events.map(e=>e.id)).size,events.length);

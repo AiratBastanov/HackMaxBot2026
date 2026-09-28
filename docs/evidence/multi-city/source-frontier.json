@@ -1,0 +1,733 @@
+{
+  "version": 1,
+  "scopeDays": 60,
+  "sources": [
+    {
+      "id": "kazan-kremlin",
+      "city": "kzn",
+      "institution": "Казанский Кремль",
+      "domain": "https://kazan-kremlin.ru",
+      "ownershipEvidence": [
+        "https://kazan-kremlin.ru/"
+      ],
+      "entryPages": [
+        "https://kazan-kremlin.ru/",
+        "https://kazan-kremlin.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARTIAL_WITH_UNREVALIDATED_RETAINED_FACTS",
+      "requests": 28,
+      "bytes": 4982061,
+      "sourceRecords": 3,
+      "uniqueEvents": 9,
+      "failures": [],
+      "retainedWithoutRevalidation": 6
+    },
+    {
+      "id": "mie",
+      "city": "ekb",
+      "institution": "Музей истории Екатеринбурга",
+      "domain": "https://m-i-e.ru",
+      "ownershipEvidence": [
+        "https://m-i-e.ru/"
+      ],
+      "entryPages": [
+        "https://m-i-e.ru/",
+        "https://m-i-e.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 57,
+      "bytes": 6714116,
+      "sourceRecords": 8,
+      "uniqueEvents": 8,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "tatmuseum",
+      "city": "kzn",
+      "institution": "Национальный музей Республики Татарстан",
+      "domain": "https://tatmuseum.ru",
+      "ownershipEvidence": [
+        "https://tatmuseum.ru/events/",
+        "https://tatmuseum.ru/visitors/",
+        "https://tatmuseum.ru/visitors/tickets/"
+      ],
+      "entryPages": [
+        "https://tatmuseum.ru/events/",
+        "https://tatmuseum.ru/visitors/",
+        "https://tatmuseum.ru/visitors/tickets/",
+        "https://tatmuseum.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "RETAINED_UNREVALIDATED_FACTS",
+      "requests": 5,
+      "bytes": 352659,
+      "sourceRecords": 0,
+      "uniqueEvents": 5,
+      "failures": [
+        "ACCESS_CHALLENGE"
+      ],
+      "retainedWithoutRevalidation": 5
+    },
+    {
+      "id": "kamal",
+      "city": "kzn",
+      "institution": "Театр имени Галиасгара Камала",
+      "domain": "https://kamalteatr.ru",
+      "ownershipEvidence": [],
+      "entryPages": [],
+      "extractionChannel": null,
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "EXCLUDED_TERMS_11_2",
+      "requests": 0,
+      "bytes": 0,
+      "sourceRecords": 0,
+      "uniqueEvents": 0,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "uralopera",
+      "city": "ekb",
+      "institution": "Урал Опера Балет",
+      "domain": "https://uralopera.ru",
+      "ownershipEvidence": [
+        "https://uralopera.ru/",
+        "https://uralopera.ru/contacts"
+      ],
+      "entryPages": [
+        "https://uralopera.ru/",
+        "https://uralopera.ru/contacts",
+        "https://uralopera.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 57,
+      "bytes": 9873198,
+      "sourceRecords": 30,
+      "uniqueEvents": 30,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "sgaf",
+      "city": "ekb",
+      "institution": "Свердловская филармония",
+      "domain": "https://sgaf.ru",
+      "ownershipEvidence": [
+        "https://sgaf.ru/",
+        "https://sgaf.ru/contacts",
+        "https://sgaf.ru/terms/purchase",
+        "https://sgaf.ru/terms/concertrules"
+      ],
+      "entryPages": [
+        "https://sgaf.ru/",
+        "https://sgaf.ru/contacts",
+        "https://sgaf.ru/terms/purchase",
+        "https://sgaf.ru/terms/concertrules",
+        "https://sgaf.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARTIAL_WITH_UNREVALIDATED_RETAINED_FACTS",
+      "requests": 24,
+      "bytes": 10102998,
+      "sourceRecords": 7,
+      "uniqueEvents": 10,
+      "failures": [],
+      "retainedWithoutRevalidation": 3
+    },
+    {
+      "id": "spb-philharmonia",
+      "city": "spb",
+      "institution": "Санкт-Петербургская филармония",
+      "domain": "https://www.philharmonia.spb.ru",
+      "ownershipEvidence": [
+        "https://www.philharmonia.spb.ru/about/roadmap/"
+      ],
+      "entryPages": [
+        "https://www.philharmonia.spb.ru/about/roadmap/",
+        "https://www.philharmonia.spb.ru/afisha/",
+        "https://www.philharmonia.spb.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html-month-pagination",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 151,
+      "bytes": 7575642,
+      "sourceRecords": 120,
+      "uniqueEvents": 112,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "spb-opera",
+      "city": "spb",
+      "institution": "Санктъ-Петербургъ Опера",
+      "domain": "https://www.spbopera.ru",
+      "ownershipEvidence": [
+        "https://www.spbopera.ru/contacts/"
+      ],
+      "entryPages": [
+        "https://www.spbopera.ru/contacts/",
+        "https://www.spbopera.ru/afisha/",
+        "https://www.spbopera.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html-public-month-filter",
+      "pagination": "Published month/page interface; see channel-outcomes",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 53,
+      "bytes": 8132412,
+      "sourceRecords": 51,
+      "uniqueEvents": 36,
+      "failures": [
+        "NETWORK_FAILURE",
+        "CONTENT_TYPE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "novat",
+      "city": "nsk",
+      "institution": "НОВАТ",
+      "domain": "https://novat.ru",
+      "ownershipEvidence": [
+        "https://novat.ru/theatre/contacts/",
+        "https://novat.ru/afisha/performances/"
+      ],
+      "entryPages": [
+        "https://novat.ru/theatre/contacts/",
+        "https://novat.ru/afisha/performances/",
+        "https://novat.ru/robots.txt"
+      ],
+      "extractionChannel": "microdata-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 88,
+      "bytes": 10810202,
+      "sourceRecords": 73,
+      "uniqueEvents": 48,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "operann",
+      "city": "nnv",
+      "institution": "Нижегородский театр оперы и балета",
+      "domain": "https://operann.ru",
+      "ownershipEvidence": [
+        "https://operann.ru/kontakty"
+      ],
+      "entryPages": [
+        "https://operann.ru/kontakty",
+        "https://operann.ru/afisha",
+        "https://operann.ru/robots.txt"
+      ],
+      "extractionChannel": "public-html-embedded-json",
+      "pagination": "3 public HTML pages; separate API denied by robots",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 54,
+      "bytes": 12721724,
+      "sourceRecords": 47,
+      "uniqueEvents": 26,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "samara-opera",
+      "city": "sam",
+      "institution": "Самарский театр оперы и балета",
+      "domain": "https://opera-samara.ru",
+      "ownershipEvidence": [
+        "https://opera-samara.ru/Kontaktnaya_informatsiya/"
+      ],
+      "entryPages": [
+        "https://opera-samara.ru/Kontaktnaya_informatsiya/",
+        "https://opera-samara.ru/afisha/",
+        "https://opera-samara.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 64,
+      "bytes": 3528784,
+      "sourceRecords": 37,
+      "uniqueEvents": 28,
+      "failures": [
+        "NETWORK_FAILURE",
+        "SOURCE_URL_DENIED"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "permopera",
+      "city": "prm",
+      "institution": "Пермский театр оперы и балета",
+      "domain": "https://permopera.ru",
+      "ownershipEvidence": [
+        "https://permopera.ru/about/contacts/",
+        "https://permopera.ru/playbills/playbill/"
+      ],
+      "entryPages": [
+        "https://permopera.ru/about/contacts/",
+        "https://permopera.ru/playbills/playbill/",
+        "https://permopera.ru/robots.txt"
+      ],
+      "extractionChannel": "public-page-json-month-pagination",
+      "pagination": "Published month/page interface; see channel-outcomes",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 75,
+      "bytes": 19961552,
+      "sourceRecords": 112,
+      "uniqueEvents": 33,
+      "failures": [
+        "NETWORK_FAILURE",
+        "HTTP_400"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "chel-philharmonia",
+      "city": "chl",
+      "institution": "Челябинская филармония",
+      "domain": "https://philarmonia.ru",
+      "ownershipEvidence": [
+        "https://philarmonia.ru/viewers/contacts/"
+      ],
+      "entryPages": [
+        "https://philarmonia.ru/viewers/contacts/",
+        "https://philarmonia.ru/afisha/",
+        "https://philarmonia.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "DEFAULT_PAGE_ONLY; robots blocks PAGEN; alternative NAV_PAGE duplicates",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 15,
+      "bytes": 885128,
+      "sourceRecords": 8,
+      "uniqueEvents": 8,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "bashopera",
+      "city": "ufa",
+      "institution": "Башкирский театр оперы и балета",
+      "domain": "https://bashopera.ru",
+      "ownershipEvidence": [
+        "https://bashopera.ru/about/contacts/",
+        "https://bashopera.ru/affiche/"
+      ],
+      "entryPages": [
+        "https://bashopera.ru/about/contacts/",
+        "https://bashopera.ru/affiche/",
+        "https://bashopera.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 83,
+      "bytes": 3092092,
+      "sourceRecords": 41,
+      "uniqueEvents": 28,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "krasfil",
+      "city": "kry",
+      "institution": "Красноярская филармония",
+      "domain": "https://krasfil.ru",
+      "ownershipEvidence": [
+        "https://krasfil.ru/contacts",
+        "https://krasfil.ru/nasi-zaly",
+        "https://krasfil.ru/events"
+      ],
+      "entryPages": [
+        "https://krasfil.ru/contacts",
+        "https://krasfil.ru/nasi-zaly",
+        "https://krasfil.ru/events",
+        "https://krasfil.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html-pagination",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 88,
+      "bytes": 6038606,
+      "sourceRecords": 63,
+      "uniqueEvents": 57,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "filarm",
+      "city": "sam",
+      "institution": "Самарская филармония",
+      "domain": "https://filarm.ru",
+      "ownershipEvidence": [
+        "https://filarm.ru/contacts/"
+      ],
+      "entryPages": [
+        "https://filarm.ru/contacts/",
+        "https://filarm.ru/afisha/",
+        "https://filarm.ru/robots.txt"
+      ],
+      "extractionChannel": "public-readonly-form-pagination",
+      "pagination": "Published month/page interface; see channel-outcomes",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 68,
+      "bytes": 4568934,
+      "sourceRecords": 47,
+      "uniqueEvents": 43,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "meloman",
+      "city": "msk",
+      "institution": "Московская филармония",
+      "domain": "https://meloman.ru",
+      "ownershipEvidence": [
+        "https://meloman.ru/slushatelyam/contacts/",
+        "https://meloman.ru/concert/",
+        "https://meloman.ru/hall/"
+      ],
+      "entryPages": [
+        "https://meloman.ru/slushatelyam/contacts/",
+        "https://meloman.ru/concert/",
+        "https://meloman.ru/hall/",
+        "https://meloman.ru/robots.txt"
+      ],
+      "extractionChannel": "public-readonly-form-month",
+      "pagination": "Published month/page interface; see channel-outcomes",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 77,
+      "bytes": 7955303,
+      "sourceRecords": 143,
+      "uniqueEvents": 136,
+      "failures": [
+        "NETWORK_FAILURE",
+        "HTTP_404"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "mosconcert",
+      "city": "msk",
+      "institution": "Москонцерт",
+      "domain": "https://mosconcert.com",
+      "ownershipEvidence": [],
+      "entryPages": [],
+      "extractionChannel": null,
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "ROBOTS_DENIED",
+      "requests": 3,
+      "bytes": 292,
+      "sourceRecords": 0,
+      "uniqueEvents": 0,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "spb-museum",
+      "city": "spb",
+      "institution": "Музей истории Санкт-Петербурга",
+      "domain": "https://www.spbmuseum.ru",
+      "ownershipEvidence": [
+        "https://www.spbmuseum.ru/themuseum/kontakty.php",
+        "https://www.spbmuseum.ru/themuseum/visitors/pravila-posesh.php"
+      ],
+      "entryPages": [
+        "https://www.spbmuseum.ru/themuseum/kontakty.php",
+        "https://www.spbmuseum.ru/themuseum/visitors/pravila-posesh.php",
+        "https://www.spbmuseum.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 42,
+      "bytes": 10537387,
+      "sourceRecords": 17,
+      "uniqueEvents": 17,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "spb-library",
+      "city": "spb",
+      "institution": "Библиотека имени В. В. Маяковского",
+      "domain": "https://pl.spb.ru",
+      "ownershipEvidence": [
+        "https://pl.spb.ru/contacts/",
+        "https://pl.spb.ru/events/"
+      ],
+      "entryPages": [
+        "https://pl.spb.ru/contacts/",
+        "https://pl.spb.ru/events/",
+        "https://pl.spb.ru/robots.txt"
+      ],
+      "extractionChannel": "public-html-date-filter",
+      "pagination": "60 daily filters exhausted",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 196,
+      "bytes": 5960339,
+      "sourceRecords": 131,
+      "uniqueEvents": 113,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "nsk-museum",
+      "city": "nsk",
+      "institution": "Новосибирский краеведческий музей",
+      "domain": "https://youmuseum.ru",
+      "ownershipEvidence": [],
+      "entryPages": [],
+      "extractionChannel": null,
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "ROBOTS_DENIED",
+      "requests": 1,
+      "bytes": 54,
+      "sourceRecords": 0,
+      "uniqueEvents": 0,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "nsk-library",
+      "city": "nsk",
+      "institution": "Новосибирская областная научная библиотека",
+      "domain": "https://ngonb.ru",
+      "ownershipEvidence": [
+        "https://ngonb.ru/about/contacts/",
+        "https://ngonb.ru/afisha/events/"
+      ],
+      "entryPages": [
+        "https://ngonb.ru/about/contacts/",
+        "https://ngonb.ru/afisha/events/",
+        "https://ngonb.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 22,
+      "bytes": 1535351,
+      "sourceRecords": 6,
+      "uniqueEvents": 6,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "nn-art",
+      "city": "nnv",
+      "institution": "Нижегородский художественный музей",
+      "domain": "https://artmuseumnn.ru",
+      "ownershipEvidence": [
+        "https://artmuseumnn.ru/kontakty/",
+        "https://artmuseumnn.ru/posetitelyam/pravila-posescheniya/"
+      ],
+      "entryPages": [
+        "https://artmuseumnn.ru/kontakty/",
+        "https://artmuseumnn.ru/posetitelyam/pravila-posescheniya/",
+        "https://artmuseumnn.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 24,
+      "bytes": 10632650,
+      "sourceRecords": 6,
+      "uniqueEvents": 6,
+      "failures": [
+        "CONTENT_TYPE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "nn-library",
+      "city": "nnv",
+      "institution": "Нижегородская областная научная библиотека",
+      "domain": "https://ngounb.ru",
+      "ownershipEvidence": [
+        "https://ngounb.ru/?page_id=84",
+        "https://ngounb.ru/"
+      ],
+      "entryPages": [
+        "https://ngounb.ru/?page_id=84",
+        "https://ngounb.ru/",
+        "https://ngounb.ru/robots.txt"
+      ],
+      "extractionChannel": "published-html-table",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 4,
+      "bytes": 1038068,
+      "sourceRecords": 1,
+      "uniqueEvents": 1,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "samara-museum",
+      "city": "sam",
+      "institution": "Музей имени П. В. Алабина",
+      "domain": "https://alabin.ru",
+      "ownershipEvidence": [],
+      "entryPages": [],
+      "extractionChannel": null,
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "NO_ACTIONABLE_EVENT_IN_ACQUIRED_SCOPE",
+      "requests": 5,
+      "bytes": 212702,
+      "sourceRecords": 0,
+      "uniqueEvents": 0,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "samara-library",
+      "city": "sam",
+      "institution": "Самарская областная научная библиотека",
+      "domain": "https://libsmr.ru",
+      "ownershipEvidence": [
+        "https://libsmr.ru/about/contacts?"
+      ],
+      "entryPages": [
+        "https://libsmr.ru/about/contacts?",
+        "https://libsmr.ru/afisha",
+        "https://libsmr.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 11,
+      "bytes": 541448,
+      "sourceRecords": 4,
+      "uniqueEvents": 4,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "perm-museum",
+      "city": "prm",
+      "institution": "Пермский краеведческий музей",
+      "domain": "https://museumperm.ru",
+      "ownershipEvidence": [
+        "https://museumperm.ru/page/contacts",
+        "https://museumperm.ru/branches"
+      ],
+      "entryPages": [
+        "https://museumperm.ru/page/contacts",
+        "https://museumperm.ru/branches",
+        "https://museumperm.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 40,
+      "bytes": 11229857,
+      "sourceRecords": 4,
+      "uniqueEvents": 4,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "perm-library",
+      "city": "prm",
+      "institution": "Пермская библиотека имени А. М. Горького",
+      "domain": "https://www.gorkilib.ru",
+      "ownershipEvidence": [
+        "https://www.gorkilib.ru/about/contacts/",
+        "https://www.gorkilib.ru/events/afisha/?dateMonth"
+      ],
+      "entryPages": [
+        "https://www.gorkilib.ru/about/contacts/",
+        "https://www.gorkilib.ru/events/afisha/?dateMonth",
+        "https://www.gorkilib.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 196,
+      "bytes": 8372154,
+      "sourceRecords": 2,
+      "uniqueEvents": 2,
+      "failures": [
+        "SOURCE_URL_DENIED"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "chel-museum",
+      "city": "chl",
+      "institution": "Государственный исторический музей Южного Урала",
+      "domain": "https://chelmuseum.ru",
+      "ownershipEvidence": [
+        "https://chelmuseum.ru/contacts/",
+        "https://chelmuseum.ru/exhibitions/"
+      ],
+      "entryPages": [
+        "https://chelmuseum.ru/contacts/",
+        "https://chelmuseum.ru/exhibitions/",
+        "https://chelmuseum.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 18,
+      "bytes": 1503752,
+      "sourceRecords": 12,
+      "uniqueEvents": 12,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "chel-library",
+      "city": "chl",
+      "institution": "Челябинская областная научная библиотека",
+      "domain": "https://chelreglib.ru",
+      "ownershipEvidence": [
+        "https://chelreglib.ru/ru/pages/about/partnership/details/",
+        "https://chelreglib.ru/ru/pages/about/lib/contacts/",
+        "https://chelreglib.ru/ru/events/"
+      ],
+      "entryPages": [
+        "https://chelreglib.ru/ru/pages/about/partnership/details/",
+        "https://chelreglib.ru/ru/pages/about/lib/contacts/",
+        "https://chelreglib.ru/ru/events/",
+        "https://chelreglib.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html-pagination",
+      "pagination": "5 linked pages exhausted",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 226,
+      "bytes": 31879700,
+      "sourceRecords": 194,
+      "uniqueEvents": 76,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    }
+  ]
+}

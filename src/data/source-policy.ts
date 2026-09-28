@@ -6,24 +6,17 @@ import { publicFactsPolicies, publicBasis } from './public-facts-policy.js';
 
 // Перечень проверяемых источников. Само наличие здесь не разрешает показ:
 // нужны точный snapshot hash, source review, срок и разрешённая аудитория.
-export const sources = {
-  'kazan-kremlin': { origin:'https://kazan-kremlin.ru', city:'kzn', label:'Источник: Казанский Кремль', basis:'institution-facts/1' },
-  mie: { origin:'https://m-i-e.ru', city:'ekb', label:'Источник: Музей истории Екатеринбурга', basis:'institution-facts/1' },
-  tatmuseum: { origin:'https://tatmuseum.ru', city:'kzn', label:'Источник: Национальный музей Республики Татарстан', basis:'institution-facts/1' },
-  kamal: { origin:'https://kamalteatr.ru', city:'kzn', label:'Источник: Театр имени Галиасгара Камала', basis:'institution-facts/1' },
-  uralopera: { origin:'https://uralopera.ru', city:'ekb', label:'Источник: Урал Опера Балет', basis:'institution-facts/1' },
-  sgaf: { origin:'https://sgaf.ru', city:'ekb', label:'Источник: Свердловская филармония', basis:'institution-facts/1' },
-} as const;
-export type Institution = keyof typeof sources;
+import { sources, institutionIds, type Institution } from './source-registry.js';
+export { sources, type Institution } from './source-registry.js';
 export const factualScope = 'title-period-session-venue-hours-tariff-admission-source';
 export const snapshotDigest = (value:unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 export function publicPolicyHash(source:string) {const p=publicFactsPolicies[source as keyof typeof publicFactsPolicies];return p?snapshotDigest({policy:p,basis:publicBasis}):null;}
 export const reviewSchema = z.object({version:z.literal(1), scope:z.enum(['ADMITTED_TESTERS_FACTS','PUBLIC_FACTS']),
   factualScope:z.literal(factualScope), reviewedAt:z.string().datetime(),
   entries:z.array(z.object({snapshotHash:z.string().regex(/^[a-f0-9]{64}$/),
-    sources:z.array(z.enum(['kazan-kremlin','mie','tatmuseum','kamal','uralopera','sgaf'])).min(1), basis:z.literal('institution-facts/1'),
+    sources:z.array(z.enum(institutionIds)).min(1), basis:z.literal('institution-facts/1'),
     publicPolicyHashes:z.record(z.string(),z.string().regex(/^[a-f0-9]{64}$/)).optional(),
-    validUntil:z.string().datetime()}).strict()).min(1).max(6)}).strict();
+    validUntil:z.string().datetime()}).strict()).min(1).max(institutionIds.length)}).strict();
 export type Review = z.infer<typeof reviewSchema>;
 export type DisplayRef = {snapshotHash:string;eventId:string};
 export function reviewedSnapshot(s:Snapshot, review:Review|null, now:number,publicOnly=false) {

@@ -38,12 +38,12 @@ export async function collectInstitutions(client:InstitutionClient) {
   atomicJson(resolve(client.root,'collection.json'),{sourceStatus,failures});
   return sourceStatus;
 }
-export function reparse(client:InstitutionClient,prepared:Prepared,now:string,freshnessHours=72,previous:Snapshot[]=[]):CandidateFile {
+export function reparse(client:InstitutionClient,prepared:Prepared,now:string,freshnessHours=72,previous:Snapshot[]=[],horizonDays=30):CandidateFile {
   if(!Number.isInteger(freshnessHours)||freshnessHours<1||freshnessHours>168)throw Error('FRESHNESS_RANGE');
   const pages=[...new Set(client.ledger.requests.map(r=>r.url))].flatMap(url=>{const p=client.cached(url);return p?[p]:[];});
-  const discoveredBySource=Object.fromEntries((Object.keys(sources) as Institution[]).map(source=>[source,new Set(pages.filter(v=>new URL(v.url).origin===sources[source].origin).flatMap(v=>discover(v,source)))])) as Record<Institution,Set<string>>;
+  const discoveredBySource=Object.fromEntries((['kazan-kremlin','mie'] as Institution[]).map(source=>[source,new Set(pages.filter(v=>new URL(v.url).origin===sources[source].origin).flatMap(v=>discover(v,source)))])) as Record<Institution,Set<string>>;
   const queue:CandidateFile['reviewQueue']=[],records:ReturnType<typeof extract>[]=[];
-  for(const source of Object.keys(sources) as Institution[]) {
+  for(const source of ['kazan-kremlin','mie'] as Institution[]) {
     const robots=client.cached(sources[source].origin+'/robots.txt');
     for(const url of discoveredBySource[source])if(robots&&!robotsAllows(robots.body,new URL(url).pathname))queue.push({url,reason:'ROBOTS_DENIED_NOT_FETCHED'});
   }
@@ -54,7 +54,7 @@ export function reparse(client:InstitutionClient,prepared:Prepared,now:string,fr
     const news=source==='kazan-kremlin'&&new URL(p.url).pathname.startsWith('/news/meropriyatiya-kazanskogo-kremlya-');
     if(!discovered.has(p.url)&&!news)continue;
     try {
-      const rows=news?extractKremlinNews(p,now).slice(0,12):[extract(p,source,cityDate(now,source==='mie'?'Asia/Yekaterinburg':'Europe/Moscow'),pages.find(v=>v.url==='https://m-i-e.ru/mie-filial'))];
+      const rows=news?extractKremlinNews(p,now):[extract(p,source,cityDate(now,source==='mie'?'Asia/Yekaterinburg':'Europe/Moscow'),pages.find(v=>v.url==='https://m-i-e.ru/mie-filial'),horizonDays)];
       for(const row of rows) {
         if(sourceReviews.some(r=>r.eventId===row.event.id)){queue.push({url:p.url,reason:'QUARANTINED: '+sourceReviews.find(r=>r.eventId===row.event.id)!.reason});continue;}
         for(const supplement of prepared.venues) {
@@ -80,9 +80,9 @@ export function reparse(client:InstitutionClient,prepared:Prepared,now:string,fr
     }catch(e){queue.push({url:p.url,reason:e instanceof Error?e.message:'PARSER_REVIEW'});}
   }
   // События не размножаются по дням. Новые ошибки не стирают активный файл.
-  const extended=parseExtended(pages,now);records.push(...extended.rows);queue.push(...extended.queue);
+  const extended=parseExtended(pages,now,horizonDays);records.push(...extended.rows);queue.push(...extended.queue);
   const unique=[...new Map(records.map(r=>[r.event.id,r])).values()];
-  const snapshots=makeSnapshots(unique,now,freshnessHours);
+  const snapshots=makeSnapshots(unique,now,freshnessHours,horizonDays);
   const sourceStatus=Object.fromEntries(Object.entries(sources).map(([id,s])=>[id,id==='kamal'?'EXCLUDED_TERMS_11_2':queue.some(r=>r.url.startsWith(s.origin)&&r.reason!=='OUTSIDE_SCOPE')||client.ledger.requests.some(r=>r.url.startsWith(s.origin)&&r.outcome!=='OK'&&!['REDIRECT','308'].includes(r.outcome))?'PARTIAL':'PARSED_CACHED_SCOPE']));
   const old=previous.flatMap(s=>s.events),next=snapshots.flatMap(s=>s.events);
   const changes:NonNullable<CandidateFile['changes']>={added:next.filter(e=>!old.some(o=>o.id===e.id)).map(e=>e.id),removed:[],changed:[],removedOccurrences:[]};
@@ -104,7 +104,8 @@ export function activate(candidate:CandidateFile,expectedHash:string,destination
   const snapshots=candidate.snapshots.map(validateSnapshot);if(!snapshots.length||snapshots.some(s=>!s.events.length))throw Error('EMPTY_CATALOG');
   if(candidate.changes?.removed.some(r=>r.reason==='NOT_FETCHED'||/PARSER|PERIOD_REVIEW|FAILED/.test(r.reason)))throw Error('FAILED_RECORD_CANNOT_DISAPPEAR');
   const review=reviewSchema.parse({version:1,scope:publicFacts?'PUBLIC_FACTS':'ADMITTED_TESTERS_FACTS',factualScope,reviewedAt:new Date(now).toISOString(),entries:snapshots.map(s=>({snapshotHash:snapshotDigest(s),sources:[...new Set(s.events.map(e=>e.provider))],...(publicFacts?{publicPolicyHashes:Object.fromEntries([...new Set(s.events.map(e=>e.provider))].map(id=>{const hash=publicPolicyHash(id);if(!hash)throw Error('SOURCE_NOT_PUBLICLY_REVIEWED');return [id,hash];}))}:{}),basis:'institution-facts/1',validUntil:new Date(Date.parse(s.retrievedAt)+s.freshnessHours*3600000).toISOString()}))});
-  if(snapshots.some(s=>!reviewedSnapshot(s,review,now)))throw Error('SNAPSHOT_NOT_REVIEWABLE_OR_STALE');
+  const usable=snapshots.filter(s=>reviewedSnapshot(s,review,now));
+  if(!usable.length||snapshots.some(s=>!usable.includes(s)&&now<Date.parse(s.retrievedAt)+s.freshnessHours*3600000&&now<Date.parse(s.scope.end)))throw Error('SNAPSHOT_NOT_REVIEWABLE_OR_STALE');
   const root=resolve(destination);mkdirSync(root,{recursive:true});
   const pointer=resolve(root,'active.json');
   if(existsSync(pointer)) {
@@ -112,9 +113,9 @@ export function activate(candidate:CandidateFile,expectedHash:string,destination
     if(!/^[a-f0-9]{20}\.json$/.test(active.snapshot))throw Error('ACTIVE_POINTER');
     const previous=JSON.parse(readFileSync(resolve(root,active.snapshot),'utf8')).snapshots.map(validateSnapshot) as Snapshot[];
     for(const s of previous) {
-      const next=snapshots.find(n=>n.scope.city===s.scope.city);
-      const lost=s.events.filter(e=>!next?.events.some(n=>n.id===e.id));
-      if(!next||lost.some(e=>!['PARSED_CACHED_SCOPE','FETCHED_SELECTED_SCOPE'].includes(candidate.sourceStatus[e.provider]??'')&&candidate.changes?.removed.find(r=>r.id===e.id)?.reason!=='ELAPSED_OR_OUTSIDE_SCOPE'))throw Error('FAILED_REFRESH_CANNOT_REPLACE_USEFUL_CATALOG');
+      const next=snapshots.filter(n=>n.scope.city===s.scope.city).flatMap(n=>n.events);
+      const lost=s.events.filter(e=>!next.some(n=>n.id===e.id));
+      if(lost.some(e=>!['PARSED_CACHED_SCOPE','FETCHED_SELECTED_SCOPE'].includes(candidate.sourceStatus[e.provider]??'')&&candidate.changes?.removed.find(r=>r.id===e.id)?.reason!=='ELAPSED_OR_OUTSIDE_SCOPE'))throw Error('FAILED_REFRESH_CANNOT_REPLACE_USEFUL_CATALOG');
     }
   }
   const name=expectedHash.slice(0,20),snapshotPath=resolve(root,name+'.json'),reviewPath=resolve(root,name+'.review.json');

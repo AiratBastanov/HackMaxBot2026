@@ -1,0 +1,35 @@
+{
+  "head": "63fb8db",
+  "measuredAt": "2026-09-28T07:17:36.549Z",
+  "pointer": {
+    "version": 1,
+    "snapshot": "e9f43ed9d1fd3c408584.json",
+    "review": "e9f43ed9d1fd3c408584.review.json"
+  },
+  "events": 62,
+  "occurrences": 93,
+  "cities": [
+    {
+      "city": "kzn",
+      "events": 25,
+      "occurrences": 34,
+      "retrievedAt": "2026-09-26T14:27:25.105Z"
+    },
+    {
+      "city": "ekb",
+      "events": 37,
+      "occurrences": 59,
+      "retrievedAt": "2026-09-26T14:23:19.053Z"
+    }
+  ],
+  "sources": [
+    "kazan-kremlin",
+    "tatmuseum",
+    "mie",
+    "sgaf",
+    "uralopera"
+  ],
+  "userOwned": [
+    "compose.ca.override.yaml"
+  ]
+}

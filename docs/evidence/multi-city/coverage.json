@@ -1,0 +1,4969 @@
+{
+  "version": 1,
+  "result": "PASS",
+  "at": "2026-09-28T09:01:32.280Z",
+  "humanMAX": "NOT_RUN / DEFERRED_BY_USER",
+  "baseline": {
+    "head": "63fb8db",
+    "measuredAt": "2026-09-28T07:17:36.549Z",
+    "pointer": {
+      "version": 1,
+      "snapshot": "e9f43ed9d1fd3c408584.json",
+      "review": "e9f43ed9d1fd3c408584.review.json"
+    },
+    "events": 62,
+    "occurrences": 93,
+    "cities": [
+      {
+        "city": "kzn",
+        "events": 25,
+        "occurrences": 34,
+        "retrievedAt": "2026-09-26T14:27:25.105Z"
+      },
+      {
+        "city": "ekb",
+        "events": 37,
+        "occurrences": 59,
+        "retrievedAt": "2026-09-26T14:23:19.053Z"
+      }
+    ],
+    "sources": [
+      "kazan-kremlin",
+      "tatmuseum",
+      "mie",
+      "sgaf",
+      "uralopera"
+    ],
+    "userOwned": [
+      "compose.ca.override.yaml"
+    ]
+  },
+  "counts": {
+    "events": 858,
+    "occurrences": 1041,
+    "timedSessions": 985,
+    "exhibitionPeriods": 56,
+    "venues": 107,
+    "sources": 26,
+    "domains": 26,
+    "cities": 11,
+    "displayEligible": 837,
+    "sourceRecords": 1167,
+    "retainedWithoutRevalidation": 14,
+    "strictAny": 413,
+    "uncertainAny": 424,
+    "first30": 610,
+    "second30": 315
+  },
+  "byCity": {
+    "kzn": {
+      "name": "Казань",
+      "events": 14,
+      "occurrences": 22,
+      "sources": 2,
+      "strictAny": 1,
+      "uncertainAny": 11,
+      "displayEligible": 12,
+      "first30": 14,
+      "second30": 5,
+      "quality": {
+        "usableDate": 14,
+        "durationOrHours": 8,
+        "individualPrice": 3,
+        "childPrice": 2,
+        "verifiedAddress": 12
+      },
+      "timings": [
+        {
+          "query": "any",
+          "ms": 19.962400000000002
+        },
+        {
+          "query": "weekend",
+          "ms": 4.850099999999998
+        },
+        {
+          "query": "family",
+          "ms": 3.539700000000039
+        },
+        {
+          "query": "free",
+          "ms": 3.3535000000000537
+        },
+        {
+          "query": "evening",
+          "ms": 3.533999999999992
+        },
+        {
+          "query": "no-match",
+          "ms": 1.6868999999999232
+        }
+      ]
+    },
+    "ekb": {
+      "name": "Екатеринбург",
+      "events": 48,
+      "occurrences": 82,
+      "sources": 3,
+      "strictAny": 42,
+      "uncertainAny": 6,
+      "displayEligible": 48,
+      "first30": 36,
+      "second30": 23,
+      "quality": {
+        "usableDate": 48,
+        "durationOrHours": 46,
+        "individualPrice": 1,
+        "childPrice": 1,
+        "verifiedAddress": 47
+      },
+      "timings": [
+        {
+          "query": "any",
+          "ms": 6.713500000000067
+        },
+        {
+          "query": "weekend",
+          "ms": 9.95620000000008
+        },
+        {
+          "query": "family",
+          "ms": 5.741400000000112
+        },
+        {
+          "query": "free",
+          "ms": 5.822699999999941
+        },
+        {
+          "query": "evening",
+          "ms": 5.146399999999858
+        },
+        {
+          "query": "no-match",
+          "ms": 4.971000000000004
+        }
+      ]
+    },
+    "spb": {
+      "name": "Санкт-Петербург",
+      "events": 278,
+      "occurrences": 313,
+      "sources": 4,
+      "strictAny": 215,
+      "uncertainAny": 60,
+      "displayEligible": 275,
+      "first30": 197,
+      "second30": 103,
+      "quality": {
+        "usableDate": 278,
+        "durationOrHours": 218,
+        "individualPrice": 144,
+        "childPrice": 0,
+        "verifiedAddress": 278
+      },
+      "timings": [
+        {
+          "query": "any",
+          "ms": 19.894599999999627
+        },
+        {
+          "query": "weekend",
+          "ms": 31.26279999999997
+        },
+        {
+          "query": "family",
+          "ms": 18.12429999999995
+        },
+        {
+          "query": "free",
+          "ms": 18.678499999999985
+        },
+        {
+          "query": "evening",
+          "ms": 16.997800000000097
+        },
+        {
+          "query": "no-match",
+          "ms": 26.7833999999998
+        }
+      ]
+    },
+    "nsk": {
+      "name": "Новосибирск",
+      "events": 54,
+      "occurrences": 79,
+      "sources": 2,
+      "strictAny": 40,
+      "uncertainAny": 14,
+      "displayEligible": 54,
+      "first30": 33,
+      "second30": 28,
+      "quality": {
+        "usableDate": 54,
+        "durationOrHours": 40,
+        "individualPrice": 1,
+        "childPrice": 0,
+        "verifiedAddress": 54
+      },
+      "timings": [
+        {
+          "query": "any",
+          "ms": 3.381199999999808
+        },
+        {
+          "query": "weekend",
+          "ms": 6.266599999999926
+        },
+        {
+          "query": "family",
+          "ms": 5.018200000000434
+        },
+        {
+          "query": "free",
+          "ms": 3.402200000000448
+        },
+        {
+          "query": "evening",
+          "ms": 3.205699999999524
+        },
+        {
+          "query": "no-match",
+          "ms": 3.0034999999998035
+        }
+      ]
+    },
+    "nnv": {
+      "name": "Нижний Новгород",
+      "events": 33,
+      "occurrences": 54,
+      "sources": 3,
+      "strictAny": 6,
+      "uncertainAny": 27,
+      "displayEligible": 33,
+      "first30": 25,
+      "second30": 14,
+      "quality": {
+        "usableDate": 33,
+        "durationOrHours": 32,
+        "individualPrice": 0,
+        "childPrice": 0,
+        "verifiedAddress": 32
+      },
+      "timings": [
+        {
+          "query": "any",
+          "ms": 3.09440000000086
+        },
+        {
+          "query": "weekend",
+          "ms": 5.4843999999993684
+        },
+        {
+          "query": "family",
+          "ms": 3.216099999999642
+        },
+        {
+          "query": "free",
+          "ms": 4.2731000000003405
+        },
+        {
+          "query": "evening",
+          "ms": 3.2879000000002634
+        },
+        {
+          "query": "no-match",
+          "ms": 2.6037999999998647
+        }
+      ]
+    },
+    "sam": {
+      "name": "Самара",
+      "events": 75,
+      "occurrences": 84,
+      "sources": 3,
+      "strictAny": 33,
+      "uncertainAny": 42,
+      "displayEligible": 75,
+      "first30": 46,
+      "second30": 30,
+      "quality": {
+        "usableDate": 75,
+        "durationOrHours": 33,
+        "individualPrice": 43,
+        "childPrice": 0,
+        "verifiedAddress": 75
+      },
+      "timings": [
+        {
+          "query": "any",
+          "ms": 4.3575999999993655
+        },
+        {
+          "query": "weekend",
+          "ms": 7.416099999998551
+        },
+        {
+          "query": "family",
+          "ms": 4.316800000000512
+        },
+        {
+          "query": "free",
+          "ms": 4.381900000000314
+        },
+        {
+          "query": "evening",
+          "ms": 3.7268000000003667
+        },
+        {
+          "query": "no-match",
+          "ms": 4.336600000000544
+        }
+      ]
+    },
+    "prm": {
+      "name": "Пермь",
+      "events": 39,
+      "occurrences": 54,
+      "sources": 3,
+      "strictAny": 20,
+      "uncertainAny": 18,
+      "displayEligible": 38,
+      "first30": 26,
+      "second30": 16,
+      "quality": {
+        "usableDate": 39,
+        "durationOrHours": 21,
+        "individualPrice": 0,
+        "childPrice": 0,
+        "verifiedAddress": 39
+      },
+      "timings": [
+        {
+          "query": "any",
+          "ms": 2.6851000000006024
+        },
+        {
+          "query": "weekend",
+          "ms": 5.29910000000018
+        },
+        {
+          "query": "family",
+          "ms": 2.7427000000006956
+        },
+        {
+          "query": "free",
+          "ms": 4.086900000000242
+        },
+        {
+          "query": "evening",
+          "ms": 2.4673000000002503
+        },
+        {
+          "query": "no-match",
+          "ms": 2.3788000000004104
+        }
+      ]
+    },
+    "chl": {
+      "name": "Челябинск",
+      "events": 96,
+      "occurrences": 109,
+      "sources": 3,
+      "strictAny": 10,
+      "uncertainAny": 86,
+      "displayEligible": 96,
+      "first30": 92,
+      "second30": 15,
+      "quality": {
+        "usableDate": 96,
+        "durationOrHours": 10,
+        "individualPrice": 19,
+        "childPrice": 0,
+        "verifiedAddress": 89
+      },
+      "timings": [
+        {
+          "query": "any",
+          "ms": 5.413800000000265
+        },
+        {
+          "query": "weekend",
+          "ms": 10.166700000001583
+        },
+        {
+          "query": "family",
+          "ms": 6.337700000000041
+        },
+        {
+          "query": "free",
+          "ms": 8.572599999999511
+        },
+        {
+          "query": "evening",
+          "ms": 4.903899999999339
+        },
+        {
+          "query": "no-match",
+          "ms": 5.01929999999993
+        }
+      ]
+    },
+    "ufa": {
+      "name": "Уфа",
+      "events": 28,
+      "occurrences": 41,
+      "sources": 1,
+      "strictAny": 24,
+      "uncertainAny": 4,
+      "displayEligible": 28,
+      "first30": 16,
+      "second30": 13,
+      "quality": {
+        "usableDate": 28,
+        "durationOrHours": 24,
+        "individualPrice": 0,
+        "childPrice": 0,
+        "verifiedAddress": 28
+      },
+      "timings": [
+        {
+          "query": "any",
+          "ms": 2.639099999998507
+        },
+        {
+          "query": "weekend",
+          "ms": 4.646899999999732
+        },
+        {
+          "query": "family",
+          "ms": 4.078499999999622
+        },
+        {
+          "query": "free",
+          "ms": 2.081000000000131
+        },
+        {
+          "query": "evening",
+          "ms": 1.9624999999996362
+        },
+        {
+          "query": "no-match",
+          "ms": 1.8852000000006228
+        }
+      ]
+    },
+    "kry": {
+      "name": "Красноярск",
+      "events": 57,
+      "occurrences": 63,
+      "sources": 1,
+      "strictAny": 22,
+      "uncertainAny": 20,
+      "displayEligible": 42,
+      "first30": 57,
+      "second30": 0,
+      "quality": {
+        "usableDate": 57,
+        "durationOrHours": 56,
+        "individualPrice": 42,
+        "childPrice": 0,
+        "verifiedAddress": 36
+      },
+      "timings": [
+        {
+          "query": "any",
+          "ms": 2.887700000001132
+        },
+        {
+          "query": "weekend",
+          "ms": 6.088799999999537
+        },
+        {
+          "query": "family",
+          "ms": 4.807300000000396
+        },
+        {
+          "query": "free",
+          "ms": 3.030900000001566
+        },
+        {
+          "query": "evening",
+          "ms": 2.765400000000227
+        },
+        {
+          "query": "no-match",
+          "ms": 2.7554000000000087
+        }
+      ]
+    },
+    "msk": {
+      "name": "Москва",
+      "events": 136,
+      "occurrences": 140,
+      "sources": 1,
+      "strictAny": 0,
+      "uncertainAny": 136,
+      "displayEligible": 136,
+      "first30": 68,
+      "second30": 68,
+      "quality": {
+        "usableDate": 136,
+        "durationOrHours": 0,
+        "individualPrice": 0,
+        "childPrice": 0,
+        "verifiedAddress": 136
+      },
+      "timings": [
+        {
+          "query": "any",
+          "ms": 6.214600000001155
+        },
+        {
+          "query": "weekend",
+          "ms": 11.897100000000137
+        },
+        {
+          "query": "family",
+          "ms": 7.924199999999473
+        },
+        {
+          "query": "free",
+          "ms": 6.188000000000102
+        },
+        {
+          "query": "evening",
+          "ms": 5.84900000000016
+        },
+        {
+          "query": "no-match",
+          "ms": 6.888700000001336
+        }
+      ]
+    }
+  },
+  "queryResults": [
+    {
+      "city": "kzn",
+      "id": "any",
+      "strict": 1,
+      "uncertain": 11,
+      "elapsedMs": 19.962400000000002,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "kazan-kremlin:kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+          "title": "Казанское Поволжье: образы народной культуры",
+          "from": "2026-09-28T09:01:32.280Z",
+          "source": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:gastronomicheskaya-letopis-kazani",
+          "title": "Гастрономическая летопись Казани",
+          "source": "https://tatmuseum.ru/events/gastronomicheskaya-letopis-kazani/",
+          "reasons": [
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney",
+          "title": "История Татарстана с древнейших времен до наших дней",
+          "source": "https://tatmuseum.ru/events/istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney/",
+          "reasons": [
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:kabinet-redkostey",
+          "title": "Кабинет редкостей",
+          "source": "https://tatmuseum.ru/events/kabinet-redkostey/",
+          "reasons": [
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "kzn",
+      "id": "weekend",
+      "strict": 1,
+      "uncertain": 4,
+      "elapsedMs": 4.850099999999998,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "kazan-kremlin:kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+          "title": "Казанское Поволжье: образы народной культуры",
+          "from": "2026-10-03T09:00:00.000Z",
+          "source": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:gastronomicheskaya-letopis-kazani",
+          "title": "Гастрономическая летопись Казани",
+          "source": "https://tatmuseum.ru/events/gastronomicheskaya-letopis-kazani/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney",
+          "title": "История Татарстана с древнейших времен до наших дней",
+          "source": "https://tatmuseum.ru/events/istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:kabinet-redkostey",
+          "title": "Кабинет редкостей",
+          "source": "https://tatmuseum.ru/events/kabinet-redkostey/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "STRICT",
+          "id": "kazan-kremlin:kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+          "title": "Казанское Поволжье: образы народной культуры",
+          "from": "2026-10-04T09:00:00.000Z",
+          "source": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:gastronomicheskaya-letopis-kazani",
+          "title": "Гастрономическая летопись Казани",
+          "source": "https://tatmuseum.ru/events/gastronomicheskaya-letopis-kazani/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "kzn",
+      "id": "family",
+      "strict": 0,
+      "uncertain": 12,
+      "elapsedMs": 3.539700000000039,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "kazan-kremlin:kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+          "title": "Казанское Поволжье: образы народной культуры",
+          "source": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+          "reasons": [
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:gastronomicheskaya-letopis-kazani",
+          "title": "Гастрономическая летопись Казани",
+          "source": "https://tatmuseum.ru/events/gastronomicheskaya-letopis-kazani/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения.",
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney",
+          "title": "История Татарстана с древнейших времен до наших дней",
+          "source": "https://tatmuseum.ru/events/istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения.",
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "kzn",
+      "id": "free",
+      "strict": 1,
+      "uncertain": 11,
+      "elapsedMs": 3.3535000000000537,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "kazan-kremlin:kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+          "title": "Казанское Поволжье: образы народной культуры",
+          "from": "2026-09-28T09:01:32.280Z",
+          "source": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:gastronomicheskaya-letopis-kazani",
+          "title": "Гастрономическая летопись Казани",
+          "source": "https://tatmuseum.ru/events/gastronomicheskaya-letopis-kazani/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney",
+          "title": "История Татарстана с древнейших времен до наших дней",
+          "source": "https://tatmuseum.ru/events/istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:kabinet-redkostey",
+          "title": "Кабинет редкостей",
+          "source": "https://tatmuseum.ru/events/kabinet-redkostey/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "kzn",
+      "id": "evening",
+      "strict": 1,
+      "uncertain": 5,
+      "elapsedMs": 3.533999999999992,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "kazan-kremlin:kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+          "title": "Казанское Поволжье: образы народной культуры",
+          "from": "2026-10-02T15:00:00.000Z",
+          "source": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:gastronomicheskaya-letopis-kazani",
+          "title": "Гастрономическая летопись Казани",
+          "source": "https://tatmuseum.ru/events/gastronomicheskaya-letopis-kazani/",
+          "reasons": [
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney",
+          "title": "История Татарстана с древнейших времен до наших дней",
+          "source": "https://tatmuseum.ru/events/istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney/",
+          "reasons": [
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "tatmuseum:kabinet-redkostey",
+          "title": "Кабинет редкостей",
+          "source": "https://tatmuseum.ru/events/kabinet-redkostey/",
+          "reasons": [
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "kzn",
+      "id": "no-match",
+      "strict": 0,
+      "uncertain": 0,
+      "elapsedMs": 1.6868999999999232,
+      "samples": []
+    },
+    {
+      "city": "ekb",
+      "id": "any",
+      "strict": 42,
+      "uncertain": 6,
+      "elapsedMs": 6.713500000000067,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "sgaf:program-9ebaa3cf17c5c3ab488d",
+          "title": "Краски мира",
+          "from": "2026-09-28T10:00:00.000Z",
+          "source": "https://sgaf.ru/afisha/5964"
+        },
+        {
+          "kind": "STRICT",
+          "id": "uralopera:passazhirka",
+          "title": "Пассажирка",
+          "from": "2026-09-29T13:30:00.000Z",
+          "source": "https://uralopera.ru/events/passazhirka?date=2568"
+        },
+        {
+          "kind": "STRICT",
+          "id": "mie:azins_magic_of_name",
+          "title": "«Азины. Магия имени»",
+          "from": "2026-09-30T05:00:00.000Z",
+          "source": "https://m-i-e.ru/azins_magic_of_name"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "sgaf:program-0440a427e953325bcdba",
+          "title": "Виолончель (Струнные смычковые)",
+          "source": "https://sgaf.ru/afisha/6230",
+          "reasons": [
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "sgaf:program-a5539a97a1a3b434bf66",
+          "title": "Альт (Струнные смычковые)",
+          "source": "https://sgaf.ru/afisha/6223",
+          "reasons": [
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "sgaf:program-f2180679c799a695bfbe",
+          "title": "Контрабас (Струнные смычковые)",
+          "source": "https://sgaf.ru/afisha/6243",
+          "reasons": [
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "ekb",
+      "id": "weekend",
+      "strict": 1,
+      "uncertain": 10,
+      "elapsedMs": 9.95620000000008,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "mie:azins_magic_of_name",
+          "title": "«Азины. Магия имени»",
+          "from": "2026-10-03T07:00:00.000Z",
+          "source": "https://m-i-e.ru/azins_magic_of_name"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "mie:casing_of_rock",
+          "title": "«Роковый корпус»",
+          "source": "https://m-i-e.ru/casing_of_rock",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "mie:creative_industry",
+          "title": "«БУМ! Рождение креативных индустрий в Екатеринбурге в 1990–2000-е»",
+          "source": "https://m-i-e.ru/creative_industry",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "mie:ekb_fastfood",
+          "title": "«Хроники ресторанного Екатеринбурга: городские фудкорты XIX века»",
+          "source": "https://m-i-e.ru/ekb_fastfood",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "STRICT",
+          "id": "mie:azins_magic_of_name",
+          "title": "«Азины. Магия имени»",
+          "from": "2026-10-04T07:00:00.000Z",
+          "source": "https://m-i-e.ru/azins_magic_of_name"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "mie:casing_of_rock",
+          "title": "«Роковый корпус»",
+          "source": "https://m-i-e.ru/casing_of_rock",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "ekb",
+      "id": "family",
+      "strict": 0,
+      "uncertain": 48,
+      "elapsedMs": 5.741400000000112,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "mie:azins_magic_of_name",
+          "title": "«Азины. Магия имени»",
+          "source": "https://m-i-e.ru/azins_magic_of_name",
+          "reasons": [
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "mie:casing_of_rock",
+          "title": "«Роковый корпус»",
+          "source": "https://m-i-e.ru/casing_of_rock",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "mie:creative_industry",
+          "title": "«БУМ! Рождение креативных индустрий в Екатеринбурге в 1990–2000-е»",
+          "source": "https://m-i-e.ru/creative_industry",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "ekb",
+      "id": "free",
+      "strict": 1,
+      "uncertain": 43,
+      "elapsedMs": 5.822699999999941,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "mie:azins_magic_of_name",
+          "title": "«Азины. Магия имени»",
+          "from": "2026-09-30T05:00:00.000Z",
+          "source": "https://m-i-e.ru/azins_magic_of_name"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "mie:casing_of_rock",
+          "title": "«Роковый корпус»",
+          "source": "https://m-i-e.ru/casing_of_rock",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "mie:creative_industry",
+          "title": "«БУМ! Рождение креативных индустрий в Екатеринбурге в 1990–2000-е»",
+          "source": "https://m-i-e.ru/creative_industry",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "mie:ekb_fastfood",
+          "title": "«Хроники ресторанного Екатеринбурга: городские фудкорты XIX века»",
+          "source": "https://m-i-e.ru/ekb_fastfood",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "ekb",
+      "id": "evening",
+      "strict": 38,
+      "uncertain": 4,
+      "elapsedMs": 5.146399999999858,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "uralopera:passazhirka",
+          "title": "Пассажирка",
+          "from": "2026-09-29T13:30:00.000Z",
+          "source": "https://uralopera.ru/events/passazhirka?date=2568"
+        },
+        {
+          "kind": "STRICT",
+          "id": "mie:azins_magic_of_name",
+          "title": "«Азины. Магия имени»",
+          "from": "2026-09-30T13:00:00.000Z",
+          "source": "https://m-i-e.ru/azins_magic_of_name"
+        },
+        {
+          "kind": "STRICT",
+          "id": "mie:casing_of_rock",
+          "title": "«Роковый корпус»",
+          "from": "2026-09-30T13:00:00.000Z",
+          "source": "https://m-i-e.ru/casing_of_rock"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "sgaf:program-a5539a97a1a3b434bf66",
+          "title": "Альт (Струнные смычковые)",
+          "source": "https://sgaf.ru/afisha/6223",
+          "reasons": [
+            "Превышен срок годности применимых фактов либо время их получения неизвестно."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "mie:postoyannaya",
+          "title": "Постоянная экспозиция",
+          "source": "https://m-i-e.ru/postoyannaya",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "sgaf:program-864e69300ad0419333d2",
+          "title": "Илья Бешевли. Избранное со струнными",
+          "source": "https://sgaf.ru/afisha/6436",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "ekb",
+      "id": "no-match",
+      "strict": 0,
+      "uncertain": 0,
+      "elapsedMs": 4.971000000000004,
+      "samples": []
+    },
+    {
+      "city": "spb",
+      "id": "any",
+      "strict": 215,
+      "uncertain": 60,
+      "elapsedMs": 19.894599999999627,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "spb-library:programme-201988544b3976b6c7663db0",
+          "title": "Литературно-разговорный клуб на испанском языке",
+          "from": "2026-09-28T15:00:00.000Z",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=5530f1527042e541b01e92b102ce357c"
+        },
+        {
+          "kind": "STRICT",
+          "id": "spb-library:programme-c0f4d0595251177e5f93a9b3",
+          "title": "Клуб чтения на английском языке",
+          "from": "2026-09-28T15:00:00.000Z",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=301a81fa89b4e6b4d84cc1f8516b023f"
+        },
+        {
+          "kind": "STRICT",
+          "id": "spb-library:1c9ca9fcec709b78daff7f0a9ea83ad0",
+          "title": "Триумф русской культуры в Брюсселе: к 100-летию открытия Дворца изящных искусств",
+          "from": "2026-09-28T15:30:00.000Z",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=1c9ca9fcec709b78daff7f0a9ea83ad0"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-library:b5f670e1cc54fb9d97955dbfe3c10ab9",
+          "title": "200 лет русской сатиры",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=b5f670e1cc54fb9d97955dbfe3c10ab9",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-museum:1254",
+          "title": "История тюрьмы Трубецкого бастиона",
+          "source": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/1254/",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-museum:1271",
+          "title": "История Петропавловской крепости",
+          "source": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/1271/",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "spb",
+      "id": "weekend",
+      "strict": 3,
+      "uncertain": 21,
+      "elapsedMs": 31.26279999999997,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "spb-library:c849f6c3951b267c9b5ec4a7faa47452",
+          "title": "Фестиваль «Чтения»: вокруг света за два дня",
+          "from": "2026-10-03T12:00:00.000Z",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=c849f6c3951b267c9b5ec4a7faa47452"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-library:b5f670e1cc54fb9d97955dbfe3c10ab9",
+          "title": "200 лет русской сатиры",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=b5f670e1cc54fb9d97955dbfe3c10ab9",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-museum:48241",
+          "title": "Музей космонавтики и ракетной техники им.В.П.Глушко",
+          "source": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/48241/",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-museum:4968",
+          "title": "Коллекция фарфора и стекла XVIII-XXI веков",
+          "source": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/4968/",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "STRICT",
+          "id": "spb-library:programme-a258bbd69a9bc55fa34791c0",
+          "title": "Арабский разговорный клуб",
+          "from": "2026-10-04T09:00:00.000Z",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=a9f6f8125ab43f76aebd2043418e0818"
+        },
+        {
+          "kind": "STRICT",
+          "id": "spb-library:78647990359b24cd9ef1b631cf7b2466",
+          "title": "Фестиваль «Чтения»: вокруг света за два дня",
+          "from": "2026-10-04T12:00:00.000Z",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=78647990359b24cd9ef1b631cf7b2466"
+        }
+      ]
+    },
+    {
+      "city": "spb",
+      "id": "family",
+      "strict": 0,
+      "uncertain": 275,
+      "elapsedMs": 18.12429999999995,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-library:046e9195bbc1c919594a3cbb7fb81682",
+          "title": "«Череповец, Череповец…»",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=046e9195bbc1c919594a3cbb7fb81682",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-library:0488feadee8c6cc1461a5af4f95ea391",
+          "title": "Одна музыка — одна история",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=0488feadee8c6cc1461a5af4f95ea391",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-library:04cfa997089b984fce00ad057cfc55b5",
+          "title": "Морфология погребального обряда",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=04cfa997089b984fce00ad057cfc55b5",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "spb",
+      "id": "free",
+      "strict": 40,
+      "uncertain": 227,
+      "elapsedMs": 18.678499999999985,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "spb-library:programme-201988544b3976b6c7663db0",
+          "title": "Литературно-разговорный клуб на испанском языке",
+          "from": "2026-09-28T15:00:00.000Z",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=5530f1527042e541b01e92b102ce357c"
+        },
+        {
+          "kind": "STRICT",
+          "id": "spb-library:1c9ca9fcec709b78daff7f0a9ea83ad0",
+          "title": "Триумф русской культуры в Брюсселе: к 100-летию открытия Дворца изящных искусств",
+          "from": "2026-09-28T15:30:00.000Z",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=1c9ca9fcec709b78daff7f0a9ea83ad0"
+        },
+        {
+          "kind": "STRICT",
+          "id": "spb-library:programme-00864e06232b8391ebfea1d8",
+          "title": "Немецкий разговорный клуб",
+          "from": "2026-09-29T14:30:00.000Z",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=38172613ad07bbb89ff1aa08d9d98b24"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-library:046e9195bbc1c919594a3cbb7fb81682",
+          "title": "«Череповец, Череповец…»",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=046e9195bbc1c919594a3cbb7fb81682",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-library:04cfa997089b984fce00ad057cfc55b5",
+          "title": "Морфология погребального обряда",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=04cfa997089b984fce00ad057cfc55b5",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-library:05ce8e2727bb2dfddc3b8c6b44dc3ed6",
+          "title": "Что читать об искусстве скульптуры?",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=05ce8e2727bb2dfddc3b8c6b44dc3ed6",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "spb",
+      "id": "evening",
+      "strict": 159,
+      "uncertain": 50,
+      "elapsedMs": 16.997800000000097,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "spb-library:programme-201988544b3976b6c7663db0",
+          "title": "Литературно-разговорный клуб на испанском языке",
+          "from": "2026-09-28T15:00:00.000Z",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=5530f1527042e541b01e92b102ce357c"
+        },
+        {
+          "kind": "STRICT",
+          "id": "spb-library:programme-c0f4d0595251177e5f93a9b3",
+          "title": "Клуб чтения на английском языке",
+          "from": "2026-09-28T15:00:00.000Z",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=301a81fa89b4e6b4d84cc1f8516b023f"
+        },
+        {
+          "kind": "STRICT",
+          "id": "spb-library:1c9ca9fcec709b78daff7f0a9ea83ad0",
+          "title": "Триумф русской культуры в Брюсселе: к 100-летию открытия Дворца изящных искусств",
+          "from": "2026-09-28T15:30:00.000Z",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=1c9ca9fcec709b78daff7f0a9ea83ad0"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-library:b5f670e1cc54fb9d97955dbfe3c10ab9",
+          "title": "200 лет русской сатиры",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=b5f670e1cc54fb9d97955dbfe3c10ab9",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-museum:1254",
+          "title": "История тюрьмы Трубецкого бастиона",
+          "source": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/1254/",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-museum:1271",
+          "title": "История Петропавловской крепости",
+          "source": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/1271/",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "spb",
+      "id": "no-match",
+      "strict": 0,
+      "uncertain": 15,
+      "elapsedMs": 26.7833999999998,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-library:b5f670e1cc54fb9d97955dbfe3c10ab9",
+          "title": "200 лет русской сатиры",
+          "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=b5f670e1cc54fb9d97955dbfe3c10ab9",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-museum:1254",
+          "title": "История тюрьмы Трубецкого бастиона",
+          "source": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/1254/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "spb-museum:1271",
+          "title": "История Петропавловской крепости",
+          "source": "https://www.spbmuseum.ru/exhibits_and_exhibitions/permanent_displays/1271/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Нет применимого расписания на этот день."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "nsk",
+      "id": "any",
+      "strict": 40,
+      "uncertain": 14,
+      "elapsedMs": 3.381199999999808,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "novat:production-953248b5433f21433e2005f9",
+          "title": "Щелкунчик",
+          "from": "2026-09-30T12:00:00.000Z",
+          "source": "https://novat.ru/afisha/performances/detail/4964954/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "novat:production-f16c87fbc15d351d6b23d39d",
+          "title": "Свадьба Фигаро",
+          "from": "2026-09-30T12:00:00.000Z",
+          "source": "https://novat.ru/afisha/performances/detail/4964979/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "novat:production-4b1b1aa86df126a05b0d491c",
+          "title": "Шепот (Ssss), Радио и Джульетта (Radio and Juliet)",
+          "from": "2026-10-02T12:00:00.000Z",
+          "source": "https://novat.ru/afisha/performances/detail/5080652/"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-3949ac061d475bf72b01eb1f",
+          "title": "Гала-концерт звезд балета. Посвящение Анне Одинцовой",
+          "source": "https://novat.ru/afisha/performances/detail/5128523/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-5080741",
+          "title": "Большой симфонический концерт НОВАТа",
+          "source": "https://novat.ru/afisha/performances/detail/5080741/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-5106122",
+          "title": "Калейдоскоп духовых",
+          "source": "https://novat.ru/afisha/performances/detail/5106122/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "nsk",
+      "id": "weekend",
+      "strict": 0,
+      "uncertain": 2,
+      "elapsedMs": 6.266599999999926,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-538b3549fae60f9a5a49c5b9",
+          "title": "Чиполлино",
+          "source": "https://novat.ru/afisha/performances/detail/5080654/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-ee0440f939b8ca8f7f0e8183",
+          "title": "Сказка о царе Салтане",
+          "source": "https://novat.ru/afisha/performances/detail/5080660/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "nsk",
+      "id": "family",
+      "strict": 0,
+      "uncertain": 54,
+      "elapsedMs": 5.018200000000434,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-01794b02c66bf1be5e0c7440",
+          "title": "Малыш и Карлсон",
+          "source": "https://novat.ru/afisha/performances/detail/5094964/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-0ff86d83423a585aafea9e2a",
+          "title": "Риголетто",
+          "source": "https://novat.ru/afisha/performances/detail/5080668/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-203eddeb59b50622043ebba5",
+          "title": "Анюта",
+          "source": "https://novat.ru/afisha/performances/detail/5080664/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "nsk",
+      "id": "free",
+      "strict": 0,
+      "uncertain": 54,
+      "elapsedMs": 3.402200000000448,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-01794b02c66bf1be5e0c7440",
+          "title": "Малыш и Карлсон",
+          "source": "https://novat.ru/afisha/performances/detail/5094964/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-0ff86d83423a585aafea9e2a",
+          "title": "Риголетто",
+          "source": "https://novat.ru/afisha/performances/detail/5080668/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-203eddeb59b50622043ebba5",
+          "title": "Анюта",
+          "source": "https://novat.ru/afisha/performances/detail/5080664/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "nsk",
+      "id": "evening",
+      "strict": 25,
+      "uncertain": 11,
+      "elapsedMs": 3.205699999999524,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "novat:production-953248b5433f21433e2005f9",
+          "title": "Щелкунчик",
+          "from": "2026-09-30T12:00:00.000Z",
+          "source": "https://novat.ru/afisha/performances/detail/4964954/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "novat:production-f16c87fbc15d351d6b23d39d",
+          "title": "Свадьба Фигаро",
+          "from": "2026-09-30T12:00:00.000Z",
+          "source": "https://novat.ru/afisha/performances/detail/4964979/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "novat:production-4b1b1aa86df126a05b0d491c",
+          "title": "Шепот (Ssss), Радио и Джульетта (Radio and Juliet)",
+          "from": "2026-10-02T12:00:00.000Z",
+          "source": "https://novat.ru/afisha/performances/detail/5080652/"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-3949ac061d475bf72b01eb1f",
+          "title": "Гала-концерт звезд балета. Посвящение Анне Одинцовой",
+          "source": "https://novat.ru/afisha/performances/detail/5128523/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-5080741",
+          "title": "Большой симфонический концерт НОВАТа",
+          "source": "https://novat.ru/afisha/performances/detail/5080741/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "novat:production-5106122",
+          "title": "Калейдоскоп духовых",
+          "source": "https://novat.ru/afisha/performances/detail/5106122/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "nsk",
+      "id": "no-match",
+      "strict": 0,
+      "uncertain": 0,
+      "elapsedMs": 3.0034999999998035,
+      "samples": []
+    },
+    {
+      "city": "nnv",
+      "id": "any",
+      "strict": 6,
+      "uncertain": 27,
+      "elapsedMs": 3.09440000000086,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "nn-art:-postoyannye-expozitzii-from-symbolism-to-avangard-",
+          "title": "«РУССКИЙ АВАНГАРД. Живопись, скульптура»",
+          "from": "2026-09-29T07:00:00.000Z",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/from-symbolism-to-avangard/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "nn-art:-postoyannye-expozitzii-makovskiy-exposition-",
+          "title": "Экспозиция зала К.Е. Маковского",
+          "from": "2026-09-29T07:00:00.000Z",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/makovskiy-exposition/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "nn-art:-postoyannye-expozitzii-russkoe-isskusstvo-",
+          "title": "Экспозиция «Русское искусство»",
+          "from": "2026-09-29T07:00:00.000Z",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/russkoe-isskusstvo/"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "operann:production-606",
+          "title": "Пиковая дама",
+          "source": "https://operann.ru/afisha/pikovaya-dama",
+          "reasons": [
+            "В HTML источника показано «Билеты распроданы», но ссылка покупки не заполнена; актуальный статус требует уточнения у учреждения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "operann:production-628",
+          "title": "В состоянии аффекта",
+          "source": "https://operann.ru/afisha/v-sostoyanii-affekta",
+          "reasons": [
+            "В HTML источника показано «Билеты распроданы», но ссылка покупки не заполнена; актуальный статус требует уточнения у учреждения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "operann:production-629",
+          "title": "Золотой петушок",
+          "source": "https://operann.ru/afisha/zolotoy-petushok",
+          "reasons": [
+            "В HTML источника показано «Билеты распроданы», но ссылка покупки не заполнена; актуальный статус требует уточнения у учреждения."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "nnv",
+      "id": "weekend",
+      "strict": 0,
+      "uncertain": 8,
+      "elapsedMs": 5.4843999999993684,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "nn-art:-postoyannye-expozitzii-from-symbolism-to-avangard-",
+          "title": "«РУССКИЙ АВАНГАРД. Живопись, скульптура»",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/from-symbolism-to-avangard/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "nn-art:-postoyannye-expozitzii-makovskiy-exposition-",
+          "title": "Экспозиция зала К.Е. Маковского",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/makovskiy-exposition/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "nn-art:-postoyannye-expozitzii-russkoe-isskusstvo-",
+          "title": "Экспозиция «Русское искусство»",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/russkoe-isskusstvo/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "nn-art:-postoyannye-expozitzii-from-symbolism-to-avangard-",
+          "title": "«РУССКИЙ АВАНГАРД. Живопись, скульптура»",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/from-symbolism-to-avangard/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "nn-art:-postoyannye-expozitzii-makovskiy-exposition-",
+          "title": "Экспозиция зала К.Е. Маковского",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/makovskiy-exposition/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "nn-art:-postoyannye-expozitzii-russkoe-isskusstvo-",
+          "title": "Экспозиция «Русское искусство»",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/russkoe-isskusstvo/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "nnv",
+      "id": "family",
+      "strict": 0,
+      "uncertain": 33,
+      "elapsedMs": 3.216099999999642,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "nn-art:-postoyannye-expozitzii-from-symbolism-to-avangard-",
+          "title": "«РУССКИЙ АВАНГАРД. Живопись, скульптура»",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/from-symbolism-to-avangard/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "nn-art:-postoyannye-expozitzii-makovskiy-exposition-",
+          "title": "Экспозиция зала К.Е. Маковского",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/makovskiy-exposition/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "nn-art:-postoyannye-expozitzii-russkoe-isskusstvo-",
+          "title": "Экспозиция «Русское искусство»",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/russkoe-isskusstvo/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "nnv",
+      "id": "free",
+      "strict": 0,
+      "uncertain": 33,
+      "elapsedMs": 4.2731000000003405,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "nn-art:-postoyannye-expozitzii-from-symbolism-to-avangard-",
+          "title": "«РУССКИЙ АВАНГАРД. Живопись, скульптура»",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/from-symbolism-to-avangard/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "nn-art:-postoyannye-expozitzii-makovskiy-exposition-",
+          "title": "Экспозиция зала К.Е. Маковского",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/makovskiy-exposition/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "nn-art:-postoyannye-expozitzii-russkoe-isskusstvo-",
+          "title": "Экспозиция «Русское искусство»",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/russkoe-isskusstvo/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "nnv",
+      "id": "evening",
+      "strict": 6,
+      "uncertain": 24,
+      "elapsedMs": 3.2879000000002634,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "nn-art:-postoyannye-expozitzii-from-symbolism-to-avangard-",
+          "title": "«РУССКИЙ АВАНГАРД. Живопись, скульптура»",
+          "from": "2026-10-01T15:00:00.000Z",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/from-symbolism-to-avangard/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "nn-art:-postoyannye-expozitzii-makovskiy-exposition-",
+          "title": "Экспозиция зала К.Е. Маковского",
+          "from": "2026-10-01T15:00:00.000Z",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/makovskiy-exposition/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "nn-art:-postoyannye-expozitzii-russkoe-isskusstvo-",
+          "title": "Экспозиция «Русское искусство»",
+          "from": "2026-10-01T15:00:00.000Z",
+          "source": "https://artmuseumnn.ru/postoyannye-expozitzii/russkoe-isskusstvo/"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "operann:production-606",
+          "title": "Пиковая дама",
+          "source": "https://operann.ru/afisha/pikovaya-dama",
+          "reasons": [
+            "В HTML источника показано «Билеты распроданы», но ссылка покупки не заполнена; актуальный статус требует уточнения у учреждения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "operann:production-628",
+          "title": "В состоянии аффекта",
+          "source": "https://operann.ru/afisha/v-sostoyanii-affekta",
+          "reasons": [
+            "В HTML источника показано «Билеты распроданы», но ссылка покупки не заполнена; актуальный статус требует уточнения у учреждения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "operann:production-629",
+          "title": "Золотой петушок",
+          "source": "https://operann.ru/afisha/zolotoy-petushok",
+          "reasons": [
+            "В HTML источника показано «Билеты распроданы», но ссылка покупки не заполнена; актуальный статус требует уточнения у учреждения."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "nnv",
+      "id": "no-match",
+      "strict": 0,
+      "uncertain": 0,
+      "elapsedMs": 2.6037999999998647,
+      "samples": []
+    },
+    {
+      "city": "sam",
+      "id": "any",
+      "strict": 33,
+      "uncertain": 42,
+      "elapsedMs": 4.3575999999993655,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "samara-opera:-166-concert1299-html",
+          "title": "Единство культур",
+          "from": "2026-09-28T14:30:00.000Z",
+          "source": "https://opera-samara.ru/166/concert1299.html"
+        },
+        {
+          "kind": "STRICT",
+          "id": "samara-opera:-53-concert1287-html",
+          "title": "1000 и одна ночь",
+          "from": "2026-09-29T15:00:00.000Z",
+          "source": "https://opera-samara.ru/53/concert1287.html"
+        },
+        {
+          "kind": "STRICT",
+          "id": "samara-opera:-29-concert1223-html",
+          "title": "Шехерезада. Жар-птица",
+          "from": "2026-09-30T14:30:00.000Z",
+          "source": "https://opera-samara.ru/29/concert1223.html"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4350",
+          "title": "«Сказки Пушкина»",
+          "source": "https://filarm.ru/afisha/concert4350.html",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4354",
+          "title": "«Кто хозяин в концертном зале?»",
+          "source": "https://filarm.ru/afisha/concert4354.html",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4358",
+          "title": "Александр Олешко. Сказка с оркестром «Золотой ключик, или приключения Буратино» А.Толстого",
+          "source": "https://filarm.ru/afisha/concert4358.html",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "sam",
+      "id": "weekend",
+      "strict": 0,
+      "uncertain": 2,
+      "elapsedMs": 7.416099999998551,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4380",
+          "title": "«Ожидание любви»",
+          "source": "https://filarm.ru/afisha/concert4380.html",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4366",
+          "title": "«Сказание о том, как Самара начиналась»",
+          "source": "https://filarm.ru/afisha/concert4366.html",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "sam",
+      "id": "family",
+      "strict": 0,
+      "uncertain": 75,
+      "elapsedMs": 4.316800000000512,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4477",
+          "title": "Александр Домогаров. Спектакль \"Вертинский\"",
+          "source": "https://filarm.ru/afisha/concert4477.html",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4478",
+          "title": "Спектакль \"Любовь и голуби\"",
+          "source": "https://filarm.ru/afisha/concert4478.html",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4499",
+          "title": "Московский государственный академический театр танца «Гжель». Программа «Сказочная Гжель»",
+          "source": "https://filarm.ru/afisha/concert4499.html",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "sam",
+      "id": "free",
+      "strict": 0,
+      "uncertain": 75,
+      "elapsedMs": 4.381900000000314,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4477",
+          "title": "Александр Домогаров. Спектакль \"Вертинский\"",
+          "source": "https://filarm.ru/afisha/concert4477.html",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4478",
+          "title": "Спектакль \"Любовь и голуби\"",
+          "source": "https://filarm.ru/afisha/concert4478.html",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4499",
+          "title": "Московский государственный академический театр танца «Гжель». Программа «Сказочная Гжель»",
+          "source": "https://filarm.ru/afisha/concert4499.html",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "sam",
+      "id": "evening",
+      "strict": 30,
+      "uncertain": 30,
+      "elapsedMs": 3.7268000000003667,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "samara-opera:-166-concert1299-html",
+          "title": "Единство культур",
+          "from": "2026-09-28T14:30:00.000Z",
+          "source": "https://opera-samara.ru/166/concert1299.html"
+        },
+        {
+          "kind": "STRICT",
+          "id": "samara-opera:-53-concert1287-html",
+          "title": "1000 и одна ночь",
+          "from": "2026-09-29T15:00:00.000Z",
+          "source": "https://opera-samara.ru/53/concert1287.html"
+        },
+        {
+          "kind": "STRICT",
+          "id": "samara-opera:-29-concert1223-html",
+          "title": "Шехерезада. Жар-птица",
+          "from": "2026-09-30T14:30:00.000Z",
+          "source": "https://opera-samara.ru/29/concert1223.html"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4384",
+          "title": "«Рождение Эрмитажа»",
+          "source": "https://filarm.ru/afisha/concert4384.html",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4385",
+          "title": "«Античное искусство в собрании Эрмитажа»",
+          "source": "https://filarm.ru/afisha/concert4385.html",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "filarm:concert4392",
+          "title": "«Золотой романс»: Ирина Крутова и оркестр",
+          "source": "https://filarm.ru/afisha/concert4392.html",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "sam",
+      "id": "no-match",
+      "strict": 0,
+      "uncertain": 0,
+      "elapsedMs": 4.336600000000544,
+      "samples": []
+    },
+    {
+      "city": "prm",
+      "id": "any",
+      "strict": 20,
+      "uncertain": 18,
+      "elapsedMs": 2.6851000000006024,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "permopera:production-6873beb50751dbf3d9e0cdd7",
+          "title": "Локация (Location)",
+          "from": "2026-09-30T14:00:00.000Z",
+          "source": "https://permopera.ru/playbills/playbill/2026-09-30-1900-lokacziya-location/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "permopera:production-1bc2f2585b668e397c10c0fa",
+          "title": "Синдерелла, или Сказка о Золушке",
+          "from": "2026-10-01T14:00:00.000Z",
+          "source": "https://permopera.ru/playbills/playbill/2026-10-01-1900-sinderella-ili-skazka-o-zolushke/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "permopera:production-71d63b3284285b99cae6275e",
+          "title": "Человеческий голос",
+          "from": "2026-10-02T14:00:00.000Z",
+          "source": "https://permopera.ru/playbills/playbill/2026-10-02-1900-chelovecheskij-golos/"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "perm-library:angel-moy",
+          "title": "«Ангел мой»",
+          "source": "https://www.gorkilib.ru/events/angel-moy",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "perm-library:schastlivye-mgnoveniya-muzyki",
+          "title": "«Счастливые мгновения Музыки»",
+          "source": "https://www.gorkilib.ru/events/schastlivye-mgnoveniya-muzyki",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "perm-museum:3513",
+          "title": "Пространство пермской истории с древнейших времен до начала XX века",
+          "source": "https://museumperm.ru/event/3513",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "prm",
+      "id": "weekend",
+      "strict": 0,
+      "uncertain": 7,
+      "elapsedMs": 5.29910000000018,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "permopera:production-748ed3a7c2ebd0c0039df47d",
+          "title": "Цикл авторских экскурсий «Балетный квартал». Город спасения и встреч",
+          "source": "https://permopera.ru/playbills/playbill/2026-10-03-1200-czikl-avtorskih-ekskursij-baletnyj-kvartal-gorod-spaseniya-i-vstrech/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "permopera:production-7e1d23dbb40ce572a7dc2e38",
+          "title": "Цикл авторских экскурсий «Балетный квартал». Вокруг сцены",
+          "source": "https://permopera.ru/playbills/playbill/2026-10-03-1200-czikl-avtorskih-ekskursij-baletnyj-kvartal-vokrug-sczeny/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "permopera:production-d36724384566a9549b305b86",
+          "title": "Цикл авторских экскурсий «Балетный квартал». Учебный квартал",
+          "source": "https://permopera.ru/playbills/playbill/2026-10-03-1200-czikl-avtorskih-ekskursij-baletnyj-kvartal-uchebnyj-kvartal/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "perm-library:angel-moy",
+          "title": "«Ангел мой»",
+          "source": "https://www.gorkilib.ru/events/angel-moy",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "perm-museum:3513",
+          "title": "Пространство пермской истории с древнейших времен до начала XX века",
+          "source": "https://museumperm.ru/event/3513",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "perm-museum:3738",
+          "title": "Слушать в отсеках",
+          "source": "https://museumperm.ru/event/3738",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Нет применимого расписания на этот день."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "prm",
+      "id": "family",
+      "strict": 0,
+      "uncertain": 38,
+      "elapsedMs": 2.7427000000006956,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "permopera:production-0d9c15b86795076d53445fcf",
+          "title": "Так поступают все женщины (Cosi fan tutte)",
+          "source": "https://permopera.ru/playbills/playbill/tak-postupayut-vse-zhenshhiny-cosi-fan-tutte/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "permopera:production-1bc2f2585b668e397c10c0fa",
+          "title": "Синдерелла, или Сказка о Золушке",
+          "source": "https://permopera.ru/playbills/playbill/2026-10-01-1900-sinderella-ili-skazka-o-zolushke/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "permopera:production-409d1693b903a2017a3fe265",
+          "title": "Жизель",
+          "source": "https://permopera.ru/playbills/playbill/2026-10-06-1900-zhizel/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "prm",
+      "id": "free",
+      "strict": 0,
+      "uncertain": 38,
+      "elapsedMs": 4.086900000000242,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "permopera:production-0d9c15b86795076d53445fcf",
+          "title": "Так поступают все женщины (Cosi fan tutte)",
+          "source": "https://permopera.ru/playbills/playbill/tak-postupayut-vse-zhenshhiny-cosi-fan-tutte/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "permopera:production-1bc2f2585b668e397c10c0fa",
+          "title": "Синдерелла, или Сказка о Золушке",
+          "source": "https://permopera.ru/playbills/playbill/2026-10-01-1900-sinderella-ili-skazka-o-zolushke/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "permopera:production-409d1693b903a2017a3fe265",
+          "title": "Жизель",
+          "source": "https://permopera.ru/playbills/playbill/2026-10-06-1900-zhizel/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "prm",
+      "id": "evening",
+      "strict": 17,
+      "uncertain": 17,
+      "elapsedMs": 2.4673000000002503,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "permopera:production-6873beb50751dbf3d9e0cdd7",
+          "title": "Локация (Location)",
+          "from": "2026-09-30T14:00:00.000Z",
+          "source": "https://permopera.ru/playbills/playbill/2026-09-30-1900-lokacziya-location/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "permopera:production-1bc2f2585b668e397c10c0fa",
+          "title": "Синдерелла, или Сказка о Золушке",
+          "from": "2026-10-01T14:00:00.000Z",
+          "source": "https://permopera.ru/playbills/playbill/2026-10-01-1900-sinderella-ili-skazka-o-zolushke/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "permopera:production-71d63b3284285b99cae6275e",
+          "title": "Человеческий голос",
+          "from": "2026-10-02T14:00:00.000Z",
+          "source": "https://permopera.ru/playbills/playbill/2026-10-02-1900-chelovecheskij-golos/"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "perm-library:schastlivye-mgnoveniya-muzyki",
+          "title": "«Счастливые мгновения Музыки»",
+          "source": "https://www.gorkilib.ru/events/schastlivye-mgnoveniya-muzyki",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "perm-museum:3513",
+          "title": "Пространство пермской истории с древнейших времен до начала XX века",
+          "source": "https://museumperm.ru/event/3513",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "perm-museum:3738",
+          "title": "Слушать в отсеках",
+          "source": "https://museumperm.ru/event/3738",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "prm",
+      "id": "no-match",
+      "strict": 0,
+      "uncertain": 4,
+      "elapsedMs": 2.3788000000004104,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "perm-museum:3513",
+          "title": "Пространство пермской истории с древнейших времен до начала XX века",
+          "source": "https://museumperm.ru/event/3513",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "perm-museum:3738",
+          "title": "Слушать в отсеках",
+          "source": "https://museumperm.ru/event/3738",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "perm-museum:3998",
+          "title": "Играем в куклы",
+          "source": "https://museumperm.ru/event/3998",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Нет применимого расписания на этот день."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "chl",
+      "id": "any",
+      "strict": 10,
+      "uncertain": 86,
+      "elapsedMs": 5.413800000000265,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "chel-philharmonia:46612",
+          "title": "Хор мальчиков и юношей CANTUS / КАНТУС",
+          "from": "2026-09-28T13:30:00.000Z",
+          "source": "https://philarmonia.ru/afisha/46612-khor-malchikov-i-yunoshey-cantus-kantus/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "chel-philharmonia:46710",
+          "title": "IX Фестиваль Ю. Башмета. А. С. Пушкин. Маленькие трагедии",
+          "from": "2026-09-28T14:00:00.000Z",
+          "source": "https://philarmonia.ru/afisha/46710-malenkie-tragedii-ix-festival-yu-bashmeta/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "chel-museum:chelyabinsk-sovetskij-letopis-v-kadrah",
+          "title": "Челябинск советский. Летопись в кадрах",
+          "from": "2026-09-29T05:00:00.000Z",
+          "source": "https://chelmuseum.ru/exhibitions/chelyabinsk-sovetskij-letopis-v-kadrah/"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-library:programme-015afbb27334be04a85b6e6c",
+          "title": "Карта визуализации жизненных приоритетов",
+          "source": "https://chelreglib.ru/ru/events/9195/?back=%2Fru%2Fevents%2F%3Fpage%3D1",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-library:programme-05a8194b6e7c66e7e2085e55",
+          "title": "Комментарий",
+          "source": "https://chelreglib.ru/ru/events/9258/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-library:programme-0e40e4d613679ee7ec0710e7",
+          "title": "Защита жилищных прав граждан",
+          "source": "https://chelreglib.ru/ru/events/9214/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "chl",
+      "id": "weekend",
+      "strict": 1,
+      "uncertain": 13,
+      "elapsedMs": 10.166700000001583,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "chel-museum:postoyannaya-ekspozitsiya-muzeya",
+          "title": "Постоянная экспозиция музея",
+          "from": "2026-10-03T07:00:00.000Z",
+          "source": "https://chelmuseum.ru/exhibitions/postoyannaya-ekspozitsiya-muzeya/"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-museum:chelyabinsk-sovetskij-letopis-v-kadrah",
+          "title": "Челябинск советский. Летопись в кадрах",
+          "source": "https://chelmuseum.ru/exhibitions/chelyabinsk-sovetskij-letopis-v-kadrah/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-museum:istoriya-kupechestva-na-urale",
+          "title": "Зеркало эпохи: история особняка Шиховых-Покровских",
+          "source": "https://chelmuseum.ru/exhibitions/istoriya-kupechestva-na-urale/",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-museum:russkaya-solonka-koroleva-stola",
+          "title": "Русская солонка: королева стола",
+          "source": "https://chelmuseum.ru/exhibitions/russkaya-solonka-koroleva-stola/",
+          "reasons": [
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "STRICT",
+          "id": "chel-museum:postoyannaya-ekspozitsiya-muzeya",
+          "title": "Постоянная экспозиция музея",
+          "from": "2026-10-04T07:00:00.000Z",
+          "source": "https://chelmuseum.ru/exhibitions/postoyannaya-ekspozitsiya-muzeya/"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-museum:chelyabinsk-sovetskij-letopis-v-kadrah",
+          "title": "Челябинск советский. Летопись в кадрах",
+          "source": "https://chelmuseum.ru/exhibitions/chelyabinsk-sovetskij-letopis-v-kadrah/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "chl",
+      "id": "family",
+      "strict": 0,
+      "uncertain": 95,
+      "elapsedMs": 6.337700000000041,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-museum:chelyabinsk-sovetskij-letopis-v-kadrah",
+          "title": "Челябинск советский. Летопись в кадрах",
+          "source": "https://chelmuseum.ru/exhibitions/chelyabinsk-sovetskij-letopis-v-kadrah/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-museum:postoyannaya-ekspozitsiya-muzeya",
+          "title": "Постоянная экспозиция музея",
+          "source": "https://chelmuseum.ru/exhibitions/postoyannaya-ekspozitsiya-muzeya/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-philharmonia:45851",
+          "title": "Жуй Мин (Китай)",
+          "source": "https://philarmonia.ru/afisha/45851-russkie-fortepiannye-shedevry-zhuy-min-kitay/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "chl",
+      "id": "free",
+      "strict": 0,
+      "uncertain": 81,
+      "elapsedMs": 8.572599999999511,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-museum:chelyabinsk-sovetskij-letopis-v-kadrah",
+          "title": "Челябинск советский. Летопись в кадрах",
+          "source": "https://chelmuseum.ru/exhibitions/chelyabinsk-sovetskij-letopis-v-kadrah/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-library:programme-78b096ffbe926f0d2bbcbeb7",
+          "title": "Я другой: краски внутреннего мира",
+          "source": "https://chelreglib.ru/ru/events/9216/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-library:programme-add0fd485878e49059fc8a9d",
+          "title": "Я другой: краски внутреннего мира",
+          "source": "https://chelreglib.ru/ru/events/9266/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "chl",
+      "id": "evening",
+      "strict": 9,
+      "uncertain": 26,
+      "elapsedMs": 4.903899999999339,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "chel-philharmonia:46612",
+          "title": "Хор мальчиков и юношей CANTUS / КАНТУС",
+          "from": "2026-09-28T13:30:00.000Z",
+          "source": "https://philarmonia.ru/afisha/46612-khor-malchikov-i-yunoshey-cantus-kantus/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "chel-philharmonia:46710",
+          "title": "IX Фестиваль Ю. Башмета. А. С. Пушкин. Маленькие трагедии",
+          "from": "2026-09-28T14:00:00.000Z",
+          "source": "https://philarmonia.ru/afisha/46710-malenkie-tragedii-ix-festival-yu-bashmeta/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "chel-museum:chelyabinsk-sovetskij-letopis-v-kadrah",
+          "title": "Челябинск советский. Летопись в кадрах",
+          "from": "2026-09-29T13:00:00.000Z",
+          "source": "https://chelmuseum.ru/exhibitions/chelyabinsk-sovetskij-letopis-v-kadrah/"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-library:programme-22e498847509f7d982f3f356",
+          "title": "Русский народный кокошник из павловопосадских платков",
+          "source": "https://chelreglib.ru/ru/events/9177/?back=%2Fru%2Fevents%2F%3Fpage%3D1",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-library:programme-34f2533bc0339c3d38d9277f",
+          "title": "Запрет на успех: как выйти из тени?",
+          "source": "https://chelreglib.ru/ru/events/9226/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-library:programme-35892fef266f703d0a0e72f1",
+          "title": "«Белые журавли» Расула Гамзатова",
+          "source": "https://chelreglib.ru/ru/events/9250/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "chl",
+      "id": "no-match",
+      "strict": 0,
+      "uncertain": 4,
+      "elapsedMs": 5.01929999999993,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-museum:chelyabinsk-v-proizvedeniyah-ignatiya-vandysheva",
+          "title": "Челябинск в произведениях Игнатия Вандышева",
+          "source": "https://chelmuseum.ru/exhibitions/chelyabinsk-v-proizvedeniyah-ignatiya-vandysheva/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-museum:chelyabinsk-kulturnaya-stolitsa-2027",
+          "title": "Челябинск — культурная столица 2027",
+          "source": "https://chelmuseum.ru/exhibitions/chelyabinsk-kulturnaya-stolitsa-2027/",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе.",
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Нет применимого расписания на этот день."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "chel-museum:gorod-zabytyh-chuvstv-fotovystavka-olega-astahova",
+          "title": "Город забытых чувств. Фотовыставка Олега Астахова",
+          "source": "https://chelmuseum.ru/exhibitions/gorod-zabytyh-chuvstv-fotovystavka-olega-astahova/",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе.",
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Нет применимого расписания на этот день."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "ufa",
+      "id": "any",
+      "strict": 24,
+      "uncertain": 4,
+      "elapsedMs": 2.639099999998507,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "bashopera:production-254",
+          "title": "Риголетто",
+          "from": "2026-09-29T14:00:00.000Z",
+          "source": "https://bashopera.ru/repertoire/opera/254/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "bashopera:production-13850",
+          "title": "И будет музыка, музыка навсегда...",
+          "from": "2026-10-01T14:00:00.000Z",
+          "source": "https://bashopera.ru/repertoire/concert/13850/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "bashopera:production-273",
+          "title": "Жизель",
+          "from": "2026-10-01T14:00:00.000Z",
+          "source": "https://bashopera.ru/repertoire/ballet/273/"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "bashopera:production-15354",
+          "title": "По страницам музыкальных сказок",
+          "source": "https://bashopera.ru/repertoire/concert/15354/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "bashopera:production-15832",
+          "title": "Песни моего народа",
+          "source": "https://bashopera.ru/repertoire/concert/15832/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "bashopera:production-15880",
+          "title": "Мир балета",
+          "source": "https://bashopera.ru/repertoire/concert/15880/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "ufa",
+      "id": "weekend",
+      "strict": 0,
+      "uncertain": 0,
+      "elapsedMs": 4.646899999999732,
+      "samples": []
+    },
+    {
+      "city": "ufa",
+      "id": "family",
+      "strict": 0,
+      "uncertain": 28,
+      "elapsedMs": 4.078499999999622,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "bashopera:production-12047",
+          "title": "Фауст",
+          "source": "https://bashopera.ru/repertoire/opera/12047/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "bashopera:production-13548",
+          "title": "Дон Кихот",
+          "source": "https://bashopera.ru/repertoire/opera/13548/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "bashopera:production-13850",
+          "title": "И будет музыка, музыка навсегда...",
+          "source": "https://bashopera.ru/repertoire/concert/13850/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "ufa",
+      "id": "free",
+      "strict": 0,
+      "uncertain": 28,
+      "elapsedMs": 2.081000000000131,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "bashopera:production-12047",
+          "title": "Фауст",
+          "source": "https://bashopera.ru/repertoire/opera/12047/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "bashopera:production-13548",
+          "title": "Дон Кихот",
+          "source": "https://bashopera.ru/repertoire/opera/13548/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "bashopera:production-13850",
+          "title": "И будет музыка, музыка навсегда...",
+          "source": "https://bashopera.ru/repertoire/concert/13850/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "ufa",
+      "id": "evening",
+      "strict": 24,
+      "uncertain": 2,
+      "elapsedMs": 1.9624999999996362,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "bashopera:production-254",
+          "title": "Риголетто",
+          "from": "2026-09-29T14:00:00.000Z",
+          "source": "https://bashopera.ru/repertoire/opera/254/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "bashopera:production-13850",
+          "title": "И будет музыка, музыка навсегда...",
+          "from": "2026-10-01T14:00:00.000Z",
+          "source": "https://bashopera.ru/repertoire/concert/13850/"
+        },
+        {
+          "kind": "STRICT",
+          "id": "bashopera:production-273",
+          "title": "Жизель",
+          "from": "2026-10-01T14:00:00.000Z",
+          "source": "https://bashopera.ru/repertoire/ballet/273/"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "bashopera:production-15832",
+          "title": "Песни моего народа",
+          "source": "https://bashopera.ru/repertoire/concert/15832/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "bashopera:production-15885",
+          "title": "И смех, и грех!",
+          "source": "https://bashopera.ru/repertoire/concert/15885/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "ufa",
+      "id": "no-match",
+      "strict": 0,
+      "uncertain": 0,
+      "elapsedMs": 1.8852000000006228,
+      "samples": []
+    },
+    {
+      "city": "kry",
+      "id": "any",
+      "strict": 22,
+      "uncertain": 20,
+      "elapsedMs": 2.887700000001132,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "krasfil:show-730",
+          "title": "Максим Аверин.Спектакль \"Расправь крылья\"",
+          "from": "2026-09-29T12:00:00.000Z",
+          "source": "https://krasfil.ru/events/1415"
+        },
+        {
+          "kind": "STRICT",
+          "id": "krasfil:show-820",
+          "title": "Из Беларуси с любовью. Каллиника Медведева (орган, Беларусь)",
+          "from": "2026-10-01T12:00:00.000Z",
+          "source": "https://krasfil.ru/events/1563"
+        },
+        {
+          "kind": "STRICT",
+          "id": "krasfil:show-509",
+          "title": "Аб. \"Музыкальные столицы\". Концерт №1. Красноярский академический симфонический оркестр. Дирижер Владимир Ланде",
+          "from": "2026-10-02T12:00:00.000Z",
+          "source": "https://krasfil.ru/events/950"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "krasfil:event-1641",
+          "title": "Сибирь - моя держава. Красноярский государственный ансамбль песни \"КрасА\"",
+          "source": "https://krasfil.ru/events/1641",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "krasfil:show-552",
+          "title": "Детский Аб. \"Филармония-малышам\" 1 ступень Розовый от 0 до 1 года",
+          "source": "https://krasfil.ru/events/1024",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "krasfil:show-553",
+          "title": "Детский Аб. \"Филармония-малышам\". 1 ступень Розовый от 0 до 1 года",
+          "source": "https://krasfil.ru/events/1028",
+          "reasons": [
+            "Не подтверждена физическая площадка в выбранном городе."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "kry",
+      "id": "weekend",
+      "strict": 0,
+      "uncertain": 2,
+      "elapsedMs": 6.088799999999537,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "krasfil:show-155",
+          "title": "Детский Аб. \"Иван Барабан в стране Симфонии\" Концерт №1",
+          "source": "https://krasfil.ru/events/968",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "krasfil:show-598",
+          "title": "Аб. \"Ретро-клуб\". Концерт №1. Красноярский филармонический русский оркестр имени А.Ю. Бардина",
+          "source": "https://krasfil.ru/events/1177",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "kry",
+      "id": "family",
+      "strict": 0,
+      "uncertain": 42,
+      "elapsedMs": 4.807300000000396,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "krasfil:show-155",
+          "title": "Детский Аб. \"Иван Барабан в стране Симфонии\" Концерт №1",
+          "source": "https://krasfil.ru/events/968",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "krasfil:show-429",
+          "title": "Папа спешит домой. Детский литературный театр",
+          "source": "https://krasfil.ru/events/1488",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "krasfil:show-430",
+          "title": "Путешествие из Простоквашино. Детский литературный театр",
+          "source": "https://krasfil.ru/events/1487",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "kry",
+      "id": "free",
+      "strict": 0,
+      "uncertain": 21,
+      "elapsedMs": 3.030900000001566,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "krasfil:show-155",
+          "title": "Детский Аб. \"Иван Барабан в стране Симфонии\" Концерт №1",
+          "source": "https://krasfil.ru/events/968",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "krasfil:show-429",
+          "title": "Папа спешит домой. Детский литературный театр",
+          "source": "https://krasfil.ru/events/1488",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "krasfil:show-430",
+          "title": "Путешествие из Простоквашино. Детский литературный театр",
+          "source": "https://krasfil.ru/events/1487",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "kry",
+      "id": "evening",
+      "strict": 16,
+      "uncertain": 1,
+      "elapsedMs": 2.765400000000227,
+      "samples": [
+        {
+          "kind": "STRICT",
+          "id": "krasfil:show-730",
+          "title": "Максим Аверин.Спектакль \"Расправь крылья\"",
+          "from": "2026-09-29T12:00:00.000Z",
+          "source": "https://krasfil.ru/events/1415"
+        },
+        {
+          "kind": "STRICT",
+          "id": "krasfil:show-820",
+          "title": "Из Беларуси с любовью. Каллиника Медведева (орган, Беларусь)",
+          "from": "2026-10-01T12:00:00.000Z",
+          "source": "https://krasfil.ru/events/1563"
+        },
+        {
+          "kind": "STRICT",
+          "id": "krasfil:show-509",
+          "title": "Аб. \"Музыкальные столицы\". Концерт №1. Красноярский академический симфонический оркестр. Дирижер Владимир Ланде",
+          "from": "2026-10-02T12:00:00.000Z",
+          "source": "https://krasfil.ru/events/950"
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "krasfil:show-867",
+          "title": "Бурятский государственный национальный театр песни и танца Байкал \"Музыка Бурятии\"",
+          "source": "https://krasfil.ru/events/1637",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "kry",
+      "id": "no-match",
+      "strict": 0,
+      "uncertain": 0,
+      "elapsedMs": 2.7554000000000087,
+      "samples": []
+    },
+    {
+      "city": "msk",
+      "id": "any",
+      "strict": 0,
+      "uncertain": 136,
+      "elapsedMs": 6.214600000001155,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-00373f1c371f3943c1b490ac",
+          "title": "Звезды XXI века",
+          "source": "https://meloman.ru/concert/kzch-2026-10-01/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-007625da71027445dfa67aa7",
+          "title": "История одного шедевра",
+          "source": "https://meloman.ru/concert/kzch-2026-11-01-1/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-0258cb3f445f1b7da8b6c0a0",
+          "title": "Взгляд в будущее",
+          "source": "https://meloman.ru/concert/kzf-2026-10-04-1/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "msk",
+      "id": "weekend",
+      "strict": 0,
+      "uncertain": 1,
+      "elapsedMs": 11.897100000000137,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-0258cb3f445f1b7da8b6c0a0",
+          "title": "Взгляд в будущее",
+          "source": "https://meloman.ru/concert/kzf-2026-10-04-1/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "msk",
+      "id": "family",
+      "strict": 0,
+      "uncertain": 136,
+      "elapsedMs": 7.924199999999473,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-00373f1c371f3943c1b490ac",
+          "title": "Звезды XXI века",
+          "source": "https://meloman.ru/concert/kzch-2026-10-01/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-007625da71027445dfa67aa7",
+          "title": "История одного шедевра",
+          "source": "https://meloman.ru/concert/kzch-2026-11-01-1/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-0258cb3f445f1b7da8b6c0a0",
+          "title": "Взгляд в будущее",
+          "source": "https://meloman.ru/concert/kzf-2026-10-04-1/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Допуск выбранного состава посетителей требует уточнения.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "msk",
+      "id": "free",
+      "strict": 0,
+      "uncertain": 136,
+      "elapsedMs": 6.188000000000102,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-00373f1c371f3943c1b490ac",
+          "title": "Звезды XXI века",
+          "source": "https://meloman.ru/concert/kzch-2026-10-01/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-007625da71027445dfa67aa7",
+          "title": "История одного шедевра",
+          "source": "https://meloman.ru/concert/kzch-2026-11-01-1/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-0258cb3f445f1b7da8b6c0a0",
+          "title": "Взгляд в будущее",
+          "source": "https://meloman.ru/concert/kzf-2026-10-04-1/",
+          "reasons": [
+            "Нельзя подтвердить итоговую цену для всех посетителей.",
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "msk",
+      "id": "evening",
+      "strict": 0,
+      "uncertain": 131,
+      "elapsedMs": 5.84900000000016,
+      "samples": [
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-00373f1c371f3943c1b490ac",
+          "title": "Звезды XXI века",
+          "source": "https://meloman.ru/concert/kzch-2026-10-01/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-02d83b7ce7920ddf3f28bea7",
+          "title": "Зарина Шиманская фортепиано",
+          "source": "https://meloman.ru/concert/kzf-2026-11-21/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        },
+        {
+          "kind": "UNCERTAIN",
+          "id": "meloman:programme-070a4adf28977fd1043f2a60",
+          "title": "Сольный концерт",
+          "source": "https://meloman.ru/concert/kzch-2026-11-08/",
+          "reasons": [
+            "Не установлены начало, окончание или длительность конкретного сеанса."
+          ]
+        }
+      ]
+    },
+    {
+      "city": "msk",
+      "id": "no-match",
+      "strict": 0,
+      "uncertain": 0,
+      "elapsedMs": 6.888700000001336,
+      "samples": []
+    }
+  ],
+  "journeys": [
+    {
+      "city": "kzn",
+      "result": "PASS",
+      "eventId": "kazan-kremlin:kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+      "kind": "STRICT",
+      "source": "https://kazan-kremlin.ru/exhibitions/kazanskoe-povolzhe-obrazy-narodnoj-kultury-2",
+      "publicAdmission": true,
+      "simulatedMAX": true,
+      "sqliteRestart": true,
+      "reviewedReplacement": true
+    },
+    {
+      "city": "ekb",
+      "result": "PASS",
+      "eventId": "sgaf:program-9ebaa3cf17c5c3ab488d",
+      "kind": "STRICT",
+      "source": "https://sgaf.ru/afisha/5964",
+      "publicAdmission": true,
+      "simulatedMAX": true,
+      "sqliteRestart": true,
+      "reviewedReplacement": true
+    },
+    {
+      "city": "spb",
+      "result": "PASS",
+      "eventId": "spb-library:programme-201988544b3976b6c7663db0",
+      "kind": "STRICT",
+      "source": "https://pl.spb.ru/events/detail.php?ELEMENT_ID=5530f1527042e541b01e92b102ce357c",
+      "publicAdmission": true,
+      "simulatedMAX": true,
+      "sqliteRestart": true,
+      "reviewedReplacement": true
+    },
+    {
+      "city": "nsk",
+      "result": "PASS",
+      "eventId": "novat:production-953248b5433f21433e2005f9",
+      "kind": "STRICT",
+      "source": "https://novat.ru/afisha/performances/detail/4964954/",
+      "publicAdmission": true,
+      "simulatedMAX": true,
+      "sqliteRestart": true,
+      "reviewedReplacement": true
+    },
+    {
+      "city": "nnv",
+      "result": "PASS",
+      "eventId": "nn-art:-postoyannye-expozitzii-from-symbolism-to-avangard-",
+      "kind": "STRICT",
+      "source": "https://artmuseumnn.ru/postoyannye-expozitzii/from-symbolism-to-avangard/",
+      "publicAdmission": true,
+      "simulatedMAX": true,
+      "sqliteRestart": true,
+      "reviewedReplacement": true
+    },
+    {
+      "city": "sam",
+      "result": "PASS",
+      "eventId": "samara-opera:-166-concert1299-html",
+      "kind": "STRICT",
+      "source": "https://opera-samara.ru/166/concert1299.html",
+      "publicAdmission": true,
+      "simulatedMAX": true,
+      "sqliteRestart": true,
+      "reviewedReplacement": true
+    },
+    {
+      "city": "prm",
+      "result": "PASS",
+      "eventId": "permopera:production-6873beb50751dbf3d9e0cdd7",
+      "kind": "STRICT",
+      "source": "https://permopera.ru/playbills/playbill/2026-09-30-1900-lokacziya-location/",
+      "publicAdmission": true,
+      "simulatedMAX": true,
+      "sqliteRestart": true,
+      "reviewedReplacement": true
+    },
+    {
+      "city": "chl",
+      "result": "PASS",
+      "eventId": "chel-philharmonia:46612",
+      "kind": "STRICT",
+      "source": "https://philarmonia.ru/afisha/46612-khor-malchikov-i-yunoshey-cantus-kantus/",
+      "publicAdmission": true,
+      "simulatedMAX": true,
+      "sqliteRestart": true,
+      "reviewedReplacement": true
+    },
+    {
+      "city": "ufa",
+      "result": "PASS",
+      "eventId": "bashopera:production-254",
+      "kind": "STRICT",
+      "source": "https://bashopera.ru/repertoire/opera/254/",
+      "publicAdmission": true,
+      "simulatedMAX": true,
+      "sqliteRestart": true,
+      "reviewedReplacement": true
+    },
+    {
+      "city": "kry",
+      "result": "PASS",
+      "eventId": "krasfil:show-730",
+      "kind": "STRICT",
+      "source": "https://krasfil.ru/events/1415",
+      "publicAdmission": true,
+      "simulatedMAX": true,
+      "sqliteRestart": true,
+      "reviewedReplacement": true
+    },
+    {
+      "city": "msk",
+      "result": "PASS",
+      "eventId": "meloman:programme-00373f1c371f3943c1b490ac",
+      "kind": "UNCERTAIN",
+      "source": "https://meloman.ru/concert/kzch-2026-10-01/",
+      "publicAdmission": true,
+      "simulatedMAX": true,
+      "sqliteRestart": true,
+      "reviewedReplacement": true
+    }
+  ],
+  "benchmark": {
+    "watchdogMs": 10000,
+    "startupMs": 116.9537,
+    "worstQuery": "spb/weekend",
+    "worstMs": 39.05949999999996,
+    "rssBytes": 112807936,
+    "maxRssBytes": 131825664,
+    "events": 858,
+    "occurrences": 1041,
+    "externalProcessWatchdogMs": 10000,
+    "entireMatrixProcessMs": 1438
+  },
+  "snapshotHashes": [
+    "f29be898b3a952a242f02e92b515775bb14e8cd5a1b96038e72e39f1b4e5bb0e",
+    "d350533f95d25994a8bbf6e3f3e7b21bac7dc6e0b86355645ab06d6b4d5ab346",
+    "6e1ee257f816f749e952615364e69d51e9084900ce81c03ba475071a4b341a90",
+    "6925fdcf1d08528717a1b0e4dc78892308b40ad909a5ec536a8feaca5559e305",
+    "3494a3a116db4fa2cfe5fb084c2247c770dece833a032ef11246b6863643a722",
+    "f934bce65aa66399556fad9eb224e8c171d429a002e6476e45c84605a6cf256e",
+    "7007eb731f9db00100293ca0ef0a4c825a360c325f4933dbd84943cc07bc2289",
+    "064beba204d65bad065ce86aa5f67b8ead4b2c91aaefe826b798283b13cdc33b",
+    "6858c6a4d0688be7883c4a8f02f5af2fd1e5c103f9c68ed30150c222bee226fd",
+    "8586d3d24cddc9cdb3c62609eb10b555abb5b30ccaff38be4c60ed693ff177c2",
+    "e9f104c153049a208a967b44ea4d85e0e422405c7201e2ab3c8b2cb9bd02a56e",
+    "3a02e27a5e0957fba4b30e88867be8f68a8a17e4126c71f81ab8eeac35a04fcb",
+    "ad83c4195bc1aab7160fe7196a301f370b1160598864e5c1a6836ca58066d897",
+    "a4a6b7aeb21493829c7cd01332dc54de93600faf903124f4ccad403f64c26549",
+    "9a9623230ad7d9f2f77093bff366cb86cbbc25c958bc64c03732e01100dc7f8a",
+    "66091f49d9c2968976265fbfc831aeaeb789705f747a7690f41ebae0d338f5f1",
+    "796d126fc77d14182f5561cbc14b4352af65238e9b9061080c59933662cf9d6d",
+    "fec73466f40e0415c7b44344fe11c486a6b1452fe0eeab98e8b73210b68b0762",
+    "b0b759459893e2827a08cb25a177ed0f243c072d523743142c9ca001321723c9",
+    "e0e1bb96c51fb779ac84d184b412bfa68980fc87a72186e45c80a8826ec42260",
+    "9cb8c074f53879e2b46f2c897e317aa03a826b139b79088297f460713bf6aa04",
+    "da7260d90067ed162f55f322cc299037bf347ed2ac1b8a50bf813c79e183ae91",
+    "43e069c9984e62789d77ac3b65a8f9b619809a9127172aabe040bbd2d3600ba2",
+    "ddc328a40d9539c9bd3b01a9a8685a724d441ccd74c6c7819e6fa8943962668d",
+    "642c6beb587ec1931a7b1b19bedbf09bc29f4e2c633bc47db4a76c2d3d04675d",
+    "dbd6f85a02131d33ef57432de8cc1918d0748eb23ee3b31b7ebe6c0f7f1abc1d"
+  ],
+  "limitations": [
+    "Сеансы и программы считаются раздельно.",
+    "Первый и второй 30-дневные интервалы могут содержать одну и ту же выставку.",
+    "Статусы и цены — наблюдения страниц, не подтверждение свободных мест.",
+    "Локальный симулятор не является наблюдением MAX mobile/web.",
+    "Москва: все 136 событий — только кандидаты; нет подтверждённых длительности и цены.",
+    "Красноярск: во втором 30-дневном интервале данных нет.",
+    "Казань: 12 допустимых событий; часть прежней афиши завершилась, 14 записей разных источников сохранены без продления наблюдения.",
+    "Семья 2 взрослых + ребёнок 7 лет до 3000 рублей: строгих результатов нет во всех городах.",
+    "Ночной контроль: строгих совпадений нет; неизвестные часы дают 15/4/4 кандидата в Петербурге/Перми/Челябинске.",
+    "Городские календари и культурные центры не исследованы исчерпывающе; весь доступный интернет не объявляется исчерпанным.",
+    "Контейнер: первая сборка остановилась до запуска из-за .dockerignore. Полный runtime smoke PASS; после добавления отсутствовавшего curl только packaging/CLI/matrix delta PASS, UI не повторялся."
+  ],
+  "verdict": "MAXBOT_MULTI_CITY_CATALOG_LOCAL_PASS",
+  "scope": "Локальная реализация, фактическая съёмка, PUBLIC-интеграция и воспроизводимость. Рабочая установка не обновлялась.",
+  "targets": {
+    "cities": {
+      "target": 8,
+      "actual": 11,
+      "met": true
+    },
+    "events": {
+      "target": 500,
+      "actual": 858,
+      "displayEligible": 837,
+      "met": true
+    },
+    "sources": {
+      "target": 20,
+      "actual": 26,
+      "met": true
+    },
+    "newCityDepth": {
+      "target": 20,
+      "minimumDisplayEligible": 28,
+      "met": true
+    },
+    "stretchEvents": {
+      "target": 1000,
+      "actual": 858,
+      "shortfall": 142,
+      "met": false
+    }
+  },
+  "scopeDates": {
+    "first30": [
+      "2026-09-28",
+      "2026-10-27"
+    ],
+    "second30": [
+      "2026-10-28",
+      "2026-11-26"
+    ],
+    "timezone": "Местная для каждого города",
+    "overlap": "Выставки и программы с сеансами в обеих половинах учитываются в обеих; суммы не складываются в уникальный итог."
+  },
+  "qualityTotals": {
+    "usableDate": 858,
+    "durationOrHours": 488,
+    "individualPrice": 253,
+    "childPrice": 3,
+    "verifiedAddress": 826
+  },
+  "acquisition": {
+    "httpRequests": 1795,
+    "decodedBytes": 202581283,
+    "decimalMB": 202.581283,
+    "chargedNetworkMs": 3206918,
+    "waves": [
+      {
+        "startedAt": "2026-09-28T06:57:59.511Z",
+        "elapsedMs": 5239,
+        "finishedAt": "2026-09-28T06:58:04.750Z"
+      },
+      {
+        "startedAt": "2026-09-28T06:58:24.321Z",
+        "elapsedMs": 5201,
+        "finishedAt": "2026-09-28T06:58:29.522Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:00:21.371Z",
+        "elapsedMs": 6276,
+        "finishedAt": "2026-09-28T07:00:27.647Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:02:43.110Z",
+        "elapsedMs": 6768,
+        "finishedAt": "2026-09-28T07:02:49.878Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:03:39.645Z",
+        "elapsedMs": 28619,
+        "finishedAt": "2026-09-28T07:04:08.264Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:06:21.206Z",
+        "elapsedMs": 33093,
+        "finishedAt": "2026-09-28T07:06:54.299Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:07:34.264Z",
+        "elapsedMs": 1777781,
+        "finishedAt": "2026-09-28T07:37:12.045Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:39:02.313Z",
+        "elapsedMs": 480607,
+        "finishedAt": "2026-09-28T07:47:02.920Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:50:00.866Z",
+        "elapsedMs": 4521,
+        "finishedAt": "2026-09-28T07:50:05.387Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:55:59.390Z",
+        "elapsedMs": 4256,
+        "finishedAt": "2026-09-28T07:56:03.646Z"
+      },
+      {
+        "startedAt": "2026-09-28T07:56:32.044Z",
+        "elapsedMs": 107198,
+        "finishedAt": "2026-09-28T07:58:19.242Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:03:06.873Z",
+        "elapsedMs": 229512,
+        "finishedAt": "2026-09-28T08:06:56.385Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:13:17.243Z",
+        "elapsedMs": 425471,
+        "finishedAt": "2026-09-28T08:20:22.714Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:21:55.891Z",
+        "elapsedMs": 71234,
+        "finishedAt": "2026-09-28T08:23:07.125Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:25:21.341Z",
+        "elapsedMs": 8497,
+        "finishedAt": "2026-09-28T08:25:29.838Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:31:38.595Z",
+        "elapsedMs": 2380,
+        "finishedAt": "2026-09-28T08:31:40.975Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:32:51.271Z",
+        "elapsedMs": 2437,
+        "finishedAt": "2026-09-28T08:32:53.708Z"
+      },
+      {
+        "startedAt": "2026-09-28T08:53:17.571Z",
+        "elapsedMs": 7828,
+        "finishedAt": "2026-09-28T08:53:25.399Z"
+      }
+    ],
+    "limits": {
+      "requests": 4000,
+      "bytes": 1000000000,
+      "wallMs": 5400000,
+      "waveMs": 1800000,
+      "concurrency": 6,
+      "spacingMs": 2000,
+      "deadlineMs": 20000,
+      "bodyBytes": 8388608
+    },
+    "corrections": [
+      {
+        "at": "2026-09-28T07:50:00.800Z",
+        "url": "https://tatmuseum.ru/robots.txt",
+        "reason": "C01: ошибочный HTML challenge detector для text/plain robots; разрешена повторная проверка исправленным классификатором."
+      },
+      {
+        "at": "2026-09-28T08:20:22.714Z",
+        "url": "https://localhost.invalid/",
+        "reason": "RECOVER_DEAD_OWNER: прерванная волна учтена до восстановления; незавершённые ответы — по верхней границе, без сброса бюджета."
+      }
+    ],
+    "cacheDoesNotRenewFetchedAt": true,
+    "browserRequests": 0,
+    "pdfTextExtraction": {
+      "documents": 2,
+      "textCharacters": 0,
+      "outcome": "IMAGE_ONLY_PDF; tariffs remain unknown"
+    },
+    "stoppedBecause": "PRIMARY_TARGETS_AND_CITY_DEPTH_MET; selected productive public interfaces exhausted; 1000-event stretch not achieved"
+  },
+  "publicInterfaceOutcomes": [
+    {
+      "source": "meloman",
+      "scope": "2026-09-28..2026-11-27",
+      "outcome": "SELECTED_60_DAY_SCOPE_EXHAUSTED",
+      "pages": 3
+    },
+    {
+      "source": "permopera",
+      "scope": "2026-09-28..2026-11-27",
+      "outcome": "SELECTED_60_DAY_SCOPE_EXHAUSTED",
+      "pages": 15
+    },
+    {
+      "source": "operann",
+      "scope": "2026-09-28..2026-11-27",
+      "outcome": "SELECTED_60_DAY_SCOPE_EXHAUSTED",
+      "pages": 3
+    },
+    {
+      "source": "filarm",
+      "scope": "2026-09-28..2026-11-27",
+      "outcome": "SELECTED_60_DAY_SCOPE_EXHAUSTED",
+      "pages": 10
+    },
+    {
+      "source": "spb-opera",
+      "scope": "2026-09-28..2026-11-27",
+      "outcome": "SELECTED_60_DAY_SCOPE_EXHAUSTED",
+      "pages": 3
+    }
+  ],
+  "sourceOutcomes": [
+    {
+      "id": "kazan-kremlin",
+      "city": "kzn",
+      "institution": "Казанский Кремль",
+      "domain": "https://kazan-kremlin.ru",
+      "ownershipEvidence": [
+        "https://kazan-kremlin.ru/"
+      ],
+      "entryPages": [
+        "https://kazan-kremlin.ru/",
+        "https://kazan-kremlin.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARTIAL_WITH_UNREVALIDATED_RETAINED_FACTS",
+      "requests": 28,
+      "bytes": 4982061,
+      "sourceRecords": 3,
+      "uniqueEvents": 9,
+      "failures": [],
+      "retainedWithoutRevalidation": 6
+    },
+    {
+      "id": "mie",
+      "city": "ekb",
+      "institution": "Музей истории Екатеринбурга",
+      "domain": "https://m-i-e.ru",
+      "ownershipEvidence": [
+        "https://m-i-e.ru/"
+      ],
+      "entryPages": [
+        "https://m-i-e.ru/",
+        "https://m-i-e.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 57,
+      "bytes": 6714116,
+      "sourceRecords": 8,
+      "uniqueEvents": 8,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "tatmuseum",
+      "city": "kzn",
+      "institution": "Национальный музей Республики Татарстан",
+      "domain": "https://tatmuseum.ru",
+      "ownershipEvidence": [
+        "https://tatmuseum.ru/events/",
+        "https://tatmuseum.ru/visitors/",
+        "https://tatmuseum.ru/visitors/tickets/"
+      ],
+      "entryPages": [
+        "https://tatmuseum.ru/events/",
+        "https://tatmuseum.ru/visitors/",
+        "https://tatmuseum.ru/visitors/tickets/",
+        "https://tatmuseum.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "RETAINED_UNREVALIDATED_FACTS",
+      "requests": 5,
+      "bytes": 352659,
+      "sourceRecords": 0,
+      "uniqueEvents": 5,
+      "failures": [
+        "ACCESS_CHALLENGE"
+      ],
+      "retainedWithoutRevalidation": 5
+    },
+    {
+      "id": "kamal",
+      "city": "kzn",
+      "institution": "Театр имени Галиасгара Камала",
+      "domain": "https://kamalteatr.ru",
+      "ownershipEvidence": [],
+      "entryPages": [],
+      "extractionChannel": null,
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "EXCLUDED_TERMS_11_2",
+      "requests": 0,
+      "bytes": 0,
+      "sourceRecords": 0,
+      "uniqueEvents": 0,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "uralopera",
+      "city": "ekb",
+      "institution": "Урал Опера Балет",
+      "domain": "https://uralopera.ru",
+      "ownershipEvidence": [
+        "https://uralopera.ru/",
+        "https://uralopera.ru/contacts"
+      ],
+      "entryPages": [
+        "https://uralopera.ru/",
+        "https://uralopera.ru/contacts",
+        "https://uralopera.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 57,
+      "bytes": 9873198,
+      "sourceRecords": 30,
+      "uniqueEvents": 30,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "sgaf",
+      "city": "ekb",
+      "institution": "Свердловская филармония",
+      "domain": "https://sgaf.ru",
+      "ownershipEvidence": [
+        "https://sgaf.ru/",
+        "https://sgaf.ru/contacts",
+        "https://sgaf.ru/terms/purchase",
+        "https://sgaf.ru/terms/concertrules"
+      ],
+      "entryPages": [
+        "https://sgaf.ru/",
+        "https://sgaf.ru/contacts",
+        "https://sgaf.ru/terms/purchase",
+        "https://sgaf.ru/terms/concertrules",
+        "https://sgaf.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARTIAL_WITH_UNREVALIDATED_RETAINED_FACTS",
+      "requests": 24,
+      "bytes": 10102998,
+      "sourceRecords": 7,
+      "uniqueEvents": 10,
+      "failures": [],
+      "retainedWithoutRevalidation": 3
+    },
+    {
+      "id": "spb-philharmonia",
+      "city": "spb",
+      "institution": "Санкт-Петербургская филармония",
+      "domain": "https://www.philharmonia.spb.ru",
+      "ownershipEvidence": [
+        "https://www.philharmonia.spb.ru/about/roadmap/"
+      ],
+      "entryPages": [
+        "https://www.philharmonia.spb.ru/about/roadmap/",
+        "https://www.philharmonia.spb.ru/afisha/",
+        "https://www.philharmonia.spb.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html-month-pagination",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 151,
+      "bytes": 7575642,
+      "sourceRecords": 120,
+      "uniqueEvents": 112,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "spb-opera",
+      "city": "spb",
+      "institution": "Санктъ-Петербургъ Опера",
+      "domain": "https://www.spbopera.ru",
+      "ownershipEvidence": [
+        "https://www.spbopera.ru/contacts/"
+      ],
+      "entryPages": [
+        "https://www.spbopera.ru/contacts/",
+        "https://www.spbopera.ru/afisha/",
+        "https://www.spbopera.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html-public-month-filter",
+      "pagination": "Published month/page interface; see channel-outcomes",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 53,
+      "bytes": 8132412,
+      "sourceRecords": 51,
+      "uniqueEvents": 36,
+      "failures": [
+        "NETWORK_FAILURE",
+        "CONTENT_TYPE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "novat",
+      "city": "nsk",
+      "institution": "НОВАТ",
+      "domain": "https://novat.ru",
+      "ownershipEvidence": [
+        "https://novat.ru/theatre/contacts/",
+        "https://novat.ru/afisha/performances/"
+      ],
+      "entryPages": [
+        "https://novat.ru/theatre/contacts/",
+        "https://novat.ru/afisha/performances/",
+        "https://novat.ru/robots.txt"
+      ],
+      "extractionChannel": "microdata-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 88,
+      "bytes": 10810202,
+      "sourceRecords": 73,
+      "uniqueEvents": 48,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "operann",
+      "city": "nnv",
+      "institution": "Нижегородский театр оперы и балета",
+      "domain": "https://operann.ru",
+      "ownershipEvidence": [
+        "https://operann.ru/kontakty"
+      ],
+      "entryPages": [
+        "https://operann.ru/kontakty",
+        "https://operann.ru/afisha",
+        "https://operann.ru/robots.txt"
+      ],
+      "extractionChannel": "public-html-embedded-json",
+      "pagination": "3 public HTML pages; separate API denied by robots",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 54,
+      "bytes": 12721724,
+      "sourceRecords": 47,
+      "uniqueEvents": 26,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "samara-opera",
+      "city": "sam",
+      "institution": "Самарский театр оперы и балета",
+      "domain": "https://opera-samara.ru",
+      "ownershipEvidence": [
+        "https://opera-samara.ru/Kontaktnaya_informatsiya/"
+      ],
+      "entryPages": [
+        "https://opera-samara.ru/Kontaktnaya_informatsiya/",
+        "https://opera-samara.ru/afisha/",
+        "https://opera-samara.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 64,
+      "bytes": 3528784,
+      "sourceRecords": 37,
+      "uniqueEvents": 28,
+      "failures": [
+        "NETWORK_FAILURE",
+        "SOURCE_URL_DENIED"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "permopera",
+      "city": "prm",
+      "institution": "Пермский театр оперы и балета",
+      "domain": "https://permopera.ru",
+      "ownershipEvidence": [
+        "https://permopera.ru/about/contacts/",
+        "https://permopera.ru/playbills/playbill/"
+      ],
+      "entryPages": [
+        "https://permopera.ru/about/contacts/",
+        "https://permopera.ru/playbills/playbill/",
+        "https://permopera.ru/robots.txt"
+      ],
+      "extractionChannel": "public-page-json-month-pagination",
+      "pagination": "Published month/page interface; see channel-outcomes",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 75,
+      "bytes": 19961552,
+      "sourceRecords": 112,
+      "uniqueEvents": 33,
+      "failures": [
+        "NETWORK_FAILURE",
+        "HTTP_400"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "chel-philharmonia",
+      "city": "chl",
+      "institution": "Челябинская филармония",
+      "domain": "https://philarmonia.ru",
+      "ownershipEvidence": [
+        "https://philarmonia.ru/viewers/contacts/"
+      ],
+      "entryPages": [
+        "https://philarmonia.ru/viewers/contacts/",
+        "https://philarmonia.ru/afisha/",
+        "https://philarmonia.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "DEFAULT_PAGE_ONLY; robots blocks PAGEN; alternative NAV_PAGE duplicates",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 15,
+      "bytes": 885128,
+      "sourceRecords": 8,
+      "uniqueEvents": 8,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "bashopera",
+      "city": "ufa",
+      "institution": "Башкирский театр оперы и балета",
+      "domain": "https://bashopera.ru",
+      "ownershipEvidence": [
+        "https://bashopera.ru/about/contacts/",
+        "https://bashopera.ru/affiche/"
+      ],
+      "entryPages": [
+        "https://bashopera.ru/about/contacts/",
+        "https://bashopera.ru/affiche/",
+        "https://bashopera.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 83,
+      "bytes": 3092092,
+      "sourceRecords": 41,
+      "uniqueEvents": 28,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "krasfil",
+      "city": "kry",
+      "institution": "Красноярская филармония",
+      "domain": "https://krasfil.ru",
+      "ownershipEvidence": [
+        "https://krasfil.ru/contacts",
+        "https://krasfil.ru/nasi-zaly",
+        "https://krasfil.ru/events"
+      ],
+      "entryPages": [
+        "https://krasfil.ru/contacts",
+        "https://krasfil.ru/nasi-zaly",
+        "https://krasfil.ru/events",
+        "https://krasfil.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html-pagination",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 88,
+      "bytes": 6038606,
+      "sourceRecords": 63,
+      "uniqueEvents": 57,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "filarm",
+      "city": "sam",
+      "institution": "Самарская филармония",
+      "domain": "https://filarm.ru",
+      "ownershipEvidence": [
+        "https://filarm.ru/contacts/"
+      ],
+      "entryPages": [
+        "https://filarm.ru/contacts/",
+        "https://filarm.ru/afisha/",
+        "https://filarm.ru/robots.txt"
+      ],
+      "extractionChannel": "public-readonly-form-pagination",
+      "pagination": "Published month/page interface; see channel-outcomes",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 68,
+      "bytes": 4568934,
+      "sourceRecords": 47,
+      "uniqueEvents": 43,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "meloman",
+      "city": "msk",
+      "institution": "Московская филармония",
+      "domain": "https://meloman.ru",
+      "ownershipEvidence": [
+        "https://meloman.ru/slushatelyam/contacts/",
+        "https://meloman.ru/concert/",
+        "https://meloman.ru/hall/"
+      ],
+      "entryPages": [
+        "https://meloman.ru/slushatelyam/contacts/",
+        "https://meloman.ru/concert/",
+        "https://meloman.ru/hall/",
+        "https://meloman.ru/robots.txt"
+      ],
+      "extractionChannel": "public-readonly-form-month",
+      "pagination": "Published month/page interface; see channel-outcomes",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 77,
+      "bytes": 7955303,
+      "sourceRecords": 143,
+      "uniqueEvents": 136,
+      "failures": [
+        "NETWORK_FAILURE",
+        "HTTP_404"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "mosconcert",
+      "city": "msk",
+      "institution": "Москонцерт",
+      "domain": "https://mosconcert.com",
+      "ownershipEvidence": [],
+      "entryPages": [],
+      "extractionChannel": null,
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "ROBOTS_DENIED",
+      "requests": 3,
+      "bytes": 292,
+      "sourceRecords": 0,
+      "uniqueEvents": 0,
+      "failures": [
+        "NETWORK_FAILURE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "spb-museum",
+      "city": "spb",
+      "institution": "Музей истории Санкт-Петербурга",
+      "domain": "https://www.spbmuseum.ru",
+      "ownershipEvidence": [
+        "https://www.spbmuseum.ru/themuseum/kontakty.php",
+        "https://www.spbmuseum.ru/themuseum/visitors/pravila-posesh.php"
+      ],
+      "entryPages": [
+        "https://www.spbmuseum.ru/themuseum/kontakty.php",
+        "https://www.spbmuseum.ru/themuseum/visitors/pravila-posesh.php",
+        "https://www.spbmuseum.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 42,
+      "bytes": 10537387,
+      "sourceRecords": 17,
+      "uniqueEvents": 17,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "spb-library",
+      "city": "spb",
+      "institution": "Библиотека имени В. В. Маяковского",
+      "domain": "https://pl.spb.ru",
+      "ownershipEvidence": [
+        "https://pl.spb.ru/contacts/",
+        "https://pl.spb.ru/events/"
+      ],
+      "entryPages": [
+        "https://pl.spb.ru/contacts/",
+        "https://pl.spb.ru/events/",
+        "https://pl.spb.ru/robots.txt"
+      ],
+      "extractionChannel": "public-html-date-filter",
+      "pagination": "60 daily filters exhausted",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 196,
+      "bytes": 5960339,
+      "sourceRecords": 131,
+      "uniqueEvents": 113,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "nsk-museum",
+      "city": "nsk",
+      "institution": "Новосибирский краеведческий музей",
+      "domain": "https://youmuseum.ru",
+      "ownershipEvidence": [],
+      "entryPages": [],
+      "extractionChannel": null,
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "ROBOTS_DENIED",
+      "requests": 1,
+      "bytes": 54,
+      "sourceRecords": 0,
+      "uniqueEvents": 0,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "nsk-library",
+      "city": "nsk",
+      "institution": "Новосибирская областная научная библиотека",
+      "domain": "https://ngonb.ru",
+      "ownershipEvidence": [
+        "https://ngonb.ru/about/contacts/",
+        "https://ngonb.ru/afisha/events/"
+      ],
+      "entryPages": [
+        "https://ngonb.ru/about/contacts/",
+        "https://ngonb.ru/afisha/events/",
+        "https://ngonb.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 22,
+      "bytes": 1535351,
+      "sourceRecords": 6,
+      "uniqueEvents": 6,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "nn-art",
+      "city": "nnv",
+      "institution": "Нижегородский художественный музей",
+      "domain": "https://artmuseumnn.ru",
+      "ownershipEvidence": [
+        "https://artmuseumnn.ru/kontakty/",
+        "https://artmuseumnn.ru/posetitelyam/pravila-posescheniya/"
+      ],
+      "entryPages": [
+        "https://artmuseumnn.ru/kontakty/",
+        "https://artmuseumnn.ru/posetitelyam/pravila-posescheniya/",
+        "https://artmuseumnn.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 24,
+      "bytes": 10632650,
+      "sourceRecords": 6,
+      "uniqueEvents": 6,
+      "failures": [
+        "CONTENT_TYPE"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "nn-library",
+      "city": "nnv",
+      "institution": "Нижегородская областная научная библиотека",
+      "domain": "https://ngounb.ru",
+      "ownershipEvidence": [
+        "https://ngounb.ru/?page_id=84",
+        "https://ngounb.ru/"
+      ],
+      "entryPages": [
+        "https://ngounb.ru/?page_id=84",
+        "https://ngounb.ru/",
+        "https://ngounb.ru/robots.txt"
+      ],
+      "extractionChannel": "published-html-table",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 4,
+      "bytes": 1038068,
+      "sourceRecords": 1,
+      "uniqueEvents": 1,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "samara-museum",
+      "city": "sam",
+      "institution": "Музей имени П. В. Алабина",
+      "domain": "https://alabin.ru",
+      "ownershipEvidence": [],
+      "entryPages": [],
+      "extractionChannel": null,
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "NO_ACTIONABLE_EVENT_IN_ACQUIRED_SCOPE",
+      "requests": 5,
+      "bytes": 212702,
+      "sourceRecords": 0,
+      "uniqueEvents": 0,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "samara-library",
+      "city": "sam",
+      "institution": "Самарская областная научная библиотека",
+      "domain": "https://libsmr.ru",
+      "ownershipEvidence": [
+        "https://libsmr.ru/about/contacts?"
+      ],
+      "entryPages": [
+        "https://libsmr.ru/about/contacts?",
+        "https://libsmr.ru/afisha",
+        "https://libsmr.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 11,
+      "bytes": 541448,
+      "sourceRecords": 4,
+      "uniqueEvents": 4,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "perm-museum",
+      "city": "prm",
+      "institution": "Пермский краеведческий музей",
+      "domain": "https://museumperm.ru",
+      "ownershipEvidence": [
+        "https://museumperm.ru/page/contacts",
+        "https://museumperm.ru/branches"
+      ],
+      "entryPages": [
+        "https://museumperm.ru/page/contacts",
+        "https://museumperm.ru/branches",
+        "https://museumperm.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 40,
+      "bytes": 11229857,
+      "sourceRecords": 4,
+      "uniqueEvents": 4,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "perm-library",
+      "city": "prm",
+      "institution": "Пермская библиотека имени А. М. Горького",
+      "domain": "https://www.gorkilib.ru",
+      "ownershipEvidence": [
+        "https://www.gorkilib.ru/about/contacts/",
+        "https://www.gorkilib.ru/events/afisha/?dateMonth"
+      ],
+      "entryPages": [
+        "https://www.gorkilib.ru/about/contacts/",
+        "https://www.gorkilib.ru/events/afisha/?dateMonth",
+        "https://www.gorkilib.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 196,
+      "bytes": 8372154,
+      "sourceRecords": 2,
+      "uniqueEvents": 2,
+      "failures": [
+        "SOURCE_URL_DENIED"
+      ],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "chel-museum",
+      "city": "chl",
+      "institution": "Государственный исторический музей Южного Урала",
+      "domain": "https://chelmuseum.ru",
+      "ownershipEvidence": [
+        "https://chelmuseum.ru/contacts/",
+        "https://chelmuseum.ru/exhibitions/"
+      ],
+      "entryPages": [
+        "https://chelmuseum.ru/contacts/",
+        "https://chelmuseum.ru/exhibitions/",
+        "https://chelmuseum.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html",
+      "pagination": "Linked current listing scope; not entire institutional archive",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 18,
+      "bytes": 1503752,
+      "sourceRecords": 12,
+      "uniqueEvents": 12,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    },
+    {
+      "id": "chel-library",
+      "city": "chl",
+      "institution": "Челябинская областная научная библиотека",
+      "domain": "https://chelreglib.ru",
+      "ownershipEvidence": [
+        "https://chelreglib.ru/ru/pages/about/partnership/details/",
+        "https://chelreglib.ru/ru/pages/about/lib/contacts/",
+        "https://chelreglib.ru/ru/events/"
+      ],
+      "entryPages": [
+        "https://chelreglib.ru/ru/pages/about/partnership/details/",
+        "https://chelreglib.ru/ru/pages/about/lib/contacts/",
+        "https://chelreglib.ru/ru/events/",
+        "https://chelreglib.ru/robots.txt"
+      ],
+      "extractionChannel": "ordinary-html-pagination",
+      "pagination": "5 linked pages exhausted",
+      "outcome": "PARSED_CURRENT_FACTS",
+      "requests": 226,
+      "bytes": 31879700,
+      "sourceRecords": 194,
+      "uniqueEvents": 76,
+      "failures": [],
+      "retainedWithoutRevalidation": 0
+    }
+  ],
+  "retainedWithoutRevalidation": [
+    "kazan-kremlin:programme-186e17d07329abad2803",
+    "kazan-kremlin:programme-5b7f2ad145fac639d404",
+    "kazan-kremlin:programme-753ce6b055bc5f327a9f",
+    "kazan-kremlin:programme-9faa80a83fd291bd01f2",
+    "kazan-kremlin:programme-b28e5553efac373df31c",
+    "kazan-kremlin:programme-d35fbd636ded137fbf07",
+    "tatmuseum:gastronomicheskaya-letopis-kazani",
+    "tatmuseum:istoriya-tatarstana-s-drevneyshikh-vremen-do-nashikh-dney",
+    "tatmuseum:kabinet-redkostey",
+    "tatmuseum:russkiy-zamok-kuznechnaya-letopis",
+    "tatmuseum:vystavka-k-300-letiyu-osvyashcheniya-petropavlovskogo-sobora-kazani",
+    "sgaf:program-0440a427e953325bcdba",
+    "sgaf:program-a5539a97a1a3b434bf66",
+    "sgaf:program-f2180679c799a695bfbe"
+  ],
+  "reviewQueue": [
+    {
+      "url": "https://m-i-e.ru/family_portret",
+      "reason": "ROBOTS_DENIED_NOT_FETCHED"
+    },
+    {
+      "url": "https://m-i-e.ru/foto_i_slovo",
+      "reason": "ROBOTS_DENIED_NOT_FETCHED"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-vyshivka-tamburnym-shvom",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/ekskursiya-master-klass-sled-istorii-sozdanie-keramicheskogo-izrazcza",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/igra-kvest-v-poiskah-klada",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/nikolaj-ii-semya-i-prestol-iz-sobraniya-gosudarstvennogo-ermitazha",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/lowlands_place",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/lapy-na-holste-istorii-sobak-v-iskusstve",
+      "reason": "QUARANTINED: В шапке организатор Эрмитаж-Казань; фактические объекты находятся в шести парках. Нужны отдельные места, музейный адрес неприменим."
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/tatar-namazlygy",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/palitra-islama-na-pochtovyh-markah",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/way_to_the_dream",
+      "reason": "QUARANTINED: Период расходится: карточка до 08.11.2026, список Дома Качки до 18.10.2026."
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/art-prostranstvo-kommunalka",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/electronic_mage",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/venya_zhiv",
+      "reason": "QUARANTINED: Начало периода расходится: карточка 17.05.2026, главная страница 17.05.2024."
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/48791",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/scienceinthebigcity",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/exhibitions/kulturnyj-kod-kazani-duhovnoe-nasledie-i-tradiczii",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/ot-zavoda-k-gorodu",
+      "reason": "QUARANTINED: Старая страница показывает иной режим Дома Качки; название площадки и актуальный режим требуют отдельного разбора."
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-zhivaya-bumaga",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/rf_lektoriy",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-napishi-svoe-imya-arabskoj-vyazyu",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-bogatoe-srednevekove",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/sketch_merch",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/master-klass-tatarskie-ukrasheniya",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/demintsev",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/interaktivnaya-vyezdnaya-programma-kak-nashi-predki-zhili-byli-moda-i-byt-povolzhya-v-detalyah",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/melancholia",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/igrovaya-programma-po-vystavke-kazanskoe-povolzhe-obrazy-narodnoj-kultury",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/chuvstvo_mery",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/igrovaya-programma-po-sledam-kazanskoj-ikony-2",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/zavtrak_hudozhnika",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/tvorcheskoe-zanyatie-semejnaya-matreshka",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/chelovek_i_mashina",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://kazan-kremlin.ru/events/tvorcheskoe-zanyatie-knizhnye-ukrasheniya",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/mechtat_ne_vredno",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/18_mgnovenii",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/orient_express",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/rod_titovih",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/gorod_na_stekle",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/pisma_frontu",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/pohodni_albom",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/out_of_time",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/rod_batmanovih",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/istinnoe_zrenie",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/arheo",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/deus_ex_machina",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/my_dogs",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/court_chronicles",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/nikonovy",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/konstruktor",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/beg_motorov",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/vishivanie",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/kak_zhivie",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/soifertis",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/imennoi-ukazatel",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/gorod-sad",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/gidromaniya",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/passage",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/kler",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/shirpotreb",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/blizhe-k-zvezdam",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/evreiskiy-ekb",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/ded-moroz",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/pobeda",
+      "reason": "PERIOD_REVIEW"
+    },
+    {
+      "url": "https://m-i-e.ru/na-divane",
+      "reason": "OUTSIDE_SCOPE"
+    },
+    {
+      "url": "https://m-i-e.ru/kornevaya-sistema",
+      "reason": "PERIOD_REVIEW"
+    }
+  ],
+  "sourceFreshness": [
+    {
+      "source": "kazan-kremlin",
+      "retrievedAt": "2026-09-26T14:58:00.776Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "mie",
+      "retrievedAt": "2026-09-28T07:02:45.533Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "tatmuseum",
+      "retrievedAt": "2026-09-26T14:33:08.680Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "uralopera",
+      "retrievedAt": "2026-09-28T07:00:26.826Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "sgaf",
+      "retrievedAt": "2026-09-26T14:23:19.521Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "spb-philharmonia",
+      "retrievedAt": "2026-09-28T07:02:43.808Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "spb-opera",
+      "retrievedAt": "2026-09-28T07:00:25.257Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "novat",
+      "retrievedAt": "2026-09-28T07:07:54.948Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "operann",
+      "retrievedAt": "2026-09-28T06:58:26.652Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "samara-opera",
+      "retrievedAt": "2026-09-28T06:58:26.629Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "permopera",
+      "retrievedAt": "2026-09-28T07:02:43.327Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "chel-philharmonia",
+      "retrievedAt": "2026-09-28T06:58:26.943Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "bashopera",
+      "retrievedAt": "2026-09-28T07:02:43.603Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "krasfil",
+      "retrievedAt": "2026-09-28T07:07:34.878Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "filarm",
+      "retrievedAt": "2026-09-28T06:58:27.721Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "meloman",
+      "retrievedAt": "2026-09-28T07:02:43.511Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "spb-museum",
+      "retrievedAt": "2026-09-28T07:03:39.998Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "spb-library",
+      "retrievedAt": "2026-09-28T07:07:35.052Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "nsk-library",
+      "retrievedAt": "2026-09-28T07:56:32.511Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "nn-art",
+      "retrievedAt": "2026-09-28T07:07:35.459Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "nn-library",
+      "retrievedAt": "2026-09-28T07:56:32.470Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "samara-library",
+      "retrievedAt": "2026-09-28T07:03:46.076Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "perm-museum",
+      "retrievedAt": "2026-09-28T07:39:20.174Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "perm-library",
+      "retrievedAt": "2026-09-28T07:00:25.957Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "chel-museum",
+      "retrievedAt": "2026-09-28T07:03:41.601Z",
+      "freshnessHours": 72
+    },
+    {
+      "source": "chel-library",
+      "retrievedAt": "2026-09-28T07:03:40.680Z",
+      "freshnessHours": 72
+    }
+  ],
+  "checks": [
+    {
+      "name": "typecheck",
+      "args": [],
+      "started": "2026-09-28T09:00:23.963Z",
+      "elapsedMs": 710,
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "error": null,
+      "tests": 0,
+      "passed": 0,
+      "failed": 0
+    },
+    {
+      "name": "build",
+      "args": [],
+      "started": "2026-09-28T09:00:43.901Z",
+      "elapsedMs": 692,
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "error": null,
+      "tests": 0,
+      "passed": 0,
+      "failed": 0
+    },
+    {
+      "name": "shared",
+      "args": [],
+      "started": "2026-09-28T09:00:46.177Z",
+      "elapsedMs": 17512,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "error": null,
+      "tests": 341,
+      "passed": 341,
+      "failed": 0
+    },
+    {
+      "name": "matrix",
+      "args": [],
+      "started": "2026-09-28T09:01:18.164Z",
+      "elapsedMs": 1438,
+      "timeoutMs": 10000,
+      "exitCode": 0,
+      "error": null,
+      "tests": 0,
+      "passed": 0,
+      "failed": 0
+    },
+    {
+      "name": "journeys",
+      "args": [],
+      "started": "2026-09-28T09:01:31.876Z",
+      "elapsedMs": 18483,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "error": null,
+      "tests": 0,
+      "passed": 0,
+      "failed": 0
+    },
+    {
+      "name": "container",
+      "args": [],
+      "started": "2026-09-28T09:01:50.510Z",
+      "elapsedMs": 1648,
+      "timeoutMs": 360000,
+      "exitCode": 1,
+      "error": null,
+      "tests": 0,
+      "passed": 0,
+      "failed": 0
+    },
+    {
+      "name": "container",
+      "args": [],
+      "started": "2026-09-28T09:02:21.521Z",
+      "elapsedMs": 45869,
+      "timeoutMs": 360000,
+      "exitCode": 0,
+      "error": null,
+      "tests": 0,
+      "passed": 0,
+      "failed": 0
+    },
+    {
+      "name": "container",
+      "args": [],
+      "started": "2026-09-28T09:06:44.425Z",
+      "elapsedMs": 20953,
+      "timeoutMs": 360000,
+      "exitCode": 0,
+      "error": null,
+      "tests": 0,
+      "passed": 0,
+      "failed": 0
+    }
+  ],
+  "container": {
+    "result": "PASS",
+    "project": "maxbot-multi-city-1790586404495",
+    "image": "maxbot-multi-city-1790586404495:test",
+    "sourceHash": "ee3f6098b81e63b434beaee17779e66182e8132b9ad19cdb55c0be5d4378a676",
+    "catalogSha256": "ae492e075d1f9e72b53c1be1baa58796f254cbd7826c42830cfec17653a2639b",
+    "existingContainersUnchanged": true,
+    "simulatedMAX": true,
+    "network": "none",
+    "cleanBuildBenchmark": false,
+    "results": [
+      {
+        "name": "existing-ids",
+        "exitCode": 0,
+        "elapsedMs": 125,
+        "error": null
+      },
+      {
+        "name": "existing-state-1",
+        "exitCode": 0,
+        "elapsedMs": 58,
+        "error": null
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "elapsedMs": 17649,
+        "error": null
+      },
+      {
+        "name": "smoke",
+        "exitCode": 0,
+        "elapsedMs": 2724,
+        "error": null
+      },
+      {
+        "name": "existing-state-4",
+        "exitCode": 0,
+        "elapsedMs": 54,
+        "error": null
+      },
+      {
+        "name": "remove-disposable",
+        "exitCode": 0,
+        "elapsedMs": 232,
+        "error": null
+      }
+    ]
+  },
+  "fullContainer": {
+    "result": "PASS",
+    "project": "maxbot-multi-city-1790586141581",
+    "image": "maxbot-multi-city-1790586141581:test",
+    "sourceHash": "8af01c8ec2027b0e20c557dd3382d9548d12176c6e1172853da31eb9e98bfc8c",
+    "catalogSha256": "ae492e075d1f9e72b53c1be1baa58796f254cbd7826c42830cfec17653a2639b",
+    "existingContainersUnchanged": true,
+    "simulatedMAX": true,
+    "network": "none",
+    "cleanBuildBenchmark": false,
+    "results": [
+      {
+        "name": "existing-ids",
+        "exitCode": 0,
+        "elapsedMs": 111,
+        "error": null
+      },
+      {
+        "name": "existing-state-1",
+        "exitCode": 0,
+        "elapsedMs": 50,
+        "error": null
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "elapsedMs": 23643,
+        "error": null
+      },
+      {
+        "name": "smoke",
+        "exitCode": 0,
+        "elapsedMs": 21702,
+        "error": null
+      },
+      {
+        "name": "existing-state-4",
+        "exitCode": 0,
+        "elapsedMs": 47,
+        "error": null
+      },
+      {
+        "name": "remove-disposable",
+        "exitCode": 0,
+        "elapsedMs": 219,
+        "error": null
+      }
+    ]
+  },
+  "sampleChecks": {
+    "result": "PASS",
+    "newAdapters": 21,
+    "checks": 42,
+    "detail": "source-samples.json",
+    "endedFixtureNotCounted": 1
+  },
+  "catalog": {
+    "pointer": "catalog/real/active.json",
+    "snapshot": "catalog/real/83664734f5fbb931cb19.json",
+    "review": "catalog/real/83664734f5fbb931cb19.review.json",
+    "sha256": "ae492e075d1f9e72b53c1be1baa58796f254cbd7826c42830cfec17653a2639b"
+  }
+}

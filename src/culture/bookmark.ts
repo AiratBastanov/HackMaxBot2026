@@ -79,7 +79,7 @@ export function currentBookmark(saved:Card,catalog:Catalog,now:number):BookmarkV
   const unavailable=(notice:string):BookmarkView=>({card:null,notice,assessment:'UNAVAILABLE',changed:[]});
   const s=catalog.forCity(saved.query.city),e=s?.events.find(e=>e.id===saved.eventId),o=e?.occurrences.find(o=>o.id===saved.occurrenceId);
   if(!s||s.mode!=='REAL_CATALOG'||!e||!o)return unavailable('События или выбранного посещения сейчас нет в каталоге. Это не подтверждение отмены. Попробуйте подбор позже.');
-  const ref={snapshotHash:snapshotDigest(s),eventId:e.id};
+  const ref=catalog.displayRef(e.id)!;
   if(!catalog.permits([ref],now))return unavailable('Сведения сейчас недоступны: срок проверки истёк или показ не разрешён. Попробуйте подбор позже.');
   const venue=s.venues.find(v=>v.id===o.venueId),old=saved.visit;
   const sameVenue=old?.venue.id?old.venue.id===o.venueId&&old.venue.title===venue?.title&&old.venue.address===venue?.address:

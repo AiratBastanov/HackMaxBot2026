@@ -1,0 +1,294 @@
+{
+  "version": 1,
+  "scope": "PUBLIC_FACTS",
+  "factualScope": "title-period-session-venue-hours-tariff-admission-source",
+  "reviewedAt": "2026-09-28T09:01:17.370Z",
+  "entries": [
+    {
+      "snapshotHash": "f29be898b3a952a242f02e92b515775bb14e8cd5a1b96038e72e39f1b4e5bb0e",
+      "sources": [
+        "kazan-kremlin"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "kazan-kremlin": "0c2cd2f8ddd6958c4e64ff317c242adf56f773d9b728c4a3379da47c98738ab2"
+      },
+      "validUntil": "2026-09-29T14:58:00.776Z"
+    },
+    {
+      "snapshotHash": "d350533f95d25994a8bbf6e3f3e7b21bac7dc6e0b86355645ab06d6b4d5ab346",
+      "sources": [
+        "mie"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "mie": "82bb3d522c130571c4dff5c0717df14c19dbb1a75e23fa35c2253c145b67b39d"
+      },
+      "validUntil": "2026-10-01T07:02:45.533Z"
+    },
+    {
+      "snapshotHash": "6e1ee257f816f749e952615364e69d51e9084900ce81c03ba475071a4b341a90",
+      "sources": [
+        "tatmuseum"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "tatmuseum": "207ff1d9506c4f0ad58f5a7ad3d3fc144b4503f786c6f08a38e4f22ea3f26bfa"
+      },
+      "validUntil": "2026-09-29T14:33:08.680Z"
+    },
+    {
+      "snapshotHash": "6925fdcf1d08528717a1b0e4dc78892308b40ad909a5ec536a8feaca5559e305",
+      "sources": [
+        "uralopera"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "uralopera": "a5b5c698c3ddf9dfaf2abe0a5a817e9ad14318da3f6600578588ed72e26b0071"
+      },
+      "validUntil": "2026-10-01T07:00:26.826Z"
+    },
+    {
+      "snapshotHash": "3494a3a116db4fa2cfe5fb084c2247c770dece833a032ef11246b6863643a722",
+      "sources": [
+        "sgaf"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "sgaf": "cf78824d31b5c59bd1e62d560f286cc9bb88f02479136acf2521774e1bc7f415"
+      },
+      "validUntil": "2026-09-29T14:23:19.521Z"
+    },
+    {
+      "snapshotHash": "f934bce65aa66399556fad9eb224e8c171d429a002e6476e45c84605a6cf256e",
+      "sources": [
+        "spb-philharmonia"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "spb-philharmonia": "1560d1f47177e0a6af3735e5af1f08c8987316a17da05d935a3c53841e86693f"
+      },
+      "validUntil": "2026-10-01T07:02:43.808Z"
+    },
+    {
+      "snapshotHash": "7007eb731f9db00100293ca0ef0a4c825a360c325f4933dbd84943cc07bc2289",
+      "sources": [
+        "spb-opera"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "spb-opera": "4c180aba0ab6852b149f74f063d045b77d0061c18ac7f9ba90c49e4455ea08df"
+      },
+      "validUntil": "2026-10-01T07:00:25.257Z"
+    },
+    {
+      "snapshotHash": "064beba204d65bad065ce86aa5f67b8ead4b2c91aaefe826b798283b13cdc33b",
+      "sources": [
+        "novat"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "novat": "ff707c1c3c59d48c049f7ca265a049e8709e5fc96bc873abc626ee20cc2339ec"
+      },
+      "validUntil": "2026-10-01T07:07:54.948Z"
+    },
+    {
+      "snapshotHash": "6858c6a4d0688be7883c4a8f02f5af2fd1e5c103f9c68ed30150c222bee226fd",
+      "sources": [
+        "operann"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "operann": "3a9c2b0b2defb68dab5d55176df9d0cbd63e2ddeafe9684db14cd8f71daeac80"
+      },
+      "validUntil": "2026-10-01T06:58:26.652Z"
+    },
+    {
+      "snapshotHash": "8586d3d24cddc9cdb3c62609eb10b555abb5b30ccaff38be4c60ed693ff177c2",
+      "sources": [
+        "samara-opera"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "samara-opera": "dec9ce3109c951f62ba982c09fe05a562ee4e4e2f930f99fb9b012b47025f06c"
+      },
+      "validUntil": "2026-10-01T06:58:26.629Z"
+    },
+    {
+      "snapshotHash": "e9f104c153049a208a967b44ea4d85e0e422405c7201e2ab3c8b2cb9bd02a56e",
+      "sources": [
+        "permopera"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "permopera": "63819df2cde95aed1513c5781f71432f99710555d763c8f70404f331a73cbc6a"
+      },
+      "validUntil": "2026-10-01T07:02:43.327Z"
+    },
+    {
+      "snapshotHash": "3a02e27a5e0957fba4b30e88867be8f68a8a17e4126c71f81ab8eeac35a04fcb",
+      "sources": [
+        "chel-philharmonia"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "chel-philharmonia": "6fb32e6912203470687a665a4551ce3a7df16533cdbb2ab4c3987fbad84b1d90"
+      },
+      "validUntil": "2026-10-01T06:58:26.943Z"
+    },
+    {
+      "snapshotHash": "ad83c4195bc1aab7160fe7196a301f370b1160598864e5c1a6836ca58066d897",
+      "sources": [
+        "bashopera"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "bashopera": "a08528351d63c04e04d08b6cc044980dd2aa864593489418acb580aabd00885c"
+      },
+      "validUntil": "2026-10-01T07:02:43.603Z"
+    },
+    {
+      "snapshotHash": "a4a6b7aeb21493829c7cd01332dc54de93600faf903124f4ccad403f64c26549",
+      "sources": [
+        "krasfil"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "krasfil": "2db3033adaf0ccce8947ae3524cddcc177bc4987d5a50705c46a581bed93a9c1"
+      },
+      "validUntil": "2026-10-01T07:07:34.878Z"
+    },
+    {
+      "snapshotHash": "9a9623230ad7d9f2f77093bff366cb86cbbc25c958bc64c03732e01100dc7f8a",
+      "sources": [
+        "filarm"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "filarm": "93707984bd1d9eec2af6a6eac22304d41628b3a30ae619e3502011a5f13915be"
+      },
+      "validUntil": "2026-10-01T06:58:27.721Z"
+    },
+    {
+      "snapshotHash": "66091f49d9c2968976265fbfc831aeaeb789705f747a7690f41ebae0d338f5f1",
+      "sources": [
+        "meloman"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "meloman": "13ce24d27896d454a8e2325fce2f9d81bf7f278e6e988641b837a438fd1a5731"
+      },
+      "validUntil": "2026-10-01T07:02:43.511Z"
+    },
+    {
+      "snapshotHash": "796d126fc77d14182f5561cbc14b4352af65238e9b9061080c59933662cf9d6d",
+      "sources": [
+        "spb-museum"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "spb-museum": "bbf0afb12e7642332fb427608c53f1011150ec3e931615cca7a15f5ff762b381"
+      },
+      "validUntil": "2026-10-01T07:03:39.998Z"
+    },
+    {
+      "snapshotHash": "fec73466f40e0415c7b44344fe11c486a6b1452fe0eeab98e8b73210b68b0762",
+      "sources": [
+        "spb-library"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "spb-library": "4f11a4f9f2a0cad12fbc97406809d458a72e9518702122a9db52c329407ca569"
+      },
+      "validUntil": "2026-10-01T07:07:35.052Z"
+    },
+    {
+      "snapshotHash": "b0b759459893e2827a08cb25a177ed0f243c072d523743142c9ca001321723c9",
+      "sources": [
+        "nsk-library"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "nsk-library": "6130531343e893ea058323c8730f046728ce240f82557deb6517013ce9f64779"
+      },
+      "validUntil": "2026-10-01T07:56:32.511Z"
+    },
+    {
+      "snapshotHash": "e0e1bb96c51fb779ac84d184b412bfa68980fc87a72186e45c80a8826ec42260",
+      "sources": [
+        "nn-art"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "nn-art": "7c3b8bfc224f7fe80fcdab55aa8ad2555b3c868891a9294985b3473b48526e37"
+      },
+      "validUntil": "2026-10-01T07:07:35.459Z"
+    },
+    {
+      "snapshotHash": "9cb8c074f53879e2b46f2c897e317aa03a826b139b79088297f460713bf6aa04",
+      "sources": [
+        "nn-library"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "nn-library": "23857321188e1e07db69fe4403f94dcfe24ea9728c4976307f47f5c27bcba532"
+      },
+      "validUntil": "2026-10-01T07:56:32.470Z"
+    },
+    {
+      "snapshotHash": "da7260d90067ed162f55f322cc299037bf347ed2ac1b8a50bf813c79e183ae91",
+      "sources": [
+        "samara-library"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "samara-library": "c5c1ff1ff77e5950540e987d46d6ded2fa99ad9ddcb9009e4314db60311acc14"
+      },
+      "validUntil": "2026-10-01T07:03:46.076Z"
+    },
+    {
+      "snapshotHash": "43e069c9984e62789d77ac3b65a8f9b619809a9127172aabe040bbd2d3600ba2",
+      "sources": [
+        "perm-museum"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "perm-museum": "29f4764b31bde543cb29ab6d59f6effc68d8435c46a55a7a6e9c781522ee870a"
+      },
+      "validUntil": "2026-10-01T07:39:20.174Z"
+    },
+    {
+      "snapshotHash": "ddc328a40d9539c9bd3b01a9a8685a724d441ccd74c6c7819e6fa8943962668d",
+      "sources": [
+        "perm-library"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "perm-library": "530545c337ca2a687aeb936548a792b64e3df9b9846448e9e897f608b8ff9751"
+      },
+      "validUntil": "2026-10-01T07:00:25.957Z"
+    },
+    {
+      "snapshotHash": "642c6beb587ec1931a7b1b19bedbf09bc29f4e2c633bc47db4a76c2d3d04675d",
+      "sources": [
+        "chel-museum"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "chel-museum": "8a9af4f4049c8bf61afd6afd020117c3cb45d46d5cc949139f8a0d147da31588"
+      },
+      "validUntil": "2026-10-01T07:03:41.601Z"
+    },
+    {
+      "snapshotHash": "dbd6f85a02131d33ef57432de8cc1918d0748eb23ee3b31b7ebe6c0f7f1abc1d",
+      "sources": [
+        "chel-library"
+      ],
+      "basis": "institution-facts/1",
+      "publicPolicyHashes": {
+        "chel-library": "fc6fdc1b5f193aeed7a1233a9c86923649430969090049a2385f72c792cbef96"
+      },
+      "validUntil": "2026-10-01T07:03:40.680Z"
+    }
+  ]
+}
